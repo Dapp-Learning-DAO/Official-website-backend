@@ -4,10 +4,9 @@ spring:
 #type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.jdbc.Driver
-jpa:
+  jpa:
     hibernate:
-    ddl-auto: update
+     ddl-auto: update
     generate-ddl: true
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5Dialect
