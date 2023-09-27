@@ -38,6 +38,6 @@ gradle.properties
 /target
 /out
 /src/test
-
+.env
 
 wallet/%
