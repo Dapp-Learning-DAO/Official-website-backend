@@ -20,7 +20,7 @@ public class EmailService {
             String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("411497616@qq.com");
+        //message.setFrom("411497616@qq.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
