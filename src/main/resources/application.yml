@@ -47,3 +47,20 @@ spring:
     timeout:
       seconds:  900
 
+logging:
+  level:
+    org.springframework.security: debug
+
+oauth:
+  registrations:
+    github:
+      auth-url: "/user/auth/github"
+      client:
+        clientId: 074acb9ef12af8ac37b1
+        clientSecret: f0477511fdf1e8f6b63dd6ec913b1d2b9165747c
+        accessTokenUri: https://github.com/login/oauth/access_token
+        userAuthorizationUri: https://github.com/login/oauth/authorize
+        clientAuthenticationScheme: form
+      resource:
+        userInfoUri: https://api.github.com/user
+
