@@ -76,7 +76,7 @@ jar {
 }
 
 clean {
-	println "delete ${projectDir}/dist"
+	//println "delete ${projectDir}/dist"
 	delete "${projectDir}/dist"
 	delete 'build'
 	delete 'log'
