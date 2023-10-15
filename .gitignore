@@ -39,5 +39,5 @@ gradle.properties
 /out
 /src/test
 .env
-
+/dist
 wallet/%

@@ -10,7 +10,7 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public Member getMemberByAddress(String address) {
-        return memberRepository.findByAddress(address);
-    }
+   // public Member getMemberByAddress(String address) {
+//        return memberRepository.findByAddress(address);
+//    }
 }
