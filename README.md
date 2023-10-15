@@ -22,4 +22,9 @@ type Message struct {
 	requestID *string
 	resources []url.URL
 }
+
+scp ./  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
 ```
+
+## 参考链接
+- Cors: https://cloud.tencent.com/developer/article/1924258
