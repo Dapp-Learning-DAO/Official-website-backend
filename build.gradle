@@ -26,13 +26,14 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'mysql:mysql-connector-java:8.0.28'
 	implementation 'org.springframework.boot:spring-boot-starter-mail:2.5.6'
 	implementation 'org.springframework.session:spring-session-jdbc'
 	implementation 'org.web3j:core:4.8.8'
 // https://mvnrepository.com/artifact/org.json/json
 	implementation 'org.json:json:20230618'
-
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

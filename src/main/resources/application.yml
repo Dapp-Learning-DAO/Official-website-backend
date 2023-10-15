@@ -6,12 +6,20 @@ server:
       cookie:
         max-age: -1
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: "a9cbf17f96bd3a0d4d52"
+            clientSecret: "bd2bdbd2383856cfbd445d560a5fba0abbb41944"
+
   datasource:
     #url: jdbc:mysql://81.69.8.95:3306/dl?useSSL=false
     url: jdbc:mysql://127.0.0.1:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
 #type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: 12345678
   jpa:
     hibernate:
      ddl-auto: update
