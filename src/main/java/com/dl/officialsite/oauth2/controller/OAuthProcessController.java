@@ -1,21 +1,29 @@
 package com.dl.officialsite.oauth2.controller;
 
 import com.dl.officialsite.common.model.ServerResponse;
-import com.dl.officialsite.oauth2.config.AuthClientConfig;
+import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
+import com.dl.officialsite.oauth2.handler.bind.IOAuthBindHandler;
+import com.dl.officialsite.oauth2.handler.bind.OAuthBindHandlers;
+import com.dl.officialsite.oauth2.handler.userinfo.IUserInfoRetrieveHandler;
+import com.dl.officialsite.oauth2.handler.userinfo.UserInfoRetrieveHandlers;
+import com.dl.officialsite.oauth2.model.bo.AccessTokenResponse;
+import com.dl.officialsite.oauth2.model.bo.user.IUserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.util.UrlUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +33,7 @@ import java.util.Map;
  */
 @RequestMapping("oauth2")
 @RestController
+@Slf4j
 public class OAuthProcessController {
 
     @Autowired
@@ -32,6 +41,17 @@ public class OAuthProcessController {
 
     private StringKeyGenerator DEFAULT_STATE_GENERATOR = new Base64StringKeyGenerator(
             Base64.getUrlEncoder());
+
+    private final static String AUTHORIZATION_CODE = "authorization_code";
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private UserInfoRetrieveHandlers userInfoRetrieveHandlers;
+
+    @Autowired
+    private OAuthBindHandlers bindHandlers;
 
     private static final char PATH_DELIMITER = '/';
 
@@ -47,12 +67,16 @@ public class OAuthProcessController {
     @RequestMapping("authorization/{registrationId}")
     public void handleAuthorization(@PathVariable("registrationId") String registrationId,
                                               HttpServletRequest request,
-                                              HttpServletResponse response
+                                              HttpServletResponse response,
+                                            HttpSession httpSession
                                     ) throws Exception{
         /**
-         * 1. Fetch registration
+         * 1. Preconditions
          */
-        AuthClientConfig oAuthRegistration = oAuthConfig.getRegistrations().get(registrationId);
+        if (httpSession.getAttribute("address") == null){
+            throw new RuntimeException("Not login");
+        }
+        RegistrationConfig oAuthRegistration = oAuthConfig.getRegistrations().get(registrationId);
         if (oAuthRegistration == null){
             //TODO
             throw new RuntimeException("Invalid registrationId");
@@ -68,7 +92,7 @@ public class OAuthProcessController {
          * &scope=photos
          */
         String clientId = oAuthRegistration.getClientId();
-        String responseType = AuthorizationGrantType.AUTHORIZATION_CODE.getValue();
+        String responseType = AUTHORIZATION_CODE;
         String state = DEFAULT_STATE_GENERATOR.generateKey();
         String redirectUri = expandRedirectUri(
                 registrationId,
@@ -94,18 +118,63 @@ public class OAuthProcessController {
     /**
      * This api retrieves the authorization code then :
      * 1. exchange access token via authorization code from:
-     * https://github.com/login/oauth/access_token
+     * https://github.com/login/oauth/access_token?code=xxx&client_id=xxx&client_secret
      *
      * 2. exchange user info via access token from:
      * https://api.github.com/user
      */
     @GetMapping("{action}/code/{registrationId}")
-    public String receiveAuthorizationCode(@RequestParam("code") String code,
-                                         @RequestParam("state") String state){
-        return "已获得授权码！"+code;
+    public ServerResponse<String> receiveAuthorizationCode(
+            @PathVariable String registrationId,
+            @RequestParam("code") String code,
+            @RequestParam("state") String state,
+            HttpServletResponse response,
+            HttpSession httpSession
+            ) throws Exception{
+
+        /**
+         * 1. Fetch registration
+         */
+        RegistrationConfig registration = this.oAuthConfig.getRegistrations().get(registrationId);
+        if (registration == null){
+            throw new RuntimeException("Invalid registration id :"+registrationId);
+        }
+        /**
+         * 2. Combine access_token request and get access token
+         */
+        UriComponents uriComponents = UriComponentsBuilder.fromUriString(registration.getAccessTokenUri())
+                .queryParam("client_id", registration.getClientId())
+                .queryParam("client_secret", registration.getClientSecret())
+                .queryParam("state", state)
+                .queryParam("code", code)
+                .build();
+        String accessTokenUrl = uriComponents.toString();
+        log.info(accessTokenUrl);
+        AccessTokenResponse accessTokenResponse = this.restTemplate.getForObject(accessTokenUrl, AccessTokenResponse.class);
+        if (accessTokenResponse == null){
+            throw new RuntimeException("Failed to get access token id ");
+        }
+        String accessToken = accessTokenResponse.getAccessToken();
+        /**
+         * 3. Get user info via access_token
+         */
+        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
+        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
+        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
+        Assert.notNull(userInfo, "failed to find userInfo");
+        /**
+         * 4. Bind userInfo
+         */
+        IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
+        Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
+        bindHandler.bind(httpSession.getAttribute("member").toString(), userInfo);
+
+        return ServerResponse.successWithData(userInfo.getUsername());
     }
 
-    private static String expandRedirectUri(String registration, HttpServletRequest request, AuthClientConfig clientRegistration,
+
+
+    private static String expandRedirectUri(String registration, HttpServletRequest request, RegistrationConfig clientRegistration,
                                             String action) {
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("registrationId", registration);

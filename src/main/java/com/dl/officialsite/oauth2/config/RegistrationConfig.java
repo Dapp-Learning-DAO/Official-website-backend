@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthClientConfig {
+public class RegistrationConfig {
 
     private String clientId;
 
