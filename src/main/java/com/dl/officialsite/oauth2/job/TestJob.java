@@ -14,6 +14,5 @@ public class TestJob implements ApplicationRunner {
     private OAuthConfig oAuthConfig;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.out.println(oAuthConfig.getRegistrations().get("github").getClient().getClientSecret());
     }
 }

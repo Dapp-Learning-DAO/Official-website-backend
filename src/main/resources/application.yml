@@ -6,14 +6,6 @@ server:
       cookie:
         max-age: -1
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            clientId: "a9cbf17f96bd3a0d4d52"
-            clientSecret: "bd2bdbd2383856cfbd445d560a5fba0abbb41944"
-
   datasource:
     #url: jdbc:mysql://81.69.8.95:3306/dl?useSSL=false
     url: jdbc:mysql://127.0.0.1:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
@@ -54,13 +46,10 @@ logging:
 oauth:
   registrations:
     github:
-      auth-url: "/user/auth/github"
-      client:
-        clientId: 074acb9ef12af8ac37b1
-        clientSecret: f0477511fdf1e8f6b63dd6ec913b1d2b9165747c
-        accessTokenUri: https://github.com/login/oauth/access_token
-        userAuthorizationUri: https://github.com/login/oauth/authorize
-        clientAuthenticationScheme: form
-      resource:
-        userInfoUri: https://api.github.com/user
+      clientId: "Iv1.74aecf988af67044"
+      clientSecret: "d0f38f58e98bb3dbb9a6bf6a2e1211a4feb24767"
+      accessTokenUri: https://github.com/login/oauth/access_token
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      userInfoUri: https://api.github.com/user
+
 

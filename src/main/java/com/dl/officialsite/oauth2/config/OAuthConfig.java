@@ -17,5 +17,5 @@ import java.util.Map;
 public class OAuthConfig {
 
     @NestedConfigurationProperty
-    private Map<String, OAuthRegistration> registrations;
+    private Map<String, AuthClientConfig> registrations;
 }
