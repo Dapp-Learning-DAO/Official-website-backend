@@ -1,21 +1,114 @@
-{
-  "url": "http://81.69.8.95:8080/member/create",
-  "method": "POST",
-   "body": {
-     "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
-     "nickName": "yanyanho",
-     "role": 1,
-     "programing": "java",
-     "githubId": "yanyanho",
-     "tweetID": "",
-     "wechatId": "",
-     "techStack": 0,
-     "programing": "java,solidity,rust",
-     "interests": "hiking",
-     "city": "SZ"
-   },
-  "response":{
 
-  }
+  [
+    {"url": "http://81.69.8.95:8080/member/create",
+       "method": "POST",
+       "body": {
+       "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+       "nickName": "yanyanho",
+       "role": 1,
+       "programing": "java",
+       "githubId": "yanyanho",
+       "tweetID": "",
+       "wechatId": "",
+       "techStack": 0,
+       "programing": "java,solidity,rust",
+       "interests": "hiking",
+       "city": "SZ"
+     },
+    "response":
+      {
+        "id": 1,
+        "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+        "nickName": "yanyanho",
+        "role": 1,
+        "githubId": "yanyanho",
+        "tweetID": "",
+        "wechatId": "",
+        "techStack": 0,
+        "programing": "java,solidity,rust",
+        "interests": "hiking",
+        "city": "SZ",
+        "shareCount": 0,
+        "rewardCount": 0,
+        "timestamp": null
+       }
+    },
 
-}
+    {
+      "url": "http://81.69.8.95:8080/member/all",
+      "method": "GET",
+      "response":
+      {
+      "content": [
+        {
+          "id": 1,
+          "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+          "nickName": "yanyanho",
+          "role": 1,
+          "githubId": "yanyanho",
+          "tweetID": "",
+          "wechatId": "",
+          "techStack": 0,
+          "programing": "java,solidity,rust",
+          "interests": "hiking",
+          "city": "SZ",
+          "shareCount": 0,
+          "rewardCount": 0,
+          "timestamp": null
+        }
+      ],
+      "pageable": {
+        "sort": {
+          "sorted": true,
+          "unsorted": false,
+          "empty": false
+        },
+        "pageNumber": 0,
+        "pageSize": 10,
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+      },
+      "last": true,
+      "totalPages": 1,
+      "totalElements": 1,
+      "first": true,
+      "numberOfElements": 1,
+      "sort": {
+        "sorted": true,
+        "unsorted": false,
+        "empty": false
+      },
+      "size": 10,
+      "number": 0,
+      "empty": false
+    }
+
+    },
+    {
+      "url": "http://81.69.8.95:8080/member/0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+      "method": "GET",
+      "response":
+      {
+        "id": 1,
+        "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+        "nickName": "yanyanho",
+        "role": 1,
+        "githubId": "yanyanho",
+        "tweetID": "",
+        "wechatId": "",
+        "techStack": 0,
+        "programing": "java,solidity,rust",
+        "interests": "hiking",
+        "city": "SZ",
+        "shareCount": 0,
+        "rewardCount": 0,
+        "timestamp": null
+      }
+
+    }
+
+
+
+  ]
+

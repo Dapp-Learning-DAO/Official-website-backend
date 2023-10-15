@@ -19,8 +19,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
-
-
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 
