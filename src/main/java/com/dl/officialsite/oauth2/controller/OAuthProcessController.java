@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -77,7 +78,7 @@ public class OAuthProcessController {
                                             HttpSession httpSession
                                     ) throws Exception{
 
-        HttpSessionUtils.putMember(httpSession, "test");
+//        HttpSessionUtils.putMember(httpSession, "test");
 
         /**
          * 1. Preconditions
@@ -130,7 +131,7 @@ public class OAuthProcessController {
      * https://api.github.com/user
      */
     @GetMapping("{action}/code/{registrationId}")
-    public ServerResponse<String> receiveAuthorizationCode(
+    public void receiveAuthorizationCode(
             @PathVariable String registrationId,
             @RequestParam("code") String code,
             @RequestParam("state") String state,
@@ -175,7 +176,7 @@ public class OAuthProcessController {
         Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
         bindHandler.bind(HttpSessionUtils.getMember(httpSession), userInfo);
 
-        return ServerResponse.successWithData(userInfo.getUsername());
+        response.addCookie(new Cookie("oauth"+registrationId, userInfo.getUsername()));
     }
 
     @GetMapping("username/{registrationId}")
