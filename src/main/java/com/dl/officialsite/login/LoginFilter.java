@@ -1,4 +1,4 @@
-package com.dl.officialsite.session;
+package com.dl.officialsite.login;
 
 
 import com.dl.officialsite.member.Member;
@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@Component
+//@Component
 public class LoginFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 简单的白名单，登录这个接口直接放行
-        if ("/member/login".equals(request.getRequestURI())) {
+
+        if ("/login/nonce".equals(request.getRequestURI()) || "/login/check".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }

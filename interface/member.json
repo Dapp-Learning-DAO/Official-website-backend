@@ -1,0 +1,21 @@
+{
+  "url": "http://81.69.8.95:8080/member/create",
+  "method": "POST",
+   "body": {
+     "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+     "nickName": "yanyanho",
+     "role": 1,
+     "programing": "java",
+     "githubId": "yanyanho",
+     "tweetID": "",
+     "wechatId": "",
+     "techStack": 0,
+     "programing": "java,solidity,rust",
+     "interests": "hiking",
+     "city": "SZ"
+   },
+  "response":{
+
+  }
+
+}

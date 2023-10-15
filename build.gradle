@@ -29,7 +29,9 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.28'
 	implementation 'org.springframework.boot:spring-boot-starter-mail:2.5.6'
 	implementation 'org.springframework.session:spring-session-jdbc'
-	implementation 'org.web3j:core:4.10.0'
+	implementation 'org.web3j:core:4.8.8'
+// https://mvnrepository.com/artifact/org.json/json
+	implementation 'org.json:json:20230618'
 
 
 	compileOnly 'org.projectlombok:lombok'
@@ -39,4 +41,43 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+
+jar {
+	destinationDir file('dist/apps')
+	archiveName "dl"  + '.jar'
+	doLast {
+		copy {
+			from file('src/main/resources/')
+			into 'dist/conf/'
+		}
+		copy {
+			from configurations.runtimeClasspath
+			into 'dist/lib'
+		}
+		copy {
+			from file('src/main/resources/application.yml')
+			into 'dist/conf/'
+		}
+//		copy {
+//			from file('src/main/resources/start.sh')
+//			into 'dist/'
+//		}
+//		copy {
+//			from file('src/main/resources/stop.sh')
+//			into 'dist/'
+//		}
+		copy {
+			from file('.').listFiles().findAll { File f -> (f.name.endsWith('.sh') || f.name.endsWith('.env')) }
+			into 'dist'
+		}
+	}
+}
+
+clean {
+	println "delete ${projectDir}/dist"
+	delete "${projectDir}/dist"
+	delete 'build'
+	delete 'log'
 }
