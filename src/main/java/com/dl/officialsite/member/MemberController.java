@@ -76,8 +76,8 @@ public class MemberController {
             if(member.getGithubId()!=null) {
                 _member.setGithubId(member.getGithubId());
             }
-            if(member.getTweetID()!=null) {
-                _member.setTweetID(member.getTweetID());
+            if(member.getTweetId()!=null) {
+                _member.setTweetId(member.getTweetId());
             }
             if(member.getWechatId()!=null) {
                 _member.setWechatId(member.getWechatId());
@@ -93,6 +93,8 @@ public class MemberController {
     }
 
 //todo query
+
+    // findByNickName
     private Long getMemberId(HttpSession session) {
         Long memberId = (Long) session
                 .getAttribute("memberId");
