@@ -54,18 +54,18 @@ public class MemberController {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Member> updateMember(@PathVariable("id") long id, @RequestBody Member member) {
-        Optional<Member> memberData = memberRepository.findById(id);
-
-        if (memberData.isPresent()) {
-            Member _member = memberData.get();
-            _member.setAddress(member.getAddress());
-            return new ResponseEntity<>(memberRepository.save(_member), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Member> updateMember(@PathVariable("id") long id, @RequestBody Member member) {
+//        Optional<Member> memberData = memberRepository.findById(id);
+//
+//        if (memberData.isPresent()) {
+//            Member _member = memberData.get();
+//            _member.setAddress(member.getAddress());
+//            return new ResponseEntity<>(memberRepository.save(_member), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PutMapping("/{address}")
     public ResponseEntity<Member> updateMemberByAddress(@PathVariable("address") String address, @RequestBody Member member) {
