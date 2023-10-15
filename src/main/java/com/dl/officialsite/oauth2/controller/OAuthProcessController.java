@@ -131,7 +131,7 @@ public class OAuthProcessController {
      * https://api.github.com/user
      */
     @GetMapping("{action}/code/{registrationId}")
-    public void receiveAuthorizationCode(
+    public ServerResponse<String> receiveAuthorizationCode(
             @PathVariable String registrationId,
             @RequestParam("code") String code,
             @RequestParam("state") String state,
@@ -176,7 +176,8 @@ public class OAuthProcessController {
         Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
         bindHandler.bind(HttpSessionUtils.getMember(httpSession), userInfo);
 
-        response.addCookie(new Cookie("oauth"+registrationId, userInfo.getUsername()));
+        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
+        return ServerResponse.successWithData(userInfo.getUsername());
     }
 
     @GetMapping("username/{registrationId}")
