@@ -14,7 +14,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-     ddl-auto: update
+     ddl-auto: create
     generate-ddl: true
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5Dialect

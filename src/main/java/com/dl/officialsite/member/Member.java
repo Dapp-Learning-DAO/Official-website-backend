@@ -5,8 +5,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.mapping.PrimaryKey;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,22 +21,27 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
 @Table(name = "member", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "address", columnNames = {"address"}),
-        @UniqueConstraint(name = "role", columnNames = {"role"})})
+        @UniqueConstraint(name = "address", columnNames = {"address"})})
 public class Member  implements Serializable
 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 42)
     private String  address;
+    @Column(unique=true,length = 20)
     private String nickName;
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
+    @Column(unique=true,length = 20)
     private String githubId;
+    @Column(unique=true,length = 20)
     private String tweetID;
+    @Column(unique=true,length = 20)
     private String wechatId;
     private int techStack;  //前端 ， 后端 ， 全栈， 运维， 测试
 
@@ -42,6 +51,12 @@ public class Member  implements Serializable
     private String city;
     private int shareCount;
     private int rewardCount;
+    @CreatedDate
+    @Column(updatable = false)
+    private Long createTime;
+    @LastModifiedDate
+    @Column( updatable = false ,nullable = false)
+    private Long updateTime;
 
 
 
