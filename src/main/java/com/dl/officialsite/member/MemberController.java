@@ -73,8 +73,19 @@ public class MemberController {
 
         if (memberData.isPresent()) {
             Member _member = memberData.get();
-            //todo
-            _member.setAddress(member.getGithubId());
+            if(member.getGithubId()!=null) {
+                _member.setGithubId(member.getGithubId());
+            }
+            if(member.getTweetID()!=null) {
+                _member.setTweetID(member.getTweetID());
+            }
+            if(member.getWechatId()!=null) {
+                _member.setWechatId(member.getWechatId());
+            }
+            if(member.getNickName()!=null) {
+                _member.setNickName(member.getNickName());
+            }
+
             return new ResponseEntity<>(memberRepository.save(_member), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
