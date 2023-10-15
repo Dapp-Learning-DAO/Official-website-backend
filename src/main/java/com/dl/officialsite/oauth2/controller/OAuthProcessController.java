@@ -1,15 +1,18 @@
 package com.dl.officialsite.oauth2.controller;
 
 import com.dl.officialsite.common.model.ServerResponse;
+import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.handler.bind.IOAuthBindHandler;
 import com.dl.officialsite.oauth2.handler.bind.OAuthBindHandlers;
 import com.dl.officialsite.oauth2.handler.userinfo.IUserInfoRetrieveHandler;
 import com.dl.officialsite.oauth2.handler.userinfo.UserInfoRetrieveHandlers;
+import com.dl.officialsite.oauth2.manager.OAuthUsernameManager;
 import com.dl.officialsite.oauth2.model.bo.AccessTokenResponse;
 import com.dl.officialsite.oauth2.model.bo.user.IUserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.manager.util.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
@@ -53,6 +56,9 @@ public class OAuthProcessController {
     @Autowired
     private OAuthBindHandlers bindHandlers;
 
+    @Autowired
+    private OAuthUsernameManager usernameManager;
+
     private static final char PATH_DELIMITER = '/';
 
     private static final String DEFAULT_REDIRECT_URL = "{baseUrl}/oauth2/{action}/code/{registrationId}";
@@ -70,12 +76,12 @@ public class OAuthProcessController {
                                               HttpServletResponse response,
                                             HttpSession httpSession
                                     ) throws Exception{
+
+        HttpSessionUtils.putMember(httpSession, "test");
+
         /**
          * 1. Preconditions
          */
-        if (httpSession.getAttribute("address") == null){
-            throw new RuntimeException("Not login");
-        }
         RegistrationConfig oAuthRegistration = oAuthConfig.getRegistrations().get(registrationId);
         if (oAuthRegistration == null){
             //TODO
@@ -167,12 +173,35 @@ public class OAuthProcessController {
          */
         IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
         Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
-        bindHandler.bind(httpSession.getAttribute("member").toString(), userInfo);
+        bindHandler.bind(HttpSessionUtils.getMember(httpSession), userInfo);
 
         return ServerResponse.successWithData(userInfo.getUsername());
     }
 
+    @GetMapping("username/{registrationId}")
+    public ServerResponse<String> getOAuthUserName(
+            @PathVariable String registrationId,
+            HttpServletResponse response,
+            HttpSession httpSession
+    ) throws Exception{
 
+        /**
+         * 1. Prechecks
+         */
+        RegistrationConfig registration = this.oAuthConfig.getRegistrations().get(registrationId);
+        if (registration == null){
+            throw new RuntimeException("Invalid registration id :"+registrationId);
+        }
+        String address = HttpSessionUtils.getMember(httpSession);
+        /**
+         * 2. Fetch oauth username
+         */
+        IUserInfo userInfo = usernameManager.get(registrationId, address);
+        if(userInfo == null){
+            throw new RuntimeException("user not found");
+        }
+        return ServerResponse.successWithData(userInfo.getUsername());
+    }
 
     private static String expandRedirectUri(String registration, HttpServletRequest request, RegistrationConfig clientRegistration,
                                             String action) {
