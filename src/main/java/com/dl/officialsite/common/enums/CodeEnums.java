@@ -1,6 +1,5 @@
 package com.dl.officialsite.common.enums;
 
-import org.omg.PortableInterceptor.SUCCESSFUL;
 
 /**
  * @ClassName CodeEnums
