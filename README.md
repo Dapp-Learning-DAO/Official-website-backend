@@ -41,3 +41,4 @@ ssh root@81.69.8.95
 
 ## 参考链接
 - Cors: https://cloud.tencent.com/developer/article/1924258
+- upload pic: https://juejin.cn/post/6844903630416379918  
