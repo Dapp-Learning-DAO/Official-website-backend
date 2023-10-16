@@ -165,9 +165,37 @@
           "workStatus": null
         }
       }
+    },
+
+
+    {
+      "url": "http://81.69.8.95:8080/login/nonce",
+      "method": "GET",
+
+      "response":
+      {
+      "result": "977c4ca853d847d6892d629e485b641a"
+      }
+
+    },
+    {
+      "url": "http://81.69.8.95:8080/login/check",
+      "method": "POST",
+      "body": {
+
+      "address":"0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
+      "message": "hello",
+      "v": "0x1c" ,
+      "r": "0x0ea7d9596f0c90d2cf417a079c6c56ef10dda520cf392e89ae5a7bdc1d09c8db",
+      "s": "0x037f66fde24749ba842ef5de24902451f0fe9baf5cd1b0b9dca42c71baaf98b0"
+      },
+      "response":
+      {
+        "code": "0",
+        "msg": null,
+        "data": null
+
+      }
     }
-
-
-
   ]
 

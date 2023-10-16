@@ -1,4 +1,4 @@
-package com.dl.officialsite.base;
+package com.dl.officialsite.common.base;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

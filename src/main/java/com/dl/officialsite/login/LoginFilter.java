@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//@Component
+@Component
 public class LoginFilter extends OncePerRequestFilter {
 
     @Override
@@ -24,15 +24,12 @@ public class LoginFilter extends OncePerRequestFilter {
         }
 
         // 已登录就放行
-        //todo
-        Member member = (Member) request.getSession().getAttribute("member");
-        if (member != null) {
+        String address = (String) request.getSession().getAttribute("member");
+        if (address != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 走到这里就代表是其他接口，且没有登录
-        // 设置响应数据类型为json（前后端分离）
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         // 设置响应内容，结束请求

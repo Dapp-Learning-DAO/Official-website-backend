@@ -1,7 +1,7 @@
 package com.dl.officialsite.common.advice;
 
 
-import com.dl.officialsite.base.BaseResponse;
+import com.dl.officialsite.common.base.BaseResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
