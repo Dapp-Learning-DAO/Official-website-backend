@@ -1,6 +1,8 @@
 # Official-website-backend
 backend  of official website
 
+## interface for front-end
+see the direction  ./interface
 ## login xyz
 https://github.com/spruceid/siwe-go/blob/main/message.go
 
@@ -22,9 +24,19 @@ type Message struct {
 	requestID *string
 	resources []url.URL
 }
-
-scp ./  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
 ```
+
+## build
+```
+ ./gradlew build -x test
+  scp ./dist/apps/dl.jar  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
+```
+
+
+
+## TODO
+1. 头像 简历
+2. 红包改造
 
 ## 参考链接
 - Cors: https://cloud.tencent.com/developer/article/1924258
