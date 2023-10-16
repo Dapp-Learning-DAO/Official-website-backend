@@ -24,6 +24,7 @@ public class LoginFilter extends OncePerRequestFilter {
         }
 
         // 已登录就放行
+        //todo
         Member member = (Member) request.getSession().getAttribute("member");
         if (member != null) {
             filterChain.doFilter(request, response);

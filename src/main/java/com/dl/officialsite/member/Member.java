@@ -25,7 +25,8 @@ import java.util.List;
 @Entity
 @DynamicUpdate
 @Table(name = "member", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "address", columnNames = {"address"})})
+        @UniqueConstraint(name = "address", columnNames = {"address"}),
+        @UniqueConstraint(name = "nickName", columnNames = {"nickName"})})
 public class Member  implements Serializable
 {
 
@@ -34,16 +35,18 @@ public class Member  implements Serializable
     private Long id;
     @Column(length = 42)
     private String  address;
+    @Column(unique=true,length = 40)
+    private String email;
     @Column(unique=true,length = 20)
     private String nickName;
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
     @Column(unique=true,length = 20)
     private String githubId;
     @Column(unique=true,length = 20)
-    private String tweetID;
+    private String tweetId;
     @Column(unique=true,length = 20)
     private String wechatId;
-    private int techStack;  //前端 ， 后端 ， 全栈， 运维， 测试
+    private int techStack;  //前端 ， 后端 ， 全栈， 运维， 测试, 密码学， 区块链底层，金融，数学
 
     private String programing; //
     // optional
@@ -57,6 +60,9 @@ public class Member  implements Serializable
     @LastModifiedDate
     @Column( updatable = false ,nullable = false)
     private Long updateTime;
+
+    //todo
+    private Long workStatus;
 
 
 

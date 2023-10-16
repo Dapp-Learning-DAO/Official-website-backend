@@ -38,7 +38,7 @@ public class LoginController {
         logger.info(session.getAttributeNames().toString());
         logger.info(session.getId());
 
-        if(!checkNoce(sign.getMessage(), (String)session.getAttribute("nonce"))) {
+        if(!checkNonce(sign.getMessage(), (String)session.getAttribute("nonce"))) {
             return "fail to check nonce";
         }
         if (checkSignature(sign)) {
@@ -63,7 +63,7 @@ public class LoginController {
     }
 
 
-    private boolean checkNoce(String message, String nonce ) {
+    private boolean checkNonce(String message, String nonce ) {
 
         JSONObject obj = new JSONObject(message);
         String nonceRecover = obj.getString("nonce") ;
