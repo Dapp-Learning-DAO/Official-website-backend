@@ -174,10 +174,10 @@
 
       "response":
       {
-       "977c4ca853d847d6892d629e485b641a"
-        }
+      "result": "977c4ca853d847d6892d629e485b641a"
+      }
 
-    }
+    },
     {
       "url": "http://81.69.8.95:8080/login/check",
       "method": "POST",
