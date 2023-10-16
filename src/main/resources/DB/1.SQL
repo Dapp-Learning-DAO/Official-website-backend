@@ -22,3 +22,14 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES
     CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
     CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION (PRIMARY_ID) ON DELETE CASCADE
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
+
+create table tb_oauth_github (
+	`pk_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+	`uid` bigint(11) not null comment '用户主键',
+    `github_username` varchar(255) not null comment 'github账号',
+	`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY `pk_id`(`pk_id`),
+    UNIQUE INDEX `unique_uid`(`uid`),
+    UNIQUE INDEX `unique_github_username`(`github_username`)
+);
