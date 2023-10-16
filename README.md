@@ -26,12 +26,19 @@ type Message struct {
 }
 ```
 
+## Run
+ mysql: pls docker run mysql 
+ ipfs:  pls docker run ipfs node 
+ https://medium.com/@borepstein/running-an-ipfs-node-as-a-docker-container-on-a-private-network-4c0186aeca61
+
 ## build
 ```
-ssh root@81.69.8.95
+  ssh root@81.69.8.95
  ./gradlew build -x test
   scp ./dist/apps/dl.jar  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
+
 ```
+
 
 
 
