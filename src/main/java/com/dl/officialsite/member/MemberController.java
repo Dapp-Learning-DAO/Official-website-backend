@@ -2,7 +2,7 @@ package com.dl.officialsite.member;
 
 
 
-import com.dl.officialsite.base.BaseResponse;
+import com.dl.officialsite.common.base.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
