@@ -196,6 +196,32 @@
         "data": null
 
       }
-    }
+    },
+    {
+      "url": "/file/upload",
+      "headers": {
+        "Content-Type": "multipart/form-data"
+      },
+      "method": "POST",
+      "body": {
+        "file": "file"
+      },
+      "response":
+      {
+          "code": "0",
+          "msg": null,
+          "data": "Qmeh4Dn4mBJpda2qAhM7P5scPtNubrdbtFhqvsKapXwzAa"
+      }
+      },
+    {
+      "url": "/file/download?fileHahs=Qmeh4Dn4mBJpda2qAhM7P5scPtNubrdbtFhqvsKapXwzAa",
+      "method": "GET",
+      "response":
+      {
+          "code": "0",
+          "msg": null,
+          "data": "byte"
+      }
+      }
   ]
 
