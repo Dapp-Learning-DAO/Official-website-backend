@@ -39,9 +39,6 @@ type Message struct {
 
 ```
 
-
-
-
 ## TODO
 1. 头像 简历
 2. 红包改造

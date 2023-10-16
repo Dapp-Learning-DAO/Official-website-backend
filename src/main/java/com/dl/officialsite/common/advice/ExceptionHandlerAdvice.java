@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
-@Component
 @Slf4j
 public class ExceptionHandlerAdvice {
 

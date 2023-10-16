@@ -52,6 +52,9 @@ public class LoginController {
         }
 
         if(!checkNonce(sign.getMessage(), (String)session.getAttribute("nonce"))) {
+            logger.info( "session nonce: "+ (String)session.getAttribute("nonce"));
+
+
             return BaseResponse.failWithReason("10002", "nonce check failed");
         }
         if (checkSignature(sign)) {
@@ -84,8 +87,9 @@ public class LoginController {
 
     private boolean checkNonce(String message, String nonce ) {
 
-        JSONObject obj = new JSONObject(message);
-        String nonceRecover = obj.getString("Nonce") ;
+        int index = message.indexOf("Nonce:");
+        String nonceRecover = message.substring(index+7, index+39);
+        logger.info( " nonce recover: "+  nonceRecover);
         return nonce.equals(nonceRecover);
     }
 
