@@ -32,5 +32,11 @@ type Message struct {
   scp ./dist/apps/dl.jar  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
 ```
 
+
+
+## TODO
+1. 头像 简历
+2. 红包改造
+
 ## 参考链接
 - Cors: https://cloud.tencent.com/developer/article/1924258

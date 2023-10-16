@@ -2,6 +2,7 @@ package com.dl.officialsite.member;
 
 
 
+import com.dl.officialsite.base.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,13 @@ public class MemberController {
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @RequestMapping(value = "/{address}", method = RequestMethod.GET)
-    Member getMemberByAddress(@PathVariable String address)   {
+    BaseResponse getMemberByAddress(@PathVariable String address)   {
 
-      Optional<Member> member =    memberRepository.findByAddress(address);
-      return member.get();
+      Optional<Member> member =  memberRepository.findByAddress(address);
+      if(!member.isPresent()){
+          return BaseResponse.failWithReason("1001", "no user found");
+      }
+      return BaseResponse.successWithData(member.get());
     }
 
 
@@ -41,15 +45,13 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createMember(@RequestBody Member member) {
+    public BaseResponse createMember(@RequestBody Member member) {
         try {
             Member _member = memberRepository
                     .save(member);
-           // logger.info(member.getAddress());
-           return new ResponseEntity<>(_member, HttpStatus.CREATED);
+           return  BaseResponse.successWithData(_member);
         } catch (Exception e) {
-            logger.info(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return BaseResponse.failWithReason("1000",e.getMessage());
         }
     }
 
@@ -68,7 +70,7 @@ public class MemberController {
 //    }
 
     @PutMapping("/{address}")
-    public ResponseEntity<Member> updateMemberByAddress(@PathVariable("address") String address, @RequestBody Member member) {
+    public BaseResponse updateMemberByAddress(@PathVariable("address") String address, @RequestBody Member member) {
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
         if (memberData.isPresent()) {
@@ -86,9 +88,9 @@ public class MemberController {
                 _member.setNickName(member.getNickName());
             }
 
-            return new ResponseEntity<>(memberRepository.save(_member), HttpStatus.OK);
+            return BaseResponse.successWithData(memberRepository.save(_member));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return BaseResponse.failWithReason("1001","no user found");
         }
     }
 
