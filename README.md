@@ -28,6 +28,7 @@ type Message struct {
 
 ## build
 ```
+ssh root@81.69.8.95
  ./gradlew build -x test
   scp ./dist/apps/dl.jar  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
 ```

@@ -1,6 +1,7 @@
 package com.dl.officialsite.oauth2.controller;
 
-import com.dl.officialsite.common.model.ServerResponse;
+
+import com.dl.officialsite.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
@@ -131,7 +132,7 @@ public class OAuthProcessController {
      * https://api.github.com/user
      */
     @GetMapping("{action}/code/{registrationId}")
-    public ServerResponse<String> receiveAuthorizationCode(
+    public BaseResponse<String> receiveAuthorizationCode(
             @PathVariable String registrationId,
             @RequestParam("code") String code,
             @RequestParam("state") String state,
@@ -177,11 +178,11 @@ public class OAuthProcessController {
         bindHandler.bind(HttpSessionUtils.getMember(httpSession), userInfo);
 
         response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
-        return ServerResponse.successWithData(userInfo.getUsername());
+        return BaseResponse.successWithData(userInfo.getUsername());
     }
 
     @GetMapping("username/{registrationId}")
-    public ServerResponse<String> getOAuthUserName(
+    public BaseResponse<String> getOAuthUserName(
             @PathVariable String registrationId,
             HttpServletResponse response,
             HttpSession httpSession
@@ -202,7 +203,7 @@ public class OAuthProcessController {
         if(userInfo == null){
             throw new RuntimeException("user not found");
         }
-        return ServerResponse.successWithData(userInfo.getUsername());
+        return BaseResponse.successWithData(userInfo.getUsername());
     }
 
     private static String expandRedirectUri(String registration, HttpServletRequest request, RegistrationConfig clientRegistration,
