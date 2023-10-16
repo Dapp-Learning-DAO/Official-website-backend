@@ -1,6 +1,8 @@
 package com.dl.officialsite.File;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.enums.CodeEnums;
+import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.ipfs.IPFSService;
 import java.io.IOException;
 import lombok.Data;
@@ -37,7 +39,8 @@ public class FileController {
             return BaseResponse.successWithData(hash);
         } catch (IOException e) {
             log.error("文件上传失败{}", file.getName());
-            throw new RuntimeException(e);
+            throw new BizException(CodeEnums.FAIL_UPLOAD_FAIL.getCode(),
+                CodeEnums.FAIL_UPLOAD_FAIL.getMsg());
         }
     }
 
@@ -48,7 +51,8 @@ public class FileController {
     public BaseResponse download(String fileHahs) {
         byte[] download = ipfsService.download(fileHahs);
         if (ObjectUtils.isEmpty(download)) {
-            return BaseResponse.failWithReason("1001", "文件下载失败");
+            return BaseResponse.failWithReason(CodeEnums.FAIL_DOWNLOAD_FAIL.getCode(),
+                CodeEnums.FAIL_DOWNLOAD_FAIL.getMsg());
         }
         return BaseResponse.successWithData(download);
     }
