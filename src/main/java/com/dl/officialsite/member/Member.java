@@ -46,6 +46,7 @@ public class Member  implements Serializable
     private String tweetId;
     @Column(unique=true,length = 20)
     private String wechatId;
+    private String avatar;
     private int techStack;  //前端 ， 后端 ， 全栈， 运维， 测试, 密码学， 区块链底层，金融，数学
 
     private String programing; //
