@@ -223,5 +223,29 @@
           "data": "byte"
       }
       }
+
+    , {
+    "url": "http://81.69.8.95:8080/login/logout",
+    "method": "GET",
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": null
+
+    }
+  },
+    {
+      "description" :  "check session statue",
+      "url": "http://81.69.8.95:8080/login/check-session",
+      "method": "GET",
+      "response":
+      {
+        "code": "200",
+        "msg": "success",
+        "data": true
+
+      }
+    }
   ]
 

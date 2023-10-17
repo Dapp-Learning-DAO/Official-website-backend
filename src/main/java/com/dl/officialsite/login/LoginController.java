@@ -21,6 +21,7 @@ import java.security.SignatureException;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.dl.officialsite.common.utils.HttpSessionUtils.MEMBER_ATTRIBUTE_KEY;
 import static org.web3j.crypto.Sign.getEthereumMessageHash;
 import static org.web3j.utils.Numeric.hexStringToByteArray;
 
@@ -96,7 +97,18 @@ public class LoginController {
 
     @GetMapping("/logout")
     public BaseResponse logout(HttpSession session) {
-        session.removeAttribute(HttpSessionUtils.MEMBER_ATTRIBUTE_KEY);
+        session.removeAttribute(MEMBER_ATTRIBUTE_KEY);
         return  BaseResponse.successWithData(null);
+    }
+
+    @GetMapping("/check-session")
+    public BaseResponse checkSessionStatue( HttpSession session) {
+
+        String address = (String) session.getAttribute(MEMBER_ATTRIBUTE_KEY);
+        if (address != null) {
+
+            return BaseResponse.successWithData(true) ;
+        }
+        return  BaseResponse.successWithData(false);
     }
 }
