@@ -12,8 +12,9 @@ public enum CodeEnums {
 
     SUCCESSFUL("200", "成功"),
     FAIL("500", "失败"),
-    FAIL_DOWNLOAD_FAIL("1001", "文件下载失败"),
-    FAIL_UPLOAD_FAIL("1002", "文件上传失败");
+    FAIL_DOWNLOAD_FAIL("1001", "File Downlaod Fail"),
+    FAIL_UPLOAD_FAIL("1002", "File Upload Fail"),
+    USER_NOT_FOUND("1003", "User Not Found");
 
     private String code;
 
