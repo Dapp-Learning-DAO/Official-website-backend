@@ -38,7 +38,6 @@ public class LoginFilter extends OncePerRequestFilter {
 
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        // 设置响应内容，结束请求
 
         BaseResponse baseResponse = BaseResponse.failWithReason("2001", "please login in");
 
