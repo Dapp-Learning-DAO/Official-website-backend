@@ -1,6 +1,5 @@
 package com.dl.officialsite.common.enums;
 
-import org.omg.PortableInterceptor.SUCCESSFUL;
 
 /**
  * @ClassName CodeEnums
@@ -15,6 +14,8 @@ public enum CodeEnums {
     FAIL_DOWNLOAD_FAIL("1001", "File Downlaod Fail"),
     FAIL_UPLOAD_FAIL("1002", "File Upload Fail"),
     USER_NOT_FOUND("1003", "User Not Found");
+
+    LOGIN_IN("2001", "please login");
 
     private String code;
 

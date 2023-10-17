@@ -1,6 +1,7 @@
 package com.dl.officialsite.common.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @ClassName BizException
@@ -9,6 +10,7 @@ import lombok.Data;
  * @Description 自定义异常
  **/
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class BizException extends RuntimeException{
 
     private String code;

@@ -37,7 +37,7 @@ spring:
       initialize-schema: always
       cleanup-cron: 0 */3 * * * *
     timeout:
-      seconds:  900
+      seconds: 7200
 
 logging:
   level:

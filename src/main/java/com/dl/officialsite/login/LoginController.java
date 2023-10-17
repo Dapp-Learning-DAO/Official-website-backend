@@ -2,6 +2,7 @@ package com.dl.officialsite.login;
 
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;
 import com.dl.officialsite.member.MemberRepository;
@@ -51,10 +52,13 @@ public class LoginController {
         }
 
         if(!checkNonce(sign.getMessage(), (String)session.getAttribute("nonce"))) {
+            logger.info( "session nonce: "+ (String)session.getAttribute("nonce"));
+
+
             return BaseResponse.failWithReason("10002", "nonce check failed");
         }
         if (checkSignature(sign)) {
-            session.setAttribute("member", sign.getAddress());
+            HttpSessionUtils.putMember(session, sign.getAddress());
            Optional<Member> member =  memberRepository.findByAddress(sign.getAddress());
             if(!member.isPresent()){
                 return BaseResponse.successWithData(null);
@@ -83,15 +87,16 @@ public class LoginController {
 
     private boolean checkNonce(String message, String nonce ) {
 
-        JSONObject obj = new JSONObject(message);
-        String nonceRecover = obj.getString("Nonce") ;
+        int index = message.indexOf("Nonce:");
+        String nonceRecover = message.substring(index+7, index+39);
+        logger.info( " nonce recover: "+  nonceRecover);
         return nonce.equals(nonceRecover);
     }
 
 
     @GetMapping("/logout")
     public BaseResponse logout(HttpSession session) {
-        session.removeAttribute("member");
+        session.removeAttribute(HttpSessionUtils.MEMBER_ATTRIBUTE_KEY);
         return  BaseResponse.successWithData(null);
     }
 }
