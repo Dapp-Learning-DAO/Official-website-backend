@@ -3,6 +3,11 @@ package com.dl.officialsite.member;
 
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.enums.CodeEnums;
+import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.ipfs.IPFSService;
+import java.io.IOException;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +20,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/member")
+@Data
 public class MemberController {
 
 
     @Autowired
     private MemberRepository memberRepository;
+
+
+    private final IPFSService ipfsService;
 
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
@@ -68,6 +78,28 @@ public class MemberController {
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //        }
 //    }
+    //update avatar
+    @PostMapping("/avatar/update")
+    public BaseResponse uploadAvatar(String address, @RequestParam("file") MultipartFile file) {
+        try {
+            String hash = ipfsService.upload(file.getBytes());
+            Optional<Member> memberData = memberRepository.findByAddress(address);
+            if (memberData.isPresent()) {
+                Member _member = memberData.get();
+                _member.setAvatar(hash);
+                memberRepository.save(_member);
+                return BaseResponse.successWithData(null);
+            } else {
+                return BaseResponse.failWithReason(CodeEnums.FAIL_UPLOAD_FAIL.getCode(),
+                    CodeEnums.FAIL_UPLOAD_FAIL.getMsg());
+            }
+        } catch (IOException e) {
+            logger.error("文件上传失败{}", file.getName());
+            throw new BizException(CodeEnums.FAIL_UPLOAD_FAIL.getCode(),
+                CodeEnums.FAIL_UPLOAD_FAIL.getMsg());
+        }
+    }
+
 
     @PutMapping("/{address}")
     public BaseResponse updateMemberByAddress(@PathVariable("address") String address, @RequestBody Member member) {
