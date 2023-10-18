@@ -113,6 +113,11 @@ public class MemberController {
             if(member.getNickName()!=null) {
                 _member.setNickName(member.getNickName());
             }
+            if(member.getTechStack()!= 0) {
+                _member.setTechStack(member.getTechStack());
+            }
+            if (member.getPrograming()!=null)
+                _member.setPrograming(member.getPrograming());
 
             return BaseResponse.successWithData(memberRepository.save(_member));
         } else {
