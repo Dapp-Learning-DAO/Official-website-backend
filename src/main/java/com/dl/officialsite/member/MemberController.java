@@ -128,6 +128,9 @@ public class MemberController {
             if (member.getInterests()!= null) {
                 _member.setInterests(member.getInterests());
             }
+            if (member.getResume()!= null) {
+                _member.setResume(member.getResume());
+            }
 
             return BaseResponse.successWithData(memberRepository.save(_member));
         } else {
