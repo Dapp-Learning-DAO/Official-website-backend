@@ -116,8 +116,18 @@ public class MemberController {
             if(member.getTechStack()!= 0) {
                 _member.setTechStack(member.getTechStack());
             }
-            if (member.getPrograming()!=null)
+            if (member.getPrograming()!=null) {
                 _member.setPrograming(member.getPrograming());
+            }
+            if (member.getEmail()!=null) {
+                _member.setEmail(member.getEmail());
+            }
+            if (member.getCity()!=null) {
+                _member.setCity(member.getCity());
+            }
+            if (member.getInterests()!= null) {
+                _member.setInterests(member.getInterests());
+            }
 
             return BaseResponse.successWithData(memberRepository.save(_member));
         } else {
