@@ -223,6 +223,22 @@
           "msg": null,
           "data": "byte"
       }
+      },
+      {
+        "url": "member/avatar/update?address=1"
+        "headers": {
+           "Content-Type": "multipart/form-data"
+         },
+         "method": "POST",
+          "body": {
+          "file": "file"
+           },
+           "response":
+             {
+               "code": "200",
+                "msg": "成功",
+                "data": null
+             }
       }
 
     , {
