@@ -1,6 +1,6 @@
 
   [
-    {"url": "http://81.69.8.95:8080/member/create",
+    {"url": "http://81.69.8.95:8080/member/create?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
        "method": "POST",
        "body": {
        "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
@@ -42,7 +42,7 @@
     },
 
     {
-      "url": "http://81.69.8.95:8080/member/all",
+      "url": "http://81.69.8.95:8080/member/all?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "GET",
       "response":
       {
@@ -93,7 +93,7 @@
 
     },
     {
-      "url": "http://81.69.8.95:8080/member/0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+      "url": "http://81.69.8.95:8080/member/query?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "GET",
       "response":
       {
@@ -122,7 +122,7 @@
 
     },
     {
-      "url": "http://81.69.8.95:8080/member/0x1F7b953113f4dFcBF56a1688529CC812865840e2",
+      "url": "http://81.69.8.95:8080/member/query??address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "GET",
       "response":
       {
@@ -135,7 +135,8 @@
 
 
     {
-      "url": "http://81.69.8.95:8080/member/0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+      "description" :  "update user information",
+      "url": "http://81.69.8.95:8080/updater??address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "PUT",
       "body": {
       "tweetId": "yanyanho",
@@ -169,9 +170,9 @@
 
 
     {
-      "url": "http://81.69.8.95:8080/login/nonce",
+      "description": "get login nonce by address",
+      "url": "http://81.69.8.95:8080/login/nonce?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "GET",
-
       "response":
       {
       "result": "977c4ca853d847d6892d629e485b641a"
@@ -179,10 +180,10 @@
 
     },
     {
-      "url": "http://81.69.8.95:8080/login/check",
+      "description": "check login signature by address",
+      "url": "http://81.69.8.95:8080/login/check?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "POST",
       "body": {
-
       "address":"0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "message": "hello",
       "v": "0x1c" ,
@@ -239,5 +240,29 @@
                 "data": null
              }
       }
+
+    , {
+    "url": "http://81.69.8.95:8080/login/logout?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
+    "method": "GET",
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": null
+
+    }
+  },
+    {
+      "description" :  "check session statue",
+      "url": "http://81.69.8.95:8080/login/check-session",
+      "method": "GET",
+      "response":
+      {
+        "code": "200",
+        "msg": "success",
+        "data": true
+
+      }
+    }
   ]
 

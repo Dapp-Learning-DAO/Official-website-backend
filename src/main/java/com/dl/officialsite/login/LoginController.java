@@ -15,12 +15,14 @@ import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.SignatureException;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.dl.officialsite.common.utils.HttpSessionUtils.MEMBER_ATTRIBUTE_KEY;
 import static org.web3j.crypto.Sign.getEthereumMessageHash;
 import static org.web3j.utils.Numeric.hexStringToByteArray;
 
@@ -34,31 +36,30 @@ public class LoginController {
 
 
     @GetMapping("/nonce")
-    public String getNonce( HttpSession session) {
-        logger.info(session.getAttributeNames().toString());
+    public String getNonce( @RequestParam String address, HttpSession session) {
         logger.info(session.getId());
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString().replaceAll("-", "");
-        session.setAttribute("nonce", uuidAsString);
+        session.setAttribute(address+"nonce", uuidAsString);
         return uuidAsString;
     }
 
 
     @PostMapping("/check")
-    public BaseResponse login(@RequestBody SignInfo sign, HttpSession session) throws SignatureException {
+    public BaseResponse login(@RequestBody SignInfo sign, @RequestParam String address, HttpSession session) throws SignatureException {
 
-        if(session.getAttribute("nonce")==null) {
+        if(session.getAttribute(address+"nonce") == null) {
             return BaseResponse.failWithReason("1003", "get nonce first");
         }
 
-        if(!checkNonce(sign.getMessage(), (String)session.getAttribute("nonce"))) {
-            logger.info( "session nonce: "+ (String)session.getAttribute("nonce"));
+        if(!checkNonce(sign.getMessage(), (String)session.getAttribute(address+"nonce"))) {
+            logger.info( "session nonce: "+ session.getAttribute(address + "nonce"));
 
 
             return BaseResponse.failWithReason("10002", "nonce check failed");
         }
         if (checkSignature(sign)) {
-            HttpSessionUtils.putMember(session, sign.getAddress());
+            HttpSessionUtils.putMemberWithAddress(session, sign.getAddress());
            Optional<Member> member =  memberRepository.findByAddress(sign.getAddress());
             if(!member.isPresent()){
                 return BaseResponse.successWithData(null);
@@ -95,8 +96,18 @@ public class LoginController {
 
 
     @GetMapping("/logout")
-    public BaseResponse logout(HttpSession session) {
-        session.removeAttribute(HttpSessionUtils.MEMBER_ATTRIBUTE_KEY);
+    public BaseResponse logout(@RequestParam String address, HttpSession session) {
+        session.removeAttribute(MEMBER_ATTRIBUTE_KEY+address);
         return  BaseResponse.successWithData(null);
+    }
+
+    @GetMapping("/check-session")
+    public BaseResponse checkSessionStatue( HttpServletRequest request) {
+
+        if (request.isRequestedSessionIdValid()) {
+
+            return BaseResponse.successWithData(true) ;
+        }
+        return  BaseResponse.successWithData(false);
     }
 }

@@ -35,8 +35,8 @@ public class MemberController {
 
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
-    @RequestMapping(value = "/{address}", method = RequestMethod.GET)
-    BaseResponse getMemberByAddress(@PathVariable String address)   {
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    BaseResponse getMemberByAddress(@RequestParam String address)   {
 
         Optional<Member> member =  memberRepository.findByAddress(address);
         if(!member.isPresent()){
@@ -47,14 +47,14 @@ public class MemberController {
 
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    Page<Member> getAllMember( @RequestParam(defaultValue = "1") Integer pageNumber,
+    Page<Member> getAllMember(@RequestParam String address,  @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize)   {
         Pageable pageable =  PageRequest.of(pageNumber - 1, pageSize, Sort.by("timestamp"));
         return memberRepository.findAll(pageable);
     }
 
     @PostMapping("/create")
-    public BaseResponse createMember(@RequestBody Member member) {
+    public BaseResponse createMember(@RequestBody Member member, @RequestParam String address) {
         try {
             Member _member = memberRepository
                 .save(member);
@@ -65,7 +65,7 @@ public class MemberController {
     }
 
     @PostMapping("/avatar/update")
-    public BaseResponse uploadAvatar(String address, @RequestParam("file") MultipartFile file) {
+    public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
         try {
             String hash = ipfsService.upload(file.getBytes());
             Optional<Member> memberData = memberRepository.findByAddress(address);
@@ -95,8 +95,8 @@ public class MemberController {
 //        }
 //    }
 
-    @PutMapping("/{address}")
-    public BaseResponse updateMemberByAddress(@PathVariable("address") String address, @RequestBody Member member) {
+    @PutMapping("/update")
+    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody Member member) {
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
         if (memberData.isPresent()) {
@@ -113,6 +113,11 @@ public class MemberController {
             if(member.getNickName()!=null) {
                 _member.setNickName(member.getNickName());
             }
+            if(member.getTechStack()!= 0) {
+                _member.setTechStack(member.getTechStack());
+            }
+            if (member.getPrograming()!=null)
+                _member.setPrograming(member.getPrograming());
 
             return BaseResponse.successWithData(memberRepository.save(_member));
         } else {
