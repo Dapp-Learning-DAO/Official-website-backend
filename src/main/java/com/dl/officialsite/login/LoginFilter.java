@@ -7,6 +7,7 @@ import com.dl.officialsite.member.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.dl.officialsite.common.enums.CodeEnums.LOGIN_IN;
 
@@ -24,14 +27,16 @@ public class LoginFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if ("/login/nonce".equals(request.getRequestURI()) || "/login/check".equals(request.getRequestURI())
-         || "oauth2/authorization/github".equals(request.getRequestURI())) {
+         || "/oauth2/authorization/github".equals(request.getRequestURI()) || "login/check-session".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        String addressInHeader =   request.getParameter("address");
+        String address = (String) request.getSession().getAttribute("member"+ addressInHeader);
+        logger.info("***filter***"+addressInHeader);
 
-        String address = (String) request.getSession().getAttribute("member");
-        if (address != null) {
+         if (address != null && address.equals(addressInHeader) ) {
             filterChain.doFilter(request, response);
             return;
         }
