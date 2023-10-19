@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static com.dl.officialsite.common.enums.CodeEnums.LOGIN_IN;
 
-//@Component
+@Component
 public class LoginFilter extends OncePerRequestFilter {
 
     @Override
