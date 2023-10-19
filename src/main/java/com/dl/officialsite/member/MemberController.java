@@ -13,13 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
-import org.web3j.protocol.ipc.IpcService;
+
 
 @RestController
 @RequestMapping("/member")
@@ -116,8 +114,21 @@ public class MemberController {
             if(member.getTechStack()!= 0) {
                 _member.setTechStack(member.getTechStack());
             }
-            if (member.getPrograming()!=null)
+            if (member.getPrograming()!=null) {
                 _member.setPrograming(member.getPrograming());
+            }
+            if (member.getEmail()!=null) {
+                _member.setEmail(member.getEmail());
+            }
+            if (member.getCity()!=null) {
+                _member.setCity(member.getCity());
+            }
+            if (member.getInterests()!= null) {
+                _member.setInterests(member.getInterests());
+            }
+            if (member.getResume()!= null) {
+                _member.setResume(member.getResume());
+            }
 
             return BaseResponse.successWithData(memberRepository.save(_member));
         } else {

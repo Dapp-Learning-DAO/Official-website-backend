@@ -136,7 +136,7 @@
 
     {
       "description" :  "update user information",
-      "url": "http://81.69.8.95:8080/updater??address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
+      "url": "http://81.69.8.95:8080/member/update??address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
       "method": "PUT",
       "body": {
       "tweetId": "yanyanho",
@@ -213,7 +213,7 @@
           "msg": null,
           "data": "Qmeh4Dn4mBJpda2qAhM7P5scPtNubrdbtFhqvsKapXwzAa"
       }
-      },
+    },
     {
       "url": "/file/download?fileHahs=Qmeh4Dn4mBJpda2qAhM7P5scPtNubrdbtFhqvsKapXwzAa",
       "method": "GET",
@@ -225,7 +225,8 @@
       }
       },
       {
-        "url": "member/avatar/update?address=1"
+        "url": "member/avatar/update?address=1",
+
         "headers": {
            "Content-Type": "multipart/form-data"
          },
