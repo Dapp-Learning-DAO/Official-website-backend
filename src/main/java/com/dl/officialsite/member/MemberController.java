@@ -5,7 +5,7 @@ package com.dl.officialsite.member;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.ipfs.IPFSService;
-import lombok.Data;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,18 +61,19 @@ public class MemberController {
 
     @RequestMapping(value = "/all/query", method = RequestMethod.GET)
     Page<Member> getAllMemberByCriteria(@RequestParam String address,
-                               Member member,
-                              @RequestParam(defaultValue = "1") Integer pageNumber,
-                              @RequestParam(defaultValue = "10") Integer pageSize)   {
+                                        @RequestBody   Member member,
+                                        @RequestParam(defaultValue = "1") Integer pageNumber,
+                                        @RequestParam(defaultValue = "10") Integer pageSize) throws JsonProcessingException {
 
         Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
-
+       logger.info("member:"+ member);
         Specification<Member> queryParam = new Specification<Member>() {
             @Override
             public Predicate toPredicate(Root<Member> root, CriteriaQuery<?> criteriaQuery,
                                          CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (member.getAddress() != null) {
+                    logger.info(member.getAddress());
                     predicates.add(criteriaBuilder.like(root.get("address"),  "%"+member.getAddress()+"%") );
                 }
                 if (member.getNickName() != null) {
@@ -103,6 +103,7 @@ public class MemberController {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
+
         return memberRepository.findAll(queryParam,  pageable);
     }
 
