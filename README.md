@@ -48,4 +48,5 @@ type Message struct {
 ## 参考链接
 - Cors: https://cloud.tencent.com/developer/article/1924258
 - upload pic: https://juejin.cn/post/6844903630416379918  
-- 
+-  JPA query: https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl
+-  JPA :  https://www.baeldung.com/hibernate-criteria-queries

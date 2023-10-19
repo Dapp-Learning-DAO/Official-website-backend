@@ -13,8 +13,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,8 +56,54 @@ public class MemberController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     Page<Member> getAllMember(@RequestParam String address,  @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize)   {
-        Pageable pageable =  PageRequest.of(pageNumber - 1, pageSize, Sort.by("timestamp"));
+        Pageable pageable =  PageRequest.of(pageNumber - 1, pageSize, Sort.by("createTime"));
         return memberRepository.findAll(pageable);
+    }
+
+    @RequestMapping(value = "/all/query", method = RequestMethod.GET)
+    Page<Member> getAllMemberByCriteria(@RequestParam String address,
+                               Member member,
+                              @RequestParam(defaultValue = "1") Integer pageNumber,
+                              @RequestParam(defaultValue = "10") Integer pageSize)   {
+
+        Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
+
+        Specification<Member> queryParam = new Specification<Member>() {
+            @Override
+            public Predicate toPredicate(Root<Member> root, CriteriaQuery<?> criteriaQuery,
+                                         CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (member.getAddress() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("address"),  "%"+member.getAddress()+"%") );
+                }
+                if (member.getNickName() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("nickName"),  "%"+ member.getNickName() +"%") );
+                }
+                if (member.getGithubId() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("githubId"),  member.getGithubId()));
+                }
+                if (member.getTweetId() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("tweetId"),  member.getTweetId()));
+                }
+                if (member.getWechatId() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("wechatId"),  member.getWechatId()));
+                }
+                if (member.getTechStack() != 0) {
+                    predicates.add(criteriaBuilder.equal(root.get("techStack"),  member.getTechStack()));
+                }
+                if (member.getPrograming() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("programing"),  "%"+member.getPrograming()+"%"));
+                }
+                if( member.getCreateTime()!= null ) {
+                    predicates.add(criteriaBuilder.ge(root.get("createTime"), member.getCreateTime()));
+                }
+                if (member.getCity() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("city"),  "%"+member.getCity()+"%"));
+                }
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        return memberRepository.findAll(queryParam,  pageable);
     }
 
     @PostMapping("/create")
