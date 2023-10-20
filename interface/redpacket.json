@@ -55,5 +55,34 @@
         "createTime": 1697768163524
       }
     }
+  },
+
+  {
+    "description": "query the redpacket by criteria",
+    "url": "http://81.69.8.95:8080/red-packet/query?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
+    "method": "GET",
+    "body": {
+    "creator":"0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+
+    "expireTime": "160094034"
+
+
+    },
+    "response": {
+      "code": "200",
+      "msg": "成功",
+      "data": {
+        "name": "first one",
+        "id": "0x9f59801c77328d57154d5905f1286c177cdb9cee3a67b92e14157266549b1024",
+        "address": [
+          "0x7c9363f704f053e9bc709b50a1bbc6e83884bb61",
+          "0x431b4ca18e269fc7e1f5af49b9f4e2af683f6207",
+          "0x7ca8da1d7a75e8f59b3caa178b41447dbe8a4863",
+          "0xc14857a25c2b7b49480cc7ffc16cdd9a77c57de2",
+          "0x08a0d6ade44430a2ac25d5f0393e5630af4c77f9"
+        ],
+        "createTime": 1697768163524
+      }
+    }
   }
 ]
