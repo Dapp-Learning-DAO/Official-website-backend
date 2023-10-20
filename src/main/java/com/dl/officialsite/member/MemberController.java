@@ -53,14 +53,14 @@ public class MemberController {
 
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    Page<Member> getAllMember(@RequestParam String address,  @RequestParam(defaultValue = "1") Integer pageNumber,
+    BaseResponse getAllMember(@RequestParam String address,  @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize)   {
         Pageable pageable =  PageRequest.of(pageNumber - 1, pageSize, Sort.by("createTime"));
-        return memberRepository.findAll(pageable);
+        return BaseResponse.successWithData(memberRepository.findAll(pageable));
     }
 
     @RequestMapping(value = "/all/query", method = RequestMethod.GET)
-    Page<Member> getAllMemberByCriteria(@RequestParam String address,
+    BaseResponse getAllMemberByCriteria(@RequestParam String address,
                                         @RequestBody   Member member,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize) throws JsonProcessingException {
@@ -104,7 +104,7 @@ public class MemberController {
             }
         };
 
-        return memberRepository.findAll(queryParam,  pageable);
+        return BaseResponse.successWithData(memberRepository.findAll(queryParam,  pageable));
     }
 
     @PostMapping("/create")

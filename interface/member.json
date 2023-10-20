@@ -264,6 +264,75 @@
         "data": true
 
       }
+    },
+    {
+      "url": "http://localhost:8080/member/all/query?address=0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+      "method": "GET",
+      "body": {
+
+      "address":"0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+
+      "city": "SZ"
+
+      },
+      "response":
+      {
+    {
+      "code": "200",
+      "msg": "成功",
+      "data": {
+        "content": [
+          {
+            "id": 1,
+            "address": "0x1F7b953113f4dFcBF56a1688529CC812865840e1",
+            "email": null,
+            "nickName": "yanyanho",
+            "role": 1,
+            "githubId": "yanyanho",
+            "tweetId": null,
+            "wechatId": "",
+            "avatar": null,
+            "techStack": 0,
+            "programing": "java,solidity,rust",
+            "interests": "hiking",
+            "city": "SZ",
+            "shareCount": 0,
+            "rewardCount": 0,
+            "createTime": 1697708314653,
+            "updateTime": 1697708314653,
+            "workStatus": null,
+            "resume": null
+          }
+        ],
+        "pageable": {
+          "sort": {
+            "unsorted": true,
+            "sorted": false,
+            "empty": true
+          },
+          "pageNumber": 0,
+          "pageSize": 10,
+          "offset": 0,
+          "unpaged": false,
+          "paged": true
+        },
+        "totalPages": 1,
+        "totalElements": 1,
+        "last": true,
+        "numberOfElements": 1,
+        "first": true,
+        "sort": {
+          "unsorted": true,
+          "sorted": false,
+          "empty": true
+        },
+        "size": 10,
+        "number": 0,
+        "empty": false
+      }
+    },
+
+      }
     }
   ]
 
