@@ -41,13 +41,13 @@ type Message struct {
 
 ## TODO
 1. 头像 简历
-2. 红包改造
+2. 红包改造，奖励认领自动化。
 3. team system. 支持member加入team。 
-4. 
-4. merkel stoage
+4.
 
 ## 参考链接
 - Cors: https://cloud.tencent.com/developer/article/1924258
 - upload pic: https://juejin.cn/post/6844903630416379918  
 - JPA query: https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl
 -  JPA :  https://www.baeldung.com/hibernate-criteria-queries
+- session filter:  https://blog.csdn.net/dothetrick/article/details/110356640

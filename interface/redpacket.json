@@ -2,7 +2,7 @@
 
 {
   "description": "create the redpacket",
-  "url": "http://81.69.8.95:8080/red-packet/create??address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
+  "url": "http://81.69.8.95:8080/red-packet/create?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
   "method": "POST",
   "body": {
 

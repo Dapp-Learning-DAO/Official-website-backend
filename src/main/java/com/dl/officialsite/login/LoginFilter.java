@@ -43,13 +43,8 @@ public class LoginFilter extends OncePerRequestFilter {
 
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-
-        BaseResponse baseResponse = BaseResponse.failWithReason("2001", "please login in");
-
         ObjectMapper objectMapper =  new  ObjectMapper();
-
-        String s =  objectMapper.writeValueAsString( baseResponse );
-        out.write(s);
+        out.write( objectMapper.writeValueAsString(   BaseResponse.failWithReason("2001", "please login in")));
         out.flush();
         out.close();
     }

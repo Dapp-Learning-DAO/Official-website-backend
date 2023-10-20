@@ -18,4 +18,7 @@ public class Team {
     private List<Member> memberList;
     private String administrator;
     private String nickName;
+
+    // dao admin , core contributor,  builder
+    private String authority;
 }

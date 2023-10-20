@@ -37,4 +37,5 @@ public class RedPacket {
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;
+    //contractAddress???
 }
