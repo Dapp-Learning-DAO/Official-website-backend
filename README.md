@@ -42,7 +42,8 @@ type Message struct {
 ## TODO
 1. 头像 简历
 2. 红包改造
-3. team system.
+3. team system. 支持member加入team。 
+4. 
 4. merkel stoage
 
 ## 参考链接
