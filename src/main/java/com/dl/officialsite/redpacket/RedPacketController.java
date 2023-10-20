@@ -29,7 +29,7 @@ public class RedPacketController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    BaseResponse getMemberById(@RequestParam String id)   {
+    BaseResponse getMemberById(@RequestParam String id, @RequestParam String address)   {
 
         Optional<RedPacket> redPacket =  redPacketRepository.findById(id);
         if(!redPacket.isPresent()){
