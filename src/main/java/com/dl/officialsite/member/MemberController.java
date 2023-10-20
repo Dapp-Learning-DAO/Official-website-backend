@@ -63,7 +63,7 @@ public class MemberController {
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
                                         @RequestBody   Member member,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
-                                        @RequestParam(defaultValue = "10") Integer pageSize) throws JsonProcessingException {
+                                        @RequestParam(defaultValue = "10") Integer pageSize)   {
 
         Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
        logger.info("member:"+ member);
