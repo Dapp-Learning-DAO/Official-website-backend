@@ -1,10 +1,13 @@
 package com.dl.officialsite.File;
 
+import cn.hutool.core.io.IoUtil;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.ipfs.IPFSService;
 import java.io.IOException;
+import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
@@ -48,12 +51,18 @@ public class FileController {
      * 文件下载
      */
     @GetMapping("/download")
-    public BaseResponse download(String fileHahs) {
-        byte[] download = ipfsService.download(fileHahs);
-        if (ObjectUtils.isEmpty(download)) {
-            return BaseResponse.failWithReason(CodeEnums.FAIL_DOWNLOAD_FAIL.getCode(),
+    public void download(String fileHahs, HttpServletResponse response)
+        throws IOException {
+        InputStream inputStream = null;
+        try {
+            inputStream = ipfsService.downloadStream(fileHahs);
+        } catch (IOException e) {
+            log.error("文件下载失败{}", fileHahs);
+            throw new BizException(CodeEnums.FAIL_DOWNLOAD_FAIL.getCode(),
                 CodeEnums.FAIL_DOWNLOAD_FAIL.getMsg());
         }
-        return BaseResponse.successWithData(download);
+        response.setContentType("application/octet-stream");
+        IoUtil.copy(inputStream, response.getOutputStream());
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileHahs + ".jpg");
     }
 }
