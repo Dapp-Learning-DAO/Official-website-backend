@@ -36,7 +36,8 @@ public class FileController {
      * 文件上传
      */
     @PostMapping("/upload")
-    public BaseResponse upload(@RequestParam("file") MultipartFile file) {
+    public BaseResponse upload(@RequestParam("file") MultipartFile file,
+        @RequestParam String address) {
         try {
             String hash = ipfsService.upload(file.getBytes());
             return BaseResponse.successWithData(hash);
@@ -51,7 +52,8 @@ public class FileController {
      * 文件下载
      */
     @GetMapping("/download")
-    public void download(String fileHahs, HttpServletResponse response)
+    public void download(@RequestParam String fileHahs,
+        @RequestParam String address, HttpServletResponse response)
         throws IOException {
         InputStream inputStream = null;
         try {
