@@ -92,8 +92,8 @@ public class MemberController {
                 if (member.getWechatId() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("wechatId"), member.getWechatId()));
                 }
-                if (member.getTechStack() != 0) {
-                    predicates.add(criteriaBuilder.equal(root.get("techStack"), member.getTechStack()));
+                if (member.getTechStack() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("techStack"), member.getTechStack()));
                 }
                 if (member.getPrograming() != null) {
                     predicates.add(criteriaBuilder.like(root.get("programing"), "%" + member.getPrograming() + "%"));
@@ -121,7 +121,7 @@ public class MemberController {
             String mostSpecificCauseMessage = e.getMostSpecificCause().getMessage();
             if (e.getCause() instanceof ConstraintViolationException) {
                 String name = ((ConstraintViolationException) e.getCause()).getConstraintName();
-                logger.info("Encountered ConstraintViolationException, details: " + mostSpecificCauseMessage);
+                logger.info("Encountered ConstraintViolationException, details: " + mostSpecificCauseMessage + "constraintName: "+ name);
             }
             return BaseResponse.failWithReason("1000", mostSpecificCauseMessage);
         } catch (Exception e) {
@@ -195,6 +195,9 @@ public class MemberController {
             }
             if (member.getInterests()!= null) {
                 _member.setInterests(member.getInterests());
+            }
+            if (member.getAvatar()!= null) {
+                _member.setAvatar(member.getAvatar());
             }
             if (member.getResume()!= null) {
                 _member.setResume(member.getResume());
