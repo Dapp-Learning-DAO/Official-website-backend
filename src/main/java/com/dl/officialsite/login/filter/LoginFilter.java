@@ -10,7 +10,6 @@ import com.dl.officialsite.login.model.UserPrincipleData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,52 +18,57 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @Order(Integer.MIN_VALUE)
 public class LoginFilter extends OncePerRequestFilter {
 
+    private Set<String> noLoginApis = new HashSet(){{
+        add("/login/nonce");
+        add("/login/check");
+        add("/login/check-session");
+    }} ;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if ("/login/nonce".equals(request.getRequestURI()) || "/login/check".equals(request.getRequestURI())
-         ||"login/check-session".equals(request.getRequestURI())) {
-
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-//        String addressInHeader =   request.getParameter("address");
-//        String address = (String) request.getSession().getAttribute("member"+ addressInHeader);
-
-//        logger.info("***filter***"+addressInHeader);
-        //Judge whether login
-            SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
-            if (sessionUserInfo == null || !StringUtils.hasText(sessionUserInfo.getAddress())){
-                response.setContentType("application/json;charset=utf-8");
-                PrintWriter out = response.getWriter();
-                ObjectMapper objectMapper =  new  ObjectMapper();
-                out.write( objectMapper.writeValueAsString(   BaseResponse.failWithReason("2001", "please login in")));
-                out.flush();
-                out.close();
+        try{
+            if (noLoginApis.contains(request.getRequestURI())) {
+                UserPrincipleData userPrincipleData = new UserPrincipleData();
+                userPrincipleData.setUserRole(UserRoleEnum.ANONYMOUS);
+                filterChain.doFilter(request, response);
                 return;
             }
 
+            //Must login
+            if(!HttpSessionUtils.isUserLogin(request.getSession())){
+                dumpError(response);
+                return;
+            }
 
             //Since logon, put a temporary user data
-        UserPrincipleData userPrinciple = new UserPrincipleData();
-        userPrinciple.setAddress(sessionUserInfo.getAddress());
-        userPrinciple.setUserRole(UserRoleEnum.NORMAL);
-        UserSecurityUtils.setPrincipleLogin(userPrinciple);
-        try{
+            SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
+            UserPrincipleData userPrinciple = new UserPrincipleData();
+            userPrinciple.setAddress(sessionUserInfo.getAddress());
+            userPrinciple.setUserRole(UserRoleEnum.NORMAL);//Can also load this from database
+            UserSecurityUtils.setPrincipleLogin(userPrinciple);
+
+            //Execute next(auth filter)
             filterChain.doFilter(request, response);
         }
         finally {
-            try{
-                UserSecurityUtils.removeLoginStatus();
-            }catch (Exception ex){
-
-            }
+            UserSecurityUtils.clearPipelineCache();
         }
+    }
+
+    private void dumpError(HttpServletResponse response) throws IOException{
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        ObjectMapper objectMapper =  new  ObjectMapper();
+        out.write( objectMapper.writeValueAsString(   BaseResponse.failWithReason("2001", "please login in")));
+        out.flush();
+        out.close();
     }
 }

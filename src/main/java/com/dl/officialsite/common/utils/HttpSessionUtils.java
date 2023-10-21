@@ -22,7 +22,13 @@ public abstract class HttpSessionUtils {
         session.setAttribute(MEMBER_ATTRIBUTE_KEY, userInfo);
     }
 
-
+    public static boolean isUserLogin(HttpSession session){
+        SessionUserInfo userInfo = getMember(session);
+        if (userInfo == null || !StringUtils.hasText(userInfo.getAddress())){
+            return false;
+        }
+        return true;
+    }
 
     public static SessionUserInfo getMember(HttpSession session){
         Object sessionObj = session.getAttribute(MEMBER_ATTRIBUTE_KEY);
@@ -34,7 +40,7 @@ public abstract class HttpSessionUtils {
 
     public static void requireLogin(HttpSession session) {
         SessionUserInfo sessionUserInfo = getMember(session);
-        if (sessionUserInfo == null) {
+        if (!isUserLogin(session)) {
             throw new IllegalArgumentException("User not login");
         }
     }

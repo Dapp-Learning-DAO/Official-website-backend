@@ -1,6 +1,5 @@
 package com.dl.officialsite.common.utils;
 
-import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.login.model.UserPrincipleData;
 
 public class UserSecurityUtils {
@@ -22,7 +21,7 @@ public class UserSecurityUtils {
         return userInfoThreadLocal.get() != null;
     }
 
-    public static void removeLoginStatus(){
+    public static void clearPipelineCache(){
         userInfoThreadLocal.remove();
     }
 }
