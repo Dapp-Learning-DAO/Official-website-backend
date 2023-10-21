@@ -23,14 +23,6 @@ public abstract class HttpSessionUtils {
     }
 
 
-    public static  String getMemberWithAddress(HttpSession session, String address) {
-        Object sessionObj = session.getAttribute(MEMBER_ATTRIBUTE_KEY+address);
-        if(sessionObj == null){
-            throw new IllegalArgumentException("User not login");
-        }
-        return sessionObj.toString();
-    }
-
 
     public static SessionUserInfo getMember(HttpSession session){
         Object sessionObj = session.getAttribute(MEMBER_ATTRIBUTE_KEY);

@@ -3,6 +3,7 @@ package com.dl.officialsite.oauth2.controller;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
+import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.handler.bind.IOAuthBindHandler;
@@ -175,7 +176,7 @@ public class OAuthProcessController {
          */
         IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
         Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
-        bindHandler.bind(HttpSessionUtils.getMember(httpSession), userInfo);
+        bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
 
         response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
         return BaseResponse.successWithData(userInfo.getUsername());
@@ -195,7 +196,7 @@ public class OAuthProcessController {
         if (registration == null){
             throw new RuntimeException("Invalid registration id :"+registrationId);
         }
-        String address = HttpSessionUtils.getMember(httpSession);
+        String address = UserSecurityUtils.getUserLogin().getAddress();
         /**
          * 2. Fetch oauth username
          */

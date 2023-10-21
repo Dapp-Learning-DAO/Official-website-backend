@@ -34,6 +34,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     }} ;
     private Set<String> normalApis = new HashSet(){{
         add("/file/upload");
+        add("/oauth2/authorization/github");
+        add("/oauth2/bind/code/github");
+        add("/oauth2/username/github");
     }} ;
 
     @Override
