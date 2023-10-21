@@ -43,13 +43,15 @@ public class Member  implements Serializable
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
     @Column(unique=true,length = 20)
     private String githubId;
-    @Column(unique=true,length = 20)
+    @Column(length = 20)
     private String tweetId;
-    @Column(unique=true,length = 20)
+    @Column(length = 20)
+    private String teletgramId;
+    @Column(length = 20)
     private String wechatId;
     private String avatar;
-    private int techStack;  //前端 ， 后端 ， 全栈， 运维， 测试, 密码学， 区块链底层，金融，数学
-
+    //todo
+    private String techStack;  //前端 ， 后端 ， 全栈， 运维， 测试, 密码学， 区块链底层，金融，数学
     private String programing; //
     // optional
     private String interests; //兴趣
@@ -66,9 +68,6 @@ public class Member  implements Serializable
     //todo
     private Long workStatus;
     private String resume;
-
-
-
 
 
 }

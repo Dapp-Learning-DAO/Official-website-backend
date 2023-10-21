@@ -37,4 +37,8 @@ public class RedPacket {
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;
+    @NotNull
+    private String chainId;
+    private  int statue;
+    //contractAddress???
 }
