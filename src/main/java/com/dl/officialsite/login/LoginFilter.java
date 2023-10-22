@@ -27,15 +27,15 @@ public class LoginFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if ("/login/nonce".equals(request.getRequestURI()) || "/login/check".equals(request.getRequestURI())
-         || "/oauth2/authorization/github".equals(request.getRequestURI()) || "login/check-session".equals(request.getRequestURI())) {
+         || "/oauth2/authorization/github".equals(request.getRequestURI()) || "login/check-address-status".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
         // (member+address, address)
         String addressInHeader =   request.getParameter("address");
+        logger.info("***filter request address***"+addressInHeader);
         String address = (String) request.getSession().getAttribute("member"+ addressInHeader);
-        logger.info("***filter***"+addressInHeader);
-
+        logger.info("***session address***"+addressInHeader);
          if (address != null && address.equals(addressInHeader) ) {
             filterChain.doFilter(request, response);
             return;

@@ -102,7 +102,7 @@ public class LoginController {
     }
 
     @GetMapping("/check-session")
-    public BaseResponse checkSessionStatue( HttpServletRequest request) {
+    public BaseResponse checkSessionStatus( HttpServletRequest request) {
 
         if (request.isRequestedSessionIdValid()) {
 
@@ -111,6 +111,16 @@ public class LoginController {
         return  BaseResponse.successWithData(false);
     }
 
-  //todo
-  //  @GetMapping("check-address-status")
+  //
+    @GetMapping("check-address-status")
+    public BaseResponse checkAddressStatus( @RequestParam String address, HttpServletRequest request) {
+
+        if (request.isRequestedSessionIdValid()) {
+            String addressLogin = (String) request.getSession().getAttribute("member" + address);
+            if (addressLogin != null && addressLogin.equals(address)) {
+                return BaseResponse.successWithData(true);
+            }
+        }
+        return  BaseResponse.successWithData(false);
+    }
 }
