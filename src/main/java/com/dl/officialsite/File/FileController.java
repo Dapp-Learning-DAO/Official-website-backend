@@ -52,19 +52,19 @@ public class FileController {
      * 文件下载
      */
     @GetMapping("/download")
-    public void download(@RequestParam String fileHahs,
+    public void download(@RequestParam String fileHash,
         @RequestParam String address, HttpServletResponse response)
         throws IOException {
         InputStream inputStream = null;
         try {
-            inputStream = ipfsService.downloadStream(fileHahs);
+            inputStream = ipfsService.downloadStream(fileHash);
         } catch (IOException e) {
-            log.error("文件下载失败{}", fileHahs);
+            log.error("文件下载失败{}", fileHash);
             throw new BizException(CodeEnums.FAIL_DOWNLOAD_FAIL.getCode(),
                 CodeEnums.FAIL_DOWNLOAD_FAIL.getMsg());
         }
         response.setContentType("application/octet-stream");
         IoUtil.copy(inputStream, response.getOutputStream());
-        response.setHeader("Content-Disposition", "attachment; filename=" + fileHahs + ".jpg");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileHash + ".jpg");
     }
 }

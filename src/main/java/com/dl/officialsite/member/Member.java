@@ -1,6 +1,7 @@
 package com.dl.officialsite.member;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +51,7 @@ public class Member  implements Serializable
     @Column(length = 20)
     private String wechatId;
     private String avatar;
-    //todo
+
     private String techStack;  //前端 ， 后端 ， 全栈， 运维， 测试, 密码学， 区块链底层，金融，数学
     private String programing; //
     // optional
@@ -67,6 +68,7 @@ public class Member  implements Serializable
 
     //todo
     private Long workStatus;
+    @JsonIgnore
     private String resume;
 
 
