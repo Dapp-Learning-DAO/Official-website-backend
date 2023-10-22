@@ -31,7 +31,7 @@ public class LoginFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+        // (member+address, address)
         String addressInHeader =   request.getParameter("address");
         String address = (String) request.getSession().getAttribute("member"+ addressInHeader);
         logger.info("***filter***"+addressInHeader);
