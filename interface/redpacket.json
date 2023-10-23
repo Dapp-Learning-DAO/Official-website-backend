@@ -59,7 +59,7 @@
 
   {
     "description": "query the redpacket by criteria",
-    "url": "http://81.69.8.95:8080/red-packet/query?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
+    "url": "http://81.69.8.95:8080/red-packet/all/query?address=0x2fE023204958fc4c44f639CE72D3bdC0f025Adfe",
     "method": "GET",
     "body": {
     "creator":"0x1F7b953113f4dFcBF56a1688529CC812865840e1",
