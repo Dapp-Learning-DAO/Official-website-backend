@@ -2,7 +2,6 @@ package com.dl.officialsite.login;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
