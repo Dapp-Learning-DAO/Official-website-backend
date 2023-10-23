@@ -26,7 +26,7 @@ public class TeamController {
     //3 query by name like 完成
     //4 member apply to   join   team and  exit team 完成
     //4.1 join need wechat or telegram info. and  send an email to team admin; 完成
-    //4.2 exit  team , send an email to team admin;
+    //4.2 exit  team , send an email to team admin; 完成
     // 5 team admin approve 完成
 
     @Autowired

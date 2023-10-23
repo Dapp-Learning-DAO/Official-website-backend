@@ -3,6 +3,7 @@ package com.dl.officialsite.team;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.redpacket.RedPacket;
@@ -43,6 +44,9 @@ public class TeamService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public void add(TeamVO teamVO) {
@@ -100,7 +104,7 @@ public class TeamService {
             TeamMember teamMember2 = optional.get();
             teamMember2.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember2);
-        }else {
+        } else {
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
             teamMember1.setStatus(Constants.REQUEST_TEAM);
@@ -122,13 +126,31 @@ public class TeamService {
             }
         });
         teamMemberRepository.saveAll(teamMembers);
+        //发送邮件
+        Team team = teamRepository.findById(teamMemberApproveVO.getTeamId()).get();
+        String subject = team.getTeamName() + "团队新成员加入申请";
+        List<String> mailAddress = new ArrayList<>();
+        //todo 这里需要确认有那些管理员
+        if (mailAddress.size() != 0) {
+            emailService.memberExitTeam(mailAddress, subject, subject);
+        }
     }
+
+
 
     public void exit(TeamMemberJoinVO teamMember) {
         TeamMember teamMember1 = new TeamMember();
         BeanUtils.copyProperties(teamMember, teamMember1);
         teamMember1.setStatus(Constants.EXIT_TEAM);
         teamMemberRepository.save(teamMember1);
+        Team team = teamRepository.findById(teamMember.getTeamId()).get();
+        Member member = memberRepository.findById(teamMember.getMemberId()).get();
+        String subject = team.getTeamName() + "团队成员退出";
+        String text = member.getNickName() + "成员退出";
+        List<String> mailAddress = new ArrayList<>();
+        if (mailAddress.size() != 0) {
+            emailService.memberExitTeam(mailAddress, subject, text);
+        }
     }
 
     public List<Member> getNeedApproveMembers(Long teamId) {
