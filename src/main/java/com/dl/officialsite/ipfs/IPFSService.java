@@ -4,6 +4,7 @@ import io.ipfs.api.IPFS;
 import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
 import io.ipfs.multihash.Multihash;
+import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +40,11 @@ public class IPFSService {
             e.printStackTrace();
         }
         return data;
+    }
+
+    public InputStream downloadStream(String hash) throws IOException {
+        InputStream inputStream = ipfs.catStream(Multihash.fromBase58(hash));
+        return inputStream;
     }
 
     public  void download(String hash, String destFile) {

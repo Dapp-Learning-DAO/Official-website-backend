@@ -1,0 +1,195 @@
+#直观的文档链接可以看这里
+https://www.postman.com/lively-station-290552/workspace/publicworkspace/documentation/13180077-af411142-dfd4-4e33-bfb5-ec26ff095072
+{
+	"name": "添加Team",
+	"request": {
+		"method": "PUT",
+		"header": [],
+		"body": {
+			"mode": "raw",
+			"raw": "{\n  \"teamName\": \"111\",\n  \"teamProfile\": \"11\",\n  \"administrator\": \"11\",\n  \"nickName\": \"1\",\n  \"authority\": \"1\"\n}",
+			"options": {
+				"raw": {
+					"language": "json"
+				}
+			}
+		},
+		"url": {
+			"raw": "http://localhost:8082/team?address=1",
+			"protocol": "http",
+			"host": [
+				"localhost"
+			],
+			"port": "8082",
+			"path": [
+				"team"
+			],
+			"query": [{
+				"key": "address",
+				"value": "1"
+			}]
+		}
+	},
+	"response": []
+}, {
+	"name": "查询Team",
+	"protocolProfileBehavior": {
+		"disableBodyPruning": true
+	},
+	"request": {
+		"method": "GET",
+		"header": [],
+		"body": {
+			"mode": "raw",
+			"raw": "{\n  \"teamName\": \"1\"\n}",
+			"options": {
+				"raw": {
+					"language": "json"
+				}
+			}
+		},
+		"url": {
+			"raw": "http://localhost:8082/team/all?address=1",
+			"protocol": "http",
+			"host": [
+				"localhost"
+			],
+			"port": "8082",
+			"path": [
+				"team",
+				"all"
+			],
+			"query": [{
+				"key": "address",
+				"value": "1"
+			}]
+		}
+	},
+	"response": []
+}, {
+	"name": "加入团队",
+	"request": {
+		"method": "PUT",
+		"header": [],
+		"body": {
+			"mode": "raw",
+			"raw": "{\n  \"teamId\": 1,\n  \"memberId\": 1\n}",
+			"options": {
+				"raw": {
+					"language": "json"
+				}
+			}
+		},
+		"url": {
+			"raw": "http://localhost:8082/team/join?address=1",
+			"protocol": "http",
+			"host": [
+				"localhost"
+			],
+			"port": "8082",
+			"path": [
+				"team",
+				"join"
+			],
+			"query": [{
+				"key": "address",
+				"value": "1"
+			}]
+		}
+	},
+	"response": []
+}, {
+	"name": "审批",
+	"request": {
+		"method": "POST",
+		"header": [],
+		"body": {
+			"mode": "raw",
+			"raw": "{\n  \"teamId\": 1,\n  \"memberIds\": [\n    1\n  ]\n}",
+			"options": {
+				"raw": {
+					"language": "json"
+				}
+			}
+		},
+		"url": {
+			"raw": "http://localhost:8082/team/approve?address=1",
+			"protocol": "http",
+			"host": [
+				"localhost"
+			],
+			"port": "8082",
+			"path": [
+				"team",
+				"approve"
+			],
+			"query": [{
+				"key": "address",
+				"value": "1"
+			}]
+		}
+	},
+	"response": []
+}, {
+	"name": "退出团队",
+	"request": {
+		"method": "POST",
+		"header": [],
+		"body": {
+			"mode": "raw",
+			"raw": "{\n  \"teamId\": 1,\n  \"memberId\": 1\n}",
+			"options": {
+				"raw": {
+					"language": "json"
+				}
+			}
+		},
+		"url": {
+			"raw": "http://localhost:8082/team/exit?address=1",
+			"protocol": "http",
+			"host": [
+				"localhost"
+			],
+			"port": "8082",
+			"path": [
+				"team",
+				"exit"
+			],
+			"query": [{
+				"key": "address",
+				"value": "1"
+			}]
+		}
+	},
+	"response": []
+}, {
+	"name": "查询需要审批成员",
+	"request": {
+		"method": "GET",
+		"header": [],
+		"url": {
+			"raw": "http://localhost:8082/team/need/approve?teamId=2&address=1",
+			"protocol": "http",
+			"host": [
+				"localhost"
+			],
+			"port": "8082",
+			"path": [
+				"team",
+				"need",
+				"approve"
+			],
+			"query": [{
+					"key": "teamId",
+					"value": "2"
+				},
+				{
+					"key": "address",
+					"value": "1"
+				}
+			]
+		}
+	},
+	"response": []
+}]
+}
