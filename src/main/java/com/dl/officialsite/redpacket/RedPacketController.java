@@ -8,8 +8,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,8 +55,18 @@ public class RedPacketController {
     }
 
 
-
     @RequestMapping(value = "/all/query", method = RequestMethod.GET)
+    BaseResponse getMemberAll(@RequestParam String address,
+                              @RequestParam(defaultValue = "1") Integer pageNumber,
+                              @RequestParam(defaultValue = "10") Integer pageSize)   {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        return BaseResponse.successWithData(redPacketRepository.findAll(pageable));
+    }
+
+
+
+    @PostMapping(value = "/all/query")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
@@ -83,7 +95,12 @@ public class RedPacketController {
                 if (redPacket.getCreateTime() != null) {
                     predicates.add(criteriaBuilder.greaterThan(root.get("createTime"),  redPacket.getCreateTime()));
                 }
-
+                if (redPacket.getAddress() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("addressList"), "%"+ redPacket.getAddress()+ "%"));
+                }
+                if (redPacket.getStatus() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("status"), "%"+ redPacket.getStatus()+ "%"));
+                }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

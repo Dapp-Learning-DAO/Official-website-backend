@@ -10,8 +10,12 @@ import org.checkerframework.common.value.qual.StringVal;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -29,9 +33,12 @@ public class RedPacket {
     private String id;
     @NotNull
     private String creator;
+//    @NotNull
+//    @Convert(converter = StringListConverter.class)
+//    private List<String> addressList;
+
     @NotNull
-    @Convert(converter = StringListConverter.class)
-    private List<String> addressList;
+    private String addressList;
     @NotNull
     private Long expireTime;
     @CreatedDate
@@ -39,7 +46,7 @@ public class RedPacket {
     private Long createTime;
     @NotNull
     private String chainId;
-    private  int statue;
+    private  Integer statue;
     private Long amount;
-    //contractAddress???
+
 }

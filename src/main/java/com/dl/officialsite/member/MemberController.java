@@ -58,9 +58,9 @@ public class MemberController {
         return BaseResponse.successWithData(memberRepository.findAll(pageable));
     }
 
-    @RequestMapping(value = "/all/query", method = RequestMethod.GET)
+    @PostMapping(value = "/all/query")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
-                                        Member member,
+                                        @RequestBody Member member,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 

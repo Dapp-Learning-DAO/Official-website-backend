@@ -25,7 +25,9 @@ public class RedPacketVo {
     private Long expireTime;
     private Long createTime;
     private String chainId;
-    private  int statue;
+    private  Integer status;
     private Long amount;
+
+    private String address;
     //contractAddress???
 }
