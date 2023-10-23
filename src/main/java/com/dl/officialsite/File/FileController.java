@@ -65,6 +65,5 @@ public class FileController {
         }
         response.setContentType("application/octet-stream");
         IoUtil.copy(inputStream, response.getOutputStream());
-        response.setHeader("Content-Disposition", "attachment; filename=" + fileHash + ".jpg");
     }
 }
