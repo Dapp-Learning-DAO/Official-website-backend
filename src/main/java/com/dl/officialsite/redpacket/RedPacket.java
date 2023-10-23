@@ -40,5 +40,6 @@ public class RedPacket {
     @NotNull
     private String chainId;
     private  int statue;
+    private Long amount;
     //contractAddress???
 }
