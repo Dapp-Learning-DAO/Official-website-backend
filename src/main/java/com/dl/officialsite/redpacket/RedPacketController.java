@@ -56,7 +56,7 @@ public class RedPacketController {
 
     @RequestMapping(value = "/all/query", method = RequestMethod.GET)
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
-                                        @RequestBody   RedPacket redPacket,
+                                        @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize)   {
 
@@ -69,7 +69,7 @@ public class RedPacketController {
                 List<Predicate> predicates = new ArrayList<>();
                 if (redPacket.getId() != null) {
                     logger.info(redPacket.getId());
-                    predicates.add(criteriaBuilder.like(root.get("id"),  "%"+redPacket.getAddress()+"%") );
+                    predicates.add(criteriaBuilder.like(root.get("id"),  "%"+redPacket.getId()+"%") );
                 }
                 if (redPacket.getName() != null) {
                     predicates.add(criteriaBuilder.like(root.get("name"),  "%"+ redPacket.getName() +"%") );
@@ -79,6 +79,9 @@ public class RedPacketController {
                 }
                 if (redPacket.getExpireTime() != null) {
                     predicates.add(criteriaBuilder.lessThan(root.get("expireTime"),  redPacket.getExpireTime()));
+                }
+                if (redPacket.getCreateTime() != null) {
+                    predicates.add(criteriaBuilder.greaterThan(root.get("createTime"),  redPacket.getCreateTime()));
                 }
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
