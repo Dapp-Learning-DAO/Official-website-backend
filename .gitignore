@@ -43,3 +43,4 @@ gradle.properties
 .env
 /dist
 wallet/%
+node/*

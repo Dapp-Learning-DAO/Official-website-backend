@@ -102,7 +102,7 @@ clean {
 web3j {
 	generatedPackageName = 'com.dl.officialsite.contract.{0}'
 	generatedFilesBaseDir = "src"
-	includedContracts = ['TheERC20']
+	includedContracts = ['HappyRedPacket']
 	useNativeJavaTypes = true
 }
 
@@ -118,4 +118,8 @@ sourceSets {
 			}
 		}
 	}
+}
+
+node {
+	nodeProjectDir = file("./node")
 }

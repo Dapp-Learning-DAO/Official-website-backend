@@ -1,0 +1,9 @@
+{
+    "name": "official-site",
+    "description": " ",
+    "repository": " ",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "@openzeppelin/contracts": "^4.4.2"
+    }
+}
