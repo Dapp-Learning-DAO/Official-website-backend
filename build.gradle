@@ -3,6 +3,7 @@ plugins {
 	id 'idea'
 	id 'org.springframework.boot' version '2.7.16'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "org.web3j" version "4.9.8"
 }
 
 group = 'com.dl'
@@ -96,4 +97,25 @@ clean {
 	delete "${projectDir}/dist"
 	delete 'build'
 	delete 'log'
+}
+
+web3j {
+	generatedPackageName = 'com.dl.officialsite.contract.{0}'
+	generatedFilesBaseDir = "src"
+	includedContracts = ['TheERC20']
+	useNativeJavaTypes = true
+}
+
+ext  {
+	web3jVersion = '4.9.3'
+}
+
+sourceSets {
+	main {
+		solidity {
+			srcDir {
+				"$project/src/main/solidity"
+			}
+		}
+	}
 }

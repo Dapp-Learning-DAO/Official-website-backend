@@ -60,7 +60,7 @@ public class RedPacketController {
 
 
     @RequestMapping(value = "/query/all", method = RequestMethod.GET)
-    BaseResponse getRedpacketAll(@RequestParam String address,
+    BaseResponse getRedPacketAll(@RequestParam String address,
                               @RequestParam(defaultValue = "1") Integer pageNumber,
                               @RequestParam(defaultValue = "10") Integer pageSize)   {
 
@@ -70,7 +70,7 @@ public class RedPacketController {
 
 
     @RequestMapping(value = "/query/user", method = RequestMethod.GET)
-    BaseResponse getRedpacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
+    BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
         List<RedPacket> result;
         if(status!= null) {
              result = redPacketRepository.findByAddressAndStatus("%" + address + "%", status);
@@ -83,7 +83,7 @@ public class RedPacketController {
 
 // 更新红包状态，已认领过的地址。
     @PostMapping(value = "/query/all")
-    BaseResponse getAllMemberByCriteria(@RequestParam String address,
+    BaseResponse getAllRedPacketByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize)   {
