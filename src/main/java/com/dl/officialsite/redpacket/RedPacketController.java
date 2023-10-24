@@ -82,7 +82,7 @@ public class RedPacketController {
     }
 
 // 更新红包状态，已认领过的地址。
-    @PostMapping(value = "/all/query")
+    @PostMapping(value = "/query/all")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,

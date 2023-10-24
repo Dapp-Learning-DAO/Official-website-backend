@@ -127,6 +127,7 @@ public class MemberController {
     }
 
 
+    //todo ignore?
     @PostMapping("/avatar/update")
     public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
         try {
