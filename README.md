@@ -2,29 +2,11 @@
 backend  of official website
 
 ## interface for front-end
-see the direction  ./interface
+see  https://www.postman.com/lively-station-290552/workspace/publicworkspace/collection/13180077-af411142-dfd4-4e33-bfb5-ec26ff095072 
+
 ## login xyz
 https://github.com/spruceid/siwe-go/blob/main/message.go
 
-```agsl
-type Message struct {
-	domain  string
-	address common.Address
-	uri     url.URL
-	version string
-
-	statement *string
-	nonce     string
-	chainID   int
-
-	issuedAt       string
-	expirationTime *string
-	notBefore      *string
-
-	requestID *string
-	resources []url.URL
-}
-```
 
 ## Run
  mysql: pls docker run mysql 
