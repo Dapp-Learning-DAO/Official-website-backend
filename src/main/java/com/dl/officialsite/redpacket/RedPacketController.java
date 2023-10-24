@@ -8,8 +8,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static com.dl.officialsite.common.converter.StringListConverter.SPLIT_CHAR;
+import static org.hibernate.criterion.Restrictions.in;
 
 @RestController
 @RequestMapping("/red-packet")
@@ -53,15 +59,36 @@ public class RedPacketController {
     }
 
 
+    @RequestMapping(value = "/query/all", method = RequestMethod.GET)
+    BaseResponse getRedpacketAll(@RequestParam String address,
+                              @RequestParam(defaultValue = "1") Integer pageNumber,
+                              @RequestParam(defaultValue = "10") Integer pageSize)   {
 
-    @RequestMapping(value = "/all/query", method = RequestMethod.GET)
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        return BaseResponse.successWithData(redPacketRepository.findAll(pageable));
+    }
+
+
+    @RequestMapping(value = "/query/user", method = RequestMethod.GET)
+    BaseResponse getRedpacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
+        List<RedPacket> result;
+        if(status!= null) {
+             result = redPacketRepository.findByAddressAndStatus("%" + address + "%", status);
+        } else {
+             result = redPacketRepository.findByAddress("%" + address + "%");
+
+        }
+        return BaseResponse.successWithData(result);
+    }
+
+// 更新红包状态，已认领过的地址。
+    @PostMapping(value = "/query/all")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize)   {
-
+        logger.info("redpacketV0: "+  redPacket);
         Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
-        logger.info("redPacket:"+ redPacket);
         Specification<RedPacket> queryParam = new Specification<RedPacket>() {
             @Override
             public Predicate toPredicate(Root<RedPacket> root, CriteriaQuery<?> criteriaQuery,
@@ -83,11 +110,17 @@ public class RedPacketController {
                 if (redPacket.getCreateTime() != null) {
                     predicates.add(criteriaBuilder.greaterThan(root.get("createTime"),  redPacket.getCreateTime()));
                 }
-
+                if (redPacket.getStatus() != null) {
+                    predicates.add(criteriaBuilder.like(root.get("status"), "%"+ redPacket.getStatus()+ "%"));
+                }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
 
         return BaseResponse.successWithData(redPacketRepository.findAll(queryParam,  pageable));
     }
+
+
+
+
 }

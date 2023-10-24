@@ -47,7 +47,7 @@ public class Member  implements Serializable
     @Column(length = 20)
     private String tweetId;
     @Column(length = 20)
-    private String teletgramId;
+    private String telegramId;
     @Column(length = 20)
     private String wechatId;
     private String avatar;
