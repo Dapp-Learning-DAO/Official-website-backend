@@ -20,8 +20,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static com.dl.officialsite.common.converter.StringListConverter.SPLIT_CHAR;
+import static org.hibernate.criterion.Restrictions.in;
 
 @RestController
 @RequestMapping("/red-packet")
@@ -55,8 +59,8 @@ public class RedPacketController {
     }
 
 
-    @RequestMapping(value = "/all/query", method = RequestMethod.GET)
-    BaseResponse getMemberAll(@RequestParam String address,
+    @RequestMapping(value = "/query/all", method = RequestMethod.GET)
+    BaseResponse getRedpacketAll(@RequestParam String address,
                               @RequestParam(defaultValue = "1") Integer pageNumber,
                               @RequestParam(defaultValue = "10") Integer pageSize)   {
 
@@ -65,15 +69,26 @@ public class RedPacketController {
     }
 
 
+    @RequestMapping(value = "/query/user", method = RequestMethod.GET)
+    BaseResponse getRedpacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
+        List<RedPacket> result;
+        if(status!= null) {
+             result = redPacketRepository.findByAddressAndStatus("%" + address + "%", status);
+        } else {
+             result = redPacketRepository.findByAddress("%" + address + "%");
 
+        }
+        return BaseResponse.successWithData(result);
+    }
+
+// 更新红包状态，已认领过的地址。
     @PostMapping(value = "/all/query")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize)   {
-
+        logger.info("redpacketV0: "+  redPacket);
         Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
-        logger.info("redPacket:"+ redPacket);
         Specification<RedPacket> queryParam = new Specification<RedPacket>() {
             @Override
             public Predicate toPredicate(Root<RedPacket> root, CriteriaQuery<?> criteriaQuery,
@@ -95,9 +110,6 @@ public class RedPacketController {
                 if (redPacket.getCreateTime() != null) {
                     predicates.add(criteriaBuilder.greaterThan(root.get("createTime"),  redPacket.getCreateTime()));
                 }
-                if (redPacket.getAddress() != null) {
-                    predicates.add(criteriaBuilder.like(root.get("addressList"), "%"+ redPacket.getAddress()+ "%"));
-                }
                 if (redPacket.getStatus() != null) {
                     predicates.add(criteriaBuilder.like(root.get("status"), "%"+ redPacket.getStatus()+ "%"));
                 }
@@ -107,4 +119,8 @@ public class RedPacketController {
 
         return BaseResponse.successWithData(redPacketRepository.findAll(queryParam,  pageable));
     }
+
+
+
+
 }

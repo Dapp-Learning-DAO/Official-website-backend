@@ -11,13 +11,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RedPacketVo {
+public class RedPacketVo implements Serializable {
 
     private String  name;
     private String id;
@@ -27,7 +29,7 @@ public class RedPacketVo {
     private String chainId;
     private  Integer status;
     private Long amount;
+    private List<String> address;
 
-    private String address;
     //contractAddress???
 }

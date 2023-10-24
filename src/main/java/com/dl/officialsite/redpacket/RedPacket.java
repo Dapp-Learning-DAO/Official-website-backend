@@ -33,12 +33,10 @@ public class RedPacket {
     private String id;
     @NotNull
     private String creator;
-//    @NotNull
-//    @Convert(converter = StringListConverter.class)
-//    private List<String> addressList;
-
     @NotNull
-    private String addressList;
+    @Convert(converter = StringListConverter.class)
+    private List<String> addressList;
+
     @NotNull
     private Long expireTime;
     @CreatedDate
@@ -46,7 +44,10 @@ public class RedPacket {
     private Long createTime;
     @NotNull
     private String chainId;
-    private  Integer statue;
+
+    private  Integer status;
     private Long amount;
+
+    private String claimedAddress;
 
 }
