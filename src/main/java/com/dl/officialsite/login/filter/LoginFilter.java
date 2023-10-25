@@ -54,8 +54,6 @@ public class LoginFilter extends OncePerRequestFilter {
 
         try{
             if (noLoginApis.contains(request.getRequestURI())) {
-                UserPrincipleData userPrincipleData = new UserPrincipleData();
-                userPrincipleData.setUserRole(UserRoleEnum.ANONYMOUS);
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -78,8 +76,6 @@ public class LoginFilter extends OncePerRequestFilter {
             }
             userPrinciple.setUserRole(roleEnum);
             UserSecurityUtils.setPrincipleLogin(userPrinciple);
-
-            //Execute next(auth filter)
             filterChain.doFilter(request, response);
         }
         finally {
@@ -108,7 +104,7 @@ public class LoginFilter extends OncePerRequestFilter {
             return UserRoleEnum.NORMAL;
         }
 
-        UserRoleEnum result = UserRoleEnum.ANONYMOUS;
+        UserRoleEnum result = UserRoleEnum.NORMAL;
         for(TeamMember teamMember: roles){
             UserRoleEnum userRoleEnum = teamMember.getRole();
             if (userRoleEnum.getPower() > result.getPower()){

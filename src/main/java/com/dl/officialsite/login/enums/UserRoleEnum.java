@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum UserRoleEnum {
-    ANONYMOUS(-1),
 
     ADMIN(Integer.MAX_VALUE),
 

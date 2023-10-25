@@ -28,8 +28,9 @@ public class AuthorizationAspect {
     public Object interceptAuthorization(ProceedingJoinPoint joinPoint) throws Throwable {
         UserPrincipleData userPrincipleData = UserSecurityUtils.getUserLogin();
         if(userPrincipleData == null){
+            // 其实不会走到这一步，LoginFilter已对诸多api要求了登录。
             log.info("intercept unauthenticated login");
-            return BaseResponse.failWithReason("2001", "please login in");
+            throw new RuntimeException("should not happen");
         }
 
         UserRoleEnum requiredRole = getRequiredUserRole(joinPoint);
