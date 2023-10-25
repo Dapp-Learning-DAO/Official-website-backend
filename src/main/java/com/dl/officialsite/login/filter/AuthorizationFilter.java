@@ -35,7 +35,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     private Set<String> normalApis = new HashSet(){{
         add("/login/nonce");
         add("/login/check");
-        add("/login/check-session");
+        add("/login/check-session");//todo
         add("/file/upload");
         add("/oauth2/authorization/github");
         add("/oauth2/bind/code/github");
