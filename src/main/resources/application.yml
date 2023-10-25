@@ -10,12 +10,12 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
 #type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: 12345678
-#    password: ${SPRING_DATASOURCE_PASSWORD}
+#    password: 12345678
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
      ddl-auto: update
-    generate-ddl: truetet
+    generate-ddl: true
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5Dialect
   mail:

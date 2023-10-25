@@ -9,16 +9,15 @@ import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.login.model.UserPrincipleData;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
-import com.dl.officialsite.team.Team;
+import com.dl.officialsite.team.TeamMember;
 import com.dl.officialsite.team.TeamMemberRepository;
-import com.dl.officialsite.team.TeamRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jnr.a64asm.Mem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -104,14 +103,14 @@ public class LoginFilter extends OncePerRequestFilter {
             return null;
         }
 
-        List<Integer> roles =this.teamMemberRepository.findAuthRolesByMemberId(optionalMember.get().getId());
+        List<TeamMember> roles =this.teamMemberRepository.findByMemberId(optionalMember.get().getId());
         if (CollectionUtils.isEmpty(roles)){
             return UserRoleEnum.NORMAL;
         }
 
         UserRoleEnum result = UserRoleEnum.ANONYMOUS;
-        for(int roleOrdinal: roles){
-            UserRoleEnum userRoleEnum = UserRoleEnum.values()[roleOrdinal];
+        for(TeamMember teamMember: roles){
+            UserRoleEnum userRoleEnum = teamMember.getRole();
             if (userRoleEnum.getPower() > result.getPower()){
                 result = userRoleEnum;
             }
@@ -119,4 +118,6 @@ public class LoginFilter extends OncePerRequestFilter {
 
         return result;
     }
+
+
 }

@@ -1,6 +1,5 @@
 package com.dl.officialsite.team;
 
-import com.dl.officialsite.member.Member;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,6 +26,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
         nativeQuery = true)
     List<Long> findByTeamIdAndStatus(@Param("team_id")Long teamId, @Param("status")int requestTeam);
 
-    @Query(value = "select role from team_member where member_id = :member_id")
-    List<Integer> findAuthRolesByMemberId( @Param("member_id")Long memberId);
+    @Query(value = "select * from team_member where member_id = :member_id",nativeQuery = true)
+    List<TeamMember> findByMemberId(@Param("member_id")Long memberId);
 }

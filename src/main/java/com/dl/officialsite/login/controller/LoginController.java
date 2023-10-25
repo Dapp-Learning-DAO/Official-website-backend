@@ -3,6 +3,8 @@ package com.dl.officialsite.login.controller;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
+import com.dl.officialsite.login.aspect.RequiresAtLeast;
+import com.dl.officialsite.login.enums.UserRoleEnum;
 import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.login.model.SignInfo;
 import com.dl.officialsite.member.Member;
@@ -125,5 +127,11 @@ public class LoginController {
             }
         }
         return  BaseResponse.successWithData(false);
+    }
+
+    @GetMapping
+    @RequiresAtLeast(UserRoleEnum.NORMAL)
+    public BaseResponse test(){
+        return BaseResponse.successWithData("Hi");
     }
 }
