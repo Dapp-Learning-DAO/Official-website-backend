@@ -26,4 +26,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
         + ":status",
         nativeQuery = true)
     List<Long> findByTeamIdAndStatus(@Param("team_id")Long teamId, @Param("status")int requestTeam);
+
+    @Query(value = "select role from team_member where member_id = :member_id")
+    List<Integer> findAuthRolesByMemberId( @Param("member_id")Long memberId);
 }

@@ -7,11 +7,18 @@ import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.login.enums.UserRoleEnum;
 import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.login.model.UserPrincipleData;
+import com.dl.officialsite.member.Member;
+import com.dl.officialsite.member.MemberRepository;
+import com.dl.officialsite.team.Team;
+import com.dl.officialsite.team.TeamMemberRepository;
 import com.dl.officialsite.team.TeamRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jnr.a64asm.Mem;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -21,14 +28,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
 @Order(Integer.MIN_VALUE)
+@Slf4j
 public class LoginFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TeamRepository teamRepository;
+    private TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
 
     private Set<String> noLoginApis = new HashSet(){{
@@ -59,7 +72,12 @@ public class LoginFilter extends OncePerRequestFilter {
             SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
             UserPrincipleData userPrinciple = new UserPrincipleData();
             userPrinciple.setAddress(sessionUserInfo.getAddress());
-            userPrinciple.setUserRole(UserRoleEnum.NORMAL);//TODO: load from team
+            UserRoleEnum roleEnum = deduceRole(sessionUserInfo.getAddress());
+            if(roleEnum == null){
+                dumpError(response);
+                return;
+            }
+            userPrinciple.setUserRole(roleEnum);
             UserSecurityUtils.setPrincipleLogin(userPrinciple);
 
             //Execute next(auth filter)
@@ -79,7 +97,26 @@ public class LoginFilter extends OncePerRequestFilter {
         out.close();
     }
 
-    private UserRoleEnum deduceRole(){
-        this.teamRepository.findBy();
+    private UserRoleEnum deduceRole(String address){
+        Optional<Member> optionalMember = this.memberRepository.findByAddress(address);
+        if (!optionalMember.isPresent()){
+            log.error("not existed user:{}", address);
+            return null;
+        }
+
+        List<Integer> roles =this.teamMemberRepository.findAuthRolesByMemberId(optionalMember.get().getId());
+        if (CollectionUtils.isEmpty(roles)){
+            return UserRoleEnum.NORMAL;
+        }
+
+        UserRoleEnum result = UserRoleEnum.ANONYMOUS;
+        for(int roleOrdinal: roles){
+            UserRoleEnum userRoleEnum = UserRoleEnum.values()[roleOrdinal];
+            if (userRoleEnum.getPower() > result.getPower()){
+                result = userRoleEnum;
+            }
+        }
+
+        return result;
     }
 }

@@ -1,13 +1,20 @@
 package com.dl.officialsite.login.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRoleEnum {
-    ANONYMOUS,
+    ANONYMOUS(-1),
 
-    ADMIN,
+    ADMIN(Integer.MAX_VALUE),
 
-    NORMAL,
+    NORMAL(0);
 
-    BLOCKED
+    private int power;
+
+    UserRoleEnum(int power){
+        this.power = power;
+    }
 
 
 }

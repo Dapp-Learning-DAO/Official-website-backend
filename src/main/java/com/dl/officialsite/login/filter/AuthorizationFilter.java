@@ -76,9 +76,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             return true;
         }
 
-        if (role == UserRoleEnum.BLOCKED){
-            return false;
-        }
 
         if (role == UserRoleEnum.NORMAL){
             return normalApis.contains(request.getRequestURI());
