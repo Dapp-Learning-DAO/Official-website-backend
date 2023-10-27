@@ -35,6 +35,7 @@ dependencies {
 
 	implementation 'mysql:mysql-connector-java:8.0.28'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.session:spring-session-jdbc'
 	implementation 'org.web3j:core:4.8.8'
 // https://mvnrepository.com/artifact/org.json/json

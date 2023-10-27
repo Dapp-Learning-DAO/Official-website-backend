@@ -1,12 +1,10 @@
-package com.dl.officialsite.login;
+package com.dl.officialsite.login.model;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-
-import java.math.BigInteger;
 
 @Getter
 @Setter
