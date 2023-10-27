@@ -71,10 +71,19 @@ public class TeamController {
     /**
      * 查询所有团队
      */
-    @GetMapping("/all")
+    @PostMapping("/all")
     BaseResponse getTeams(@RequestBody TeamQueryVo teamQueryVo, @RequestParam String address) {
         List<TeamsMembersVo> teamAndMembers = teamService.getTeamAndMembers(teamQueryVo);
         return BaseResponse.successWithData(teamAndMembers);
+    }
+
+    /**
+     * 查询member属于那个团队
+     */
+    @GetMapping("/member/role")
+    BaseResponse getMemberRole(@RequestParam Long memberId, @RequestParam String address) {
+        List<TeamVO> teamMembers = teamService.getMemberRole(memberId);
+        return BaseResponse.successWithData(teamMembers);
     }
 
     /**
