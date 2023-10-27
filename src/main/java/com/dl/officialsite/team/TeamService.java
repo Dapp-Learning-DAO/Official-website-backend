@@ -162,4 +162,21 @@ public class TeamService {
         });
         return members;
     }
+
+    public List<TeamVO> getMemberRole(Long memberId) {
+        List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(memberId);
+        if (teamMembers.size() == 0) {
+            throw new BizException(CodeEnums.MEMBER_NOT_IN_TEAM.getCode(),
+                CodeEnums.MEMBER_NOT_IN_TEAM.getMsg());
+        } else {
+            List<TeamVO> teamVOS = new ArrayList<>();
+            teamMembers.stream().forEach(teamMember -> {
+                Team team = teamRepository.findById(teamMember.getTeamId()).get();
+                TeamVO teamVO = new TeamVO();
+                BeanUtils.copyProperties(team, teamVO);
+                teamVOS.add(teamVO);
+            });
+            return teamVOS;
+        }
+    }
 }
