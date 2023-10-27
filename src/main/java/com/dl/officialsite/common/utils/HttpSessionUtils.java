@@ -1,5 +1,8 @@
 package com.dl.officialsite.common.utils;
 
+import com.dl.officialsite.login.model.SessionUserInfo;
+import org.springframework.util.StringUtils;
+
 import javax.servlet.http.HttpSession;
 
 public abstract class HttpSessionUtils {
@@ -7,31 +10,47 @@ public abstract class HttpSessionUtils {
     public static final String MEMBER_ATTRIBUTE_KEY = "member";
 
 
-//todo
-    public static void putMember(HttpSession session, String address){
-        session.setAttribute(MEMBER_ATTRIBUTE_KEY, address);
+    public static boolean hasNonce(HttpSession httpSession){
+        SessionUserInfo userInfo = (SessionUserInfo) httpSession.getAttribute(MEMBER_ATTRIBUTE_KEY);
+        if (userInfo == null){
+            return false;
+        }
+        return StringUtils.hasText(userInfo.getNonce());
     }
 
-
-    public static void putMemberWithAddress(HttpSession session, String address){
-        session.setAttribute(MEMBER_ATTRIBUTE_KEY+address, address);
+    public static void putUserInfo(HttpSession session, SessionUserInfo userInfo){
+        session.setAttribute(MEMBER_ATTRIBUTE_KEY, userInfo);
     }
 
+    public static boolean isUserLogin(HttpSession session){
+        SessionUserInfo userInfo = getMember(session);
+        if (userInfo == null || !StringUtils.hasText(userInfo.getAddress())){
+            return false;
+        }
+        return true;
+    }
 
-    public static  String getMemberWithAddress(HttpSession session, String address) {
-        Object sessionObj = session.getAttribute(MEMBER_ATTRIBUTE_KEY+address);
-        if(sessionObj == null){
+    public static SessionUserInfo getMember(HttpSession session){
+        Object sessionObj = session.getAttribute(MEMBER_ATTRIBUTE_KEY);
+//        if(sessionObj == null){
+//            throw new IllegalArgumentException("User not login");
+//        }
+        return (SessionUserInfo)sessionObj;
+    }
+
+    public static void requireLogin(HttpSession session) {
+        SessionUserInfo sessionUserInfo = getMember(session);
+        if (!isUserLogin(session)) {
             throw new IllegalArgumentException("User not login");
         }
-        return sessionObj.toString();
     }
 
-
-    public static String getMember(HttpSession session){
+    public static void clearLogin(HttpSession session) {
         Object sessionObj = session.getAttribute(MEMBER_ATTRIBUTE_KEY);
         if(sessionObj == null){
-            throw new IllegalArgumentException("User not login");
+            return;
         }
-        return sessionObj.toString();
+
+        session.removeAttribute(MEMBER_ATTRIBUTE_KEY);
     }
 }

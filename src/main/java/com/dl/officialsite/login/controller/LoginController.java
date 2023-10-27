@@ -1,19 +1,21 @@
-package com.dl.officialsite.login;
+package com.dl.officialsite.login.controller;
 
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
+import com.dl.officialsite.login.aspect.RequiresAtLeast;
+import com.dl.officialsite.login.enums.UserRoleEnum;
+import com.dl.officialsite.login.model.SessionUserInfo;
+import com.dl.officialsite.login.model.SignInfo;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;
 import com.dl.officialsite.member.MemberRepository;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,7 +24,6 @@ import java.security.SignatureException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.dl.officialsite.common.utils.HttpSessionUtils.MEMBER_ATTRIBUTE_KEY;
 import static org.web3j.crypto.Sign.getEthereumMessageHash;
 import static org.web3j.utils.Numeric.hexStringToByteArray;
 
@@ -40,7 +41,11 @@ public class LoginController {
         logger.info(session.getId());
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString().replaceAll("-", "");
-        session.setAttribute(address+"nonce", uuidAsString);
+
+        SessionUserInfo userInfo = new SessionUserInfo();
+        userInfo.setNonce(uuidAsString);
+        userInfo.setAddress(address);
+        HttpSessionUtils.putUserInfo(session, userInfo);
         return uuidAsString;
     }
 
@@ -48,26 +53,27 @@ public class LoginController {
     @PostMapping("/check")
     public BaseResponse login(@RequestBody SignInfo sign, @RequestParam String address, HttpSession session) throws SignatureException {
 
-        if(session.getAttribute(address+"nonce") == null) {
+        if(!HttpSessionUtils.hasNonce(session)){
             return BaseResponse.failWithReason("1003", "get nonce first");
         }
 
-        if(!checkNonce(sign.getMessage(), (String)session.getAttribute(address+"nonce"))) {
-            logger.info( "session nonce: "+ session.getAttribute(address + "nonce"));
-
-
+        SessionUserInfo userInfo = HttpSessionUtils.getMember(session);
+        if(!checkNonce(sign.getMessage(), userInfo.getNonce())) {
+            logger.info( "session nonce: {}", userInfo.getNonce());
             return BaseResponse.failWithReason("10002", "nonce check failed");
         }
-        if (checkSignature(sign)) {
-            HttpSessionUtils.putMemberWithAddress(session, sign.getAddress());
-           Optional<Member> member =  memberRepository.findByAddress(sign.getAddress());
-            if(!member.isPresent()){
-                return BaseResponse.successWithData(null);
-            }
-            return BaseResponse.successWithData(member.get());
 
+        if (!checkSignature(sign)) {
+            return BaseResponse.failWithReason("1004", "fail to check signature");
         }
-        return BaseResponse.failWithReason("1004", "fail to check signature");
+        userInfo.setAddress(sign.getAddress());
+        HttpSessionUtils.putUserInfo(session, userInfo);
+        Optional<Member> member =  memberRepository.findByAddress(sign.getAddress());
+        if(!member.isPresent()){
+            return BaseResponse.successWithData(null);
+        }
+        return BaseResponse.successWithData(member.get());
+
     }
 
 
@@ -87,7 +93,6 @@ public class LoginController {
 
 
     private boolean checkNonce(String message, String nonce ) {
-
         int index = message.indexOf("Nonce:");
         String nonceRecover = message.substring(index+7, index+39);
         logger.info( " nonce recover: "+  nonceRecover);
@@ -97,7 +102,7 @@ public class LoginController {
 
     @GetMapping("/logout")
     public BaseResponse logout(@RequestParam String address, HttpSession session) {
-        session.removeAttribute(MEMBER_ATTRIBUTE_KEY+address);
+        HttpSessionUtils.clearLogin(session);
         return  BaseResponse.successWithData(null);
     }
 
@@ -122,5 +127,11 @@ public class LoginController {
             }
         }
         return  BaseResponse.successWithData(false);
+    }
+
+    @GetMapping
+    @RequiresAtLeast(UserRoleEnum.NORMAL)
+    public BaseResponse test(){
+        return BaseResponse.successWithData("Hi");
     }
 }

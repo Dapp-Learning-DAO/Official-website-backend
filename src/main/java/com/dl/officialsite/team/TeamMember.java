@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.dl.officialsite.login.enums.UserRoleEnum;
 import lombok.Data;
 
 /**
@@ -26,6 +28,7 @@ public class TeamMember {
 
     private Long memberId;
 
+    private UserRoleEnum role;
     /**
      * 0: 同意加入
      * 1: 申请中
