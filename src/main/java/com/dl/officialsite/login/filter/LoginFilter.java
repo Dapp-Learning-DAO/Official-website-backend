@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
-@Order(Integer.MIN_VALUE)
+@Order(SessionRepositoryFilter.DEFAULT_ORDER + 1)
 @Slf4j
 public class LoginFilter extends OncePerRequestFilter {
 
@@ -47,11 +45,12 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/login/nonce");
         add("/login/check");
         add("/login/check-session");
+        add("/login/logout");
     }} ;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+        log.info("Login filter session id {}, request {}", request.getSession().getId(), request.getRequestURI());
         try{
             if (noLoginApis.contains(request.getRequestURI())) {
                 filterChain.doFilter(request, response);
@@ -69,18 +68,25 @@ public class LoginFilter extends OncePerRequestFilter {
             SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
             UserPrincipleData userPrinciple = new UserPrincipleData();
             userPrinciple.setAddress(sessionUserInfo.getAddress());
-            UserRoleEnum roleEnum = deduceRole(sessionUserInfo.getAddress());
-            if(roleEnum == null){
-                dumpError(response);
-                return;
-            }
-            userPrinciple.setUserRole(roleEnum);
+            List<TeamMember> teams = loadTeams(sessionUserInfo.getAddress());
+            userPrinciple.setTeams(teams);
             UserSecurityUtils.setPrincipleLogin(userPrinciple);
             filterChain.doFilter(request, response);
         }
         finally {
             UserSecurityUtils.clearPipelineCache();
         }
+    }
+
+    private List<TeamMember> loadTeams(String address) {
+        //用户还未注册
+        Optional<Member> optionalMember = this.memberRepository.findByAddress(address);
+        if (!optionalMember.isPresent()){
+            return Collections.EMPTY_LIST;
+        }
+
+        List<TeamMember> teamMembers =this.teamMemberRepository.findByMemberId(optionalMember.get().getId());
+        return teamMembers;
     }
 
     private void dumpError(HttpServletResponse response) throws IOException{
@@ -90,29 +96,6 @@ public class LoginFilter extends OncePerRequestFilter {
         out.write( objectMapper.writeValueAsString(   BaseResponse.failWithReason("2001", "please login in")));
         out.flush();
         out.close();
-    }
-
-    private UserRoleEnum deduceRole(String address){
-        Optional<Member> optionalMember = this.memberRepository.findByAddress(address);
-        if (!optionalMember.isPresent()){
-            log.error("not existed user:{}", address);
-            return null;
-        }
-
-        List<TeamMember> roles =this.teamMemberRepository.findByMemberId(optionalMember.get().getId());
-        if (CollectionUtils.isEmpty(roles)){
-            return UserRoleEnum.NORMAL;
-        }
-
-        UserRoleEnum result = UserRoleEnum.NORMAL;
-        for(TeamMember teamMember: roles){
-            UserRoleEnum userRoleEnum = teamMember.getRole();
-            if (userRoleEnum.getPower() > result.getPower()){
-                result = userRoleEnum;
-            }
-        }
-
-        return result;
     }
 
 
