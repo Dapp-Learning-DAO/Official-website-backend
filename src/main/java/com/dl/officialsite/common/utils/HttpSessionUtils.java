@@ -1,10 +1,12 @@
 package com.dl.officialsite.common.utils;
 
 import com.dl.officialsite.login.model.SessionUserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
 
+@Slf4j
 public abstract class HttpSessionUtils {
 
     public static final String MEMBER_ATTRIBUTE_KEY = "member";
@@ -23,8 +25,9 @@ public abstract class HttpSessionUtils {
     }
 
     public static boolean isUserLogin(HttpSession session){
+        log.info("isUserLogin session id {}", session.getId());
         SessionUserInfo userInfo = getMember(session);
-        if (userInfo == null || !StringUtils.hasText(userInfo.getAddress())){
+        if (userInfo == null || !userInfo.isLogon()){
             return false;
         }
         return true;

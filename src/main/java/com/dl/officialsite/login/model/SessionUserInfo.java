@@ -12,5 +12,6 @@ public class SessionUserInfo implements Serializable {
 
     private String nonce;
 
+    private boolean isLogon;
 
 }
