@@ -36,7 +36,6 @@ public class RedPacket {
     @NotNull
     @Convert(converter = StringListConverter.class)
     private List<String> addressList;
-
     @NotNull
     private Long expireTime;
     @CreatedDate

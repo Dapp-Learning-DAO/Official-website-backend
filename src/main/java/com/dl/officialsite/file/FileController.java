@@ -1,4 +1,4 @@
-package com.dl.officialsite.File;
+package com.dl.officialsite.file;
 
 import cn.hutool.core.io.IoUtil;
 import com.dl.officialsite.common.base.BaseResponse;

@@ -23,8 +23,7 @@ public class Team {
     private String teamName;
     private String teamProfile;
     private String administrator;
-    private String nickName;
 
     // dao admin , core contributor,  builder
-    private String authority;
+    private int authority;
 }
