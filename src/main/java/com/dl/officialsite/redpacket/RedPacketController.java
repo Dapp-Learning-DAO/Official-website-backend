@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,12 +41,9 @@ public class RedPacketController {
     @PostMapping("/create")
     public BaseResponse createRedPacket(@RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
-        try {
-            RedPacket redPacket1 = redPacketRepository.save(redPacket);
-            return  BaseResponse.successWithData(redPacket1);
-        } catch (Exception e) {
-            return BaseResponse.failWithReason("1000",e.getMessage());
-        }
+        RedPacket redPacket1 = redPacketRepository.save(redPacket);
+        return  BaseResponse.successWithData(redPacket1);
+
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

@@ -47,6 +47,7 @@ public class RedPacket {
     private  Integer status;
     private Long amount;
 
-    private String claimedAddress;
+    @Convert(converter = StringListConverter.class)
+    private List<String> claimedAddress;
 
 }

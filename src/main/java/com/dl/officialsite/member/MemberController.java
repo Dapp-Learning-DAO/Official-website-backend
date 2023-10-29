@@ -113,6 +113,7 @@ public class MemberController {
                     .save(member);
             return BaseResponse.successWithData(_member);
         } catch (DataIntegrityViolationException e) {
+            //todo
             String mostSpecificCauseMessage = e.getMostSpecificCause().getMessage();
             if (e.getCause() instanceof ConstraintViolationException) {
                 String name = ((ConstraintViolationException) e.getCause()).getConstraintName();
