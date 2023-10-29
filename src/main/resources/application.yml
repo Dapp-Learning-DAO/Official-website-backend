@@ -2,7 +2,7 @@ server:
   port: 8080
   servlet:
     session:
-      timeout: 5m
+      timeout: 6m
       cookie:
         max-age: -1
 spring:
@@ -36,8 +36,7 @@ spring:
     jdbc:
       initialize-schema: always
       cleanup-cron: 0 */3 * * * *
-    timeout:
-      seconds: 7200
+    timeout: 7200
 
 logging:
   level:

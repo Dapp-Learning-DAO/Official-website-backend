@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.checkerframework.common.value.qual.StringVal;
+import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,8 +25,14 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@DynamicUpdate
+@Table(name = "red_packet", schema = "dl", uniqueConstraints = {
+        @UniqueConstraint(name = "id", columnNames = {"id"}),
+        @UniqueConstraint(name = "name", columnNames = {"name"})})
+
 public class RedPacket {
     @NotNull
+    @Column(length = 66)
     private String  name;
     @NotNull
     @Id

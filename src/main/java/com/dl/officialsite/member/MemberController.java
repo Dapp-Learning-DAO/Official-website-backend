@@ -120,15 +120,11 @@ public class MemberController {
                 logger.info("Encountered ConstraintViolationException, details: " + mostSpecificCauseMessage + "constraintName: "+ name);
             }
             return BaseResponse.failWithReason("1000", mostSpecificCauseMessage);
-        } catch (Exception e) {
-            logger.info("+++", e.getMessage());
-            //   e.printStackTrace();
-            return BaseResponse.failWithReason("1000", e.getMessage());
         }
     }
 
 
-    //todo ignore?
+    //ignore
     @PostMapping("/avatar/update")
     public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
         try {
