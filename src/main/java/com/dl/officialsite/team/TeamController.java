@@ -77,6 +77,12 @@ public class TeamController {
         return BaseResponse.successWithData(teamAndMembers);
     }
 
+    @GetMapping("/id")
+    BaseResponse getTeamById(@RequestParam Long teamId, @RequestParam String address) {
+        Team team = teamService.getTeamById(teamId);
+        return BaseResponse.successWithData(team);
+    }
+
     /**
      * 查询member属于那个团队
      */

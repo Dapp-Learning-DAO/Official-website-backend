@@ -16,6 +16,7 @@ public enum CodeEnums {
     TELEGRAM_WECHAT_NOT_BIND("1003", "Please bind telegram or wechat"),
     MEMBER_NOT_IN_TEAM("1004", "member not in team"),
 
+    TEAM_NOT_EXIST("1005", "team not exist"),
     LOGIN_IN("2001", "please login");
 
     private String code;
