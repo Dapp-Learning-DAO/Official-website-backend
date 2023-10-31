@@ -36,10 +36,13 @@ public class Member  implements Serializable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 42)
+    @NotNull
     private String  address;
     @Column(unique=true,length = 40)
+    @NotNull
     private String email;
     @Column(unique=true,length = 20)
+    @NotNull
     private String nickName;
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
     @Column(unique=true,length = 20)

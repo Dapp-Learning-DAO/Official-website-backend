@@ -37,7 +37,6 @@ public class RedPacketController {
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 
-    //todo add authority
     @PostMapping("/create")
     public BaseResponse createRedPacket(@RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
@@ -59,7 +58,7 @@ public class RedPacketController {
 
     @RequestMapping(value = "/query/all", method = RequestMethod.GET)
     BaseResponse getRedPacketAll(@RequestParam String address,
-                              @RequestParam(defaultValue = "1") Integer pageNumber,
+                                @RequestParam(defaultValue = "1") Integer pageNumber,
                               @RequestParam(defaultValue = "10") Integer pageSize)   {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));

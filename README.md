@@ -21,6 +21,9 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 
 ```
 
+## IPFS data
+/root/graph-node/docker/data/ipfs 
+
 ## TODO
 1. 头像 简历
 2. 红包改造，奖励认领自动化。

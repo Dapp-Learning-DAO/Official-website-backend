@@ -60,7 +60,7 @@ public class MemberController {
 
     @PostMapping(value = "/all/query")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
-                                        @RequestBody Member member,
+                                        @RequestBody MemberVo member,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
@@ -143,21 +143,8 @@ public class MemberController {
     }
 
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Member> updateMember(@PathVariable("id") long id, @RequestBody Member member) {
-//        Optional<Member> memberData = memberRepository.findById(id);
-//
-//        if (memberData.isPresent()) {
-//            Member _member = memberData.get();
-//            _member.setAddress(member.getAddress());
-//            return new ResponseEntity<>(memberRepository.save(_member), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-
     @PutMapping("/update")
-    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody Member member) {
+    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member) {
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
         if (memberData.isPresent()) {

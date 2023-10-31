@@ -51,8 +51,12 @@ public class RedPacket {
     @NotNull
     private String chainId;
 
+    //0 uncompleted  1 completed
     private  Integer status;
     private Long amount;
+
+    //usdc or dai
+    private String token;
 
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
