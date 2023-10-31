@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,7 @@ public class RedPacketController {
 
 
     @PostMapping("/create")
-    public BaseResponse createRedPacket(@RequestBody RedPacket redPacket, @RequestParam String address) {
+    public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
         RedPacket redPacket1 = redPacketRepository.save(redPacket);
         return  BaseResponse.successWithData(redPacket1);

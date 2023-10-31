@@ -21,6 +21,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public BaseResponse createMember(@RequestBody Member member, @RequestParam String address) {
+    public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
         try {
             Member _member = memberRepository
                     .save(member);
