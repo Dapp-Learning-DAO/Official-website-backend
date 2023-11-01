@@ -85,14 +85,14 @@ jar {
 			from file('src/main/resources/application.yml')
 			into 'dist/conf/'
 		}
-//		copy {
-//			from file('src/main/resources/start.sh')
-//			into 'dist/'
-//		}
-//		copy {
-//			from file('src/main/resources/stop.sh')
-//			into 'dist/'
-//		}
+		copy {
+			from file('start.sh')
+			into 'dist/'
+		}
+		copy {
+			from file('stop.sh')
+			into 'dist/'
+		}
 		copy {
 			from file('.').listFiles().findAll { File f -> (f.name.endsWith('.sh') || f.name.endsWith('.env')) }
 			into 'dist'
