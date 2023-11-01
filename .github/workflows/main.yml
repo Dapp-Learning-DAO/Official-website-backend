@@ -29,6 +29,7 @@ jobs:
           port: ${{ secrets.PORT }} # 服务器ssh端口（默认22）
           script: |
             cd /root/Official-website-backend
+            rm -rf dist
             git pull
             bash ./gradlew build -x test
             cd dist
