@@ -45,7 +45,7 @@ public class MemberController {
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     BaseResponse getMemberByAddress(@RequestParam String address) throws Exception {
-        aaveService.getHF("0x85c05E14099C9aEA1d37E50E4431b0A92d2aA5A4");
+
         Optional<Member> member = memberRepository.findByAddress(address);
         if (!member.isPresent()) {
             return BaseResponse.failWithReason("1001", "no user found");
