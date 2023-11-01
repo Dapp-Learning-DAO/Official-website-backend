@@ -82,7 +82,7 @@ jar {
 			into 'dist/lib'
 		}
 		copy {
-			from file('src/main/resources/application.yml')
+			from file('src/main/resources/application-template.yml')
 			into 'dist/conf/'
 		}
 		copy {
