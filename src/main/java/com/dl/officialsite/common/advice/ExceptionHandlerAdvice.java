@@ -29,6 +29,7 @@ public class ExceptionHandlerAdvice {
         return bre;
     }
 
+
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public BaseResponse handleMethodArgumentNotValidException(HttpServletRequest req, Exception e)

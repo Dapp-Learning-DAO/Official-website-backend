@@ -28,6 +28,7 @@ public class TeamMember {
 
     private Long memberId;
 
+    //todo
     private UserRoleEnum role;
     /**
      * 0: 同意加入
