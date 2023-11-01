@@ -11,7 +11,7 @@ if [ ${SERVER_PORT}"" = "" ];then
     echo "$CONF_DIR/application.yml server port has not been configured"
     exit -1
 fi
-JAVA_CMD="${JAVA_HOME}/bin"
+JAVA_CMD="${JAVA_HOME}/bin/java"
 if [ ${JAVA_HOME}"" = "" ];then
     echo "JAVA_HOME has not been configured, using java"
     JAVA_CMD='java'
