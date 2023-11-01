@@ -11,8 +11,8 @@ if [ ${SERVER_PORT} = "" ];then
     echo "$CONF_DIR/application.yml server port has not been configured"
     exit -1
 fi
-
-if [ ${JAVA_HOME} = "" ];then
+echo "java home is $JAVA_HOME"
+if [ $JAVA_HOME = "" ];then
     echo "JAVA_HOME has not been configured"
     exit -1
 fi
