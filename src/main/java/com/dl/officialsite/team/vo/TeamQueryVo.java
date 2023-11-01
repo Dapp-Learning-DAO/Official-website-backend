@@ -12,4 +12,6 @@ import lombok.Data;
 public class TeamQueryVo {
 
     private String teamName;
+
+    private int status;
 }

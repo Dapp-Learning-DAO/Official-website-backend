@@ -77,7 +77,7 @@ public class TeamService {
             TeamsMembersVo teamsMembersVo = new TeamsMembersVo();
             BeanUtils.copyProperties(team, teamsMembersVo);
             List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamId(team.getId());
+            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), teamQueryVo.getStatus());
             memberIds.stream().forEach(memberId -> {
                 Member member = memberRepository.findById(memberId).get();
                 members.add(member);
