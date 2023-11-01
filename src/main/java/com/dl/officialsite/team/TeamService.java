@@ -179,4 +179,14 @@ public class TeamService {
             return teamVOS;
         }
     }
+
+    public Team getTeamById(Long teamId) {
+        Optional<Team> optional = teamRepository.findById(teamId);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw  new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
+                CodeEnums.TEAM_NOT_EXIST.getMsg());
+        }
+    }
 }
