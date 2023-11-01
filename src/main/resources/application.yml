@@ -11,7 +11,7 @@ spring:
 #type: com.alibaba.druid.pool.DruidDataSource
     username: root
 #    password: 12345678
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: {{SPRING_DATASOURCE_PASSWORD}}
   jpa:
     hibernate:
      ddl-auto: update

@@ -5,7 +5,7 @@ CLASSPATH='conf/:apps/*:lib/*'
 CURRENT_DIR=$(pwd)/
 LOG_DIR=${CURRENT_DIR}log
 CONF_DIR=${CURRENT_DIR}conf
-#sed "s/\${SPRING_DATASOURCE_PASSWORD}/$DBPWD/g" conf/application.yml > conf/application.yml
+cat conf/application.yml | sed "s/{{SPRING_DATASOURCE_PASSWORD}}/$DBPWD/g" conf/application.yml > conf/aa.yml
 SERVER_PORT=$(cat $CONF_DIR/application.yml | grep "server:" -A 3 | grep "port" | awk '{print $2}'| sed 's/\r//')
 if [ ${SERVER_PORT}"" = "" ];then
     echo "$CONF_DIR/application.yml server port has not been configured"
