@@ -12,7 +12,7 @@ if [ ${SERVER_PORT}"" = "" ];then
     exit -1
 fi
 JAVA_CMD="${JAVA_HOME}/bin"
-if [ ${JAVA_HOME} = "" ];then
+if [ ${JAVA_HOME}"" = "" ];then
     echo "JAVA_HOME has not been configured, using java"
     JAVA_CMD='java'
 fi
