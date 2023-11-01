@@ -33,6 +33,7 @@ jobs:
             git pull
             bash ./gradlew build -x test
             cd dist
+            echo $PATH
             bash stop.sh
             bash start.sh
 
