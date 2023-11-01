@@ -174,6 +174,7 @@ public class TeamService {
                 Team team = teamRepository.findById(teamMember.getTeamId()).get();
                 TeamVO teamVO = new TeamVO();
                 BeanUtils.copyProperties(team, teamVO);
+                teamVO.setStatus(teamMember.getStatus());
                 teamVOS.add(teamVO);
             });
             return teamVOS;

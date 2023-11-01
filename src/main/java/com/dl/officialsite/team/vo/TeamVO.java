@@ -24,5 +24,7 @@ public class TeamVO {
     // dao admin , core contributor,  builder
     private String authority;
 
+    private int status;
+
     private List<Long> members;
 }
