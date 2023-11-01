@@ -7,14 +7,14 @@ LOG_DIR=${CURRENT_DIR}log
 CONF_DIR=${CURRENT_DIR}conf
 
 SERVER_PORT=$(cat $CONF_DIR/application.yml | grep "server:" -A 3 | grep "port" | awk '{print $2}'| sed 's/\r//')
-if [ ${SERVER_PORT} = "" ];then
+if [ ${SERVER_PORT}"" = "" ];then
     echo "$CONF_DIR/application.yml server port has not been configured"
     exit -1
 fi
-echo "java home is $JAVA_HOME"
-if [ $JAVA_HOME = "" ];then
-    echo "JAVA_HOME has not been configured"
-    exit -1
+JAVA_CMD="${JAVA_HOME}/bin"
+if [ ${JAVA_HOME} = "" ];then
+    echo "JAVA_HOME has not been configured, using java"
+    JAVA_CMD='java'
 fi
 
 mkdir -p log
@@ -45,7 +45,7 @@ start(){
         echo "==============================================================================================="
     else
         echo -n "Server $APP_MAIN Port $SERVER_PORT ..."
-        nohup $JAVA_HOME/bin/java -agentlib:jdwp=transport=dt_socket,address=9093,server=y,suspend=n -Djdk.tls.namedGroups="secp256k1" $JAVA_OPTS -Djava.library.path=$CONF_DIR -cp $CLASSPATH $APP_MAIN >> $LOG_DIR/front.out 2>&1 &
+        nohup $JAVA_CMD -agentlib:jdwp=transport=dt_socket,address=9093,server=y,suspend=n -Djdk.tls.namedGroups="secp256k1" $JAVA_OPTS -Djava.library.path=$CONF_DIR -cp $CLASSPATH $APP_MAIN >> $LOG_DIR/front.out 2>&1 &
 
         count=1
         result=0
