@@ -32,7 +32,7 @@ jobs:
       - name: Copy folder content recursively to remote
         uses: garygrossgarten/github-action-scp@release
         with:
-        - local: dist
+          local: dist
           remote: "/root/Dapp-Learning-Official-web"
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
