@@ -5,7 +5,6 @@ CLASSPATH='conf/:apps/*:lib/*'
 CURRENT_DIR=$(pwd)/
 LOG_DIR=${CURRENT_DIR}log
 CONF_DIR=${CURRENT_DIR}conf
-DBPWD=$SPRING_DATASOURCE_PASSWORD
 #sed "s/\${SPRING_DATASOURCE_PASSWORD}/$DBPWD/g" conf/application.yml > conf/application.yml
 SERVER_PORT=$(cat $CONF_DIR/application.yml | grep "server:" -A 3 | grep "port" | awk '{print $2}'| sed 's/\r//')
 if [ ${SERVER_PORT}"" = "" ];then
