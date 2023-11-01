@@ -32,9 +32,9 @@ jobs:
             git pull
             bash ./gradlew build -x test
             cd dist
-            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
-            echo setting DBPWD to $DBPWD
-            sed  "s/\${SPRING_DATASOURCE_PASSWORD}/$DBPWD/g" conf/application.yml > conf/application.yml
+#            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
+#            echo setting DBPWD to $DBPWD
+#            sed  "s/\${SPRING_DATASOURCE_PASSWORD}/$DBPWD/g" conf/application.yml > conf/application.yml
             bash stop.sh
             bash start.sh
 
