@@ -34,7 +34,7 @@ jobs:
         uses: garygrossgarten/github-action-scp@release
         with:
           local: dist
-          remote: "/root/Dapp-Learning-Official-web"
+          remote: "/root/Dapp-Learning-Official-web/dist"
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
