@@ -33,7 +33,7 @@ jobs:
             git pull
             bash ./gradlew build -x test
             cd dist
-            echo $PATH
+            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
             bash stop.sh
             bash start.sh
 
