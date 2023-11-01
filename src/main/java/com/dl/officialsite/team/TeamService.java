@@ -90,11 +90,11 @@ public class TeamService {
 
     public void join(TeamMemberJoinVO teamMember) {
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
-        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
+/*        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
             member.getWechatId())) {
             throw new BizException(CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getCode(),
                 CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getMsg());
-        }
+        }*/
         //判断是否已经退出过团队
         Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
             teamMember.getTeamId()
@@ -180,10 +180,20 @@ public class TeamService {
         }
     }
 
-    public Team getTeamById(Long teamId) {
+    public TeamsMembersVo getTeamById(Long teamId) {
         Optional<Team> optional = teamRepository.findById(teamId);
         if (optional.isPresent()) {
-            return optional.get();
+            TeamsMembersVo teamsMembersVo = new TeamsMembersVo();
+            Team team = optional.get();
+            List<Member> members = new ArrayList<>();
+            List<Long> memberIds = teamMemberRepository.findByTeamId(team.getId());
+            memberIds.stream().forEach(memberId -> {
+                Member member = memberRepository.findById(memberId).get();
+                members.add(member);
+            });
+            teamsMembersVo.setMembers(members);
+            BeanUtils.copyProperties(team, teamsMembersVo);
+            return teamsMembersVo;
         } else {
             throw  new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
                 CodeEnums.TEAM_NOT_EXIST.getMsg());

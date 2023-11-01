@@ -79,8 +79,8 @@ public class TeamController {
 
     @GetMapping("/id")
     BaseResponse getTeamById(@RequestParam Long teamId, @RequestParam String address) {
-        Team team = teamService.getTeamById(teamId);
-        return BaseResponse.successWithData(team);
+        TeamsMembersVo teamAndMembers = teamService.getTeamById(teamId);
+        return BaseResponse.successWithData(teamAndMembers);
     }
 
     /**
