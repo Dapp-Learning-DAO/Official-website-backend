@@ -4,7 +4,6 @@ package com.dl.officialsite.login.filter;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
-import com.dl.officialsite.login.enums.UserRoleEnum;
 import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.login.model.UserPrincipleData;
 import com.dl.officialsite.member.Member;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;

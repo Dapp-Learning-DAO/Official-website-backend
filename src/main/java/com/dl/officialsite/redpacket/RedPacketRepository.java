@@ -13,10 +13,10 @@ public interface RedPacketRepository extends JpaRepository<RedPacket, String>,  
 
 
     @Query(value = "select * from red_packet where address_list like ?1", nativeQuery = true)
-    List findByAddress(@Param("address") String address);
+    List<RedPacket> findByAddress(@Param("address") String address);
 
     @Query(value = "select * from red_packet where address_list like ?1 and  status = ?2 ", nativeQuery = true)
-    List findByAddressAndStatus(@Param("address") String address, @Param("status") Integer status);
+    List<RedPacket> findByAddressAndStatus(@Param("address") String address, @Param("status") Integer status);
 
 }
 

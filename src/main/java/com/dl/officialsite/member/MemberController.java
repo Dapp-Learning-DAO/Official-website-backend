@@ -1,6 +1,7 @@
 package com.dl.officialsite.member;
 
 
+import com.dl.officialsite.aave.AaveService;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.ipfs.IPFSService;
@@ -21,6 +22,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,13 +38,14 @@ public class MemberController {
 
     @Autowired
     private IPFSService ipfsService;
-
+@Autowired
+    AaveService aaveService;
 
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    BaseResponse getMemberByAddress(@RequestParam String address) {
-
+    BaseResponse getMemberByAddress(@RequestParam String address) throws Exception {
+        aaveService.getHF("0x85c05E14099C9aEA1d37E50E4431b0A92d2aA5A4");
         Optional<Member> member = memberRepository.findByAddress(address);
         if (!member.isPresent()) {
             return BaseResponse.failWithReason("1001", "no user found");
@@ -60,7 +63,7 @@ public class MemberController {
 
     @PostMapping(value = "/all/query")
     BaseResponse getAllMemberByCriteria(@RequestParam String address,
-                                        @RequestBody Member member,
+                                        @RequestBody MemberVo member,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
@@ -107,27 +110,24 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public BaseResponse createMember(@RequestBody Member member, @RequestParam String address) {
+    public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
         try {
             Member _member = memberRepository
                     .save(member);
             return BaseResponse.successWithData(_member);
         } catch (DataIntegrityViolationException e) {
+            //todo
             String mostSpecificCauseMessage = e.getMostSpecificCause().getMessage();
             if (e.getCause() instanceof ConstraintViolationException) {
                 String name = ((ConstraintViolationException) e.getCause()).getConstraintName();
                 logger.info("Encountered ConstraintViolationException, details: " + mostSpecificCauseMessage + "constraintName: "+ name);
             }
             return BaseResponse.failWithReason("1000", mostSpecificCauseMessage);
-        } catch (Exception e) {
-            logger.info("+++", e.getMessage());
-            //   e.printStackTrace();
-            return BaseResponse.failWithReason("1000", e.getMessage());
         }
     }
 
 
-    //todo ignore?
+    //ignore
     @PostMapping("/avatar/update")
     public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
         try {
@@ -146,21 +146,8 @@ public class MemberController {
     }
 
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Member> updateMember(@PathVariable("id") long id, @RequestBody Member member) {
-//        Optional<Member> memberData = memberRepository.findById(id);
-//
-//        if (memberData.isPresent()) {
-//            Member _member = memberData.get();
-//            _member.setAddress(member.getAddress());
-//            return new ResponseEntity<>(memberRepository.save(_member), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-
     @PutMapping("/update")
-    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody Member member) {
+    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member) {
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
         if (memberData.isPresent()) {

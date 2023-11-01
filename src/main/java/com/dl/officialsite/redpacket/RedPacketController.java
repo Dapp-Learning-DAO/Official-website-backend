@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,16 +38,12 @@ public class RedPacketController {
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 
-    //todo add authority
     @PostMapping("/create")
-    public BaseResponse createRedPacket(@RequestBody RedPacket redPacket, @RequestParam String address) {
+    public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
-        try {
-            RedPacket redPacket1 = redPacketRepository.save(redPacket);
-            return  BaseResponse.successWithData(redPacket1);
-        } catch (Exception e) {
-            return BaseResponse.failWithReason("1000",e.getMessage());
-        }
+        RedPacket redPacket1 = redPacketRepository.save(redPacket);
+        return  BaseResponse.successWithData(redPacket1);
+
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
@@ -61,7 +59,7 @@ public class RedPacketController {
 
     @RequestMapping(value = "/query/all", method = RequestMethod.GET)
     BaseResponse getRedPacketAll(@RequestParam String address,
-                              @RequestParam(defaultValue = "1") Integer pageNumber,
+                                @RequestParam(defaultValue = "1") Integer pageNumber,
                               @RequestParam(defaultValue = "10") Integer pageSize)   {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));

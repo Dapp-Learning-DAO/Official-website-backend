@@ -6,16 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.checkerframework.common.value.qual.StringVal;
-import org.jetbrains.annotations.NotNull;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -24,8 +20,14 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@DynamicUpdate
+@Table(name = "red_packet", schema = "dl", uniqueConstraints = {
+        @UniqueConstraint(name = "id", columnNames = {"id"}),
+        @UniqueConstraint(name = "name", columnNames = {"name"})})
+
 public class RedPacket {
     @NotNull
+    @Column(length = 66)
     private String  name;
     @NotNull
     @Id
@@ -44,9 +46,14 @@ public class RedPacket {
     @NotNull
     private String chainId;
 
+    //0 uncompleted  1 completed
     private  Integer status;
     private Long amount;
 
-    private String claimedAddress;
+    //usdc or dai
+    private String token;
+
+    @Convert(converter = StringListConverter.class)
+    private List<String> claimedAddress;
 
 }

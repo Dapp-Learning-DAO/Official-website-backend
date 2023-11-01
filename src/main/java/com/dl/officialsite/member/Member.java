@@ -2,25 +2,21 @@ package com.dl.officialsite.member;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.mapping.PrimaryKey;
-import org.jetbrains.annotations.NotNull;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)
@@ -36,10 +32,13 @@ public class Member  implements Serializable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 42)
+    @NotNull
     private String  address;
     @Column(unique=true,length = 40)
+    @NotNull
     private String email;
     @Column(unique=true,length = 20)
+    @NotNull
     private String nickName;
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
     @Column(unique=true,length = 20)
