@@ -45,6 +45,8 @@ start(){
         echo "==============================================================================================="
     else
         echo -n "Server $APP_MAIN Port $SERVER_PORT ..."
+        echo "$JAVA_CMD -agentlib:jdwp=transport=dt_socket,address=9093,server=y,suspend=n -Djdk.tls.namedGroups="secp256k1" $JAVA_OPTS -Djava.library.path=$CONF_DIR -cp $CLASSPATH $APP_MAIN >> $LOG_DIR/front.out 2>&1 &"
+
         nohup $JAVA_CMD -agentlib:jdwp=transport=dt_socket,address=9093,server=y,suspend=n -Djdk.tls.namedGroups="secp256k1" $JAVA_OPTS -Djava.library.path=$CONF_DIR -cp $CLASSPATH $APP_MAIN >> $LOG_DIR/front.out 2>&1 &
 
         count=1
