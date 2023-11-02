@@ -5,7 +5,7 @@ CURRENT_DIR=$(pwd)/
 CONF_DIR=${CURRENT_DIR}conf
 
 SERVER_PORT=$(cat $CONF_DIR/application.yml | grep "server:" -A 3 | grep "port" | awk '{print $2}'| sed 's/\r//')
-if [ ${SERVER_PORT}"" = "" ];then
+if [ "${SERVER_PORT}" = "" ];then
     echo "$CONF_DIR/application.yml server port has not been configured"
     exit -1
 fi
@@ -23,7 +23,7 @@ checkProcess(){
 stop(){
 	checkProcess
 	echo "==============================================================================================="
-	if [ $processPid -ne 0 ]; then
+	if [ "$processPid" -ne 0 ]; then
 	    echo -n "Stopping Server $APP_MAIN Port $SERVER_PORT PID($processPid)..."
 	    kill -9 $processPid
 	    if [ $? -eq 0 ]; then

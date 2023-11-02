@@ -1,0 +1,39 @@
+name: Official Backend CICD
+
+on:
+  push:
+    # 分支
+    branches: [ main ]
+  pull_request_target:
+    branches: [ main ]
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: |
+      github.event.pull_request.merged == true ||
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Building background
+    steps:
+      - run: |
+          echo Build is triggered
+      - name: deploy_app #开始部署
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} #服务器ip地址
+          username: ${{ secrets.USERNAME }} #服务器ssh用户名
+          password: ${{ secrets.PASSWORD }} #服务器ssh密码
+          port: ${{ secrets.PORT }} # 服务器ssh端口（默认22）
+          script: |
+            cd /root/Official-website-backend
+            rm -rf dist
+            git pull
+            bash ./gradlew build -x test
+            cd dist
+            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
+            bash stop.sh
+            bash start.sh
+
