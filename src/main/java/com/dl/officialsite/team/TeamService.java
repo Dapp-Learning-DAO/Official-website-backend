@@ -1,5 +1,7 @@
 package com.dl.officialsite.team;
 
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
+
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -112,6 +114,7 @@ public class TeamService {
 
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void approve(TeamMemberApproveVO teamMemberApproveVO) {
         List<Long> memberIds = teamMemberApproveVO.getMemberIds();
         List<TeamMember> teamMembers = new ArrayList<>();
@@ -127,11 +130,24 @@ public class TeamService {
         teamMemberRepository.saveAll(teamMembers);
         //发送邮件
         Team team = teamRepository.findById(teamMemberApproveVO.getTeamId()).get();
-        String subject = team.getTeamName() + "团队新成员加入申请";
-        List<String> mailAddress = new ArrayList<>();
-        //todo 这里需要确认有那些管理员
-        if (mailAddress.size() != 0) {
-            emailService.memberExitTeam(mailAddress, subject, subject);
+        String administratorAddress = team.getAdministrator();
+        if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+            Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+            if (admin.isPresent()) {
+                Member member = admin.get();
+                String email = member.getEmail();
+                String subject = team.getTeamName() + "团队新成员加入申请";
+                List<String> mailAddress = new ArrayList<>();
+                mailAddress.add(email);
+                emailService.memberExitTeam(mailAddress, subject, subject);
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            }
+
+        } else {
+            throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
         }
     }
 
