@@ -67,7 +67,7 @@ public class Member  implements Serializable
 
     //todo
     private Long workStatus;
-    @JsonIgnore
+
     private String resume;
 
 

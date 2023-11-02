@@ -161,6 +161,9 @@ public class MemberController {
             if(member.getWechatId()!=null) {
                 _member.setWechatId(member.getWechatId());
             }
+            if(member.getTelegramId()!=null) {
+                _member.setTelegramId(member.getTelegramId());
+            }
             if(member.getNickName()!=null) {
                 _member.setNickName(member.getNickName());
             }
