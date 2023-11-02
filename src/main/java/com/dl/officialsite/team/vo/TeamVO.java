@@ -12,6 +12,8 @@ import lombok.Data;
 @Data
 public class TeamVO {
 
+    private Long id;
+
     private String teamName;
 
     private String teamProfile;
@@ -21,6 +23,8 @@ public class TeamVO {
     private String nickName;
     // dao admin , core contributor,  builder
     private String authority;
+
+    private int status;
 
     private List<Long> members;
 }

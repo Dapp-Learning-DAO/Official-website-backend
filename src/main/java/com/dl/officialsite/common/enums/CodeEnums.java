@@ -17,7 +17,8 @@ public enum CodeEnums {
     MEMBER_NOT_IN_TEAM("1004", "member not in team"),
 
     TEAM_NOT_EXIST("1005", "team not exist"),
-    LOGIN_IN("2001", "please login");
+    LOGIN_IN("2001", "please login"),
+    TEAM_ADMIN_NOT_EXIST("1006", "team admin not exist");
 
     private String code;
 
