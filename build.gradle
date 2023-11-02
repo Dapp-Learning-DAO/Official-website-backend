@@ -3,7 +3,7 @@ plugins {
 	id 'idea'
 	id 'org.springframework.boot' version '2.7.16'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id "org.web3j" version "4.9.8"
+//	id "org.web3j" version "4.9.8"
 }
 
 group = 'com.dl'
@@ -22,6 +22,8 @@ configurations {
 repositories {
 	mavenCentral()
 	maven { url 'https://maven.aliyun.com/repository/public' }
+
+
 	maven { url 'https://jitpack.io' }
 }
 
@@ -80,17 +82,17 @@ jar {
 			into 'dist/lib'
 		}
 		copy {
-			from file('src/main/resources/application.yml')
+			from file('src/main/resources/application-template.yml')
 			into 'dist/conf/'
 		}
-//		copy {
-//			from file('src/main/resources/start.sh')
-//			into 'dist/'
-//		}
-//		copy {
-//			from file('src/main/resources/stop.sh')
-//			into 'dist/'
-//		}
+		copy {
+			from file('start.sh')
+			into 'dist/'
+		}
+		copy {
+			from file('stop.sh')
+			into 'dist/'
+		}
 		copy {
 			from file('.').listFiles().findAll { File f -> (f.name.endsWith('.sh') || f.name.endsWith('.env')) }
 			into 'dist'
@@ -104,13 +106,13 @@ clean {
 	delete 'build'
 	delete 'log'
 }
-
-web3j {
-	generatedPackageName = 'com.dl.officialsite.contract.{0}'
-	generatedFilesBaseDir = "src"
-	includedContracts = ['HappyRedPacket', 'ILendingPool', 'ILendingPoolAddressesProvider','IPoolAddressesProvider', "IPool"]
-	useNativeJavaTypes = true
-}
+//
+//web3j {
+//	generatedPackageName = 'com.dl.officialsite.contract.{0}'
+//	generatedFilesBaseDir = "src"
+//	includedContracts = ['HappyRedPacket', 'ILendingPool', 'ILendingPoolAddressesProvider','IPoolAddressesProvider', "IPool"]
+//	useNativeJavaTypes = true
+//}
 
 ext  {
 	web3jVersion = '4.9.3'
@@ -118,14 +120,14 @@ ext  {
 
 sourceSets {
 	main {
-		solidity {
-			srcDir {
-				"$project/src/main/solidity"
-			}
-		}
+//		solidity {
+//			srcDir {
+//				"$project/src/main/solidity"
+//			}
+//		}
 	}
 }
 
-node {
-	nodeProjectDir = file("./node")
-}
+//node {
+//	nodeProjectDir = file("./node")
+//}

@@ -1,0 +1,56 @@
+name: Official Backend CICD
+
+on:
+  push:
+    # 分支
+    branches: [ main ]
+  pull_request_target:
+    branches: [ main ]
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: |
+      github.event.pull_request.merged == true ||
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Building background
+    steps:
+      - run: |
+          echo Build is triggered
+      - uses: actions/checkout@v2 #拉取项目文件
+      - name: Set up JDK 8 #配置java环境
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          cache: 'gradle'
+      - name: Grant execute permission for gradlew  #更改脚本权限
+        run: chmod +x gradlew
+      - name: Build with Gradle  #开始打包 -x test 跳过测试
+        run: ./gradlew jar -x test
+      - name: Copy folder content recursively to remote
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: dist
+          remote: "/root/Dapp-Learning-Official-web/dist"
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }} # 服务器ssh端口（默认22）
+      - name: deploy_app #开始部署
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} #服务器ip地址
+          username: ${{ secrets.USERNAME }} #服务器ssh用户名
+          password: ${{ secrets.PASSWORD }} #服务器ssh密码
+          port: ${{ secrets.PORT }} # 服务器ssh端口（默认22）
+          script: |
+            cd /root/Dapp-Learning-Official-web/dist
+            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
+            echo setting DBPWD to $DBPWD
+            sed  "s/\${SPRING_DATASOURCE_PASSWORD}/$DBPWD/g" conf/application.yml > conf/application.yml
+            bash stop.sh
+            bash start.sh
