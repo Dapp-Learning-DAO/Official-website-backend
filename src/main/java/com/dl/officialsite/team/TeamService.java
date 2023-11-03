@@ -1,6 +1,5 @@
 package com.dl.officialsite.team;
 
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
@@ -8,7 +7,6 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
-import com.dl.officialsite.redpacket.RedPacket;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
@@ -79,7 +77,8 @@ public class TeamService {
             TeamsMembersVo teamsMembersVo = new TeamsMembersVo();
             BeanUtils.copyProperties(team, teamsMembersVo);
             List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), teamQueryVo.getStatus());
+            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(),
+                teamQueryVo.getStatus());
             memberIds.stream().forEach(memberId -> {
                 Member member = memberRepository.findById(memberId).get();
                 members.add(member);
@@ -128,7 +127,7 @@ public class TeamService {
             }
         });
         teamMemberRepository.saveAll(teamMembers);
-/*        //发送邮件
+        //发送邮件
         Team team = teamRepository.findById(teamMemberApproveVO.getTeamId()).get();
         String administratorAddress = team.getAdministrator();
         if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
@@ -148,9 +147,8 @@ public class TeamService {
         } else {
             throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                 CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-        }*/
+        }
     }
-
 
 
     public void exit(TeamMemberJoinVO teamMember) {
@@ -212,7 +210,7 @@ public class TeamService {
             BeanUtils.copyProperties(team, teamsMembersVo);
             return teamsMembersVo;
         } else {
-            throw  new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
+            throw new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
                 CodeEnums.TEAM_NOT_EXIST.getMsg());
         }
     }
