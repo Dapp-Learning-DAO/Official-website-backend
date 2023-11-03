@@ -128,7 +128,7 @@ public class TeamService {
             }
         });
         teamMemberRepository.saveAll(teamMembers);
-        //发送邮件
+/*        //发送邮件
         Team team = teamRepository.findById(teamMemberApproveVO.getTeamId()).get();
         String administratorAddress = team.getAdministrator();
         if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
@@ -148,7 +148,7 @@ public class TeamService {
         } else {
             throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                 CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-        }
+        }*/
     }
 
 
