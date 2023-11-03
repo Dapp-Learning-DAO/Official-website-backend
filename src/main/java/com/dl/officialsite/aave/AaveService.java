@@ -38,8 +38,8 @@ public class AaveService {
 
 
 //  1 完成自己地址的健康系数，总借款，总存款， LTV数据获取
-//  2  完成USDC、DAI、USDT 借贷利率的获取
-// 3 完成ETH 、BTC借贷利率获取
+//  2  完成USDC、DAI、USDT,LUSD 借贷利率的获取
+// 3 完成ETH 、BTC借贷利率 以及价格获取。
 // 4 用DL的官网邮箱 发送team0 成员，这些数据。 每天发送一次。
 // 5  半小时调一次接口 ，如果HF< 1.2 。立即发送邮件告警；
 
