@@ -19,10 +19,10 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5Dialect
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: yanyanho126@gmail.com
-    password: ${GMAIL_PASSWORD}
+    host: smtp.163.com
+    port: 465
+    username: 15503679582@163.com
+    password: OXWEDGWEOGIGVWJN
     properties:
       mail:
         smtp:
