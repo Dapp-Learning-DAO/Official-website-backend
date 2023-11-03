@@ -12,6 +12,8 @@
 .gitignore
 ./src/main/resources/
 
+HappyRedPacket.java
+
 # Package Files #
 *.jar
 *.war
@@ -39,7 +41,7 @@ gradle.properties
 
 /target
 /out
-/src/test
+#/src/test
 .env
 /dist
 wallet/%
