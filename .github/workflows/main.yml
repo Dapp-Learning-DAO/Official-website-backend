@@ -4,15 +4,11 @@ on:
   push:
     # 分支
     branches: [ main ]
-  pull_request_target:
-    branches: [ main ]
-    types: [closed]
   workflow_dispatch:
 
 jobs:
   build:
     if: |
-      github.event.pull_request.merged == true ||
       github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
