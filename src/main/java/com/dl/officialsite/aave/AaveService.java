@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
@@ -42,10 +43,12 @@ public class AaveService {
         String poolAddress = poolAddressesProvider.getPool().send();
         log.info("poolAddress is : " + poolAddress);
         IPool pool = IPool.load(poolAddress, web3j, credentials, GAS_PROVIDER);
-        BigInteger totalCollateralBase = pool.getUserAccountData(address).send().component1();
-        BigInteger totalDebtBase = pool.getUserAccountData(address).send().component2();
-        BigInteger ltv = pool.getUserAccountData(address).send().component5();
-        BigInteger healthFactor = pool.getUserAccountData(address).send().component6();
+        Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> info = pool.getUserAccountData(
+            address).send();
+        BigInteger totalCollateralBase = info.component1();
+        BigInteger totalDebtBase = info.component2();
+        BigInteger ltv = info.component5();
+        BigInteger healthFactor = info.component6();
         HealthInfo healthInfo = HealthInfo.builder()
             .healthFactor(healthFactor)
             .totalBorrows(totalDebtBase.toString())
