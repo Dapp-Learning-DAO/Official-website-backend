@@ -5,7 +5,12 @@ CLASSPATH='conf/:apps/*:lib/*'
 CURRENT_DIR=$(pwd)/
 LOG_DIR=${CURRENT_DIR}log
 CONF_DIR=${CURRENT_DIR}conf
-cat conf/application.yml | sed "s/{{SPRING_DATASOURCE_PASSWORD}}/$DBPWD/g" conf/application-template.yml > conf/application.yml
+if [[ -n "$DBPWD" ]];then
+  sed "s/{{SPRING_DATASOURCE_PASSWORD}}/$DBPWD/g" conf/application-template.yml > conf/application.yml
+else
+  echo "by hand"
+fi
+
 SERVER_PORT=$(cat $CONF_DIR/application.yml | grep "server:" -A 3 | grep "port" | awk '{print $2}'| sed 's/\r//')
 if [ ${SERVER_PORT}"" = "" ];then
     echo "$CONF_DIR/application.yml server port has not been configured"
