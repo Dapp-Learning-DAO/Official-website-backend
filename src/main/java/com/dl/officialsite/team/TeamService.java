@@ -104,6 +104,27 @@ public class TeamService {
             TeamMember teamMember2 = optional.get();
             teamMember2.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember2);
+            //发送邮件
+            Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            String administratorAddress = team.getAdministrator();
+            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+                if (admin.isPresent()) {
+                    Member member1 = admin.get();
+                    String email = member1.getEmail();
+                    String subject = team.getTeamName() + "团队新成员加入申请";
+                    List<String> mailAddress = new ArrayList<>();
+                    mailAddress.add(email);
+                    emailService.memberExitTeam(mailAddress, subject, subject);
+                } else {
+                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                }
+
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            }
         } else {
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
@@ -127,27 +148,6 @@ public class TeamService {
             }
         });
         teamMemberRepository.saveAll(teamMembers);
-        //发送邮件
-        Team team = teamRepository.findById(teamMemberApproveVO.getTeamId()).get();
-        String administratorAddress = team.getAdministrator();
-        if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
-            Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
-            if (admin.isPresent()) {
-                Member member = admin.get();
-                String email = member.getEmail();
-                String subject = team.getTeamName() + "团队新成员加入申请";
-                List<String> mailAddress = new ArrayList<>();
-                mailAddress.add(email);
-                emailService.memberExitTeam(mailAddress, subject, subject);
-            } else {
-                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-            }
-
-        } else {
-            throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-        }
     }
 
 
