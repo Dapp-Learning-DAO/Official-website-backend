@@ -19,7 +19,7 @@ import org.web3j.tx.gas.StaticGasProvider;
  * @Description TODO
  **/
 @Component
-public class Compent {
+public class Constant {
 
     public static ContractGasProvider GAS_PROVIDER = new StaticGasProvider(GAS_PRICE, GAS_LIMIT);
 
