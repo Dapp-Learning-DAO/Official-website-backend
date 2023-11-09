@@ -2,7 +2,7 @@ server:
   port: 8080
   servlet:
     session:
-      timeout: 6m
+      timeout: 60m
       cookie:
         max-age: -1
 spring:
@@ -10,8 +10,8 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
 #type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: 12345678
-#    password: {{SPRING_DATASOURCE_PASSWORD}}
+    #password: 12345678
+    password: {{SPRING_DATASOURCE_PASSWORD}}
   jpa:
     hibernate:
      ddl-auto: update

@@ -18,5 +18,12 @@ public interface RedPacketRepository extends JpaRepository<RedPacket, String>,  
     @Query(value = "select * from red_packet where address_list like ?1 and  status = ?2 ", nativeQuery = true)
     List<RedPacket> findByAddressAndStatus(@Param("address") String address, @Param("status") Integer status);
 
+
+    @Query(value = "select * from red_packet where address_list like ?1 and  claimed_address not like ?1  and status = ?2", nativeQuery = true)
+    List<RedPacket> findByUnclaimedPacket(@Param("address") String address,  @Param("status") Integer status);
+
+
+    RedPacket findByIdAndStatus(@Param("id") String id,  @Param("status") Integer status);
+
 }
 

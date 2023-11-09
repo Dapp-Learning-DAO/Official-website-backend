@@ -13,4 +13,6 @@ public class Hiring {
    private String  salary;
    private String memo;
 
+   private String contact;
+
 }
