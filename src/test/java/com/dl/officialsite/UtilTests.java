@@ -1,20 +1,19 @@
 package com.dl.officialsite;
 
+import static org.web3j.crypto.Sign.getEthereumMessageHash;
+import static org.web3j.utils.Numeric.hexStringToByteArray;
+
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.member.MemberController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigInteger;
+import java.security.SignatureException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
-
-import java.math.BigInteger;
-import java.security.SignatureException;
-
-import static org.web3j.crypto.Sign.getEthereumMessageHash;
-import static org.web3j.utils.Numeric.hexStringToByteArray;
 
 
 class UtilTests {
