@@ -60,8 +60,8 @@ dependencies {
 
 
 	//graphql
-	implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
-	implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
+//	implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
+//	implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 	implementation("com.apollographql.apollo:apollo-runtime:2.5.14")
 	//implementation 'org.hibernate.validator:hibernate-validator:6.0.10.Final'
