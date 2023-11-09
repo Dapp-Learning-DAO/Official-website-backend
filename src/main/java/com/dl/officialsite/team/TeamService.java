@@ -133,6 +133,28 @@ public class TeamService {
             BeanUtils.copyProperties(teamMember, teamMember1);
             teamMember1.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember1);
+            //发送邮件
+            Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            String administratorAddress = team.getAdministrator();
+            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+                if (admin.isPresent()) {
+                    Member member1 = admin.get();
+                    String email = member1.getEmail();
+                    String subject = team.getTeamName() + "团队新成员加入申请";
+                    List<String> mailAddress = new ArrayList<>();
+                    mailAddress.add(email);
+                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
+                    emailService.memberJoinTeam(mailAddress, subject, subject);
+                } else {
+                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                }
+
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            }
         }
 
     }
