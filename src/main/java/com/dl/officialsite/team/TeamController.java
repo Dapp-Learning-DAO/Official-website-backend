@@ -36,7 +36,7 @@ public class TeamController {
      * 新增团队
      */
     @PutMapping
-    BaseResponse add(@RequestBody TeamVO team, @RequestParam String address) {
+    BaseResponse create(@RequestBody TeamVO team, @RequestParam String address) {
         teamService.add(team);
         return BaseResponse.successWithData(team);
     }

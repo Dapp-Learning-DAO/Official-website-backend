@@ -19,3 +19,13 @@ services:
       - "4001:4001"
     volumes:
       - ./data/ipfs:/data/ipfs
+  nginx:
+    container_name: mynginx
+    image: nginx:latest
+    ports:
+        - '80:80'
+    volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
+#        - ./conf.d:/etc/nginx/conf.d
+#        - ./logs:/var/log/nginx
+    restart: always
