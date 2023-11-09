@@ -115,7 +115,7 @@ public class TeamService {
                     String subject = team.getTeamName() + "团队新成员加入申请";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
-                    emailService.memberExitTeam(mailAddress, subject, subject);
+                    emailService.memberJoinTeam(mailAddress, subject, subject);
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                         CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
