@@ -25,6 +25,7 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 /root/graph-node/docker/data/ipfs 
 
 ## graph ql 集成
+"https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest"
 
 ## TODO
 1. 头像 简历
