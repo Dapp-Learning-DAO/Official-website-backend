@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,6 +33,7 @@ import org.springframework.util.ObjectUtils;
  * @Date 2023/10/21 17:23
  * @Description TODO
  **/
+@Slf4j
 @Service
 public class TeamService {
 
@@ -89,6 +91,7 @@ public class TeamService {
         return teamsMembersVos;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void join(TeamMemberJoinVO teamMember) {
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
 /*        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
@@ -104,11 +107,55 @@ public class TeamService {
             TeamMember teamMember2 = optional.get();
             teamMember2.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember2);
+            //发送邮件
+            Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            String administratorAddress = team.getAdministrator();
+            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+                if (admin.isPresent()) {
+                    Member member1 = admin.get();
+                    String email = member1.getEmail();
+                    String subject = team.getTeamName() + "团队新成员加入申请";
+                    List<String> mailAddress = new ArrayList<>();
+                    mailAddress.add(email);
+                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
+                    emailService.memberJoinTeam(mailAddress, subject, subject);
+                } else {
+                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                }
+
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            }
         } else {
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
             teamMember1.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember1);
+            //发送邮件
+            Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            String administratorAddress = team.getAdministrator();
+            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+                if (admin.isPresent()) {
+                    Member member1 = admin.get();
+                    String email = member1.getEmail();
+                    String subject = team.getTeamName() + "团队新成员加入申请";
+                    List<String> mailAddress = new ArrayList<>();
+                    mailAddress.add(email);
+                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
+                    emailService.memberJoinTeam(mailAddress, subject, subject);
+                } else {
+                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                }
+
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            }
         }
 
     }
@@ -127,27 +174,6 @@ public class TeamService {
             }
         });
         teamMemberRepository.saveAll(teamMembers);
-        //发送邮件
-        Team team = teamRepository.findById(teamMemberApproveVO.getTeamId()).get();
-        String administratorAddress = team.getAdministrator();
-        if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
-            Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
-            if (admin.isPresent()) {
-                Member member = admin.get();
-                String email = member.getEmail();
-                String subject = team.getTeamName() + "团队新成员加入申请";
-                List<String> mailAddress = new ArrayList<>();
-                mailAddress.add(email);
-                emailService.memberExitTeam(mailAddress, subject, subject);
-            } else {
-                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-            }
-
-        } else {
-            throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-        }
     }
 
 
