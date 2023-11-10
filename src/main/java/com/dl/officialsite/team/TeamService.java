@@ -91,6 +91,7 @@ public class TeamService {
         return teamsMembersVos;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void join(TeamMemberJoinVO teamMember) {
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
 /*        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
