@@ -105,6 +105,10 @@ public class TeamService {
             , teamMember.getMemberId());
         if (optional.isPresent()) {
             TeamMember teamMember2 = optional.get();
+            if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
+                throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
+                    CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
+            }
             teamMember2.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember2);
             //发送邮件
