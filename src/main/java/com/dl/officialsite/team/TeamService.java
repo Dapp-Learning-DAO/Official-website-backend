@@ -115,7 +115,7 @@ public class TeamService {
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员加入申请";
+                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
@@ -142,7 +142,7 @@ public class TeamService {
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员加入申请";
+                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
