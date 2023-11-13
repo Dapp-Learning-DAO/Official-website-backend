@@ -120,10 +120,11 @@ public class TeamService {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
                     String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
+                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
-                    emailService.memberJoinTeam(mailAddress, subject, subject);
+                    emailService.memberJoinTeam(mailAddress, subject, content);
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                         CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
@@ -147,10 +148,11 @@ public class TeamService {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
                     String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
+                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
-                    emailService.memberJoinTeam(mailAddress, subject, subject);
+                    emailService.memberJoinTeam(mailAddress, subject, content);
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                         CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
