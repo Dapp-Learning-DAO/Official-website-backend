@@ -55,7 +55,7 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "0 0/3 * * * ? ")
+    @Scheduled(cron = "0 0/120 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         HttpPost request = new HttpPost("https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
