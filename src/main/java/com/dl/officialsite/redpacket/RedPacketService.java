@@ -57,7 +57,7 @@ public class RedPacketService {
 
     @Scheduled(cron = "0 0/3 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
-        log.info("schedule task begin --------------------- " );
+        log.info("schedule task begin --------------------- ");
         HttpPost request = new HttpPost("https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
@@ -87,50 +87,58 @@ public class RedPacketService {
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
 
-            //log.info("redpacket array : " + redpacketsArray);
+            log.info("redpacket array : " + redpacketsArray);
+            List<RedPacket> redPacketList = redPacketRepository.findByStatus(0);
+
             for (int i = 0; i < redpacketsArray.size(); i++) {
                 // Access each element in the array
                 JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-              //  log.info("redpackt object : " + redpacketObject);
+                //  log.info("redpackt object : " + redpacketObject);
                 String id = redpacketObject.get("id").getAsString();
-             //   log.info("id: " + id);
-                RedPacket redPacket = redPacketRepository.findByIdAndStatus(id,0);
-                log.info("redPacket: " + redPacket);
-                if(redPacket == null )
-                    continue;
-               String hasRefundedOrAllClaimed  =   redpacketObject.get("hasRefundedOrAllClaimed").getAsString();
-                Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
+                //   log.info("id: " + id);
+                for (int j = 0; j < redPacketList.size(); j++) {
 
-                if (claimed) {
-                    log.info( "redpacket id: "+id +  "claimed: "  );
-                    redPacket.setStatus(1);
-                    redPacketRepository.save(redPacket);
-                    continue;
-                }
-                JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
+                    RedPacket redPacket = redPacketList.get(j);
+                    log.info("redPacket: " + redPacket);
+                    if (!redPacketList.get(j).getId().equals(id))
+                        continue;
 
-                // redPacket.getAddressList() is the total claimer.
-                if(claimers.size() == redPacket.getAddressList().size()) {
-                    log.info( "redpacket id: "+id +  " aLL claimed  "  );
-                    redPacket.setStatus(1);
-                    redPacketRepository.save(redPacket);
-                    continue;
-                }
+//                    Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
+//
+//                    if (claimed) {
+//                        log.info("redpacket id: " + id + "claimed: ");
+//                        redPacket.setStatus(1);
+//                        redPacketRepository.save(redPacket);
+//                        continue;
+//                    }
 
-                if (claimers.size() > redPacket.getClaimedAddress().size()) {
-                    ArrayList<String> claimersList = new ArrayList<>();
 
-                    for (int j = 0; j < claimers.size(); j++) {
-                        String s = claimers.get(j).getAsJsonObject().get("claimer").getAsString();
-                        //log.info("claimer address: " + s);
-                        claimersList.add(s);
+                    JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
+
+                    // redPacket.getAddressList() is the total claimer.
+                    if (claimers.size() == redPacket.getAddressList().size()) {
+                        log.info("redpacket id: " + id + " aLL claimed  ");
+                        redPacket.setStatus(1);
+                        redPacketRepository.save(redPacket);
+                        continue;
                     }
-                    redPacket.setClaimedAddress(claimersList);
-                    log.info( "update claimed address : " + id  );
-                    redPacketRepository.save(redPacket);
+
+                    if (claimers.size() > redPacket.getClaimedAddress().size()) {
+                        ArrayList<String> claimersList = new ArrayList<>();
+
+                        //todo
+                        for (int k = 0; k < claimers.size(); k++) {
+                            String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
+                            //log.info("claimer address: " + s);
+                            claimersList.add(s);
+                        }
+                        redPacket.setClaimedAddress(claimersList);
+                        log.info("update claimed address : " + id);
+                        redPacketRepository.save(redPacket);
+
+
+                    }
                 }
-
-
             }
         }
     }

@@ -12,6 +12,8 @@ spring:
     username: root
     #password: 12345678
     password: {{SPRING_DATASOURCE_PASSWORD}}
+    maximum-pool-size: 20
+
   jpa:
     hibernate:
      ddl-auto: update

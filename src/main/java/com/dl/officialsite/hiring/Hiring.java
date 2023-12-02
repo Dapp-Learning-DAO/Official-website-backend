@@ -3,7 +3,6 @@ package com.dl.officialsite.hiring;
 
 
 public class Hiring {
-
     private String headline;
     private  String employer;
    private String jd;

@@ -25,5 +25,7 @@ public interface RedPacketRepository extends JpaRepository<RedPacket, String>,  
 
     RedPacket findByIdAndStatus(@Param("id") String id,  @Param("status") Integer status);
 
+    List<RedPacket> findByStatus(@Param("status") Integer status);
+
 }
 
