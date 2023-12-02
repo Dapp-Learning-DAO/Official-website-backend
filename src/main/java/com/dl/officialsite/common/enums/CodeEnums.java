@@ -18,7 +18,8 @@ public enum CodeEnums {
 
     TEAM_NOT_EXIST("1005", "team not exist"),
     LOGIN_IN("2001", "please login"),
-    TEAM_ADMIN_NOT_EXIST("1006", "team admin not exist");
+    TEAM_ADMIN_NOT_EXIST("1006", "team admin not exist"),
+    MEMBER_ALREADY_REQUEST_TEAM("1007", "member already request team");
 
     private String code;
 
