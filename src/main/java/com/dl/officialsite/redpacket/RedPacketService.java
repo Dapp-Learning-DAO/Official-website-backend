@@ -58,7 +58,7 @@ public class RedPacketService {
     @Scheduled(cron = "0 0/2 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
-        HttpPost request = new HttpPost("https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
+        HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
 
