@@ -36,8 +36,8 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private IPFSService ipfsService;
+//    @Autowired
+//    private IPFSService ipfsService;
 @Autowired
     AaveService aaveService;
 
@@ -128,22 +128,22 @@ public class MemberController {
 
 
     //ignore
-    @PostMapping("/avatar/update")
-    public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
-        try {
-            String hash = ipfsService.upload(file.getBytes());
-            Optional<Member> memberData = memberRepository.findByAddress(address);
-            if (memberData.isPresent()) {
-                Member _member = memberData.get();
-                _member.setAvatar(hash);
-                memberRepository.save(_member);
-            }
-            return BaseResponse.successWithData(null);
-        } catch (Exception e) {
-            return BaseResponse.failWithReason(CodeEnums.FAIL_UPLOAD_FAIL.getCode(),
-                CodeEnums.FAIL_UPLOAD_FAIL.getMsg());
-        }
-    }
+//    @PostMapping("/avatar/update")
+//    public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
+//        try {
+//            String hash = ipfsService.upload(file.getBytes());
+//            Optional<Member> memberData = memberRepository.findByAddress(address);
+//            if (memberData.isPresent()) {
+//                Member _member = memberData.get();
+//                _member.setAvatar(hash);
+//                memberRepository.save(_member);
+//            }
+//            return BaseResponse.successWithData(null);
+//        } catch (Exception e) {
+//            return BaseResponse.failWithReason(CodeEnums.FAIL_UPLOAD_FAIL.getCode(),
+//                CodeEnums.FAIL_UPLOAD_FAIL.getMsg());
+//        }
+//    }
 
 
     @PutMapping("/update")
