@@ -13,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 
-@Component
+//@Component
 public class IPFSService {
 
 
