@@ -1,11 +1,20 @@
-package com.dl.officialsite.sharing.model.req;
+package com.dl.officialsite.sharing.model.db;
 
 import lombok.Data;
 
-
+import javax.persistence.*;
 
 @Data
-public class CreateSharingReq {
+@Entity
+@Table(name = "tb_share")
+public class SharingEntity {
+
+    /**
+     * 分享Id
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     /**
      * 分享主题
@@ -43,14 +52,23 @@ public class CreateSharingReq {
     private String twitter;
 
     /**
+     * 分享人
+     */
+    private String memberId;
+
+    /**
      * 文档连接
      */
     private String sharingDoc;
-
 
     /**
      * 标签类别
      */
     //defi zk underlying
     private String label;
+
+    /**
+     * 奖励金额
+     */
+    private  Integer reward;
 }
