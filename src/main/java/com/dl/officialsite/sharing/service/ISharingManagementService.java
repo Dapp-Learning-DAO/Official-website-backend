@@ -2,10 +2,9 @@ package com.dl.officialsite.sharing.service;
 
 import com.dl.officialsite.sharing.model.req.CreateSessionRoomReq;
 import com.dl.officialsite.sharing.model.req.GenerateSharingDataReq;
-import com.dl.officialsite.sharing.model.req.InitSharingRewardsReq;
-import com.dl.officialsite.sharing.model.resp.CreateSessionRoomResp;
-import com.dl.officialsite.sharing.model.resp.PrepareSharingRewardsResp;
+import com.dl.officialsite.sharing.model.resp.CreateMeetingRoomResp;
 import com.dl.officialsite.sharing.model.resp.GenerateSharingDataResp;
+import com.dl.officialsite.sharing.model.resp.QueryMeetingResp;
 
 /**
  * 管理分享
@@ -25,27 +24,25 @@ public interface ISharingManagementService {
 
 
     /**
-     * 创建session room
+     * 创建meeting room
      * @param req
      * @return
      */
-    CreateSessionRoomResp createSessionRoom(CreateSessionRoomReq req);
+    CreateMeetingRoomResp createSessionRoom(CreateSessionRoomReq req);
+
+    /**
+     * 查看room
+     * @param shareId
+     * @return
+     */
+    QueryMeetingResp queryMeeting(long shareId);
 
     /**
      * 生成分享海报、文案
      * @param req
      * @return
      */
-    GenerateSharingDataResp generateSharingData(GenerateSharingDataReq req);
-
-
-    /**
-     * 选择一批已完成的分享发放奖励
-     * @param req
-     * @return
-     */
-    PrepareSharingRewardsResp prepareRewards(InitSharingRewardsReq req);
-
+    GenerateSharingDataResp viewSharingData(GenerateSharingDataReq req);
 
 
 }

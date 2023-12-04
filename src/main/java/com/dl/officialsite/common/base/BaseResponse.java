@@ -26,6 +26,14 @@ public class BaseResponse<T> {
         return br;
     }
 
+    public static  BaseResponse success(){
+        BaseResponse br = new BaseResponse<>();
+        br.setCode(CodeEnums.SUCCESSFUL.getCode());
+        br.setMsg(CodeEnums.SUCCESSFUL.getMsg());
+        br.setData(null);
+        return br;
+    }
+
     public static <T> BaseResponse failWithReason(String code, String msg){
         return new BaseResponse(code, msg, null);
     }
