@@ -1,8 +1,6 @@
-package com.dl.officialsite.sharing;
+package com.dl.officialsite.sharing.model.pojo;
 
-import com.dl.officialsite.member.Member;
-
-public class Sharing {
+public class SharingPojo {
 
     private Long id;
     private String theme;
@@ -24,14 +22,6 @@ public class Sharing {
     private String label;
 
      private  Integer reward;
-
-
-
-
-
-
-
-
 
 
 }
