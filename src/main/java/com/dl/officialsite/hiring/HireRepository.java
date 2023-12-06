@@ -9,5 +9,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Description TODO
  **/
 public interface HireRepository extends JpaRepository<Hiring, Long> {
-
 }
