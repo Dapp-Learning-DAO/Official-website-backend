@@ -23,52 +23,57 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
     @Autowired
     private ISharingRepository repository;
 
+//    @Override
+//    public long createSharing(CreateSharingReq req) {
+//        Member member = HttpSessionUtils.getMember();
+//        log.info("createSharing start, uid");
+//        SharingEntity entity = new SharingEntity();
+//        entity.setTheme(req.getTheme());
+//        entity.setDate(req.getDate());
+//        entity.setTime(req.getTime());
+//        entity.setPresenter(req.getPresenter());
+//        entity.setOrg(req.getOrg());
+//        entity.setTwitter(req.getTwitter());
+//        entity.setMemberId(req.getMe);
+//
+////        /**
+////         * 分享所属组织
+////         */
+////        private String Org;
+////
+////        /**
+////         * 分享人twitter
+////         */
+////        private String twitter;
+////
+////        /**
+////         * 分享人
+////         */
+////        private String memberId;
+////
+////        /**
+////         * 文档连接
+////         */
+////        private String sharingDoc;
+////
+////        /**
+////         * 标签类别
+////         */
+////        //defi zk underlying
+////        private String label;
+////
+////        /**
+////         * 奖励金额
+////         */
+////        private  Integer reward;
+//
+//        repository.save()
+//
+//    }
+
     @Override
     public long createSharing(CreateSharingReq req) {
-        Member member = HttpSessionUtils.getMember();
-        log.info("createSharing start, uid");
-        SharingEntity entity = new SharingEntity();
-        entity.setTheme(req.getTheme());
-        entity.setDate(req.getDate());
-        entity.setTime(req.getTime());
-        entity.setPresenter(req.getPresenter());
-        entity.setOrg(req.getOrg());
-        entity.setTwitter(req.getTwitter());
-        entity.setMemberId(req.getMe);
-
-//        /**
-//         * 分享所属组织
-//         */
-//        private String Org;
-//
-//        /**
-//         * 分享人twitter
-//         */
-//        private String twitter;
-//
-//        /**
-//         * 分享人
-//         */
-//        private String memberId;
-//
-//        /**
-//         * 文档连接
-//         */
-//        private String sharingDoc;
-//
-//        /**
-//         * 标签类别
-//         */
-//        //defi zk underlying
-//        private String label;
-//
-//        /**
-//         * 奖励金额
-//         */
-//        private  Integer reward;
-
-        repository.save()
-
+        return 0;
     }
 
     @Override
