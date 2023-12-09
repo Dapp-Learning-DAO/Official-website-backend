@@ -1,11 +1,9 @@
 package com.dl.officialsite.sharing.service;
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.sharing.model.req.InitSharingRewardsReq;
 import com.dl.officialsite.sharing.model.resp.ClaimSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.PreCheckSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.PrepareSharingRewardsResp;
-import org.springframework.web.bind.annotation.GetMapping;
 
 public interface IRewardService {
 

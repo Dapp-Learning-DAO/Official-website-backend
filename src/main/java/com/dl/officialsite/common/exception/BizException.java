@@ -1,5 +1,6 @@
 package com.dl.officialsite.common.exception;
 
+import com.dl.officialsite.common.enums.CodeEnums;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,6 +17,12 @@ public class BizException extends RuntimeException{
     private String code;
 
     private String msg;
+
+    public BizException(CodeEnums codeEnums){
+        super(codeEnums.getMsg());
+        this.code = codeEnums.getCode();
+        this.msg = codeEnums.getMsg();
+    }
 
     public BizException(String code, String msg) {
         super(msg);

@@ -41,6 +41,7 @@ public abstract class HttpSessionUtils {
         return (SessionUserInfo)sessionObj;
     }
 
+
     public static void requireLogin(HttpSession session) {
         SessionUserInfo sessionUserInfo = getMember(session);
         if (!isUserLogin(session)) {
@@ -56,4 +57,6 @@ public abstract class HttpSessionUtils {
 
         session.removeAttribute(MEMBER_ATTRIBUTE_KEY);
     }
+
+
 }

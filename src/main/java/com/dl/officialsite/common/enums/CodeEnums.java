@@ -19,7 +19,13 @@ public enum CodeEnums {
     TEAM_NOT_EXIST("1005", "team not exist"),
     LOGIN_IN("2001", "please login"),
     TEAM_ADMIN_NOT_EXIST("1006", "team admin not exist"),
-    MEMBER_ALREADY_REQUEST_TEAM("1007", "member already request team");
+    MEMBER_ALREADY_REQUEST_TEAM("1007", "member already request team"),
+
+    //Sharing
+    SHARING_NOT_FOUND("5001", "Sharing not found"),
+    SHARING_NOT_OWNER("5002", "You are no sharing user"),
+
+    SHARING_LOCKED("5003", "Sharing locked, please contact admin to unlock");
 
     private String code;
 
