@@ -12,10 +12,30 @@ import lombok.Data;
 @Data
 public class HiringVO {
 
+    private Long id;
 
     private String position;
 
     private String description;
 
-    private List<String> skill;
+    private String  location;
+
+    private String  email;
+
+    private List<String> mainSkills;
+
+    private List<String> otherSkills;
+
+    private String company;
+
+    private String invoice;
+
+    private int minYearlySalary;
+
+    private int maxYearlySalary;
+
+    private String benefits;
+
+    private String twitter;
+
 }

@@ -22,4 +22,14 @@ public class Constants {
     public static final int REQUEST_TEAM = 1;
 
     public static final int EXIT_TEAM = 2;
+
+    /**
+     *  主要技术类型
+     */
+    public static final int HIRING_MAIN_SKILL = 1;
+
+    /**
+     *  辅助技术类型
+     */
+    public static final int HIRING_OTHER_SKILL = 2;
 }

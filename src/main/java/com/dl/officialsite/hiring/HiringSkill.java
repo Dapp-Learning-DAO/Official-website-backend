@@ -26,4 +26,6 @@ public class HiringSkill {
 
     private String skill;
 
+    private int type;
+
 }

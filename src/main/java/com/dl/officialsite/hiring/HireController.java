@@ -4,6 +4,10 @@ import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.hiring.vo.HiringVO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +32,7 @@ public class HireController {
      * 添加简历
      */
     @PostMapping
-    public BaseResponse add(@RequestBody HiringVO hiringVO) {
+    public BaseResponse add(@RequestParam String address,@RequestBody HiringVO hiringVO) {
         hireService.add(hiringVO);
         return BaseResponse.successWithData(null);
     }
@@ -37,7 +41,7 @@ public class HireController {
      * 查询简历详情
      */
     @GetMapping
-    public BaseResponse detail(@RequestParam Long id) {
+    public BaseResponse detail(@RequestParam String address,@RequestParam Long id) {
         HiringVO hiringVO = hireService.detail(id);
         return BaseResponse.successWithData(hiringVO);
     }
@@ -46,17 +50,20 @@ public class HireController {
      * 查询所有简历
      */
     @GetMapping("/all")
-    public BaseResponse all() {
-        List<HiringVO> hiring = hireService.all();
-        return BaseResponse.successWithData(hiring);
+    public BaseResponse all(@RequestParam String address,
+        @RequestParam(defaultValue = "1") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Page<HiringVO> all = hireService.all(pageable);
+        return BaseResponse.successWithData(all);
     }
 
     /**
      * 按照类型查看简历
      */
     @GetMapping("/type")
-    public BaseResponse all(@RequestParam List<String> type) {
-        List<HiringVO> hiringVOList = hireService.selectByType(type);
+    public BaseResponse all(@RequestParam String address,@RequestParam List<String> skills) {
+        List<HiringVO> hiringVOList = hireService.selectBySkills(skills);
         return BaseResponse.successWithData(hiringVOList);
     }
 
