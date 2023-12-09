@@ -1,20 +1,12 @@
 package com.dl.officialsite.redpacket;
 
 
-import com.dl.officialsite.common.constants.Constants;
-import com.dl.officialsite.common.enums.CodeEnums;
-import com.dl.officialsite.common.exception.BizException;
-import com.dl.officialsite.mail.EmailService;
-import com.dl.officialsite.member.Member;
-import com.dl.officialsite.member.MemberRepository;
-import com.dl.officialsite.team.Team;
-import com.dl.officialsite.team.TeamMember;
-import com.dl.officialsite.team.TeamMemberRepository;
-import com.dl.officialsite.team.TeamRepository;
-import com.dl.officialsite.team.vo.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,22 +15,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @ClassName TeamService
@@ -58,6 +37,7 @@ public class RedPacketService {
     @Scheduled(cron = "0 0/2 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
+        System.out.println("验证是否是新代码--------------");
         HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query

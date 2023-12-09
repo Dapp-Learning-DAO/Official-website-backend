@@ -3,6 +3,7 @@ package com.dl.officialsite.team;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
+import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamVO;
@@ -47,6 +48,15 @@ public class TeamController {
     @PutMapping("/join")
     BaseResponse join(@RequestBody TeamMemberJoinVO teamMember, @RequestParam String address) {
         teamService.join(teamMember);
+        return BaseResponse.successWithData(null);
+    }
+
+    /**
+     * 批量加入团队
+     */
+    @PostMapping("/join/batch")
+    BaseResponse batchJoin(@RequestBody TeamMemberBatchJoinVO teamMembers, @RequestParam String address) {
+        teamService.batchJoin(teamMembers);
         return BaseResponse.successWithData(null);
     }
 
