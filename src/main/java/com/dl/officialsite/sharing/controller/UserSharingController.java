@@ -1,16 +1,15 @@
 package com.dl.officialsite.sharing.controller;
 
 import com.dl.officialsite.common.base.BaseResponse;
-import com.dl.officialsite.sharing.model.pojo.SharingPojo;
+import com.dl.officialsite.sharing.model.vo.SharingVo;
 import com.dl.officialsite.sharing.model.req.CreateSharingReq;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.AllSharingResp;
-import com.dl.officialsite.sharing.model.resp.ClaimSharingRewardResp;
-import com.dl.officialsite.sharing.model.resp.PreCheckSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.SharingByUserResp;
 import com.dl.officialsite.sharing.service.IUserSharingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,7 +54,8 @@ public class UserSharingController {
      * 查看全部分享
      * @return
      */
-    public BaseResponse<AllSharingResp> loadSharing(int pageNo, int pageSize){
+    @GetMapping("all")
+    public BaseResponse<AllSharingResp> loadSharing(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize){
         return BaseResponse.successWithData(this.userSharingService.loadSharing(pageNo, pageSize));
     }
 
@@ -64,16 +64,16 @@ public class UserSharingController {
      * @param shareId
      * @return
      */
-    public BaseResponse<SharingPojo> querySharing(long shareId){
+    @GetMapping("{shareId}")
+    public BaseResponse<SharingVo> querySharing(@PathVariable("shareId") long shareId){
         return BaseResponse.successWithData(this.userSharingService.querySharing(shareId));
     }
 
     /**
      * 查看用户的分享
-     * @param uid
-     * @return
      */
-    public BaseResponse<SharingByUserResp> loadSharingByUser(long uid) {
-        return BaseResponse.successWithData(this.userSharingService.loadSharingByUser(uid));
+    @GetMapping("{memberId}")
+    public BaseResponse<SharingByUserResp> loadSharingByUser(@PathVariable("memberId") long memberId, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize) {
+        return BaseResponse.successWithData(this.userSharingService.loadSharingByUser(memberId, pageNo, pageSize));
     }
 }

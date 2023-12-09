@@ -6,8 +6,12 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "tb_share")
-public class SharingEntity {
+@Table(name = "tb_share",
+        uniqueConstraints={@UniqueConstraint(columnNames={"theme"})},
+        indexes= {
+        @Index(columnList="member_id")
+})
+public class TbShare {
 
     /**
      * 分享Id
@@ -37,14 +41,14 @@ public class SharingEntity {
     private int language;  // 0 Chinese 1 English
 
     /**
-     * 分享人匿称
+     * 分享人昵称
      */
     private String presenter;
 
     /**
      * 分享所属组织
      */
-    private String Org;
+    private String org;
 
     /**
      * 分享人twitter
@@ -54,21 +58,27 @@ public class SharingEntity {
     /**
      * 分享人
      */
-    private String memberId;
+    @Column(name = "member_id")
+    private long memberId;
 
     /**
      * 文档连接
      */
+    @Column(name = "sharing_doc")
     private String sharingDoc;
 
     /**
      * 标签类别
      */
-    //defi zk underlying
     private String label;
 
     /**
-     * 奖励金额
+     * 锁定状态
      */
-    private  Integer reward;
+    @Column(name = "lock_status")
+    private int lockStatus;
+
+    private int meetingType;
+
+    private String meetingLink;
 }
