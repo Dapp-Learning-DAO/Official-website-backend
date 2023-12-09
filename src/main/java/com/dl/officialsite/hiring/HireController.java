@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,15 @@ public class HireController {
     @PostMapping
     public BaseResponse add(@RequestParam String address,@RequestBody HiringVO hiringVO) {
         hireService.add(hiringVO);
+        return BaseResponse.successWithData(null);
+    }
+
+    /**
+     * 修改简历
+     */
+    @PutMapping
+    public BaseResponse update(@RequestParam String address,@RequestBody HiringVO hiringVO) {
+        hireService.update(hiringVO);
         return BaseResponse.successWithData(null);
     }
 

@@ -8,6 +8,7 @@ import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
+import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamVO;
@@ -245,5 +246,27 @@ public class TeamService {
             throw new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
                 CodeEnums.TEAM_NOT_EXIST.getMsg());
         }
+    }
+
+    public void batchJoin(TeamMemberBatchJoinVO teamMembers) {
+        teamMembers.getMemberIds().forEach(memberId -> {
+            Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
+                teamMembers.getTeamId(), memberId);
+            if (optional.isPresent()) {
+                TeamMember teamMember2 = optional.get();
+                if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
+                    throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
+                        CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
+                }
+                teamMember2.setStatus(Constants.APPROVE_TEAM);
+                teamMemberRepository.save(teamMember2);
+            } else {
+                TeamMember teamMember1 = new TeamMember();
+                teamMember1.setMemberId(memberId);
+                teamMember1.setTeamId(teamMembers.getTeamId());
+                teamMember1.setStatus(Constants.APPROVE_TEAM);
+                teamMemberRepository.save(teamMember1);
+            }
+        });
     }
 }

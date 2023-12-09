@@ -15,9 +15,9 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 
 ## build
 ```
-  ssh root@81.69.8.95
+  ssh root@43.135.22.107
  ./gradlew build -x test
-  scp ./dist/apps/dl.jar  root@81.69.8.95:/root/Dapp-Learning-Official-web/dist/apps
+  scp ./dist/apps/dl.jar  root@43.135.22.107:/root/Official-website-backend/dist/app
 
 ```
 
