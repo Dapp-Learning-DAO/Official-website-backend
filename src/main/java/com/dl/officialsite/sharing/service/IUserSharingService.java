@@ -16,17 +16,17 @@ public interface IUserSharingService {
      * @param req
      * @return
      */
-    long createSharing(CreateSharingReq req);
+    long createSharing(CreateSharingReq req, String address);
 
     /**
      * 修改分享
      */
-    void updateSharing(UpdateSharingReq req);
+    void updateSharing(UpdateSharingReq req, String address);
 
     /**
      * 删除分享
      */
-    void deleteSharing(long shareId);
+    void deleteSharing(long shareId,String address);
 
 
     /**

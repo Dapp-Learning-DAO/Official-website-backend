@@ -30,16 +30,16 @@ public class UserSharingController {
      * @return
      */
     @PostMapping("create")
-    public BaseResponse<Long> createSharing(@RequestBody CreateSharingReq req){
-        return BaseResponse.successWithData(this.userSharingService.createSharing(req));
+    public BaseResponse<Long> createSharing(@RequestBody CreateSharingReq req, @RequestParam("address") String address){
+        return BaseResponse.successWithData(this.userSharingService.createSharing(req, address));
     }
 
     /**
      * 修改分享
      */
     @PostMapping("update")
-    public BaseResponse updateSharing(@RequestBody UpdateSharingReq req){
-        this.userSharingService.updateSharing(req);
+    public BaseResponse updateSharing(@RequestBody UpdateSharingReq req, @RequestParam("address") String address){
+        this.userSharingService.updateSharing(req, address);
         return BaseResponse.success();
     }
 
@@ -47,8 +47,8 @@ public class UserSharingController {
      * 删除分享
      */
     @PostMapping("delete")
-    public BaseResponse deleteSharing(@RequestParam("shareId") long shareId){
-        this.userSharingService.deleteSharing(shareId);
+    public BaseResponse deleteSharing(@RequestParam("shareId") long shareId,  @RequestParam("address") String address){
+        this.userSharingService.deleteSharing(shareId, address);
         return BaseResponse.success();
     }
 

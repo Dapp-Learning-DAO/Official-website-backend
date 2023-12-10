@@ -41,7 +41,7 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
     private HttpServletRequest request;
 
     @Override
-    public long createSharing(CreateSharingReq req) {
+    public long createSharing(CreateSharingReq req, String address) {
         /**
          * 登陆用户转member
          */
@@ -61,7 +61,7 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
         entity.setPresenter(req.getPresenter());
         entity.setOrg(req.getOrg());
         entity.setTwitter(req.getTwitter());
-        entity.setMemberId(req.getMemberId());
+        entity.setMemberAddress(address);
         entity.setSharingDoc(req.getSharingDoc());
         entity.setLabel(req.getLabel());
         entity.setLockStatus(SharingLockStatus.UNLOCKED.getCode());
@@ -71,7 +71,7 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
 
 
     @Override
-    public void updateSharing(UpdateSharingReq req) {
+    public void updateSharing(UpdateSharingReq req, String address) {
         //Verify
         Optional<TbShare> existed = this.sharingRepository.findById(req.getId());
         if(!existed.isPresent()){
@@ -105,7 +105,7 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
     }
 
     @Override
-    public void deleteSharing(long shareId) {
+    public void deleteSharing(long shareId, String address) {
         //Verify
         Optional<TbShare> existed = this.sharingRepository.findById(shareId);
         if(!existed.isPresent()){

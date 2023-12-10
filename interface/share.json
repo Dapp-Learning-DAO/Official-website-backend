@@ -1,6 +1,6 @@
 [
   {
-    "url": "http://43.135.22.107:8080/share/usershare/create",
+    "url": "http://43.135.22.107:8080/share/usershare/create?address=0xabc",
     "method": "POST",
     "body": {
       "theme": "主题",
@@ -11,8 +11,7 @@
       "org": "所属组织",
       "twitter": "分享人推特",
       "sharingDoc": "分享链接",
-      "label": "标签类别",
-      "memberId": "分享人id"
+      "label": "标签类别"
     },
     "response":
     {
@@ -22,7 +21,7 @@
     }
   },
   {
-    "url": "http:/43.135.22.107:8080/share/usershare/update",
+    "url": "http:/43.135.22.107:8080/share/usershare/update?address=0xabc",
     "method": "POST",
     "body": {
       "id":"分享id,如111",
@@ -44,7 +43,7 @@
     }
   },
   {
-    "url": "http://43.135.22.107:8080/share/usershare/delete?shareId=111",
+    "url": "http://43.135.22.107:8080/share/usershare/delete?shareId=111&address=0xabc",
     "method": "POST",
     "response":
     {
