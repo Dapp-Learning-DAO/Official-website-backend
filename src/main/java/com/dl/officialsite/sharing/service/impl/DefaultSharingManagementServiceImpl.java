@@ -22,6 +22,11 @@ public class DefaultSharingManagementServiceImpl implements ISharingManagementSe
     }
 
     @Override
+    public byte[] generatePost(String presenter, String roomId, String roomLnk) {
+        return new byte[0];
+    }
+
+    @Override
     public CreateMeetingRoomResp createSessionRoom(CreateSessionRoomReq req) {
         return null;
     }

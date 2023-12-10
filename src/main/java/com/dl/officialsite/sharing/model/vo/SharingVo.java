@@ -32,6 +32,8 @@ public class SharingVo {
 
     private String meetingType;
 
+    private String meetingId;
+
     private String meetingLink;
 
     public static SharingVo convert(TbShare entity) {
@@ -48,6 +50,8 @@ public class SharingVo {
         vo.label = entity.getLabel();
         vo.locked = entity.getLockStatus();
         vo.meetingType = SharingMeetingType.codeOf(entity.getMeetingType()).name();
+        vo.meetingId = entity.getMeetingId();
+        vo.meetingLink = entity.getMeetingLink();
         return vo;
     }
 }

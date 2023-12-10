@@ -38,6 +38,12 @@ spring:
       cleanup-cron: 0 */3 * * * *
     timeout: 7200
 
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
 logging:
   level:
     org.springframework.security: debug
@@ -56,5 +62,4 @@ oauth:
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user
-
 
