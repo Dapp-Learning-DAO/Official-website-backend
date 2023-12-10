@@ -63,4 +63,9 @@ public class CreateSharingReq {
     @ApiModelProperty("标签类别")
     //defi zk underlying
     private String label;
+
+    /**
+     * 分享人memberId
+     */
+    private long memberId;
 }
