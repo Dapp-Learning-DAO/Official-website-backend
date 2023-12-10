@@ -1,6 +1,6 @@
 [
   {
-    "url": "http://81.69.8.95:8080/share/usershare/create",
+    "url": "http://43.135.22.107:8080/share/usershare/create",
     "method": "POST",
     "body": {
       "theme": "主题",
@@ -11,7 +11,8 @@
       "org": "所属组织",
       "twitter": "分享人推特",
       "sharingDoc": "分享链接",
-      "label": "标签类别"
+      "label": "标签类别",
+      "memberId": "分享人id"
     },
     "response":
     {
@@ -43,7 +44,7 @@
     }
   },
   {
-    "url": "http://81.69.8.95:8080/share/usershare/delete?shareId=111",
+    "url": "http://43.135.22.107:8080/share/usershare/delete?shareId=111",
     "method": "POST",
     "response":
     {
@@ -53,7 +54,7 @@
     }
   },
   {
-    "url": "http://81.69.8.95:8080/share/usershare/all?pageNo=1&pageSize=10",
+    "url": "http://43.135.22.107:8080/share/usershare/all?pageNo=1&pageSize=10",
     "method": "GET",
     "response":
     {
@@ -89,7 +90,7 @@
     }
   },
   {
-    "url": "http://81.69.8.95:8080/share/usershare/byUser?memberId=1?pageNo=1&pageSize=10",
+    "url": "http://43.135.22.107:8080/share/usershare/byUser?memberId=1?pageNo=1&pageSize=10",
     "method": "GET",
     "response":
     {
@@ -125,7 +126,7 @@
     }
   },
   {
-    "url": "http://81.69.8.95:8080/share/usershare/queryByShareId?shareId=111",
+    "url": "http://43.135.22.107:8080/share/usershare/queryByShareId?shareId=111",
     "method": "GET",
     "response":
     {
