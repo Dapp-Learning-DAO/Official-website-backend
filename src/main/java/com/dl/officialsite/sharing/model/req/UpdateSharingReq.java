@@ -65,9 +65,4 @@ public class UpdateSharingReq {
      */
     @ApiModelProperty("分享标签")
     private String label;
-
-    /**
-     * 修改人id
-     */
-    private String memberId;
 }
