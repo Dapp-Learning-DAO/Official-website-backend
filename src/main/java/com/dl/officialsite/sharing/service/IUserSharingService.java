@@ -26,7 +26,7 @@ public interface IUserSharingService {
     /**
      * 删除分享
      */
-    void deleteSharing(long shareId);
+    void deleteSharing(long shareId, long memberId);
 
 
     /**

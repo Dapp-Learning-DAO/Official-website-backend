@@ -45,6 +45,10 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/login/logout");
         add("/share/usershare/all");
         add("/share/usershare/queryByShareId");
+        add("/share/usershare/byUser");
+        add("/share/usershare/create");
+        add("/share/usershare/update");
+        add("/share/usershare/delete");
     }} ;
 
     @Override

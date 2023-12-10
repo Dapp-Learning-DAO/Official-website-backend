@@ -45,11 +45,11 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
         /**
          * 登陆用户转member
          */
-        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
-        Preconditions.checkState(userInfo != null, "User info not null");
-        Optional<Member> memberOpt = this.memberRepository.findByAddress(userInfo.getAddress());
-        Member member = memberOpt.get();
-
+//        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
+//        Preconditions.checkState(userInfo != null, "User info not null");
+//        Optional<Member> memberOpt = this.memberRepository.findByAddress(userInfo.getAddress());
+//        Member member = memberOpt.get();
+//        if(member.getId() != req.)
         /**
          * 创建资料
          */
@@ -61,7 +61,7 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
         entity.setPresenter(req.getPresenter());
         entity.setOrg(req.getOrg());
         entity.setTwitter(req.getTwitter());
-        entity.setMemberId(member.getId().longValue());
+        entity.setMemberId(req.getMemberId());
         entity.setSharingDoc(req.getSharingDoc());
         entity.setLabel(req.getLabel());
         entity.setLockStatus(SharingLockStatus.UNLOCKED.getCode());
@@ -80,10 +80,14 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
         TbShare sharing = existed.get();
         SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
         Member member = this.memberRepository.findByAddress(userInfo.getAddress()).get();
-        if(!Objects.equals(sharing.getMemberId(), member.getId())){
-            throw new BizException(CodeEnums.SHARING_NOT_FOUND);
-        }
 
+//        if(!Objects.equals(sharing.getMemberId(), member.getId())){
+//            throw new BizException(CodeEnums.SHARING_NOT_FOUND);
+//        }
+
+        if(!Objects.equals(sharing.getMemberId(), req.getMemberId())){
+            throw new BizException(CodeEnums.SHARING_NOT_OWNER);
+        }
         if(sharing.getLockStatus() == SharingLockStatus.LOCKED.getCode()){
             throw new BizException(CodeEnums.SHARING_LOCKED);
         }
@@ -101,19 +105,18 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
     }
 
     @Override
-    public void deleteSharing(long shareId) {
+    public void deleteSharing(long shareId, long memberId) {
         //Verify
         Optional<TbShare> existed = this.sharingRepository.findById(shareId);
         if(!existed.isPresent()){
             throw new BizException(CodeEnums.SHARING_NOT_FOUND);
         }
         TbShare sharing = existed.get();
-        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
-        Member member = this.memberRepository.findByAddress(userInfo.getAddress()).get();
-        if(!Objects.equals(sharing.getMemberId(), member.getId())){
-            throw new BizException(CodeEnums.SHARING_NOT_FOUND);
+//        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
+//        Member member = this.memberRepository.findByAddress(userInfo.getAddress()).get();
+        if(!Objects.equals(sharing.getMemberId(), memberId)){
+            throw new BizException(CodeEnums.SHARING_NOT_OWNER);
         }
-
         //Delete
         this.sharingRepository.deleteById(shareId);
     }

@@ -47,8 +47,8 @@ public class UserSharingController {
      * 删除分享
      */
     @PostMapping("delete")
-    public BaseResponse deleteSharing(@RequestParam("shareId") long shareId){
-        this.userSharingService.deleteSharing(shareId);
+    public BaseResponse deleteSharing(@RequestParam("shareId") long shareId, @RequestParam("memberId") long memberId){
+        this.userSharingService.deleteSharing(shareId, memberId);
         return BaseResponse.success();
     }
 
@@ -76,8 +76,8 @@ public class UserSharingController {
     /**
      * 查看用户的分享
      */
-    @GetMapping("{memberId}")
-    public BaseResponse<SharingByUserResp> loadSharingByUser(@PathVariable("memberId") long memberId,
+    @GetMapping("byUser")
+    public BaseResponse<SharingByUserResp> loadSharingByUser(@RequestParam("memberId") long memberId,
                                                              @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
                                                              @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
         return BaseResponse.successWithData(this.userSharingService.loadSharingByUser(memberId, pageNo, pageSize));
