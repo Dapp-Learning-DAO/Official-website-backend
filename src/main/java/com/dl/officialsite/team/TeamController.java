@@ -1,6 +1,8 @@
 package com.dl.officialsite.team;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.enums.CodeEnums;
+import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
@@ -8,6 +10,7 @@ import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamVO;
 import com.dl.officialsite.team.vo.TeamsMembersVo;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +36,21 @@ public class TeamController {
     @Autowired
     private TeamService teamService;
 
+    @GetMapping("/admin/list")
+    BaseResponse list(@RequestParam String address) {
+        List<String> list = new ArrayList<>();
+        list.add("0x4DDE628ef50dE13E6E369353128A0d7899B54B6b");
+        return BaseResponse.successWithData(list);
+    }
+
     /**
      * 新增团队
      */
     @PutMapping
     BaseResponse create(@RequestBody TeamVO team, @RequestParam String address) {
+        if (!address.equals("0x4DDE628ef50dE13E6E369353128A0d7899B54B6b")) {
+            throw new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(), CodeEnums.TEAM_NOT_EXIST.getMsg());
+        }
         teamService.add(team);
         return BaseResponse.successWithData(team);
     }

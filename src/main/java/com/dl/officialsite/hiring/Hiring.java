@@ -44,4 +44,6 @@ public class Hiring {
     @Column(updatable = false, nullable = false)
     private Date createTime;
 
+    private String address;
+
 }

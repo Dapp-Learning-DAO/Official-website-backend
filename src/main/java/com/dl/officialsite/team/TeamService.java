@@ -185,10 +185,11 @@ public class TeamService {
 
 
     public void exit(TeamMemberJoinVO teamMember) {
-        TeamMember teamMember1 = new TeamMember();
-        BeanUtils.copyProperties(teamMember, teamMember1);
-        teamMember1.setStatus(Constants.EXIT_TEAM);
-        teamMemberRepository.save(teamMember1);
+        teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
+            teamMember.getMemberId()).ifPresent(teamMember2 -> {
+            teamMember2.setStatus(Constants.EXIT_TEAM);
+            teamMemberRepository.save(teamMember2);
+        });
         Team team = teamRepository.findById(teamMember.getTeamId()).get();
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
         String subject = team.getTeamName() + "团队成员退出";
@@ -234,7 +235,7 @@ public class TeamService {
             TeamsMembersVo teamsMembersVo = new TeamsMembersVo();
             Team team = optional.get();
             List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamId(team.getId());
+            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), Constants.APPROVE_TEAM);
             memberIds.stream().forEach(memberId -> {
                 Member member = memberRepository.findById(memberId).get();
                 members.add(member);
@@ -249,6 +250,7 @@ public class TeamService {
     }
 
     public void batchJoin(TeamMemberBatchJoinVO teamMembers) {
+
         teamMembers.getMemberIds().forEach(memberId -> {
             Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
                 teamMembers.getTeamId(), memberId);

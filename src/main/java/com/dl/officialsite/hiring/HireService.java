@@ -31,7 +31,7 @@ public class HireService {
     @Autowired
     private HiringSkillRepository hiringSkillRepository;
 
-    public void add(HiringVO hiringVO) {
+    public HiringVO add(HiringVO hiringVO) {
         Hiring hiring = new Hiring();
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
@@ -50,6 +50,8 @@ public class HireService {
             hiringSkill.setHiringId(hiring.getId());
             hiringSkillRepository.save(hiringSkill);
         });
+        hiringVO.setId(hiring.getId());
+        return hiringVO;
     }
 
     public Page<HiringVO> all(Pageable pageable) {
@@ -171,5 +173,34 @@ public class HireService {
             hiringSkill.setHiringId(hiring.getId());
             hiringSkillRepository.save(hiringSkill);
         });
+    }
+
+    public List<HiringVO> selectByAddress(String address) {
+        List<HiringVO> list = new ArrayList<>();
+        hireRepository.findAllByAddress(address).forEach(hiring -> {
+            HiringVO hiringVO = new HiringVO();
+            BeanUtils.copyProperties(hiring, hiringVO);
+            List<HiringSkill> hiringSkills = hiringSkillRepository.findByHiringId(hiring.getId());
+            List<HiringSkillVO> mailSkills = hiringSkills.stream()
+                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_MAIN_SKILL)
+                .map(hiringSkill -> {
+                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
+                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
+                    return hiringSkillVO;
+                })
+                .collect(Collectors.toList());
+            hiringVO.setMainSkills(mailSkills);
+            List<HiringSkillVO> otherSkills = hiringSkills.stream()
+                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)
+                .map(hiringSkill -> {
+                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
+                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
+                    return hiringSkillVO;
+                })
+                .collect(Collectors.toList());
+            hiringVO.setOtherSkills(otherSkills);
+            list.add(hiringVO);
+        });
+        return list;
     }
 }

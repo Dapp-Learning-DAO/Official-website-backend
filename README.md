@@ -17,7 +17,7 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 ```
   ssh root@43.135.22.107
  ./gradlew build -x test
-  scp ./dist/apps/dl.jar  root@43.135.22.107:/root/Official-website-backend/dist/app
+  scp ./dist/apps/dl.jar  root@43.135.22.107:/root/Official-website-backend/dist/apps
 
 ```
 

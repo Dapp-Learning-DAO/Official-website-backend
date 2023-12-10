@@ -3,6 +3,8 @@ package com.dl.officialsite.hiring.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -16,24 +18,32 @@ public class HiringVO {
 
     private Long id;
 
+    @NotBlank(message = "职位不能为空")
     private String position;
 
+    @NotBlank(message = "描述不能为空")
     private String description;
 
+    @NotBlank(message = "工作地点不能为空")
     private String  location;
 
+    @NotBlank(message = "email不能为空")
     private String  email;
 
+    @NotNull(message = "工作类型不能为空")
     private List<HiringSkillVO> mainSkills;
 
     private List<HiringSkillVO> otherSkills;
 
+    @NotBlank(message = "公司不能为空")
     private String company;
 
     private String invoice;
 
+    @NotNull(message = "最小年薪不能为空")
     private int minYearlySalary;
 
+    @NotNull(message = "最大年薪不能为空")
     private int maxYearlySalary;
 
     private String benefits;
@@ -42,4 +52,6 @@ public class HiringVO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+
+    private String address;
 }

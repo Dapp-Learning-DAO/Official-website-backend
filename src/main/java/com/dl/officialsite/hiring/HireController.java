@@ -34,8 +34,8 @@ public class HireController {
      */
     @PostMapping
     public BaseResponse add(@RequestParam String address,@RequestBody HiringVO hiringVO) {
-        hireService.add(hiringVO);
-        return BaseResponse.successWithData(null);
+        HiringVO hiringVO1 = hireService.add(hiringVO);
+        return BaseResponse.successWithData(hiringVO1);
     }
 
     /**
@@ -74,6 +74,15 @@ public class HireController {
     @GetMapping("/type")
     public BaseResponse all(@RequestParam String address,@RequestParam List<String> skills) {
         List<HiringVO> hiringVOList = hireService.selectBySkills(skills);
+        return BaseResponse.successWithData(hiringVOList);
+    }
+
+    /**
+     * 按照创建者查看简历
+     */
+    @GetMapping("/address")
+    public BaseResponse all(@RequestParam String address) {
+        List<HiringVO> hiringVOList = hireService.selectByAddress(address);
         return BaseResponse.successWithData(hiringVOList);
     }
 
