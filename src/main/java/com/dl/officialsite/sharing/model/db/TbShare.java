@@ -80,5 +80,7 @@ public class TbShare {
 
     private int meetingType;
 
+    private String meetingId;
+
     private String meetingLink;
 }

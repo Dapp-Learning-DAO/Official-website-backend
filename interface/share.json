@@ -1,0 +1,152 @@
+[
+  {
+    "url": "http://81.69.8.95:8080/share/usershare/create",
+    "method": "POST",
+    "body": {
+      "theme": "主题",
+      "date": "分享日期，如2023-01-01",
+      "time": "分享时间，如8:00",
+      "language": "分享语言,0-中文，1英文",
+      "presenter": "分享人昵称",
+      "org": "所属组织",
+      "twitter": "分享人推特",
+      "sharingDoc": "分享链接",
+      "label": "标签类别"
+    },
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": 111
+    }
+  },
+  {
+    "url": "http://81.69.8.95:8080/share/usershare/update",
+    "method": "POST",
+    "body": {
+      "id":"分享id,如111",
+      "theme": "主题",
+      "date": "分享日期，如2023-01-01",
+      "time": "分享时间，如8:00",
+      "language": "分享语言,0-中文，1英文",
+      "presenter": "分享人昵称",
+      "org": "所属组织",
+      "twitter": "分享人推特",
+      "sharingDoc": "分享链接",
+      "label": "标签类别"
+    },
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": null
+    }
+  },
+  {
+    "url": "http://81.69.8.95:8080/share/usershare/delete?shareId=111",
+    "method": "POST",
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": null
+    }
+  },
+  {
+    "url": "http://81.69.8.95:8080/share/usershare/all?pageNo=1&pageSize=10",
+    "method": "GET",
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": {
+        "data": [
+          {
+            "id": "分享id",
+            "theme": "主题",
+            "date": "分享日期，如2023-01-01",
+            "time": "分享时间，如8:00",
+            "language": "分享语言,0-中文，1英文",
+            "presenter": "分享人昵称",
+            "org": "所属组织",
+            "twitter": "分享人推特",
+            "sharingDoc": "分享链接",
+            "label": "标签类别",
+            "locked": "锁定状态",
+            "meetingType": "会议类别",
+            "meetingId": "会议编号",
+            "meetingLink": "会议链接"
+          }
+        ],
+        "pagination": {
+          "totalCount": 0,
+          "totalPages": 0,
+          "currentPage": 1,
+          "currentPageSize": 0,
+          "hasNext": false
+        }
+      }
+    }
+  },
+  {
+    "url": "http://81.69.8.95:8080/share/usershare/{memberId}?pageNo=1&pageSize=10",
+    "method": "GET",
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data": {
+        "data": [
+          {
+            "id": "分享id",
+            "theme": "主题",
+            "date": "分享日期，如2023-01-01",
+            "time": "分享时间，如8:00",
+            "language": "分享语言,0-中文，1英文",
+            "presenter": "分享人昵称",
+            "org": "所属组织",
+            "twitter": "分享人推特",
+            "sharingDoc": "分享链接",
+            "label": "标签类别",
+            "locked": "锁定状态",
+            "meetingType": "会议类别",
+            "meetingId": "会议编号",
+            "meetingLink": "会议链接"
+          }
+        ],
+        "pagination": {
+          "totalCount": 0,
+          "totalPages": 0,
+          "currentPage": 1,
+          "currentPageSize": 0,
+          "hasNext": false
+        }
+      }
+    }
+  },
+  {
+    "url": "http://81.69.8.95:8080/share/usershare/queryByShareId?shareId=111",
+    "method": "GET",
+    "response":
+    {
+      "code": "200",
+      "msg": "success",
+      "data":    {
+        "id": "分享id",
+        "theme": "主题",
+        "date": "分享日期，如2023-01-01",
+        "time": "分享时间，如8:00",
+        "language": "分享语言,0-中文，1英文",
+        "presenter": "分享人昵称",
+        "org": "所属组织",
+        "twitter": "分享人推特",
+        "sharingDoc": "分享链接",
+        "label": "标签类别",
+        "locked": "锁定状态",
+        "meetingType": "会议类别",
+        "meetingId": "会议编号",
+        "meetingLink": "会议链接"
+      }
+    }
+  }
+]

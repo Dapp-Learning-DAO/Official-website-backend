@@ -7,13 +7,16 @@ import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.AllSharingResp;
 import com.dl.officialsite.sharing.model.resp.SharingByUserResp;
 import com.dl.officialsite.sharing.service.IUserSharingService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("share/v1/usershare")
+@RequestMapping("share/usershare")
 @Slf4j
 public class UserSharingController {
 
@@ -44,7 +47,7 @@ public class UserSharingController {
      * 删除分享
      */
     @PostMapping("delete")
-    public BaseResponse deleteSharing(long shareId){
+    public BaseResponse deleteSharing(@RequestParam("shareId") long shareId){
         this.userSharingService.deleteSharing(shareId);
         return BaseResponse.success();
     }
@@ -55,7 +58,8 @@ public class UserSharingController {
      * @return
      */
     @GetMapping("all")
-    public BaseResponse<AllSharingResp> loadSharing(@Param("pageNo") int pageNo, @Param("pageSize") int pageSize){
+    public BaseResponse<AllSharingResp> loadSharing(@RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
+                                                    @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         return BaseResponse.successWithData(this.userSharingService.loadSharing(pageNo, pageSize));
     }
 
@@ -64,8 +68,8 @@ public class UserSharingController {
      * @param shareId
      * @return
      */
-    @GetMapping("{shareId}")
-    public BaseResponse<SharingVo> querySharing(@PathVariable("shareId") long shareId){
+    @GetMapping("queryByShareId")
+    public BaseResponse<SharingVo> querySharing(@RequestParam("shareId") long shareId){
         return BaseResponse.successWithData(this.userSharingService.querySharing(shareId));
     }
 
@@ -73,7 +77,9 @@ public class UserSharingController {
      * 查看用户的分享
      */
     @GetMapping("{memberId}")
-    public BaseResponse<SharingByUserResp> loadSharingByUser(@PathVariable("memberId") long memberId, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize) {
+    public BaseResponse<SharingByUserResp> loadSharingByUser(@PathVariable("memberId") long memberId,
+                                                             @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
+                                                             @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
         return BaseResponse.successWithData(this.userSharingService.loadSharingByUser(memberId, pageNo, pageSize));
     }
 }
