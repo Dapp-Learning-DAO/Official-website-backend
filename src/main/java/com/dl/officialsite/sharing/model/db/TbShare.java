@@ -26,12 +26,12 @@ public class TbShare {
     private String theme;
 
     /**
-     * 分享日期
+     * 分享日期,2020-12-02
      */
     private String date;
 
     /**
-     * 分享时间（UTC+8）
+     * 分享时间 20:00（UTC+8）
      */
     private String time;
 
@@ -58,8 +58,8 @@ public class TbShare {
     /**
      * 分享人
      */
-    @Column(name = "member_id")
-    private long memberId;
+    @Column(name = "member_address")
+    private String memberAddress;
 
     /**
      * 文档连接
