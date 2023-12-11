@@ -32,9 +32,7 @@ public class Hiring {
 
     private String invoice;
 
-    private int minYearlySalary;
-
-    private int maxYearlySalary;
+    private String yearlySalary;
 
     private String benefits;
 
