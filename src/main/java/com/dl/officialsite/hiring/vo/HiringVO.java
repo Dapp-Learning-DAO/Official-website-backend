@@ -40,11 +40,8 @@ public class HiringVO {
 
     private String invoice;
 
-    @NotNull(message = "最小年薪不能为空")
-    private int minYearlySalary;
-
-    @NotNull(message = "最大年薪不能为空")
-    private int maxYearlySalary;
+    @NotNull(message = "年薪不能为空")
+    private String yearlySalary;
 
     private String benefits;
 
