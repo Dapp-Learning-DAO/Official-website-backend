@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -19,8 +22,6 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class FileService {
-
-    String key;
 
     @Autowired
     private COSClient cosClient;
@@ -30,8 +31,33 @@ public class FileService {
     // 支持的文件类型
     private static final List<String> suffixes = Arrays.asList("image/png", "image/jpeg");
 
-    public String uploadImage(MultipartFile file) {
 
+    public String upload(MultipartFile file) {
+
+        // 简单文件上传, 最大支持 5 GB, 适用于小文件上传, 建议 20 M 以下的文件使用该接口
+        // 大文件上传请参照 API 文档高级 API 上传
+        File localFile = null;
+
+        String oldFileName = file.getOriginalFilename();
+        String eName = oldFileName.substring(oldFileName.lastIndexOf("."));
+        String newFileName = UUID.randomUUID()+eName;
+        String key = null;
+        try {
+            localFile = File.createTempFile("temp",null);
+            file.transferTo(localFile);
+            key = UUID.randomUUID().toString().replace("-","");
+            PutObjectRequest putObjectRequest = new PutObjectRequest(cosProperties.getBucketName(), key, localFile);
+            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+        } catch (IOException e) {
+        }
+        //拼接返回路径
+        cosClient.shutdown();
+        String imagePath = "https://" + cosProperties.getBucketName() + ".cos." + cosProperties.getRegionName() + ".myqcloud.com/" + key;
+        return imagePath;
+    }
+
+    public String uploadImage(MultipartFile file) {
+        String key = null;
         try {
             // 1、图片信息校验
             // 1)校验文件类型
@@ -62,9 +88,15 @@ public class FileService {
         }catch (Exception e){
             e.printStackTrace();
         }
-        //拼接返回路径
-        String imagePath = "https://" + cosProperties.getBucketName() + ".cos." + cosProperties.getRegionName() + ".myqcloud.com/" + key;
-        return imagePath;
+            cosClient.shutdown();
+            //拼接返回路径
+            String imagePath = "https://" + cosProperties.getBucketName() + ".cos." + cosProperties.getRegionName() + ".myqcloud.com/" + key;
+            return imagePath;
     }
 
+
+    //todo
+    public InputStream download(String fileHash) {
+        return null;
+    }
 }

@@ -38,7 +38,8 @@ spring:
       cleanup-cron: 0 */3 * * * *
     timeout: 7200
 
-
+  profiles:
+    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -57,8 +58,8 @@ web3j:
 oauth:
   registrations:
     github:
-      clientId: "Iv1.74aecf988af67044"
-      clientSecret: "d0f38f58e98bb3dbb9a6bf6a2e1211a4feb24767"
+      clientId: ""
+      clientSecret: ""
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user

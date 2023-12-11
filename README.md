@@ -15,9 +15,9 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 
 ## build
 ```
-  ssh root@43.135.22.107
+  ssh root@ip
  ./gradlew build -x test
-  scp ./dist/apps/dl.jar  root@43.135.22.107:/root/Official-website-backend/dist/apps
+  scp ./dist/apps/dl.jar  root@ip:/root/Official-website-backend/dist/apps
 
 ```
 
@@ -39,3 +39,5 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 - JPA query: https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl
 -  JPA :  https://www.baeldung.com/hibernate-criteria-queries
 - session filter:  https://blog.csdn.net/dothetrick/article/details/110356640
+- cos： https://cloud.tencent.com/developer/article/1559746
+- cos download: https://blog.csdn.net/qq_43960768/article/details/126731733 

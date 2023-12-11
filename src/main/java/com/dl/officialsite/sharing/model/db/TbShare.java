@@ -1,13 +1,18 @@
 package com.dl.officialsite.sharing.model.db;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "tb_share",
-        uniqueConstraints={@UniqueConstraint(columnNames={"theme"})},
+        uniqueConstraints={
+        @UniqueConstraint(columnNames={"theme"})},
         indexes= {
         @Index(columnList="member_address")
 })
@@ -23,6 +28,7 @@ public class TbShare {
     /**
      * 分享主题
      */
+    @Column(length = 256)
     private String theme;
 
     /**
@@ -58,7 +64,7 @@ public class TbShare {
     /**
      * 分享人
      */
-    @Column(name = "member_address")
+    @Column(name = "member_address",length = 42)
     private String memberAddress;
 
     /**
