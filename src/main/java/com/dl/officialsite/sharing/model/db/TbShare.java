@@ -3,11 +3,15 @@ package com.dl.officialsite.sharing.model.db;
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.constant.SharingMeetingType;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "tb_share",
         indexes= {
         @Index(name = "IDX_THEME",unique = true, columnList = "theme"),

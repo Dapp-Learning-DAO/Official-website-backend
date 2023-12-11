@@ -13,6 +13,9 @@ import com.dl.officialsite.team.TeamMemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.stereotype.Component;
@@ -26,7 +29,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-@Component
+@Configuration
+@ConditionalOnProperty(value="login.filter",
+        havingValue = "true")
 @Order(SessionRepositoryFilter.DEFAULT_ORDER + 1)
 @Slf4j
 public class LoginFilter extends OncePerRequestFilter {

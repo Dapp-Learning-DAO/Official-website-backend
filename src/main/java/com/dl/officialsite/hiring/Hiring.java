@@ -32,6 +32,7 @@ public class Hiring {
 
     private String invoice;
 
+
     private String yearlySalary;
 
     private String benefits;
