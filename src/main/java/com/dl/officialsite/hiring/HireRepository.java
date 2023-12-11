@@ -2,6 +2,7 @@ package com.dl.officialsite.hiring;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -11,7 +12,8 @@ import org.springframework.data.repository.query.Param;
  * @Date 2023/11/7 10:45
  * @Description TODO
  **/
-public interface HireRepository extends JpaRepository<Hiring, Long> {
+public interface HireRepository extends JpaRepository<Hiring, Long>,
+    JpaSpecificationExecutor<Hiring> {
 
 
     /**
