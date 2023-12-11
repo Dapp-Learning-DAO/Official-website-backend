@@ -58,4 +58,11 @@ oauth:
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user
 
+qcloud:
+  secretId: ""
+  secretKey: ""
+  bucketName: ""
+  regionName: ""
 
+login:
+  filter: true
