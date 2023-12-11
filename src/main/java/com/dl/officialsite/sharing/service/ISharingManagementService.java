@@ -6,6 +6,8 @@ import com.dl.officialsite.sharing.model.resp.CreateMeetingRoomResp;
 import com.dl.officialsite.sharing.model.resp.GenerateSharingDataResp;
 import com.dl.officialsite.sharing.model.resp.QueryMeetingResp;
 
+import java.io.InputStream;
+
 /**
  * 管理分享
  */
@@ -22,6 +24,8 @@ public interface ISharingManagementService {
      */
     void unlockSharing(long shareId);
 
+
+    byte[] generatePost(String presenter, String roomId, String roomLnk);
 
     /**
      * 创建meeting room
@@ -43,6 +47,7 @@ public interface ISharingManagementService {
      * @return
      */
     GenerateSharingDataResp viewSharingData(GenerateSharingDataReq req);
+
 
 
 }

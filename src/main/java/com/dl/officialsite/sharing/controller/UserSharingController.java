@@ -1,20 +1,22 @@
 package com.dl.officialsite.sharing.controller;
 
 import com.dl.officialsite.common.base.BaseResponse;
-import com.dl.officialsite.sharing.model.pojo.SharingPojo;
+import com.dl.officialsite.sharing.model.vo.SharingVo;
 import com.dl.officialsite.sharing.model.req.CreateSharingReq;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.AllSharingResp;
-import com.dl.officialsite.sharing.model.resp.ClaimSharingRewardResp;
-import com.dl.officialsite.sharing.model.resp.PreCheckSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.SharingByUserResp;
 import com.dl.officialsite.sharing.service.IUserSharingService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("share/v1/usershare")
+@RequestMapping("share/usershare")
 @Slf4j
 public class UserSharingController {
 
@@ -28,16 +30,16 @@ public class UserSharingController {
      * @return
      */
     @PostMapping("create")
-    public BaseResponse<Long> createSharing(CreateSharingReq req){
-        return BaseResponse.successWithData(this.userSharingService.createSharing(req));
+    public BaseResponse<Long> createSharing(@RequestBody CreateSharingReq req, @RequestParam("address") String address){
+        return BaseResponse.successWithData(this.userSharingService.createSharing(req, address));
     }
 
     /**
      * 修改分享
      */
     @PostMapping("update")
-    public BaseResponse updateSharing(UpdateSharingReq req){
-        this.userSharingService.updateSharing(req);
+    public BaseResponse updateSharing(@RequestBody UpdateSharingReq req, @RequestParam("address") String address){
+        this.userSharingService.updateSharing(req, address);
         return BaseResponse.success();
     }
 
@@ -45,8 +47,8 @@ public class UserSharingController {
      * 删除分享
      */
     @PostMapping("delete")
-    public BaseResponse deleteSharing(long shareId){
-        this.userSharingService.deleteSharing(shareId);
+    public BaseResponse deleteSharing(@RequestParam("shareId") long shareId,  @RequestParam("address") String address){
+        this.userSharingService.deleteSharing(shareId, address);
         return BaseResponse.success();
     }
 
@@ -55,7 +57,9 @@ public class UserSharingController {
      * 查看全部分享
      * @return
      */
-    public BaseResponse<AllSharingResp> loadSharing(int pageNo, int pageSize){
+    @GetMapping("all")
+    public BaseResponse<AllSharingResp> loadSharing(@RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
+                                                    @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         return BaseResponse.successWithData(this.userSharingService.loadSharing(pageNo, pageSize));
     }
 
@@ -64,16 +68,18 @@ public class UserSharingController {
      * @param shareId
      * @return
      */
-    public BaseResponse<SharingPojo> querySharing(long shareId){
+    @GetMapping("queryByShareId")
+    public BaseResponse<SharingVo> querySharing(@RequestParam("shareId") long shareId){
         return BaseResponse.successWithData(this.userSharingService.querySharing(shareId));
     }
 
     /**
      * 查看用户的分享
-     * @param uid
-     * @return
      */
-    public BaseResponse<SharingByUserResp> loadSharingByUser(long uid) {
-        return BaseResponse.successWithData(this.userSharingService.loadSharingByUser(uid));
+    @GetMapping("byUser")
+    public BaseResponse<SharingByUserResp> loadSharingByUser(@RequestParam("memberId") long memberId,
+                                                             @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
+                                                             @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
+        return BaseResponse.successWithData(this.userSharingService.loadSharingByUser(memberId, pageNo, pageSize));
     }
 }

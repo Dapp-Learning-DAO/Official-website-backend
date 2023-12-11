@@ -35,6 +35,9 @@ spring:
       initialize-schema: always
       cleanup-cron: 0 */3 * * * *
     timeout: 7200
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 logging:
   level:

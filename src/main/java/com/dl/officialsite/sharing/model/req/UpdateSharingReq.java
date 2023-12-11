@@ -1,74 +1,68 @@
-package com.dl.officialsite.sharing.model.db;
+package com.dl.officialsite.sharing.model.req;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.persistence.*;
-
 @Data
-@Entity
-@Table(name = "tb_share")
-public class SharingEntity {
+public class UpdateSharingReq {
 
     /**
-     * 分享Id
+     * 分享id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty("分享id")
     private long id;
-
     /**
      * 分享主题
      */
+    @ApiModelProperty("分享主题")
     private String theme;
 
     /**
      * 分享日期
      */
+    @ApiModelProperty("分享日期")
     private String date;
 
     /**
      * 分享时间（UTC+8）
      */
+    @ApiModelProperty("分享时间")
     private String time;
 
     /**
      * 分享语言
      */
+    @ApiModelProperty("分享语言")
     private int language;  // 0 Chinese 1 English
 
     /**
      * 分享人匿称
      */
+    @ApiModelProperty("分享人昵称")
     private String presenter;
 
     /**
      * 分享所属组织
      */
-    private String Org;
+    @ApiModelProperty("分享所属组织")
+    private String org;
 
     /**
      * 分享人twitter
      */
+    @ApiModelProperty("分享人推特")
     private String twitter;
-
-    /**
-     * 分享人
-     */
-    private String memberId;
 
     /**
      * 文档连接
      */
+    @ApiModelProperty("分享链接")
     private String sharingDoc;
+
 
     /**
      * 标签类别
      */
-    //defi zk underlying
+    @ApiModelProperty("分享标签")
     private String label;
-
-    /**
-     * 奖励金额
-     */
-    private  Integer reward;
 }

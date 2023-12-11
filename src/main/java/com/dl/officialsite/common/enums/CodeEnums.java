@@ -23,6 +23,13 @@ public enum CodeEnums {
 
     NOT_FOUND_JD("1008", "not found jd"),
     NOT_FOUND_MEMBER("1008", "not found user");
+    //Sharing
+    SHARING_NOT_FOUND("5001", "Sharing not found"),
+    SHARING_NOT_OWNER("5002", "You are no sharing user"),
+
+    SHARING_LOCKED("5003", "Sharing locked, please contact admin to unlock");
+
+
 
     private String code;
 

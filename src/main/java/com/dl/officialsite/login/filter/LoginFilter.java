@@ -43,13 +43,20 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/login/check");
         add("/login/check-session");
         add("/login/logout");
+        add("/share/usershare/all");
+        add("/share/usershare/queryByShareId");
+        add("/share/usershare/byUser");
+        add("/share/usershare/create");
+        add("/share/usershare/update");
+        add("/share/usershare/delete");
     }} ;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Login filter session id {}, request {}", request.getSession().getId(), request.getRequestURI());
         try{
-            if (noLoginApis.contains(request.getRequestURI())) {
+            String uri = request.getRequestURI();
+            if (noLoginApis.contains(uri) || uri.contains("swagger")) {
                 filterChain.doFilter(request, response);
                 return;
             }

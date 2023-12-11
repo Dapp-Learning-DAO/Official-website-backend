@@ -57,6 +57,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-graphql
 	//implementation 'org.springframework.boot:spring-boot-starter-graphql:2.7.17'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 
 	//graphql
