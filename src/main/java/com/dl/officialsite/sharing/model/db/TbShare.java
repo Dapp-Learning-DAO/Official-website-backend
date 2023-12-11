@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "tb_share",
         uniqueConstraints={@UniqueConstraint(columnNames={"theme"})},
         indexes= {
-        @Index(columnList="member_id")
+        @Index(columnList="member_address")
 })
 public class TbShare {
 
