@@ -22,7 +22,7 @@ public enum CodeEnums {
     MEMBER_ALREADY_REQUEST_TEAM("1007", "member already request team"),
 
     NOT_FOUND_JD("1008", "not found jd"),
-    NOT_FOUND_MEMBER("1008", "not found user");
+    NOT_FOUND_MEMBER("1008", "not found user"),
     //Sharing
     SHARING_NOT_FOUND("5001", "Sharing not found"),
     SHARING_NOT_OWNER("5002", "You are no sharing user"),
