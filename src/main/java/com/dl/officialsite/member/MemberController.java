@@ -36,8 +36,6 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
-//    @Autowired
-//    private IPFSService ipfsService;
 @Autowired
     AaveService aaveService;
 

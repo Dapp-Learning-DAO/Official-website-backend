@@ -33,6 +33,8 @@ public class HiringVO {
     @NotNull(message = "工作类型不能为空")
     private List<HiringSkillVO> mainSkills;
 
+
+    //ignore
     private List<HiringSkillVO> otherSkills;
 
     @NotBlank(message = "公司不能为空")
