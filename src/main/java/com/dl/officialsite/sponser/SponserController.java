@@ -27,6 +27,12 @@ public class SponserController {
     @Autowired
     private SponserRepository sponserRepository;
 
+    @PostMapping
+    public BaseResponse add(@RequestParam String address, @RequestBody Sponsor sponsor) {
+        //to check
+        Sponsor sponsorNew = sponserRepository.save(sponsor);
+        return BaseResponse.successWithData(sponsorNew);
+    }
     @GetMapping("/all")
     public BaseResponse all(@RequestParam String address) {
         List<Sponsor> sponsors = sponserRepository.findAll();
