@@ -8,6 +8,8 @@ import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.member.MemberService;
+import com.dl.officialsite.team.teammember.TeamMember;
+import com.dl.officialsite.team.teammember.TeamMemberRepository;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;

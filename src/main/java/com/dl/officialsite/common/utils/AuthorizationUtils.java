@@ -2,11 +2,10 @@ package com.dl.officialsite.common.utils;
 
 import com.dl.officialsite.login.enums.UserRoleEnum;
 import com.dl.officialsite.login.model.UserPrincipleData;
-import com.dl.officialsite.team.TeamMember;
+import com.dl.officialsite.team.teammember.TeamMember;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j

@@ -1,4 +1,4 @@
-package com.dl.officialsite.team;
+package com.dl.officialsite.team.teammember;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

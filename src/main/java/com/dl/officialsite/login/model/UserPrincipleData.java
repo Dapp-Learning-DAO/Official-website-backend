@@ -1,7 +1,6 @@
 package com.dl.officialsite.login.model;
 
-import com.dl.officialsite.login.enums.UserRoleEnum;
-import com.dl.officialsite.team.TeamMember;
+import com.dl.officialsite.team.teammember.TeamMember;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
