@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum UserRoleEnum {
 
-    ADMIN(Integer.MAX_VALUE),
+    ADMIN(1),
 
     NORMAL(0);
 

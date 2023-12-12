@@ -1,4 +1,4 @@
-package com.dl.officialsite.sponser;
+package com.dl.officialsite.sponsor;
 
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

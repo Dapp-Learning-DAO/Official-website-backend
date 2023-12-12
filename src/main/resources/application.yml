@@ -50,7 +50,8 @@ logging:
     org.springframework.security: debug
 
 ipfs:
-  url: /ip4/127.0.0.1/tcp/5001
+  #url: "/ip4/127.0.0.1/tcp/5001"
+  url: ""
 
 web3j:
   client-address: "https://polygon-rpc.com"
