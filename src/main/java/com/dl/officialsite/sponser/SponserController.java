@@ -28,7 +28,7 @@ public class SponserController {
     private SponserRepository sponserRepository;
 
     @PostMapping
-    public BaseResponse add(@RequestParam String address, @RequestBody Sponsor sponsor) {
+    public BaseResponse create(@RequestParam String address, @RequestBody Sponsor sponsor) {
         //to check
         Sponsor sponsorNew = sponserRepository.save(sponsor);
         return BaseResponse.successWithData(sponsorNew);
