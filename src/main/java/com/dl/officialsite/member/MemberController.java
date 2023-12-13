@@ -52,7 +52,7 @@ public class MemberController {
     }
 
 
-    @RequestMapping(value = "/query/resume", method = RequestMethod.GET)
+    @RequestMapping(value = "/resume/query", method = RequestMethod.GET)
     BaseResponse getMemberResumeByAddress(@RequestParam String address)  {
 
         MemberWithTeam member = memberService.getMemberWithTeamInfoByAddress(address);
