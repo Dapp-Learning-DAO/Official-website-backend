@@ -6,7 +6,6 @@ import com.dl.officialsite.sharing.model.resp.CreateMeetingRoomResp;
 import com.dl.officialsite.sharing.model.resp.GenerateSharingDataResp;
 import com.dl.officialsite.sharing.model.resp.QueryMeetingResp;
 import com.dl.officialsite.sharing.service.ISharingManagementService;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 
 @Service
