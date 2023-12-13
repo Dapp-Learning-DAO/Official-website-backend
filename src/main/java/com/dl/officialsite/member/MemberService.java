@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +38,7 @@ public class MemberService {
         if(member.isPresent()) {
             MemberWithTeam memberWithTeam = new MemberWithTeam();
             BeanUtils.copyProperties(member, memberWithTeam);
-
-             List teams = memberWithTeam.getTeams();
+             ArrayList teams = memberWithTeam.getTeams();
             List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(member.get().getId());
             teamMembers.stream().forEach(teamMember -> {
                 Team team = teamRepository.findById(teamMember.getTeamId()).get();

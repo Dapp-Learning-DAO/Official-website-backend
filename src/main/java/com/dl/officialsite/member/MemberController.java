@@ -44,7 +44,7 @@ public class MemberController {
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     BaseResponse getMemberByAddress(@RequestParam String address)  {
 
-      Member member = memberService.getMemberByAddress(address);
+      Member member = memberService.getMemberWithTeamInfoByAddress(address);
         if (member == null) {
             return BaseResponse.failWithReason("1001", "no user found");
         }
