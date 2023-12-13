@@ -39,7 +39,7 @@ public class MemberService {
         if(member.isPresent()) {
             MemberWithTeam memberWithTeam = new MemberWithTeam();
             BeanUtils.copyProperties(member, memberWithTeam);
-             ArrayList teams = memberWithTeam.getTeams();
+             ArrayList teams = new ArrayList();
             List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(member.get().getId());
 
             teamMembers.stream().forEach(teamMember -> {
@@ -49,6 +49,7 @@ public class MemberService {
                 }
                 teams.add(team);
             });
+            memberWithTeam.setTeams(teams);
             return memberWithTeam;
         }
         return null;
