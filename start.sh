@@ -5,8 +5,33 @@ CLASSPATH='conf/:apps/*:lib/*'
 CURRENT_DIR=$(pwd)/
 LOG_DIR=${CURRENT_DIR}log
 CONF_DIR=${CURRENT_DIR}conf
+
 if [[ -n "$DBPWD" ]];then
   sed "s/{{SPRING_DATASOURCE_PASSWORD}}/$DBPWD/g" conf/application-template.yml > conf/application.yml
+else
+  echo "by hand"
+fi
+
+if [[ -n "$SECRET_ID" ]];then
+  sed "s/{{SECRET_ID}}/$SECRET_ID/g" conf/application-template.yml > conf/application.yml
+else
+  echo "by hand"
+fi
+
+if [[ -n "$SECRET_KEY" ]];then
+  sed "s/{{SECRET_KEY}}/$SECRET_KEY/g" conf/application-template.yml > conf/application.yml
+else
+  echo "by hand"
+fi
+
+if [[ -n "$BUCKET_NAME" ]];then
+  sed "s/{{BUCKET_NAME}}/$BUCKET_NAME/g" conf/application-template.yml > conf/application.yml
+else
+  echo "by hand"
+fi
+
+if [[ -n "$REGION_NAME" ]];then
+  sed "s/{{REGION_NAME}}/$REGION_NAME/g" conf/application-template.yml > conf/application.yml
 else
   echo "by hand"
 fi
