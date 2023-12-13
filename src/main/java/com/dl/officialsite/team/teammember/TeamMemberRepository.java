@@ -2,7 +2,6 @@ package com.dl.officialsite.team.teammember;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,4 +33,8 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
 
     @Query(value = "select * from team_member where member_id = :member_id",nativeQuery = true)
     List<TeamMember> findByMemberId(@Param("member_id")Long memberId);
+
+    @Query(value = "select * from team_member where team_id = :team_id and member_id in (:memberIds)",
+        nativeQuery = true)
+    List<TeamMember> findByTeamAndMembers(@Param("team_id")Long teamId, @Param("memberIds")List<Long> memberIds);
 }

@@ -35,12 +35,12 @@ public class TeamController {
     }
 
     /**
-     * 新增团队 todo
+     * 新增团队
      */
     @PutMapping
     BaseResponse create(@RequestBody TeamVO team, @RequestParam String address) {
-        if (!address.equals("0x4DDE628ef50dE13E6E369353128A0d7899B54B6b")) {
-            throw new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(), CodeEnums.TEAM_NOT_EXIST.getMsg());
+        if (teamService.checkMemberIsAdmin(address)) {
+            throw new BizException(CodeEnums.NOT_THE_ADMIN.getCode(), CodeEnums.NOT_THE_ADMIN.getMsg());
         }
         Team TeamNew =  teamService.add(team);
         return BaseResponse.successWithData(TeamNew);
@@ -60,6 +60,9 @@ public class TeamController {
      */
     @PostMapping("/join/batch")
     BaseResponse batchJoin(@RequestBody TeamMemberBatchJoinVO teamMembers, @RequestParam String address) {
+        if (teamService.checkMemberIsAdmin(address)) {
+            throw new BizException(CodeEnums.NOT_THE_ADMIN.getCode(), CodeEnums.NOT_THE_ADMIN.getMsg());
+        }
         teamService.batchJoin(teamMembers);
         return BaseResponse.successWithData(null);
     }
