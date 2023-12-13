@@ -34,12 +34,14 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "0 0/2 * * * ? ")
+    @Scheduled(cron = "0 0/1 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
+        long currentTimeMillis = System.currentTimeMillis();
+        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 -3600*24*90);
 
         String graphQL = "\" {" +
                 "  redpackets {" +
@@ -51,12 +53,14 @@ public class RedPacketService {
                 "  }" +
                 "}\"";
 
+
         String query = "{ \"query\": " +
                 graphQL +
                 " }";
 
         request.setEntity(new StringEntity(query));
         HttpResponse response = httpClient.execute(request);
+       // System.out.println("response" + response);
         HttpEntity entity = response.getEntity();
 
         if (entity != null) {
@@ -66,7 +70,7 @@ public class RedPacketService {
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
 
-           // log.info("redpacket array : " + redpacketsArray);
+           log.info("redpacket array : " + redpacketsArray.get(0));
             List<RedPacket> redPacketList = redPacketRepository.findByStatus(0);
 
             for (int i = 0; i < redpacketsArray.size(); i++) {
