@@ -3,9 +3,7 @@ package com.dl.officialsite.sponsor;
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @ClassName SponsorVo
@@ -18,6 +16,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sponsor")
 public class Sponsor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String company;
 
