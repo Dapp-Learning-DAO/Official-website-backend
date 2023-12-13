@@ -51,7 +51,6 @@ public class FileService {
         } catch (IOException e) {
         }
         //拼接返回路径
-        cosClient.shutdown();
         // String imagePath = "https://" + cosProperties.getBucketName() + ".cos." + cosProperties.getRegionName() + ".myqcloud.com/" + key;
         return key;
     }

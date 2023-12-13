@@ -44,7 +44,7 @@ logging:
     org.springframework.security: debug
 
 ipfs:
-  url: /ip4/127.0.0.1/tcp/5001
+  url: ""
 
 web3j:
   client-address: "https://polygon-rpc.com"
@@ -59,10 +59,10 @@ oauth:
       userInfoUri: https://api.github.com/user
 
 qcloud:
-  secretId: ""
-  secretKey: ""
-  bucketName: ""
-  regionName: ""
+  secretId: {{SECRET_ID}}
+  secretKey: {{SECRET_KEY}}
+  bucketName: {{BUCKET_NAME}}
+  regionName: {{REGION_NAME}}
 
 login:
   filter: true
