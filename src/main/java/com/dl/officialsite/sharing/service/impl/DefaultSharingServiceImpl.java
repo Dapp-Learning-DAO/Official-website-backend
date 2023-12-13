@@ -78,8 +78,8 @@ public class DefaultSharingServiceImpl implements IUserSharingService {
             throw new BizException(CodeEnums.SHARING_NOT_FOUND);
         }
         TbShare sharing = existed.get();
-        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
-        Member member = this.memberRepository.findByAddress(userInfo.getAddress()).get();
+//        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
+//        Member member = this.memberRepository.findByAddress(userInfo.getAddress()).get();
 
 //        if(!Objects.equals(sharing.getMemberId(), member.getId())){
 //            throw new BizException(CodeEnums.SHARING_NOT_FOUND);
