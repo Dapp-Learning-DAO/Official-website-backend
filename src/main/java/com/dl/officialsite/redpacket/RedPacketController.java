@@ -79,7 +79,6 @@ public class RedPacketController {
         return BaseResponse.successWithData(result);
     }
 
-// 更新红包状态，已认领过的地址。
     @PostMapping(value = "/query/all")
     BaseResponse getAllRedPacketByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,

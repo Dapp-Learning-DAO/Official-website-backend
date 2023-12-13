@@ -22,7 +22,10 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 ```
 
 ## IPFS data
-/root/graph-node/docker/data/ipfs 
+/root/graph-node/docker/data/ipfs
+
+## COS file 
+https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/{uuid}
 
 ## graph ql 集成
 "https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest"

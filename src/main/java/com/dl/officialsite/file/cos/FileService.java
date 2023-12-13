@@ -52,8 +52,8 @@ public class FileService {
         }
         //拼接返回路径
         cosClient.shutdown();
-        String imagePath = "https://" + cosProperties.getBucketName() + ".cos." + cosProperties.getRegionName() + ".myqcloud.com/" + key;
-        return imagePath;
+        // String imagePath = "https://" + cosProperties.getBucketName() + ".cos." + cosProperties.getRegionName() + ".myqcloud.com/" + key;
+        return key;
     }
 
     public String uploadImage(MultipartFile file) {

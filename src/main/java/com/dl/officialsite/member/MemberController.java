@@ -44,11 +44,22 @@ public class MemberController {
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     BaseResponse getMemberByAddress(@RequestParam String address)  {
 
-      Member member = memberService.getMemberWithTeamInfoByAddress(address);
+        MemberWithTeam member = memberService.getMemberWithTeamInfoByAddress(address);
         if (member == null) {
             return BaseResponse.failWithReason("1001", "no user found");
         }
         return BaseResponse.successWithData(member);
+    }
+
+
+    @RequestMapping(value = "/query/resume", method = RequestMethod.GET)
+    BaseResponse getMemberResumeByAddress(@RequestParam String address)  {
+
+        MemberWithTeam member = memberService.getMemberWithTeamInfoByAddress(address);
+        if (member == null) {
+            return BaseResponse.failWithReason("1001", "no user found");
+        }
+        return BaseResponse.successWithData(member.getResume());
     }
 
 
