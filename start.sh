@@ -19,22 +19,24 @@ else
 fi
 
 if [[ -n "$SECRET_KEY" ]];then
-  sed "s/{{SECRET_KEY}}/$SECRET_KEY/g" conf/application-template.yml > conf/application.yml
+  sed "s/{{SECRET_KEY}}/$SECRET_KEY/g" conf/application-template.yml
 else
   echo "by hand"
 fi
 
 if [[ -n "$BUCKET_NAME" ]];then
-  sed "s/{{BUCKET_NAME}}/$BUCKET_NAME/g" conf/application-template.yml > conf/application.yml
+  sed "s/{{BUCKET_NAME}}/$BUCKET_NAME/g" conf/application-template.yml
 else
   echo "by hand"
 fi
 
 if [[ -n "$REGION_NAME" ]];then
-  sed "s/{{REGION_NAME}}/$REGION_NAME/g" conf/application-template.yml > conf/application.yml
+  sed "s/{{REGION_NAME}}/$REGION_NAME/g" conf/application-template.yml
 else
   echo "by hand"
 fi
+
+cp conf/application-template.yml conf/application.yml
 
 SERVER_PORT=$(cat $CONF_DIR/application.yml | grep "server:" -A 3 | grep "port" | awk '{print $2}'| sed 's/\r//')
 if [ ${SERVER_PORT}"" = "" ];then
