@@ -1,10 +1,7 @@
 package com.dl.officialsite.member;
 
 
-import com.dl.officialsite.aave.AaveService;
 import com.dl.officialsite.common.base.BaseResponse;
-import com.dl.officialsite.common.enums.CodeEnums;
-import com.dl.officialsite.ipfs.IPFSService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -55,11 +51,11 @@ public class MemberController {
     @RequestMapping(value = "/resume/query", method = RequestMethod.GET)
     BaseResponse getMemberResumeByAddress(@RequestParam String address)  {
 
-        MemberWithTeam member = memberService.getMemberWithTeamInfoByAddress(address);
-        if (member == null) {
+        Optional<Member> member = memberRepository.findByAddress(address);
+        if (!member.isPresent()) {
             return BaseResponse.failWithReason("1001", "no user found");
         }
-        return BaseResponse.successWithData(member.getResume());
+        return BaseResponse.successWithData(member.get().getResume());
     }
 
 
