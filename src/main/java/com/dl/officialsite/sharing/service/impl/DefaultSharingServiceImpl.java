@@ -3,27 +3,22 @@ package com.dl.officialsite.sharing.service.impl;
 import com.dl.officialsite.common.base.Pagination;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
-import com.dl.officialsite.common.utils.HttpSessionUtils;
-import com.dl.officialsite.login.model.SessionUserInfo;
-import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.dao.ISharingRepository;
 import com.dl.officialsite.sharing.model.db.TbShare;
-import com.dl.officialsite.sharing.model.vo.SharingVo;
 import com.dl.officialsite.sharing.model.req.CreateSharingReq;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.AllSharingResp;
 import com.dl.officialsite.sharing.model.resp.SharingByUserResp;
+import com.dl.officialsite.sharing.model.vo.SharingVo;
 import com.dl.officialsite.sharing.service.IUserSharingService;
-import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
