@@ -49,6 +49,8 @@ public class HireService {
         Hiring hiring = new Hiring();
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
+
+        // optimise
         hiringVO.getMainSkills().forEach(mainSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(mainSkill, hiringSkill);
@@ -57,6 +59,7 @@ public class HireService {
             hiringSkillRepository.save(hiringSkill);
         });
 
+        // delete todo
         hiringVO.getOtherSkills().forEach(otherSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(otherSkill, hiringSkill);

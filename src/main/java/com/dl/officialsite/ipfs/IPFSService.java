@@ -6,6 +6,10 @@ import io.ipfs.api.NamedStreamable;
 import io.ipfs.multihash.Multihash;
 import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,7 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 
-//@Component
+@Configuration
+@ConditionalOnBean(IPFS.class)
 public class IPFSService {
 
 

@@ -7,6 +7,9 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+import com.dl.officialsite.member.MemberService;
+import com.dl.officialsite.team.teammember.TeamMember;
+import com.dl.officialsite.team.teammember.TeamMemberRepository;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
@@ -50,11 +53,14 @@ public class TeamService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private MemberService memberService;
+
     @Transactional
-    public void add(TeamVO teamVO) {
+    public Team add(TeamVO teamVO) {
         Team team = new Team();
         BeanUtils.copyProperties(teamVO, team);
-        teamRepository.save(team);
+        return teamRepository.save(team);
     }
 
     public List<TeamsMembersVo> getTeamAndMembers(TeamQueryVo teamQueryVo) {
@@ -228,6 +234,22 @@ public class TeamService {
             return teamVOS;
         }
     }
+
+
+    public boolean checkMemberIsAdmin(String address) {
+
+        Member member =  memberService.getMemberByAddress(address);
+        if(member == null) {
+            return false;
+        }
+        // id 0
+        List<Long> adminMembers = teamMemberRepository.findByTeamId(0L);
+           if(adminMembers.contains(member)) {
+               return true;
+        }
+           return false;
+    }
+
 
     public TeamsMembersVo getTeamById(Long teamId) {
         Optional<Team> optional = teamRepository.findById(teamId);

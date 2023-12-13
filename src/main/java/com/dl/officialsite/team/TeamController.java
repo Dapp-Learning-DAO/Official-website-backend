@@ -24,15 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/team")
 public class TeamController {
-
-    //1 add create team ( or sql init) 完成
-    //2 query   all  team and members 完成
-    //3 query by name like 完成
-    //4 member apply to   join   team and  exit team 完成
-    //4.1 join need wechat or telegram info. and  send an email to team admin; 完成
-    //4.2 exit  team , send an email to team admin; 完成
-    // 5 team admin approve 完成
-
     @Autowired
     private TeamService teamService;
 
@@ -44,15 +35,15 @@ public class TeamController {
     }
 
     /**
-     * 新增团队
+     * 新增团队 todo
      */
     @PutMapping
     BaseResponse create(@RequestBody TeamVO team, @RequestParam String address) {
         if (!address.equals("0x4DDE628ef50dE13E6E369353128A0d7899B54B6b")) {
             throw new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(), CodeEnums.TEAM_NOT_EXIST.getMsg());
         }
-        teamService.add(team);
-        return BaseResponse.successWithData(team);
+        Team TeamNew =  teamService.add(team);
+        return BaseResponse.successWithData(TeamNew);
     }
 
     /**

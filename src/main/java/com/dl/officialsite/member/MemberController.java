@@ -36,21 +36,19 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
-//    @Autowired
-//    private IPFSService ipfsService;
-@Autowired
-    AaveService aaveService;
+    @Autowired
+    private MemberService memberService;
 
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    BaseResponse getMemberByAddress(@RequestParam String address) throws Exception {
+    BaseResponse getMemberByAddress(@RequestParam String address)  {
 
-        Optional<Member> member = memberRepository.findByAddress(address);
-        if (!member.isPresent()) {
+      Member member = memberService.getMemberWithTeamInfoByAddress(address);
+        if (member == null) {
             return BaseResponse.failWithReason("1001", "no user found");
         }
-        return BaseResponse.successWithData(member.get());
+        return BaseResponse.successWithData(member);
     }
 
 
@@ -201,8 +199,6 @@ public class MemberController {
     private Long getMemberId(HttpSession session) {
         Long memberId = (Long) session
             .getAttribute("memberId");
-
-
         return memberId;
     }
 

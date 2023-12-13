@@ -37,7 +37,6 @@ public class RedPacketService {
     @Scheduled(cron = "0 0/2 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
-        System.out.println("验证是否是新代码--------------");
         HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
@@ -67,7 +66,7 @@ public class RedPacketService {
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
 
-            log.info("redpacket array : " + redpacketsArray);
+           // log.info("redpacket array : " + redpacketsArray);
             List<RedPacket> redPacketList = redPacketRepository.findByStatus(0);
 
             for (int i = 0; i < redpacketsArray.size(); i++) {

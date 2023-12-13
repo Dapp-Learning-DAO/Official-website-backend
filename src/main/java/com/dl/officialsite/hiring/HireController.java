@@ -3,8 +3,9 @@ package com.dl.officialsite.hiring;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.hiring.vo.ApplyVo;
 import com.dl.officialsite.hiring.vo.HiringVO;
-import java.util.ArrayList;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -92,21 +93,6 @@ public class HireController {
         return BaseResponse.successWithData(hiringVOList);
     }
 
-    /**
-     *
-     */
-    @GetMapping("/sponsors")
-    public BaseResponse sponsor() {
-        List<SponsorVo> sponsorVos = new ArrayList<>();
-        SponsorVo sponsorVo = new SponsorVo();
-        sponsorVo.setCompany("Optimism");
-        sponsorVo.setLink("https://www.optimism.io/");
-        sponsorVo.setIcon("https://assets-global.website-files.com/611dbb3c82ba72fbc285d4e2/611fd32ef63b79b5f8568d58_OPTIMISM-logo.svg");
-        for (int i = 0; i < 4; i++) {
-            sponsorVos.add(sponsorVo);
-        }
-        return BaseResponse.successWithData(sponsorVos);
-    }
 
     /**
      * 投递职位
