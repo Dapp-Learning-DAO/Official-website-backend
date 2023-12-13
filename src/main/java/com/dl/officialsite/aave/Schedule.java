@@ -4,7 +4,7 @@ import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.TeamService;
 import com.dl.officialsite.team.vo.TeamQueryVo;
-import com.dl.officialsite.team.vo.TeamsMembersVo;
+import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.math.BigInteger;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +42,9 @@ public class Schedule {
         //查找team0 memeber获取地址
         TeamQueryVo teamQueryVo = new TeamQueryVo();
         teamQueryVo.setTeamName("Dapp-Learning DAO core founders");
-        List<TeamsMembersVo> teamAndMembers = teamService.getTeamAndMembers(teamQueryVo);
+        List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamQueryVo);
         if (teamAndMembers.size() != 0) {
-            for (TeamsMembersVo teamAndMember : teamAndMembers) {
+            for (TeamsWithMembers teamAndMember : teamAndMembers) {
                 for (Member member : teamAndMember.getMembers()) {
                     String email = member.getEmail();
                     HealthInfo healthInfo = aaveService.getHealthInfo(member.getAddress());
@@ -65,9 +65,9 @@ public class Schedule {
             //查找team0 memeber获取地址
             TeamQueryVo teamQueryVo = new TeamQueryVo();
             teamQueryVo.setTeamName("Dapp-Learning DAO core founders");
-            List<TeamsMembersVo> teamAndMembers = teamService.getTeamAndMembers(teamQueryVo);
+            List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamQueryVo);
             if (teamAndMembers.size() != 0) {
-                for (TeamsMembersVo teamAndMember : teamAndMembers) {
+                for (TeamsWithMembers teamAndMember : teamAndMembers) {
                     for (Member member : teamAndMember.getMembers()) {
                         String email = member.getEmail();
                         HealthInfo healthInfo = aaveService.getHealthInfo(member.getAddress());

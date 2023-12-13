@@ -11,7 +11,7 @@ import lombok.Data;
  * @Description TeamsMembersVo
  **/
 @Data
-public class TeamsMembersVo {
+public class TeamsWithMembers {
 
     private Long id;
 
