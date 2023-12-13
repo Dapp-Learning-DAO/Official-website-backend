@@ -115,6 +115,8 @@ public class TeamService {
         //判断是否已经退出过团队
         Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
             teamMember.getTeamId(), teamMember.getMemberId());
+
+        // refactor
         if (optional.isPresent()) {
             TeamMember teamMember2 = optional.get();
             if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
