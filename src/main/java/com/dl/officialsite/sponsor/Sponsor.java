@@ -27,4 +27,6 @@ public class Sponsor {
 
     private String icon;
 
+    private String remark;
+
 }

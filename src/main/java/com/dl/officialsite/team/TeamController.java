@@ -9,7 +9,7 @@ import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamVO;
-import com.dl.officialsite.team.vo.TeamsMembersVo;
+import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,13 +87,13 @@ public class TeamController {
      */
     @PostMapping("/all")
     BaseResponse getTeams(@RequestBody TeamQueryVo teamQueryVo, @RequestParam String address) {
-        List<TeamsMembersVo> teamAndMembers = teamService.getTeamAndMembers(teamQueryVo);
+        List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamQueryVo);
         return BaseResponse.successWithData(teamAndMembers);
     }
 
     @GetMapping("/id")
     BaseResponse getTeamById(@RequestParam Long teamId, @RequestParam String address) {
-        TeamsMembersVo teamAndMembers = teamService.getTeamById(teamId);
+        TeamsWithMembers teamAndMembers = teamService.getTeamById(teamId);
         return BaseResponse.successWithData(teamAndMembers);
     }
 

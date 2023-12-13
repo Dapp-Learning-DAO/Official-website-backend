@@ -15,7 +15,7 @@ import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamVO;
-import com.dl.officialsite.team.vo.TeamsMembersVo;
+import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,13 +57,14 @@ public class TeamService {
     private MemberService memberService;
 
     @Transactional
+    //todo only in  DAO  core founder team
     public Team add(TeamVO teamVO) {
         Team team = new Team();
         BeanUtils.copyProperties(teamVO, team);
         return teamRepository.save(team);
     }
 
-    public List<TeamsMembersVo> getTeamAndMembers(TeamQueryVo teamQueryVo) {
+    public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(TeamQueryVo teamQueryVo) {
         Specification<Team> queryParam = new Specification<Team>() {
             @Override
             public javax.persistence.criteria.Predicate toPredicate(
@@ -80,10 +81,12 @@ public class TeamService {
             }
         };
 
-        List<TeamsMembersVo> teamsMembersVos = new ArrayList<>();
+
+        //optimise   todo
+        List<TeamsWithMembers> teamsWithMembers = new ArrayList<>();
         List<Team> teams = teamRepository.findAll(queryParam);
         teams.stream().forEach(team -> {
-            TeamsMembersVo teamsMembersVo = new TeamsMembersVo();
+            TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             BeanUtils.copyProperties(team, teamsMembersVo);
             List<Member> members = new ArrayList<>();
             List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(),
@@ -93,14 +96,17 @@ public class TeamService {
                 members.add(member);
             });
             teamsMembersVo.setMembers(members);
-            teamsMembersVos.add(teamsMembersVo);
+            teamsWithMembers.add(teamsMembersVo);
         });
-        return teamsMembersVos;
+        return teamsWithMembers;
     }
 
     @Transactional(rollbackOn = Exception.class)
     public void join(TeamMemberJoinVO teamMember) {
+
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
+
+        //todo
 /*        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
             member.getWechatId())) {
             throw new BizException(CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getCode(),
@@ -108,8 +114,9 @@ public class TeamService {
         }*/
         //判断是否已经退出过团队
         Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
-            teamMember.getTeamId()
-            , teamMember.getMemberId());
+            teamMember.getTeamId(), teamMember.getMemberId());
+
+        // refactor
         if (optional.isPresent()) {
             TeamMember teamMember2 = optional.get();
             if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
@@ -175,6 +182,8 @@ public class TeamService {
 
     @Transactional(rollbackOn = Exception.class)
     public void approve(TeamMemberApproveVO teamMemberApproveVO) {
+
+        //todo  check team admin
         List<Long> memberIds = teamMemberApproveVO.getMemberIds();
         List<TeamMember> teamMembers = new ArrayList<>();
         memberIds.stream().forEach(memberId -> {
@@ -184,6 +193,9 @@ public class TeamService {
                 TeamMember teamMember = optional.get();
                 teamMember.setStatus(Constants.APPROVE_TEAM);
                 teamMembers.add(teamMember);
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
             }
         });
         teamMemberRepository.saveAll(teamMembers);
@@ -191,11 +203,14 @@ public class TeamService {
 
 
     public void exit(TeamMemberJoinVO teamMember) {
+        //todo  check team admin  or self
         teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
             teamMember.getMemberId()).ifPresent(teamMember2 -> {
             teamMember2.setStatus(Constants.EXIT_TEAM);
             teamMemberRepository.save(teamMember2);
-        });
+        });   // no exist case  ?
+        // todo
+
         Team team = teamRepository.findById(teamMember.getTeamId()).get();
         Member member = memberRepository.findById(teamMember.getMemberId()).get();
         String subject = team.getTeamName() + "团队成员退出";
@@ -251,10 +266,10 @@ public class TeamService {
     }
 
 
-    public TeamsMembersVo getTeamById(Long teamId) {
+    public TeamsWithMembers getTeamById(Long teamId) {
         Optional<Team> optional = teamRepository.findById(teamId);
         if (optional.isPresent()) {
-            TeamsMembersVo teamsMembersVo = new TeamsMembersVo();
+            TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             Team team = optional.get();
             List<Member> members = new ArrayList<>();
             List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), Constants.APPROVE_TEAM);
@@ -273,15 +288,18 @@ public class TeamService {
 
     public void batchJoin(TeamMemberBatchJoinVO teamMembers) {
 
+
+        //  for admin interface
+        // todo  batch insert ?
         teamMembers.getMemberIds().forEach(memberId -> {
             Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
                 teamMembers.getTeamId(), memberId);
             if (optional.isPresent()) {
                 TeamMember teamMember2 = optional.get();
-                if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
-                    throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
-                        CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
-                }
+//                if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
+//                    throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
+//                        CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
+//                }  // ignore existence
                 teamMember2.setStatus(Constants.APPROVE_TEAM);
                 teamMemberRepository.save(teamMember2);
             } else {

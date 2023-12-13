@@ -19,11 +19,13 @@ public enum CodeEnums {
     TEAM_NOT_EXIST("1005", "team not exist"),
     LOGIN_IN("2001", "please login"),
     TEAM_ADMIN_NOT_EXIST("1006", "team admin not exist"),
+
     MEMBER_ALREADY_REQUEST_TEAM("1007", "member already request team"),
 
     NOT_FOUND_JD("1008", "not found jd"),
     NOT_FOUND_MEMBER("1009", "not found user"),
     NOT_THE_ADMIN("1010", "user not the admin"),
+    TEAM_JOIN_APPLICATION_NOT_EXIST("1011", "team join application not exist"),
     //Sharing
     SHARING_NOT_FOUND("5001", "Sharing not found"),
     SHARING_NOT_OWNER("5002", "You are no sharing user"),
