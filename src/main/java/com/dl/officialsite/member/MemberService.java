@@ -33,13 +33,15 @@ public class MemberService {
     }
 
 
-    public Member getMemberWithTeamInfoByAddress(String address) {
+    public MemberWithTeam getMemberWithTeamInfoByAddress(String address) {
         Optional<Member> member = memberRepository.findByAddress(address);
+
         if(member.isPresent()) {
             MemberWithTeam memberWithTeam = new MemberWithTeam();
             BeanUtils.copyProperties(member, memberWithTeam);
              ArrayList teams = memberWithTeam.getTeams();
             List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(member.get().getId());
+
             teamMembers.stream().forEach(teamMember -> {
                 Team team = teamRepository.findById(teamMember.getTeamId()).get();
                 if(team.getTeamName().equals("Dapp-Learning DAO co-founders")){
@@ -47,6 +49,7 @@ public class MemberService {
                 }
                 teams.add(team);
             });
+            return memberWithTeam;
         }
         return null;
     }
