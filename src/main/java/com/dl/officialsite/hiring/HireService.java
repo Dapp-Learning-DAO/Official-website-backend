@@ -50,7 +50,7 @@ public class HireService {
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
 
-        // optimise
+        // optimise todo saveall
         hiringVO.getMainSkills().forEach(mainSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(mainSkill, hiringSkill);
@@ -229,6 +229,7 @@ public class HireService {
         return hiringVOPage;
     }
 
+    //todo
     public void apply(Long hireId, MultipartFile file) {
         Hiring hiring = hireRepository.findById(hireId)
             .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
