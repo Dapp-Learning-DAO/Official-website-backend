@@ -1,10 +1,10 @@
-package com.dl.officialsite.sharing.service.impl;
+package com.dl.officialsite.sharing.reward;
 
 import com.dl.officialsite.sharing.model.req.InitSharingRewardsReq;
 import com.dl.officialsite.sharing.model.resp.ClaimSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.PreCheckSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.PrepareSharingRewardsResp;
-import com.dl.officialsite.sharing.service.IRewardService;
+import com.dl.officialsite.sharing.reward.IRewardService;
 import org.springframework.stereotype.Service;
 
 @Service

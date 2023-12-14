@@ -1,7 +1,7 @@
-package com.dl.officialsite.sharing.manager;
+package com.dl.officialsite.sharing.management.manager;
 
 import com.dl.officialsite.sharing.constant.SharingPostType;
-import com.dl.officialsite.sharing.handler.IPostHandler;
+import com.dl.officialsite.sharing.management.handler.IPostHandler;
 import com.dl.officialsite.sharing.model.bo.PostGenerationInput;
 import com.dl.officialsite.sharing.model.req.PostGenerateReq;
 import com.google.common.base.Preconditions;

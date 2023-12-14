@@ -1,9 +1,11 @@
-package com.dl.officialsite.sharing.model.db;
+package com.dl.officialsite.sharing;
 
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.constant.SharingMeetingType;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -12,12 +14,12 @@ import javax.persistence.*;
 @Entity
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "tb_share",
+@Table(name = "share",
         indexes= {
         @Index(name = "IDX_THEME",unique = true, columnList = "theme"),
         @Index(name = "IDX_MEMBER_ADDRESS", columnList="member_address")
 })
-public class TbShare {
+public class Share {
 
     /**
      * 分享Id
@@ -95,9 +97,16 @@ public class TbShare {
     @Column(name = "meeting_type", nullable = false)
     private int meetingType = SharingMeetingType.TENCENT.getCode();
 
-    @Column(name = "meeting_id", nullable = true)
+    @Column(name = "meeting_id")
     private String meetingId;
 
-    @Column(name = "meeting_link", nullable = true)
+    @Column(name = "meeting_link")
     private String meetingLink;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private Long createTime;
+    @LastModifiedDate
+    @Column( updatable = false ,nullable = false)
+    private Long updateTime;
 }

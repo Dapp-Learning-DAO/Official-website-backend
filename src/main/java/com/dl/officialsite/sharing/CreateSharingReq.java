@@ -1,4 +1,4 @@
-package com.dl.officialsite.sharing.model.req;
+package com.dl.officialsite.sharing;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

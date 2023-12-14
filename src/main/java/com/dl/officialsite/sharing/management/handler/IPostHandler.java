@@ -1,4 +1,4 @@
-package com.dl.officialsite.sharing.handler;
+package com.dl.officialsite.sharing.management.handler;
 
 import com.dl.officialsite.sharing.constant.SharingPostType;
 import com.dl.officialsite.sharing.model.bo.PostGenerationInput;
