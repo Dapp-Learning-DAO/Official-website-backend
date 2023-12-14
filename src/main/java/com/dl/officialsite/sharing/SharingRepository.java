@@ -1,12 +1,13 @@
 package com.dl.officialsite.sharing;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ISharingRepository extends JpaRepository<Share, Long> {
+public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecificationExecutor<Share> {
 
     @Query(value = "select * from share limit :offset, :limit", nativeQuery = true)
     List<Share> findAllSharesPaged(@Param("offset") int offset, @Param("limit") int limit);

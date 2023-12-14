@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class SharingService  {
 
     @Autowired
-    private ISharingRepository sharingRepository;
+    private SharingRepository sharingRepository;
 
     @Autowired
     private MemberRepository memberRepository;
