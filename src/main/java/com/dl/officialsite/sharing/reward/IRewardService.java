@@ -1,4 +1,4 @@
-package com.dl.officialsite.sharing.service;
+package com.dl.officialsite.sharing.reward;
 
 import com.dl.officialsite.sharing.model.req.InitSharingRewardsReq;
 import com.dl.officialsite.sharing.model.resp.ClaimSharingRewardResp;

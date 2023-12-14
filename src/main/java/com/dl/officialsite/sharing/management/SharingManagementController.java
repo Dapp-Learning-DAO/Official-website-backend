@@ -1,4 +1,4 @@
-package com.dl.officialsite.sharing.controller;
+package com.dl.officialsite.sharing.management;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.sharing.model.req.CreateSessionRoomReq;
@@ -6,7 +6,6 @@ import com.dl.officialsite.sharing.model.req.GenerateSharingDataReq;
 import com.dl.officialsite.sharing.model.resp.CreateMeetingRoomResp;
 import com.dl.officialsite.sharing.model.resp.GenerateSharingDataResp;
 import com.dl.officialsite.sharing.model.resp.QueryMeetingResp;
-import com.dl.officialsite.sharing.service.ISharingManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

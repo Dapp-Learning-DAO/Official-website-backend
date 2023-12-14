@@ -1,8 +1,7 @@
 package com.dl.officialsite.sharing.model.resp;
 
 import com.dl.officialsite.common.base.PagedList;
-import com.dl.officialsite.sharing.model.vo.SharingVo;
-import lombok.Data;
+import com.dl.officialsite.sharing.Share;
 
-public class SharingByUserResp  extends PagedList<SharingVo> {
+public class SharingByUserResp  extends PagedList<Share> {
 }

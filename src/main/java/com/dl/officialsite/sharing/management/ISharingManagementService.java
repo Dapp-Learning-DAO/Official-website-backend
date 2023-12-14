@@ -1,4 +1,4 @@
-package com.dl.officialsite.sharing.service;
+package com.dl.officialsite.sharing.management;
 
 import com.dl.officialsite.sharing.model.req.CreateSessionRoomReq;
 import com.dl.officialsite.sharing.model.req.GenerateSharingDataReq;

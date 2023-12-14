@@ -18,8 +18,7 @@ public class OfficialSiteApplication {
 
 		SpringApplication.run(OfficialSiteApplication.class, args);
 	}
-
-
+	
 	@Bean
 	public Credentials getQueryCredentials()   {
 		return Credentials.create("1");

@@ -1,9 +1,8 @@
-package com.dl.officialsite.sharing.controller;
+package com.dl.officialsite.sharing.reward;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.sharing.model.resp.ClaimSharingRewardResp;
 import com.dl.officialsite.sharing.model.resp.PreCheckSharingRewardResp;
-import com.dl.officialsite.sharing.service.IRewardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
