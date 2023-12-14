@@ -18,7 +18,10 @@ import com.dl.officialsite.team.vo.TeamVO;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -35,7 +38,7 @@ import org.springframework.util.ObjectUtils;
  * @ClassName TeamService
  * @Author jackchen
  * @Date 2023/10/21 17:23
- * @Description TODO
+ * @Description TeamService
  **/
 @Slf4j
 @Service
@@ -287,28 +290,20 @@ public class TeamService {
     }
 
     public void batchJoin(TeamMemberBatchJoinVO teamMembers) {
+        List<TeamMember> teamMemberList = new ArrayList<>();
+        List<Long> memberIds = teamMembers.getMemberIds();
 
-
-        //  for admin interface
-        // todo  batch insert ?
-        teamMembers.getMemberIds().forEach(memberId -> {
-            Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
-                teamMembers.getTeamId(), memberId);
-            if (optional.isPresent()) {
-                TeamMember teamMember2 = optional.get();
-//                if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
-//                    throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
-//                        CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
-//                }  // ignore existence
-                teamMember2.setStatus(Constants.APPROVE_TEAM);
-                teamMemberRepository.save(teamMember2);
-            } else {
-                TeamMember teamMember1 = new TeamMember();
-                teamMember1.setMemberId(memberId);
-                teamMember1.setTeamId(teamMembers.getTeamId());
-                teamMember1.setStatus(Constants.APPROVE_TEAM);
-                teamMemberRepository.save(teamMember1);
-            }
-        });
+        // 批量查询已存在的TeamMember
+        Map<Long, TeamMember> existingMembersMap = teamMemberRepository.findByTeamAndMembers(teamMembers.getTeamId(), memberIds)
+            .stream()
+            .collect(Collectors.toMap(TeamMember::getMemberId, Function.identity()));
+        for (Long memberId : memberIds) {
+            TeamMember teamMember = existingMembersMap.getOrDefault(memberId, new TeamMember());
+            teamMember.setMemberId(memberId);
+            teamMember.setTeamId(teamMembers.getTeamId());
+            teamMember.setStatus(Constants.APPROVE_TEAM);
+            teamMemberList.add(teamMember);
+        }
+        teamMemberRepository.saveAll(teamMemberList);
     }
 }
