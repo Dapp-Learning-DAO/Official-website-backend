@@ -26,6 +26,7 @@ public class HiringSkill {
 
     private String skill;
 
+    //扩展字段
     private int type;
 
 }
