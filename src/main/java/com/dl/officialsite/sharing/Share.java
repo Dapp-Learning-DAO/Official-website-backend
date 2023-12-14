@@ -73,7 +73,7 @@ public class Share {
     /**
      * 分享人
      */
-    @Column(name = "member_address",length = 40, nullable = false)
+    @Column(name = "member_address",length = 42, nullable = false)
     private String memberAddress;
 
     /**
