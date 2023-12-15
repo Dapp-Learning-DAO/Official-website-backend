@@ -83,6 +83,7 @@ public class TeamController {
      * 审批加入团队
      */
     @PostMapping("/approve")
+    @Auth("admin")
     BaseResponse approve(@RequestBody TeamMemberApproveVO teamMemberApproveVO, @RequestParam String address) {
         teamService.approve(teamMemberApproveVO);
         return BaseResponse.successWithData(null);
