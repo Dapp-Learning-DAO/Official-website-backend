@@ -1,4 +1,4 @@
-package com.dl.officialsite.sharing.model.req;
+package com.dl.officialsite.sharing.reward;
 
 import lombok.Data;
 
