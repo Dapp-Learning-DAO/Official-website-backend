@@ -1,5 +1,6 @@
 package com.dl.officialsite.login;
 
+import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.exception.UnauthorizedException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.login.model.UserPrincipleData;
@@ -36,7 +37,7 @@ public class AuthAspect {
 
            List team =  userPrincipleData.getTeams().stream().filter(x-> x.getTeamId()==1).collect(Collectors.toList());
             if(team == null || team.size()==0){
-                throw new UnauthorizedException("Unauthorized access");
+                throw new RuntimeException("Unauthorized access");
             }
 
 
