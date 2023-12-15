@@ -1,6 +1,7 @@
 package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;
 import com.dl.officialsite.member.MemberRepository;
@@ -39,6 +40,7 @@ public class RedPacketController {
 
 
     @PostMapping("/create")
+    @Auth("admin")
     public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
         RedPacket redPacket1 = redPacketRepository.save(redPacket);
