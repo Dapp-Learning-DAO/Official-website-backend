@@ -104,7 +104,7 @@ public class Share {
     private String meetingLink;
 
     @Column
-    private int rewardAmount;
+    private Integer rewardAmount;
 
     @CreatedDate
     @Column(updatable = false)
