@@ -6,6 +6,7 @@ import com.dl.officialsite.hiring.vo.HiringVO;
 
 import java.util.List;
 
+import com.dl.officialsite.login.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ public class HireController {
      * 添加简历
      */
     @PostMapping
+    @Auth("admin")
     public BaseResponse add(@RequestParam String address,@RequestBody HiringVO hiringVO) {
         HiringVO hiringVO1 = hireService.add(hiringVO);
         return BaseResponse.successWithData(hiringVO1);
