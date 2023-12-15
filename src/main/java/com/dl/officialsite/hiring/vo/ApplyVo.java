@@ -14,5 +14,5 @@ public class ApplyVo {
 
     private Long hireId;
 
-    private MultipartFile file;
+    private String file;
 }

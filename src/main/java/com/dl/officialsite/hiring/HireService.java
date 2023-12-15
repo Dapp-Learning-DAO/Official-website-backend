@@ -5,11 +5,14 @@ import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.file.cos.FileService;
 import com.dl.officialsite.hiring.vo.HiringSkillVO;
 import com.dl.officialsite.hiring.vo.HiringVO;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +38,9 @@ public class HireService {
 
     @Autowired
     private HireRepository hireRepository;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private HiringSkillRepository hiringSkillRepository;
@@ -235,14 +241,17 @@ public class HireService {
     }
 
     //todo
-    public void apply(Long hireId, MultipartFile file) {
+    public void apply(Long hireId, String file) {
         Hiring hiring = hireRepository.findById(hireId)
             .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
         String address = hiring.getAddress();
         Member member = memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         try {
-            emailService.sendMailWithFile(member.getEmail(), "有新人投递简历", "有新人投递简历", file);
+          //  File file1 = new File(String.valueOf(fileService.download("")));
+
+        //    emailService.sendMailWithFile(member.getEmail(), "有新人投递简历", "有新人投递简历", file1);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

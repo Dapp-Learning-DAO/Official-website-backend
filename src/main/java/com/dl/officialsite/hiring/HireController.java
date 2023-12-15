@@ -97,7 +97,7 @@ public class HireController {
 
 
     /**
-     * 投递职位
+     * 投递职位 todo
      */
     @PostMapping("/apply")
     public BaseResponse apply(@ModelAttribute ApplyVo applyVo) {
