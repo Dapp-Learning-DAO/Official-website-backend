@@ -9,11 +9,11 @@ package com.dl.officialsite.common.constants;
 public class Constants {
 
     /**
-     * 0: 同意加入
+     * 0: 已加入
      * 1: 申请中
-     * 2: 退出团队
+     * 2: 已退出
      */
-    public static final int APPROVE_TEAM = 0;
+    public static final int IN_TEAM = 0;
 
     /**
      * 0: 同意加入

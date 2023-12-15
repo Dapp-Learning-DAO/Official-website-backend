@@ -29,13 +29,6 @@ public class TeamController {
     private TeamService teamService;
 
 
-    @GetMapping("/admin/list")
-    BaseResponse list(@RequestParam String address) {
-        List<String> list = new ArrayList<>();
-        list.add("0x4DDE628ef50dE13E6E369353128A0d7899B54B6b");
-        return BaseResponse.successWithData(list);
-    }
-
     /**
      * 新增团队
      */

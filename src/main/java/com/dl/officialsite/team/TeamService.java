@@ -194,7 +194,7 @@ public class TeamService {
                 teamMemberApproveVO.getTeamId(), memberId);
             if (optional.isPresent()) {
                 TeamMember teamMember = optional.get();
-                teamMember.setStatus(Constants.APPROVE_TEAM);
+                teamMember.setStatus(Constants.IN_TEAM);
                 teamMembers.add(teamMember);
             } else {
                 throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
@@ -275,7 +275,7 @@ public class TeamService {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             Team team = optional.get();
             List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), Constants.APPROVE_TEAM);
+            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), Constants.IN_TEAM);
             memberIds.stream().forEach(memberId -> {
                 Member member = memberRepository.findById(memberId).get();
                 members.add(member);
@@ -301,7 +301,7 @@ public class TeamService {
             TeamMember teamMember = existingMembersMap.getOrDefault(memberId, new TeamMember());
             teamMember.setMemberId(memberId);
             teamMember.setTeamId(teamMembers.getTeamId());
-            teamMember.setStatus(Constants.APPROVE_TEAM);
+            teamMember.setStatus(Constants.IN_TEAM);
             teamMemberList.add(teamMember);
         }
         teamMemberRepository.saveAll(teamMemberList);

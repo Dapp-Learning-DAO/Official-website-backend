@@ -31,8 +31,9 @@ public class TeamMember {
     //todo
     private UserRoleEnum role;
     /**
-     * 0: 同意加入
+     * 0: 已加入
      * 1: 申请中
+     * 2： 已退出 , 未加入
      */
     private int status;
 }
