@@ -1,12 +1,17 @@
 package com.dl.officialsite.member;
 
+import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.team.Team;
 import com.dl.officialsite.team.TeamRepository;
 import com.dl.officialsite.team.teammember.TeamMember;
 import com.dl.officialsite.team.teammember.TeamMemberRepository;
 import com.dl.officialsite.team.vo.TeamVO;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,13 +29,15 @@ public class MemberService {
     @Autowired
     private TeamRepository teamRepository;
 
-    public Member getMemberByAddress(String address) {
-        Optional<Member> member = memberRepository.findByAddress(address);
-        if(member.isPresent()) {
-            return member.get();
+    public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+
+        public Member getMemberByAddress(String address) {
+            Optional<Member> member = memberRepository.findByAddress(address);
+            if(member.isPresent()) {
+                return member.get();
+            }
+            return null;
         }
-        return null;
-    }
 
 
     public MemberWithTeam getMemberWithTeamInfoByAddress(String address) {
@@ -54,4 +61,18 @@ public class MemberService {
         }
         return null;
     }
+
+    public Member save(Member member) {
+        return memberRepository.save(member);
+    }
+//            } catch (DataIntegrityViolationException e) {
+//
+//                String mostSpecificCauseMessage = e.getMostSpecificCause().getMessage();
+//                if (e.getCause() instanceof ConstraintViolationException) {
+//                    String name = ((ConstraintViolationException) e.getCause()).getConstraintName();
+//                    logger.info("Encountered ConstraintViolationException, details: " + mostSpecificCauseMessage + "constraintName: "+ name);
+//                }
+//                return BaseResponse.failWithReason("1000", mostSpecificCauseMessage);
+//              }
+
 }

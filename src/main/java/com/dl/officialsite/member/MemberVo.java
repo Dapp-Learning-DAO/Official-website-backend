@@ -33,4 +33,5 @@ public class MemberVo {
     private String city;
     private int shareCount;
     private String resume;
+    private Long workStatus;
 }

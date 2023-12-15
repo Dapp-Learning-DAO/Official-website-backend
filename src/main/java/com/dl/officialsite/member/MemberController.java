@@ -73,7 +73,6 @@ public class MemberController {
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        logger.info("member:" + member);
         Specification<Member> queryParam = new Specification<Member>() {
             @Override
             public Predicate toPredicate(Root<Member> root, CriteriaQuery<?> criteriaQuery,
@@ -116,39 +115,10 @@ public class MemberController {
 
     @PostMapping("/create")
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
-        try {
-            Member _member = memberRepository
-                    .save(member);
+
+            Member _member = memberService.save(member);
             return BaseResponse.successWithData(_member);
-        } catch (DataIntegrityViolationException e) {
-            //todo
-            String mostSpecificCauseMessage = e.getMostSpecificCause().getMessage();
-            if (e.getCause() instanceof ConstraintViolationException) {
-                String name = ((ConstraintViolationException) e.getCause()).getConstraintName();
-                logger.info("Encountered ConstraintViolationException, details: " + mostSpecificCauseMessage + "constraintName: "+ name);
-            }
-            return BaseResponse.failWithReason("1000", mostSpecificCauseMessage);
-        }
     }
-
-
-    //ignore
-//    @PostMapping("/avatar/update")
-//    public BaseResponse uploadAvatar(@RequestParam String address, @RequestParam("file") MultipartFile file) {
-//        try {
-//            String hash = ipfsService.upload(file.getBytes());
-//            Optional<Member> memberData = memberRepository.findByAddress(address);
-//            if (memberData.isPresent()) {
-//                Member _member = memberData.get();
-//                _member.setAvatar(hash);
-//                memberRepository.save(_member);
-//            }
-//            return BaseResponse.successWithData(null);
-//        } catch (Exception e) {
-//            return BaseResponse.failWithReason(CodeEnums.FAIL_UPLOAD_FAIL.getCode(),
-//                CodeEnums.FAIL_UPLOAD_FAIL.getMsg());
-//        }
-//    }
 
 
     @PutMapping("/update")
@@ -193,7 +163,9 @@ public class MemberController {
             if (member.getResume()!= null) {
                 _member.setResume(member.getResume());
             }
-
+            if (member.getWorkStatus()!= null) {
+                _member.setWorkStatus(member.getWorkStatus());
+            }
             return BaseResponse.successWithData(memberRepository.save(_member));
         } else {
             return BaseResponse.failWithReason("1001","no user found");
