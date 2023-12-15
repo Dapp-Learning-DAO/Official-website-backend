@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("share/usershare")
+@RequestMapping("/share")
 @Slf4j
 public class SharingController {
 
@@ -66,7 +66,7 @@ public class SharingController {
      * @param shareId
      * @return
      */
-    @GetMapping("queryByShareId")
+    @GetMapping("query")
     public BaseResponse<Share> querySharing(@RequestParam("shareId") long shareId){
         return BaseResponse.successWithData(this.sharingService.querySharing(shareId));
     }
@@ -74,10 +74,10 @@ public class SharingController {
     /**
      * 查看用户的分享
      */
-    @GetMapping("byUser")
-    public BaseResponse loadSharingByUser(@RequestParam("memberId") long memberId,
+    @GetMapping("user")
+    public BaseResponse loadSharingByUser(@RequestParam("memberAddress") String memberAddress,
                                                              @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
                                                              @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
-        return BaseResponse.successWithData(this.sharingService.loadSharingByUser(memberId, pageNo, pageSize));
+        return BaseResponse.successWithData(this.sharingService.loadSharingByUser(memberAddress, pageNo, pageSize));
     }
 }

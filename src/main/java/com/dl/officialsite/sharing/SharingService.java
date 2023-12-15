@@ -117,11 +117,11 @@ public class SharingService  {
     }
 
 
-    public PagedList loadSharingByUser(long memberId, int pageNo, int pageSize) {
+    public PagedList loadSharingByUser(String memberAddress, int pageNo, int pageSize) {
         int offset  = (pageNo - 1)*pageSize;
-        int totalCount = this.sharingRepository.loadCountByUid(memberId);
+        int totalCount = this.sharingRepository.loadCountByUid(memberAddress);
         int totalPages =(totalCount + pageSize - 1) / pageSize;
-        List<Share> items = this.sharingRepository.findAllSharesByUidPaged(memberId, offset, pageSize);
+        List<Share> items = this.sharingRepository.findAllSharesByUidPaged(memberAddress, offset, pageSize);
 
       //  SharingByUserResp resp = new SharingByUserResp();
         PagedList resp = new PagedList(items ,new Pagination(totalCount, totalPages, pageNo, items.size(), pageNo < totalPages));

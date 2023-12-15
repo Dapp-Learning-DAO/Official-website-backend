@@ -15,11 +15,11 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
     @Query(value = "select count(*) from share", nativeQuery = true)
     int loadAllCount();
 
-    @Query(value = "select * from share where member_id = :memberId limit :offset, :limit", nativeQuery = true)
-    List<Share> findAllSharesByUidPaged(@Param("memberId") long memberId, @Param("offset") int offset, @Param("limit") int limit);
+    @Query(value = "select * from share where member_address = :memberAddress limit :offset, :limit", nativeQuery = true)
+    List<Share> findAllSharesByUidPaged(@Param("memberAddress") String memberAddress, @Param("offset") int offset, @Param("limit") int limit);
 
-    @Query(value = "select count(*) from share where member_id = :memberId", nativeQuery = true)
-    int loadCountByUid(@Param("memberId") long memberId);
+    @Query(value = "select count(*) from share where member_address = :memberAddress", nativeQuery = true)
+    int loadCountByUid(@Param("memberAddress") String memberAddress);
 
 
 }
