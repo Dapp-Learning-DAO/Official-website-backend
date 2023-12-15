@@ -3,6 +3,7 @@ package com.dl.officialsite.team;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
@@ -27,6 +28,7 @@ public class TeamController {
     @Autowired
     private TeamService teamService;
 
+
     @GetMapping("/admin/list")
     BaseResponse list(@RequestParam String address) {
         List<String> list = new ArrayList<>();
@@ -38,6 +40,7 @@ public class TeamController {
      * 新增团队
      */
     @PutMapping
+    @Auth("admin")
     BaseResponse create(@RequestBody TeamVO team, @RequestParam String address) {
         if (teamService.checkMemberIsAdmin(address)) {
             throw new BizException(CodeEnums.NOT_THE_ADMIN.getCode(), CodeEnums.NOT_THE_ADMIN.getMsg());

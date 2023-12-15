@@ -51,22 +51,25 @@ public class HireService {
         hireRepository.save(hiring);
 
         // optimise todo saveall
+        ArrayList<HiringSkill> hiringSkillList = new ArrayList<>();
         hiringVO.getMainSkills().forEach(mainSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(mainSkill, hiringSkill);
             hiringSkill.setType(Constants.HIRING_MAIN_SKILL);
             hiringSkill.setHiringId(hiring.getId());
-            hiringSkillRepository.save(hiringSkill);
+            hiringSkillList.add(hiringSkill);
         });
 
-        // delete todo
+
         hiringVO.getOtherSkills().forEach(otherSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(otherSkill, hiringSkill);
             hiringSkill.setType(Constants.HIRING_OTHER_SKILL);
             hiringSkill.setHiringId(hiring.getId());
-            hiringSkillRepository.save(hiringSkill);
+            hiringSkillList.add(hiringSkill);
         });
+
+        hiringSkillRepository.saveAll(hiringSkillList);
         hiringVO.setId(hiring.getId());
         return hiringVO;
     }
@@ -74,16 +77,18 @@ public class HireService {
     public Page<HiringVO> all(Pageable pageable) {
         List<HiringVO> hiringVOList = new ArrayList<>();;
         Page<Hiring> hiringPage = hireRepository.findAll(pageable);
+
+        //find HiringId in []  query one time !
         hiringPage.getContent().forEach(hiring -> {
             List<HiringSkillVO> mainSkills = hiringSkillRepository.findByHiringId(hiring.getId())
                 .stream()
-                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_MAIN_SKILL)
                 .map(hiringSkill -> {
                     HiringSkillVO hiringSkillVO = new HiringSkillVO();
                     BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
                     return hiringSkillVO;
                 })
                 .collect(Collectors.toList());
+
             List<HiringSkillVO> otherSkills = hiringSkillRepository.findByHiringId(hiring.getId())
                 .stream()
                 .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)

@@ -22,6 +22,7 @@ public class Hiring {
 
     private String position;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String  location;

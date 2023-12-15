@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public enum UserRoleEnum {
 
+    SUPERADMIN(2),
+
     ADMIN(1),
 
     NORMAL(0);

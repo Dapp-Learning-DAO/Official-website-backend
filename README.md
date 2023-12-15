@@ -38,6 +38,7 @@ https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/{uuid}
 
 ## 参考链接
 - Cors: https://cloud.tencent.com/developer/article/1924258
+- session: https://www.cnblogs.com/RudeCrab/p/14251154.html
 - upload pic: https://juejin.cn/post/6844903630416379918  
 - JPA query: https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl
 -  JPA :  https://www.baeldung.com/hibernate-criteria-queries

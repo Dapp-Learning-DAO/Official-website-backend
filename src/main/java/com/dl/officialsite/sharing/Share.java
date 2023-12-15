@@ -103,6 +103,9 @@ public class Share {
     @Column(name = "meeting_link")
     private String meetingLink;
 
+    @Column
+    private int rewardAmount;
+
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;
