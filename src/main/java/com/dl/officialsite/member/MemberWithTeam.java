@@ -1,6 +1,8 @@
 package com.dl.officialsite.member;
 
 
+import com.dl.officialsite.team.Team;
+import com.dl.officialsite.team.vo.TeamsWithMembers;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 public class MemberWithTeam extends Member
 {
 
-    private ArrayList<TeamVO> teams;
+    private ArrayList<TeamsWithMembers> teams;
 
     private boolean isAdmin;
 
