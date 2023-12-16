@@ -1,6 +1,8 @@
 package com.dl.officialsite.member;
 
 
+import com.dl.officialsite.common.privacy.PrivacyEncrypt;
+import com.dl.officialsite.common.privacy.PrivacyTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -36,6 +38,7 @@ public class Member  implements Serializable
     private String  address;
     @Column(unique=true,length = 40)
     @NotNull
+    @PrivacyEncrypt(type = PrivacyTypeEnum.EMAIL)
     private String email;
     @Column(unique=true,length = 20)
     @NotNull
