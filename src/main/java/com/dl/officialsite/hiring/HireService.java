@@ -186,6 +186,8 @@ public class HireService {
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
         //删除原有的技能
+
+        //todo
         hiringSkillRepository.deleteByHiringId(hiring.getId());
         //添加新的技能
         hiringVO.getMainSkills().forEach(mainSkill -> {
@@ -211,6 +213,8 @@ public class HireService {
             return equal;
         };
         Page<Hiring> page = hireRepository.findAll(spec, pageable);
+
+        //findIDS
         page.getContent().forEach(hiring -> {
             List<HiringSkillVO> mainSkills = hiringSkillRepository.findByHiringId(hiring.getId())
                 .stream()
@@ -240,17 +244,19 @@ public class HireService {
         return hiringVOPage;
     }
 
-    //todo
+
+    //application
     public void apply(Long hireId, String file) {
         Hiring hiring = hireRepository.findById(hireId)
             .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
         String address = hiring.getAddress();
+        System.out.println("address!!! " + address);
         Member member = memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         try {
-          //  File file1 = new File(String.valueOf(fileService.download("")));
-
-        //    emailService.sendMailWithFile(member.getEmail(), "有新人投递简历", "有新人投递简历", file1);
+           //  File file1 = new File(String.valueOf(fileService.download("")));
+           // emailService.sendMailWithFile(member.getEmail(), "有新人投递简历", "有新人投递简历", file1);
+            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ file );
 
         } catch (Exception e) {
             throw new RuntimeException(e);

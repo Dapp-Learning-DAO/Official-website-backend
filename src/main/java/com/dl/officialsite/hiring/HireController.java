@@ -84,7 +84,7 @@ public class HireController {
     }
 
     /**
-     * 按照创建者查看简历
+     * 按照创建者查看招聘
      */
     @GetMapping("/address")
     public BaseResponse allByAddress(@RequestParam String address,

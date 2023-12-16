@@ -11,12 +11,14 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@ConditionalOnProperty(value="login.filter",
+        havingValue = "true")
 @Aspect
 public class AuthAspect {
 //    @Autowired
@@ -29,6 +31,8 @@ public class AuthAspect {
 
     @Before("authPointcut() && @annotation(auth)")
     public void authBefore(JoinPoint joinPoint, Auth auth) throws UnauthorizedException {
+
+
         String permission = auth.value();
         UserPrincipleData userPrincipleData =  UserSecurityUtils.getUserLogin();
         logger.info("userPrincipleData address "+ userPrincipleData.getAddress());

@@ -13,7 +13,7 @@ public class Constants {
      * 1: 申请中
      * 2: 已退出
      */
-    public static final int APPROVE_TEAM = 0;
+    public static final int IN_TEAM = 0;
 
     /**
      * 0: 同意加入
