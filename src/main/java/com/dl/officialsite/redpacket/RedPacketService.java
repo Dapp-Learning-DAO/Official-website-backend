@@ -82,7 +82,7 @@ public class RedPacketService {
                 for (int j = 0; j < redPacketList.size(); j++) {
 
                     RedPacket redPacket = redPacketList.get(j);
-                    log.info("redPacket: " + redPacket);
+                   // log.info("redPacket: " + redPacket);
                     if (!redPacketList.get(j).getId().equals(id))
                         continue;
 

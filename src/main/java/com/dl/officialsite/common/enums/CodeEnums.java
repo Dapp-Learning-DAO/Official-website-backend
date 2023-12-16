@@ -21,6 +21,7 @@ public enum CodeEnums {
     TEAM_ADMIN_NOT_EXIST("1006", "team admin not exist"),
 
     MEMBER_ALREADY_REQUEST_TEAM("1007", "member already request team"),
+    MEMBER_ALREADY_IN_TEAM("1012", "member already in team"),
 
     NOT_FOUND_JD("1008", "not found jd"),
     NOT_FOUND_MEMBER("1009", "not found user"),

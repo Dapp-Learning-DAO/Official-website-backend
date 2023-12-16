@@ -1,17 +1,13 @@
 package com.dl.officialsite.member;
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.team.Team;
 import com.dl.officialsite.team.TeamRepository;
 import com.dl.officialsite.team.teammember.TeamMember;
 import com.dl.officialsite.team.teammember.TeamMemberRepository;
-import com.dl.officialsite.team.vo.TeamVO;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

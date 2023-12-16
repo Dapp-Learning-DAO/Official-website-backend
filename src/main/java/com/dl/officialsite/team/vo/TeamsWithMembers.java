@@ -25,6 +25,8 @@ public class TeamsWithMembers {
     // dao admin , core contributor,  builder
     private String authority;
 
+    private int status;
+
     private List<Member> members;
 
 }

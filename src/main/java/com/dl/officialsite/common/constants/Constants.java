@@ -23,6 +23,11 @@ public class Constants {
 
     public static final int EXIT_TEAM = 2;
 
+
+    public static final int REJECT_TEAM = 3;
+
+
+
     /**
      *  主要技术类型
      */

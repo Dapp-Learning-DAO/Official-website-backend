@@ -1,11 +1,9 @@
 package com.dl.officialsite.sponsor;
 
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.team.TeamService;
-import com.dl.officialsite.team.vo.TeamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

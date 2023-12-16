@@ -14,7 +14,6 @@ import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamQueryVo;
-import com.dl.officialsite.team.vo.TeamVO;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,15 +58,16 @@ public class TeamService {
     @Autowired
     private MemberService memberService;
 
+
+
     @Transactional
-    //todo only in  DAO  core founder team
-    public Team add(TeamVO teamVO) {
-        Team team = new Team();
-        BeanUtils.copyProperties(teamVO, team);
+    public Team add(Team team) {
         return teamRepository.save(team);
     }
 
     public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(TeamQueryVo teamQueryVo) {
+
+        //find team
         Specification<Team> queryParam = new Specification<Team>() {
             @Override
             public javax.persistence.criteria.Predicate toPredicate(
@@ -84,20 +84,21 @@ public class TeamService {
             }
         };
 
-
-        //optimise   todo
         List<TeamsWithMembers> teamsWithMembers = new ArrayList<>();
         List<Team> teams = teamRepository.findAll(queryParam);
+
+        // find members
         teams.stream().forEach(team -> {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             BeanUtils.copyProperties(team, teamsMembersVo);
-            List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(),
+
+            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(),
                 teamQueryVo.getStatus());
-            memberIds.stream().forEach(memberId -> {
-                Member member = memberRepository.findById(memberId).get();
-                members.add(member);
-            });
+//            memberIds.stream().forEach(memberId -> {
+//                Member member = memberRepository.findById(memberId).get();
+//                members.add(member);
+//            });
+            List<Member> members  = memberRepository.findByIdIn(memberIds);
             teamsMembersVo.setMembers(members);
             teamsWithMembers.add(teamsMembersVo);
         });
@@ -115,42 +116,48 @@ public class TeamService {
             throw new BizException(CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getCode(),
                 CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getMsg());
         }*/
-        //判断是否已经退出过团队
         Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
             teamMember.getTeamId(), teamMember.getMemberId());
 
         // refactor
         if (optional.isPresent()) {
             TeamMember teamMember2 = optional.get();
+            //already apply
             if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
                 throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
                     CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
             }
-            teamMember2.setStatus(Constants.REQUEST_TEAM);
-            teamMemberRepository.save(teamMember2);
-            //发送邮件
-            Team team = teamRepository.findById(teamMember.getTeamId()).get();
-            String administratorAddress = team.getAdministrator();
-            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
-                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
-                if (admin.isPresent()) {
-                    Member member1 = admin.get();
-                    String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
-                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
-                    List<String> mailAddress = new ArrayList<>();
-                    mailAddress.add(email);
-                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
-                    emailService.memberJoinTeam(mailAddress, subject, content);
-                } else {
-                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-                }
-
-            } else {
-                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            if (teamMember2.getStatus() == Constants.IN_TEAM) {
+                throw new BizException(CodeEnums.MEMBER_ALREADY_IN_TEAM.getCode(),
+                        CodeEnums.MEMBER_ALREADY_IN_TEAM.getMsg());
             }
+
+            //todo 存在为什么要发再set状态以及发邮件
+//            teamMember2.setStatus(Constants.REQUEST_TEAM);
+//            teamMemberRepository.save(teamMember2);
+//            //发送邮件
+//            Team team = teamRepository.findById(teamMember.getTeamId()).get();
+//            String administratorAddress = team.getAdministrator();
+//            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+//                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+//                if (admin.isPresent()) {
+//                    Member member1 = admin.get();
+//                    String email = member1.getEmail();
+//                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
+//                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
+//                    List<String> mailAddress = new ArrayList<>();
+//                    mailAddress.add(email);
+//                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
+//                    emailService.memberJoinTeam(mailAddress, subject, content);
+//                } else {
+//                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+//                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+//                }
+
+//            } else {
+//                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+//                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+//            }
         } else {
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
@@ -186,7 +193,6 @@ public class TeamService {
     @Transactional(rollbackOn = Exception.class)
     public void approve(TeamMemberApproveVO teamMemberApproveVO) {
 
-        //todo  check team admin
         List<Long> memberIds = teamMemberApproveVO.getMemberIds();
         List<TeamMember> teamMembers = new ArrayList<>();
         memberIds.stream().forEach(memberId -> {
@@ -194,7 +200,7 @@ public class TeamService {
                 teamMemberApproveVO.getTeamId(), memberId);
             if (optional.isPresent()) {
                 TeamMember teamMember = optional.get();
-                teamMember.setStatus(Constants.IN_TEAM);
+                teamMember.setStatus(teamMemberApproveVO.getStatus());
                 teamMembers.add(teamMember);
             } else {
                 throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
@@ -205,51 +211,52 @@ public class TeamService {
     }
 
 
-    public void exit(TeamMemberJoinVO teamMember) {
-        //todo  check team admin  or self
-        teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
-            teamMember.getMemberId()).ifPresent(teamMember2 -> {
-            teamMember2.setStatus(Constants.EXIT_TEAM);
-            teamMemberRepository.save(teamMember2);
-        });   // no exist case  ?
-        // todo
+    public void exit(TeamMemberJoinVO teamMember, String address) {
 
-        Team team = teamRepository.findById(teamMember.getTeamId()).get();
-        Member member = memberRepository.findById(teamMember.getMemberId()).get();
-        String subject = team.getTeamName() + "团队成员退出";
-        String text = member.getNickName() + "成员退出";
-        List<String> mailAddress = new ArrayList<>();
-        if (mailAddress.size() != 0) {
-            emailService.memberExitTeam(mailAddress, subject, text);
-        }
+       Optional<Member> member =  memberRepository.findByAddress(address);
+       if(member.isPresent() ) {
+
+           if (checkMemberIsAdmin(address) || member.get().getId().equals(teamMember.getMemberId())) {
+               teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
+                       teamMember.getMemberId()).ifPresent(teamMember1 -> {
+                   teamMember1.setStatus(Constants.EXIT_TEAM);
+                   teamMemberRepository.save(teamMember1);
+               });
+           }
+
+           Team team = teamRepository.findById(teamMember.getTeamId()).get();
+           Member member1 = memberRepository.findById(teamMember.getMemberId()).get();
+           String subject = team.getTeamName() + "团队成员退出";
+           String text = member1.getNickName() + "成员退出";
+           emailService.sendMail(member.get().getEmail(), subject, text);
+
+       }
     }
 
     public List<Member> getNeedApproveMembers(Long teamId) {
         List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(teamId,
             Constants.REQUEST_TEAM);
-        List<Member> members = new ArrayList<>();
-        memberIds.stream().forEach(memberId -> {
-            Member member = memberRepository.findById(memberId).get();
-            members.add(member);
-        });
+        List<Member> members =   memberRepository.findByIdIn(memberIds);
         return members;
     }
 
-    public List<TeamVO> getMemberRole(Long memberId) {
+    public List<TeamsWithMembers> getMemberTeamsInfo(Long memberId) {
         List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(memberId);
         if (teamMembers.size() == 0) {
             throw new BizException(CodeEnums.MEMBER_NOT_IN_TEAM.getCode(),
                 CodeEnums.MEMBER_NOT_IN_TEAM.getMsg());
         } else {
-            List<TeamVO> teamVOS = new ArrayList<>();
+            //ids
+            List<TeamsWithMembers> teamsWithMembers = new ArrayList<>();
+
             teamMembers.stream().forEach(teamMember -> {
                 Team team = teamRepository.findById(teamMember.getTeamId()).get();
-                TeamVO teamVO = new TeamVO();
+                TeamsWithMembers teamVO = new TeamsWithMembers();
                 BeanUtils.copyProperties(team, teamVO);
                 teamVO.setStatus(teamMember.getStatus());
-                teamVOS.add(teamVO);
+                teamsWithMembers.add(teamVO);
             });
-            return teamVOS;
+            return teamsWithMembers;
         }
     }
 
@@ -261,7 +268,7 @@ public class TeamService {
             return false;
         }
         // id 0
-        List<Long> adminMembers = teamMemberRepository.findByTeamId(0L);
+        List<Long> adminMembers = teamMemberRepository.findByTeamId(1L);
            if(adminMembers.contains(member)) {
                return true;
         }
@@ -275,7 +282,7 @@ public class TeamService {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             Team team = optional.get();
             List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamIdStatus(team.getId(), Constants.IN_TEAM);
+            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(), Constants.IN_TEAM);
             memberIds.stream().forEach(memberId -> {
                 Member member = memberRepository.findById(memberId).get();
                 members.add(member);

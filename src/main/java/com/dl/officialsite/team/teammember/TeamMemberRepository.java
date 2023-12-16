@@ -17,11 +17,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     @Query(value = "select member_id from team_member where team_id = :team_id", nativeQuery = true)
     List<Long> findByTeamId(@Param("team_id")Long teamId);
 
-    @Query(value = "select member_id from team_member where team_id = :team_id and status = :status",
-        nativeQuery =
-        true)
-    List<Long> findByTeamIdStatus(@Param("team_id")Long teamId, @Param("status")int status);
-
     @Query(value = "select * from team_member where team_id = :team_id and member_id = :member_id",
         nativeQuery = true)
     Optional<TeamMember> findByTeamAndMember(@Param("team_id")Long teamId, @Param("member_id")Long memberId);

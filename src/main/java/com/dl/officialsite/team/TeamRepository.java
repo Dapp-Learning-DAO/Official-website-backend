@@ -12,4 +12,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  **/
 public interface TeamRepository extends JpaRepository<Team, Long>, JpaSpecificationExecutor<Team> {
 
+
+
+
+
 }
