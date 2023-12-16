@@ -100,7 +100,7 @@ public class HireController {
      * 投递职位 todo
      */
     @PostMapping("/apply")
-    public BaseResponse apply(@ModelAttribute ApplyVo applyVo) {
+    public BaseResponse apply(@RequestBody ApplyVo applyVo) {
         hireService.apply(applyVo.getHireId(), applyVo.getFile());
         return BaseResponse.successWithData(null);
     }
