@@ -1,5 +1,6 @@
 package com.dl.officialsite.member;
 
+import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.team.Team;
 import com.dl.officialsite.team.TeamRepository;
 import com.dl.officialsite.team.teammember.TeamMember;
@@ -60,6 +61,18 @@ public class MemberService {
 
     public Member save(Member member) {
         return memberRepository.save(member);
+    }
+
+    public MemberVo getMemberPrivacyInfo(String address) {
+        Optional<Member> member = memberRepository.findByAddress(address);
+        if (!member.isPresent()) {
+            return null;
+        }
+        MemberVo memberVo = new MemberVo();
+        BeanUtils.copyProperties(member.get(), memberVo);
+
+      return memberVo;
+
     }
 //            } catch (DataIntegrityViolationException e) {
 //

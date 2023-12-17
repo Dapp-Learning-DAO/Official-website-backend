@@ -5,6 +5,7 @@ import com.dl.officialsite.common.base.BaseResponse;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -48,14 +49,13 @@ public class MemberController {
     }
 
 
-    @RequestMapping(value = "/resume/query", method = RequestMethod.GET)
-    BaseResponse getMemberResumeByAddress(@RequestParam String address)  {
-
-        Optional<Member> member = memberRepository.findByAddress(address);
-        if (!member.isPresent()) {
-            return BaseResponse.failWithReason("1001", "no user found");
+    @RequestMapping(value = "/query/privacy", method = RequestMethod.GET)
+    BaseResponse getMemberDetailInfoByAddress(@RequestParam String address)  {
+       MemberVo memberVo =  memberService.getMemberPrivacyInfo(address);
+        if(memberVo ==null ) {
+                return BaseResponse.failWithReason("1001", "no user found");
         }
-        return BaseResponse.successWithData(member.get().getResume());
+        return BaseResponse.successWithData(memberVo);
     }
 
 
