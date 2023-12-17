@@ -223,10 +223,10 @@ public class TeamService {
 
     public void exit(TeamMemberJoinVO teamMember, String address) {
 
-       Optional<Member> member =  memberRepository.findByAddress(address);
+       Optional<Member> member =  memberRepository.findById(teamMember.getMemberId());
        if(member.isPresent() ) {
           // only self or admin
-           if (checkMemberIsAdmin(address) || member.get().getId().equals(teamMember.getMemberId())) {
+           if (checkMemberIsAdmin(address)  ||  member.get().getAddress().equals(address)) {
                teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
                        teamMember.getMemberId()).ifPresent(teamMember1 -> {
                    teamMember1.setStatus(Constants.EXIT_TEAM);
