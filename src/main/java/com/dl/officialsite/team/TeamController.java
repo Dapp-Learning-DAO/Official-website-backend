@@ -11,6 +11,10 @@ import com.dl.officialsite.team.vo.TeamsWithMembers;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +38,16 @@ public class TeamController {
     BaseResponse create(@RequestBody Team team, @RequestParam String address) {
         Team TeamNew =  teamService.add(team);
         return BaseResponse.successWithData(TeamNew);
+    }
+
+    /**
+     * 更改管理员 todo
+     */
+    @PostMapping()
+    @Auth("admin")
+    BaseResponse update(@RequestBody Team team, @RequestParam String address) {
+       // Team TeamNew =  teamService.update(team);
+        return BaseResponse.successWithData(null);
     }
 
     /**
@@ -77,10 +91,30 @@ public class TeamController {
     /**
      * 查询所有团队
      */
-    @PostMapping("/all")
-    BaseResponse getTeams(@RequestBody TeamQueryVo teamQueryVo, @RequestParam String address) {
-        List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamQueryVo);
-        return BaseResponse.successWithData(teamAndMembers);
+    @GetMapping("/all")
+    BaseResponse getAllTeams(
+                          @RequestParam String address,
+                          @RequestParam(defaultValue = "1") Integer pageNumber,
+                          @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<TeamsWithMembers> allTeamsWithMembers = teamService.getAllTeamWithMembers(pageable);
+        return  BaseResponse.successWithData(allTeamsWithMembers);
+    }
+
+    @GetMapping("/query")
+    BaseResponse getTeams(@RequestParam(required = false) String  teamName,
+                          @RequestParam(defaultValue = "0") int status,
+                          @RequestParam String address,
+                          @RequestParam(defaultValue = "1") Integer pageNumber,
+                          @RequestParam(defaultValue = "10") Integer pageSize) {
+
+        List<TeamsWithMembers> teamWithMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamName,status);
+
+        PageRequest pageRequest =  PageRequest.of(pageNumber-1, pageSize);
+        int start = (int) pageRequest.getOffset()  ;
+        int end = Math.min((start + pageRequest.getPageSize()), teamWithMembers.size());
+        List<TeamsWithMembers> pageContent = teamWithMembers.subList(start, end);
+        return BaseResponse.successWithData(  new PageImpl<>(pageContent, pageRequest, teamWithMembers.size()));
     }
 
     @GetMapping("/id")

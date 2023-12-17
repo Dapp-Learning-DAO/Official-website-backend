@@ -2,6 +2,8 @@ package com.dl.officialsite.team.vo;
 
 import com.dl.officialsite.member.Member;
 import java.util.List;
+
+import com.dl.officialsite.team.Team;
 import lombok.Data;
 
 /**
@@ -11,20 +13,9 @@ import lombok.Data;
  * @Description TeamsMembersVo
  **/
 @Data
-public class TeamsWithMembers {
+public class TeamsWithMembers extends Team {
 
-    private Long id;
-
-    private String teamName;
-
-    private String teamProfile;
-
-    private String administrator;
-
-    private String nickName;
-    // dao admin , core contributor,  builder
-    private String authority;
-
+    //only for specific member with team info
     private int status;
 
     private List<Member> members;

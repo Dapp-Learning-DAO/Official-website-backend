@@ -40,9 +40,9 @@ public class Schedule {
     public void monitorPrice() throws Exception {
         log.info("monitorPrice start");
         //查找team0 memeber获取地址
-        TeamQueryVo teamQueryVo = new TeamQueryVo();
-        teamQueryVo.setTeamName("Dapp-Learning DAO core founders");
-        List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamQueryVo);
+//        TeamQueryVo teamQueryVo = new TeamQueryVo();
+//        teamQueryVo.setTeamName("Dapp-Learning DAO core founders");
+        List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus("Dapp-Learning DAO core founders", 0);
         if (teamAndMembers.size() != 0) {
             for (TeamsWithMembers teamAndMember : teamAndMembers) {
                 for (Member member : teamAndMember.getMembers()) {
@@ -65,7 +65,7 @@ public class Schedule {
             //查找team0 memeber获取地址
             TeamQueryVo teamQueryVo = new TeamQueryVo();
             teamQueryVo.setTeamName("Dapp-Learning DAO core founders");
-            List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus(teamQueryVo);
+            List<TeamsWithMembers> teamAndMembers = teamService.getTeamWithMembersByTeamNameAndStatus("Dapp-Learning DAO core founders", 0);
             if (teamAndMembers.size() != 0) {
                 for (TeamsWithMembers teamAndMember : teamAndMembers) {
                     for (Member member : teamAndMember.getMembers()) {
@@ -85,4 +85,6 @@ public class Schedule {
             log.error("monitorHealth error", e);
         }
     }
+
+
 }

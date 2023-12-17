@@ -29,6 +29,9 @@ import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -65,8 +68,7 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(TeamQueryVo teamQueryVo) {
-
+    public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(String teamName , int status) {
         //find team
         Specification<Team> queryParam = new Specification<Team>() {
             @Override
@@ -75,14 +77,16 @@ public class TeamService {
                 CriteriaQuery<?> criteriaQuery,
                 CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (teamQueryVo.getTeamName() != null) {
+                if (teamName != null) {
                     predicates.add(criteriaBuilder.like(root.get("teamName"),
-                        "%" + teamQueryVo.getTeamName() + "%"));
+                        "%" + teamName + "%"));
                 }
                 return criteriaBuilder.and(predicates.toArray(
                     new javax.persistence.criteria.Predicate[predicates.size()]));
             }
         };
+
+
 
         List<TeamsWithMembers> teamsWithMembers = new ArrayList<>();
         List<Team> teams = teamRepository.findAll(queryParam);
@@ -92,13 +96,32 @@ public class TeamService {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             BeanUtils.copyProperties(team, teamsMembersVo);
 
-            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(),
-                teamQueryVo.getStatus());
+            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(), status);
             List<Member> members  = memberRepository.findByIdIn(memberIds);
             teamsMembersVo.setMembers(members);
             teamsWithMembers.add(teamsMembersVo);
         });
         return teamsWithMembers;
+    }
+
+
+
+    public Page<TeamsWithMembers> getAllTeamWithMembers(Pageable pageable) {
+
+       Page<Team> teamsPage =  teamRepository.findAll(pageable);
+       List teams =  teamsPage.getContent();
+        List<TeamsWithMembers> teamsWithMembers = new ArrayList<>();
+        teams.stream().forEach(team -> {
+            TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
+            BeanUtils.copyProperties(team, teamsMembersVo);
+
+            List<Long> memberIds = teamMemberRepository.findAll().stream().map(x->x.getMemberId()).collect(Collectors.toList());
+            List<Member> members  = memberRepository.findByIdIn(memberIds);
+            teamsMembersVo.setMembers(members);
+            teamsWithMembers.add(teamsMembersVo);
+        });
+       return new PageImpl<>(teamsWithMembers, pageable, teamsWithMembers.size() );
+
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -128,32 +151,32 @@ public class TeamService {
                         CodeEnums.MEMBER_ALREADY_IN_TEAM.getMsg());
             }
 
-            //todo 存在为什么要发再set状态以及发邮件
-//            teamMember2.setStatus(Constants.REQUEST_TEAM);
-//            teamMemberRepository.save(teamMember2);
-//            //发送邮件
-//            Team team = teamRepository.findById(teamMember.getTeamId()).get();
-//            String administratorAddress = team.getAdministrator();
-//            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
-//                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
-//                if (admin.isPresent()) {
-//                    Member member1 = admin.get();
-//                    String email = member1.getEmail();
-//                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
-//                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
-//                    List<String> mailAddress = new ArrayList<>();
-//                    mailAddress.add(email);
-//                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
-//                    emailService.memberJoinTeam(mailAddress, subject, content);
-//                } else {
-//                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-//                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-//                }
+            //removed  or rejected before
+            teamMember2.setStatus(Constants.REQUEST_TEAM);
+            teamMemberRepository.save(teamMember2);
+            //发送邮件
+            Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            String administratorAddress = team.getAdministrator();
+            if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
+                Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
+                if (admin.isPresent()) {
+                    Member member1 = admin.get();
+                    String email = member1.getEmail();
+                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
+                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
+                    List<String> mailAddress = new ArrayList<>();
+                    mailAddress.add(email);
+                    log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
+                    emailService.memberJoinTeam(mailAddress, subject, content);
+                } else {
+                    throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                }
 
-//            } else {
-//                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-//                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
-//            }
+            } else {
+                throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+            }
         } else {
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
@@ -304,4 +327,6 @@ public class TeamService {
         }
         teamMemberRepository.saveAll(teamMemberList);
     }
+
+
 }

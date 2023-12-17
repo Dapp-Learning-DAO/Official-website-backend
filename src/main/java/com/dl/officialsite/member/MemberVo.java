@@ -14,6 +14,7 @@ import javax.persistence.Column;
 @AllArgsConstructor
 public class MemberVo {
 
+    private Long id;
     private String  address;
 
     private String email;

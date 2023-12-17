@@ -86,7 +86,6 @@ public class RedPacketController {
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize)   {
-        logger.info("redpacketV0: "+  redPacket);
         Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
         Specification<RedPacket> queryParam = new Specification<RedPacket>() {
             @Override
