@@ -1,38 +1,39 @@
 package com.dl.officialsite.hiring.application;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Data;
-import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
 
 @Data
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-@DynamicUpdate
-@Table(name = "application", schema = "dl")
+@Table(name = "application")
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long candidateId;
-
     private Long hiringId ;
 
-    private Long hrId;
+    private Long memeberId;
 
-    // 0- 投递中 1 已录取 2 已拒绝
-    private Integer status;
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-
-    @CreatedDate
-    @Column(updatable = false)
-    private Long createTime;
     @LastModifiedDate
-    @Column( updatable = false ,nullable = false)
-    private Long updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
 }

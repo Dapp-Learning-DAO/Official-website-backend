@@ -11,13 +11,14 @@ import com.dl.officialsite.hiring.vo.HiringVO;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ClassName HireService
@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Description HireService
  **/
 @Service
+@Slf4j
 public class HireService {
 
     @Autowired
@@ -56,7 +57,6 @@ public class HireService {
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
 
-        // optimise todo saveall
         ArrayList<HiringSkill> hiringSkillList = new ArrayList<>();
         hiringVO.getMainSkills().forEach(mainSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
@@ -83,6 +83,51 @@ public class HireService {
     public Page<HiringVO> all(Pageable pageable) {
         List<HiringVO> hiringVOList = new ArrayList<>();;
         Page<Hiring> hiringPage = hireRepository.findAll(pageable);
+
+        //find HiringId in []  query one time !
+        hiringPage.getContent().forEach(hiring -> {
+            List<HiringSkillVO> mainSkills = hiringSkillRepository.findByHiringId(hiring.getId())
+                .stream()
+                .map(hiringSkill -> {
+                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
+                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
+                    return hiringSkillVO;
+                })
+                .collect(Collectors.toList());
+
+            List<HiringSkillVO> otherSkills = hiringSkillRepository.findByHiringId(hiring.getId())
+                .stream()
+                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)
+                .map(hiringSkill -> {
+                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
+                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
+                    return hiringSkillVO;
+                })
+                .collect(Collectors.toList());
+            HiringVO hiringVO = new HiringVO();
+            BeanUtils.copyProperties(hiring, hiringVO);
+            hiringVO.setMainSkills(mainSkills);
+            hiringVO.setOtherSkills(otherSkills);
+            hiringVOList.add(hiringVO);
+        });
+        Page<HiringVO> hiringVOPage = new PageImpl<>(hiringVOList, pageable, hiringPage.getTotalElements());
+        return hiringVOPage;
+    }
+
+    public Page<HiringVO> all(Pageable pageable, List<Long> hiringIds) {
+        List<HiringVO> hiringVOList = new ArrayList<>();
+        Page<Hiring> hiringPage = hireRepository.findAll(
+            (root, criteriaQuery, criteriaBuilder) -> {
+                List<Predicate> predicates = new ArrayList<>();
+                In<Object> in = criteriaBuilder.in(root.get("id"));
+                for (Long hiringId : hiringIds) {
+                    in.value(hiringId);
+                }
+                predicates.add(in);
+
+                return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
+                    .getRestriction();
+            }, pageable);
 
         //find HiringId in []  query one time !
         hiringPage.getContent().forEach(hiring -> {
@@ -186,23 +231,23 @@ public class HireService {
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
         //删除原有的技能
-
-        //todo
         hiringSkillRepository.deleteByHiringId(hiring.getId());
+        List<HiringSkill> hiringSkills = new ArrayList<>();
         //添加新的技能
         hiringVO.getMainSkills().forEach(mainSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(mainSkill, hiringSkill);
             hiringSkill.setHiringId(hiring.getId());
-            hiringSkillRepository.save(hiringSkill);
+            hiringSkills.add(hiringSkill);
         });
 
         hiringVO.getOtherSkills().forEach(otherSkill -> {
             HiringSkill hiringSkill = new HiringSkill();
             BeanUtils.copyProperties(otherSkill, hiringSkill);
             hiringSkill.setHiringId(hiring.getId());
-            hiringSkillRepository.save(hiringSkill);
+            hiringSkills.add(hiringSkill);
         });
+        hiringSkillRepository.saveAll(hiringSkills);
     }
 
     public Page<HiringVO> selectByAddress(String address, Pageable pageable) {
@@ -246,20 +291,21 @@ public class HireService {
 
 
     //application
-    public void apply(Long hireId, String file) {
+    public void apply(Long hireId, String fileKey) {
         Hiring hiring = hireRepository.findById(hireId)
             .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
         String address = hiring.getAddress();
-        System.out.println("address!!! " + address);
         Member member = memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         try {
-           //  File file1 = new File(String.valueOf(fileService.download("")));
-           // emailService.sendMailWithFile(member.getEmail(), "有新人投递简历", "有新人投递简历", file1);
-            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ file );
+            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ fileKey );
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public <T> Optional<Hiring> findById(Long hireId) {
+        return hireRepository.findById(hireId);
     }
 }

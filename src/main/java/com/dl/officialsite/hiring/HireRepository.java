@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
  * @ClassName HireRepository
  * @Author jackchen
  * @Date 2023/11/7 10:45
- * @Description TODO
+ * @Description 简历
  **/
 public interface HireRepository extends JpaRepository<Hiring, Long>,
     JpaSpecificationExecutor<Hiring> {
