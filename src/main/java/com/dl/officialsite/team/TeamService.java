@@ -232,17 +232,17 @@ public class TeamService {
                    teamMember1.setStatus(Constants.EXIT_TEAM);
                    teamMemberRepository.save(teamMember1);
                });
+
+               Team team = teamRepository.findById(teamMember.getTeamId()).get();
+               Member member1 = memberRepository.findById(teamMember.getMemberId()).get();
+               String subject = team.getTeamName() + "团队成员退出";
+               String text = member1.getNickName() + "成员退出";
+               emailService.sendMail(member.get().getEmail(), subject, text);
+           } else {
+               throw new BizException(CodeEnums.NOT_AUTHORITY_FOR_EXIT.getCode(),
+                       CodeEnums.NOT_AUTHORITY_FOR_EXIT.getMsg()) ;
            }
 
-           Team team = teamRepository.findById(teamMember.getTeamId()).get();
-           Member member1 = memberRepository.findById(teamMember.getMemberId()).get();
-           String subject = team.getTeamName() + "团队成员退出";
-           String text = member1.getNickName() + "成员退出";
-           emailService.sendMail(member.get().getEmail(), subject, text);
-
-       } else {
-           throw new BizException(CodeEnums.NOT_AUTHORITY_FOR_EXIT.getCode(),
-                   CodeEnums.NOT_AUTHORITY_FOR_EXIT.getMsg()) ;
        }
     }
 
