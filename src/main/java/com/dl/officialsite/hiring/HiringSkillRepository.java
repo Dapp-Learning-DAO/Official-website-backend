@@ -19,6 +19,9 @@ public interface HiringSkillRepository extends JpaRepository<HiringSkill, Long> 
     @Query(value = "select * from hiring_skill where hiring_id = :hiring_id",nativeQuery = true)
     List<HiringSkill> findByHiringId(@Param("hiring_id")Long hiring_id);
 
+    @Query(value = "select * from hiring_skill where hiring_id in (:hiring_ids)",nativeQuery = true)
+    List<HiringSkill> findByHiringId(@Param("hiring_ids") List<Long> hiring_ids);
+
     @Query(value = "select * from hiring_skill where skill in (:skills)",nativeQuery = true)
     List<HiringSkill> findBySkill(@Param("skills")List<String> skills);
 

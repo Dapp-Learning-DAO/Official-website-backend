@@ -13,6 +13,8 @@ public class HiringSkillVO {
 
     private Long id;
 
+    private Long hiringId;
+
     private String skill;
 
     private int type;
