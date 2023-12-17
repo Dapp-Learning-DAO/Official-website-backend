@@ -242,10 +242,6 @@ public class TeamService {
 
     public List<TeamsWithMembers> getMemberTeamsInfo(Long memberId) {
         List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(memberId);
-        if (teamMembers.size() == 0) {
-            throw new BizException(CodeEnums.MEMBER_NOT_IN_TEAM.getCode(),
-                CodeEnums.MEMBER_NOT_IN_TEAM.getMsg());
-        } else {
             //ids
             List<TeamsWithMembers> teamsWithMembers = new ArrayList<>();
 
@@ -257,7 +253,6 @@ public class TeamService {
                 teamsWithMembers.add(teamVO);
             });
             return teamsWithMembers;
-        }
     }
 
 

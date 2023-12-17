@@ -92,7 +92,7 @@ public class TeamController {
     /**
      * 查询member属于那个团队
      */
-    @GetMapping("/member/role")
+    @GetMapping("/member/teams")
     BaseResponse getMemberTeamsInfo(@RequestParam Long memberId, @RequestParam String address) {
         List<TeamsWithMembers> teamMembers = teamService.getMemberTeamsInfo(memberId);
         return BaseResponse.successWithData(teamMembers);
