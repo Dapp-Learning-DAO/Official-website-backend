@@ -65,7 +65,7 @@ public class RedPacketService {
 
         if (entity != null) {
             String jsonResponse = EntityUtils.toString(entity);
-
+            log.info("response from the graph: "+ jsonResponse);
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
@@ -76,9 +76,8 @@ public class RedPacketService {
             for (int i = 0; i < redpacketsArray.size(); i++) {
                 // Access each element in the array
                 JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-                //  log.info("redpackt object : " + redpacketObject);
+                 // log.info("redpackt object : " + redpacketObject);
                 String id = redpacketObject.get("id").getAsString();
-                //   log.info("id: " + id);
                 for (int j = 0; j < redPacketList.size(); j++) {
 
                     RedPacket redPacket = redPacketList.get(j);
