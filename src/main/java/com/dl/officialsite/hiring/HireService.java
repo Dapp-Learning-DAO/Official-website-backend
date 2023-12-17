@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder.In;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -54,34 +53,37 @@ public class HireService {
     @Autowired
     private EmailService emailService;
 
+    /**
+     * 新增岗位
+     * @param hiringVO
+     * @return
+     */
     public HiringVO add(HiringVO hiringVO) {
         Hiring hiring = new Hiring();
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
 
-        ArrayList<HiringSkill> hiringSkillList = new ArrayList<>();
-        hiringVO.getMainSkills().forEach(mainSkill -> {
-            HiringSkill hiringSkill = new HiringSkill();
-            BeanUtils.copyProperties(mainSkill, hiringSkill);
-            hiringSkill.setType(Constants.HIRING_MAIN_SKILL);
-            hiringSkill.setHiringId(hiring.getId());
-            hiringSkillList.add(hiringSkill);
-        });
-
-
-        hiringVO.getOtherSkills().forEach(otherSkill -> {
-            HiringSkill hiringSkill = new HiringSkill();
-            BeanUtils.copyProperties(otherSkill, hiringSkill);
-            hiringSkill.setType(Constants.HIRING_OTHER_SKILL);
-            hiringSkill.setHiringId(hiring.getId());
-            hiringSkillList.add(hiringSkill);
-        });
+        List<HiringSkill> hiringSkillList = new ArrayList<>();
+        hiringVO.getMainSkills().forEach(skill -> createHiringSkill(Constants.HIRING_MAIN_SKILL, skill, hiring, hiringSkillList));
+        hiringVO.getOtherSkills().forEach(skill -> createHiringSkill(Constants.HIRING_OTHER_SKILL, skill, hiring, hiringSkillList));
 
         hiringSkillRepository.saveAll(hiringSkillList);
         hiringVO.setId(hiring.getId());
         return hiringVO;
     }
 
+    private void createHiringSkill(int skillType, HiringSkillVO skillVO, Hiring hiring, List<HiringSkill> hiringSkillList) {
+        HiringSkill hiringSkill = new HiringSkill();
+        BeanUtils.copyProperties(skillVO, hiringSkill);
+        hiringSkill.setType(skillType);
+        hiringSkill.setHiringId(hiring.getId());
+        hiringSkillList.add(hiringSkill);
+    }
+    /**
+     * 查询所有岗位
+     * @param pageable
+     * @return
+     */
     public Page<HiringVO> all(Pageable pageable) {
         Page<Hiring> hiringPage = hireRepository.findAll(pageable);
         List<Long> hiringIds = hiringPage.getContent().stream()
@@ -97,6 +99,12 @@ public class HireService {
         return new PageImpl<>(hiringVOList, pageable, hiringPage.getTotalElements());
     }
 
+    /**
+     * 根据岗位ID,查询岗位详情
+     * @param pageable
+     * @param hiringIds
+     * @return
+     */
     public Page<HiringVO> all(Pageable pageable, List<Long> hiringIds) {
         Map<Long, List<HiringSkillVO>> skillsMap = fetchSkillsMapByHiringIds(hiringIds);
 
@@ -120,6 +128,11 @@ public class HireService {
         return new PageImpl<>(hiringVOList, pageable, hiringPage.getTotalElements());
     }
 
+    /**
+     * 根据岗位ID集合查询岗位标签
+     * @param hiringIds
+     * @return
+     */
     private Map<Long, List<HiringSkillVO>> fetchSkillsMapByHiringIds(List<Long> hiringIds) {
         List<HiringSkillVO> allSkills = hiringSkillRepository.findByHiringId(hiringIds).stream()
             .map(hiringSkill -> {
@@ -133,6 +146,12 @@ public class HireService {
             .collect(Collectors.groupingBy(HiringSkillVO::getHiringId));
     }
 
+    /**
+     * 将Hiring转换为HiringVO
+     * @param hiring
+     * @param skillsMap
+     * @return
+     */
     private HiringVO mapHiringToHiringVO(Hiring hiring, Map<Long, List<HiringSkillVO>> skillsMap) {
         HiringVO hiringVO = new HiringVO();
         BeanUtils.copyProperties(hiring, hiringVO);
@@ -154,65 +173,34 @@ public class HireService {
 
 
     public HiringVO detail(Long id) {
-        HiringVO hiringVO = new HiringVO();
         Hiring hiring = hireRepository.findById(id)
             .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
-        BeanUtils.copyProperties(hiring, hiringVO);
-        List<HiringSkill> hiringSkills = hiringSkillRepository.findByHiringId(id);
-        List<HiringSkillVO> mailSkills = hiringSkills.stream()
-            .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_MAIN_SKILL)
-            .map(hiringSkill -> {
-                HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                return hiringSkillVO;
-            })
-            .collect(Collectors.toList());
-        hiringVO.setMainSkills(mailSkills);
-        List<HiringSkillVO> otherSkills = hiringSkills.stream()
-            .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)
-            .map(hiringSkill -> {
-                HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                return hiringSkillVO;
-            })
-            .collect(Collectors.toList());
-        hiringVO.setOtherSkills(otherSkills);
+        Map<Long, List<HiringSkillVO>> skillMap = this.fetchSkillsMapByHiringIds(
+            Collections.singletonList(id));
+        HiringVO hiringVO = this.mapHiringToHiringVO(hiring, skillMap);
         return hiringVO;
     }
 
+    /**
+     * 根据技能筛选岗位
+     * @param skills
+     * @return
+     */
     public List<HiringVO> selectBySkills(List<String> skills) {
-        //使用in查询
         List<HiringSkill> hiringSkills = hiringSkillRepository.findBySkill(skills);
-        //去重通过hiringId
-        List<Long> hiringIds = hiringSkills.stream().map(HiringSkill::getHiringId).distinct().collect(Collectors.toList());
-        List<HiringVO> hiringVOList = new ArrayList<>();
-        hireRepository.findAllById(hiringIds).forEach(hiring -> {
-            HiringVO hiringVO = new HiringVO();
-            BeanUtils.copyProperties(hiring, hiringVO);
-            List<HiringSkillVO> mainSkills = hiringSkills.stream()
-                .filter(hiringSkill -> hiringSkill.getHiringId().equals(hiring.getId()))
-                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_MAIN_SKILL)
-                .map(hiringSkill -> {
-                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                    return hiringSkillVO;
-                })
-                .collect(Collectors.toList());
+        Map<Long, List<HiringSkillVO>> skillsMap = hiringSkills.stream()
+            .map(hiringSkill -> {
+                HiringSkillVO hiringSkillVO = new HiringSkillVO();
+                BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
+                return hiringSkillVO;
+            })
+            .collect(Collectors.groupingBy(HiringSkillVO::getHiringId));
 
-            List<HiringSkillVO> otherSkills = hiringSkills.stream()
-                .filter(hiringSkill -> hiringSkill.getHiringId().equals(hiring.getId()))
-                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)
-                .map(hiringSkill -> {
-                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                    return hiringSkillVO;
-                })
-                .collect(Collectors.toList());
-            hiringVO.setMainSkills(mainSkills);
-            hiringVO.setOtherSkills(otherSkills);
-            hiringVOList.add(hiringVO);
-        });
-        return hiringVOList;
+        List<Long> hiringIds = hiringSkills.stream().map(HiringSkill::getHiringId).distinct().collect(Collectors.toList());
+
+        return hireRepository.findAllById(hiringIds).stream()
+            .map(hiring -> this.mapHiringToHiringVO(hiring, skillsMap))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -245,42 +233,17 @@ public class HireService {
     }
 
     public Page<HiringVO> selectByAddress(String address, Pageable pageable) {
-        List<HiringVO> list = new ArrayList<>();
-        Specification<Hiring> spec = (root, query, criteriaBuilder) -> {
-            Path<Hiring> path = root.get("address");
-            Predicate equal = criteriaBuilder.equal(path, address);
-            return equal;
-        };
+        Specification<Hiring> spec = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("address"), address);
         Page<Hiring> page = hireRepository.findAll(spec, pageable);
 
-        //findIDS
-        page.getContent().forEach(hiring -> {
-            List<HiringSkillVO> mainSkills = hiringSkillRepository.findByHiringId(hiring.getId())
-                .stream()
-                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_MAIN_SKILL)
-                .map(hiringSkill -> {
-                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                    return hiringSkillVO;
-                })
-                .collect(Collectors.toList());
-            List<HiringSkillVO> otherSkills = hiringSkillRepository.findByHiringId(hiring.getId())
-                .stream()
-                .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)
-                .map(hiringSkill -> {
-                    HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                    BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                    return hiringSkillVO;
-                })
-                .collect(Collectors.toList());
-            HiringVO hiringVO = new HiringVO();
-            BeanUtils.copyProperties(hiring, hiringVO);
-            hiringVO.setMainSkills(mainSkills);
-            hiringVO.setOtherSkills(otherSkills);
-            list.add(hiringVO);
-        });
-        Page<HiringVO> hiringVOPage = new PageImpl<>(list, pageable, page.getTotalElements());
-        return hiringVOPage;
+        List<Long> hiringIds = page.getContent().stream().map(Hiring::getId).collect(Collectors.toList());
+        Map<Long, List<HiringSkillVO>> skillsMap = this.fetchSkillsMapByHiringIds(hiringIds);
+
+        List<HiringVO> hiringVOList = page.getContent().stream()
+            .map(hiring -> mapHiringToHiringVO(hiring, skillsMap))
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(hiringVOList, pageable, page.getTotalElements());
     }
 
 
