@@ -33,6 +33,7 @@ public class TeamMember {
      * 0: 已加入
      * 1: 申请中
      * 2： 已退出 , 未加入
+     * 3:  已拒绝
      */
     private int status;
 }

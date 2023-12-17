@@ -27,7 +27,7 @@ public enum CodeEnums {
     NOT_FOUND_MEMBER("1009", "not found user"),
     NOT_THE_ADMIN("1010", "user not the admin"),
     NOT_THE_SUPER_ADMIN("1018", "user not the super admin"),
-    NOT_AUTHORITY_FOR_EXIT("1018", "user not the super admin"),
+    NOT_AUTHORITY_FOR_EXIT("1018", "user not the authority for exit"),
     TEAM_JOIN_APPLICATION_NOT_EXIST("1011", "team join application not exist"),
     //Sharing
     SHARING_NOT_FOUND("5001", "Sharing not found"),
