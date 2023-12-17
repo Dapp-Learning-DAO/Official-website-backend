@@ -240,6 +240,9 @@ public class TeamService {
            String text = member1.getNickName() + "成员退出";
            emailService.sendMail(member.get().getEmail(), subject, text);
 
+       } else {
+           throw new BizException(CodeEnums.NOT_AUTHORITY_FOR_EXIT.getCode(),
+                   CodeEnums.NOT_AUTHORITY_FOR_EXIT.getMsg()) ;
        }
     }
 
