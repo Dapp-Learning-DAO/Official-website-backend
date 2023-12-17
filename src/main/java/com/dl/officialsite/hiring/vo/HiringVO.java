@@ -53,4 +53,12 @@ public class HiringVO {
     private Date createTime;
 
     private String address;
+
+    /**
+     * 0:jd 删除
+     * 1:jd 招聘中
+     * 2:jd 过期
+     */
+    private int status;
+
 }

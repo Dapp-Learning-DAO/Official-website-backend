@@ -11,7 +11,7 @@ import lombok.Data;
  * @ClassName HiringSkill
  * @Author jackchen
  * @Date 2023/12/7 00:33
- * @Description TODO
+ * @Description 招聘技能
  **/
 @Data
 @Entity
