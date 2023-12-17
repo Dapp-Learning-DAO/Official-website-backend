@@ -94,10 +94,6 @@ public class TeamService {
 
             List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(),
                 teamQueryVo.getStatus());
-//            memberIds.stream().forEach(memberId -> {
-//                Member member = memberRepository.findById(memberId).get();
-//                members.add(member);
-//            });
             List<Member> members  = memberRepository.findByIdIn(memberIds);
             teamsMembersVo.setMembers(members);
             teamsWithMembers.add(teamsMembersVo);
@@ -215,7 +211,7 @@ public class TeamService {
 
        Optional<Member> member =  memberRepository.findByAddress(address);
        if(member.isPresent() ) {
-
+          // only self or admin
            if (checkMemberIsAdmin(address) || member.get().getId().equals(teamMember.getMemberId())) {
                teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
                        teamMember.getMemberId()).ifPresent(teamMember1 -> {
