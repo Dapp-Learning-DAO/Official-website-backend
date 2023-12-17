@@ -7,7 +7,7 @@ import lombok.Data;
  * @ClassName TeamMemberBatchJoinVO
  * @Author jackchen
  * @Date 2023/12/9 15:14
- * @Description TODO
+ * @Description 批量加入团队
  **/
 @Data
 public class TeamMemberBatchJoinVO {

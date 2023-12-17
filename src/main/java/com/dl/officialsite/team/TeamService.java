@@ -126,15 +126,6 @@ public class TeamService {
 
     @Transactional(rollbackOn = Exception.class)
     public void join(TeamMemberJoinVO teamMember) {
-
-        Member member = memberRepository.findById(teamMember.getMemberId()).get();
-
-        //todo
-/*        if (ObjectUtils.isEmpty(member.getTelegramId()) || ObjectUtils.isEmpty(
-            member.getWechatId())) {
-            throw new BizException(CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getCode(),
-                CodeEnums.TELEGRAM_WECHAT_NOT_BIND.getMsg());
-        }*/
         Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
             teamMember.getTeamId(), teamMember.getMemberId());
 
