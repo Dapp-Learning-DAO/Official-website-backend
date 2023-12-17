@@ -44,7 +44,7 @@ public class MemberService {
             MemberWithTeam memberWithTeam = new MemberWithTeam();
             BeanUtils.copyProperties(member.get(), memberWithTeam);
              ArrayList teams = new ArrayList();
-            List<TeamMember> teamMembers = teamMemberRepository.findByMemberId(member.get().getId());
+            List<TeamMember> teamMembers = teamMemberRepository.findByMemberIdAndStatus(member.get().getId(), 0);
 
             teamMembers.stream().forEach(teamMember -> {
                 Team team = teamRepository.findById(teamMember.getTeamId()).get();

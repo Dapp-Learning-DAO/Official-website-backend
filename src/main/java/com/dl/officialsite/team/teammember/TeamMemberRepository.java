@@ -2,7 +2,10 @@ package com.dl.officialsite.team.teammember;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.dl.officialsite.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,7 +15,7 @@ import org.springframework.data.repository.query.Param;
  * @Date 2023/10/21 17:23
  * @Description TeamMemberRepository
  **/
-public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
+public interface TeamMemberRepository extends JpaRepository<TeamMember, Long>,  JpaSpecificationExecutor<Member> {
 
     @Query(value = "select member_id from team_member where team_id = :team_id", nativeQuery = true)
     List<Long> findByTeamId(@Param("team_id")Long teamId);
@@ -32,4 +35,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     @Query(value = "select * from team_member where team_id = :team_id and member_id in (:memberIds)",
         nativeQuery = true)
     List<TeamMember> findByTeamAndMembers(@Param("team_id")Long teamId, @Param("memberIds")List<Long> memberIds);
+
+    List<TeamMember> findByMemberIdAndStatus(Long id, int i);
 }

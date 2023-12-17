@@ -1,5 +1,6 @@
 package com.dl.officialsite.member;
 
+import com.dl.officialsite.team.teammember.TeamMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
