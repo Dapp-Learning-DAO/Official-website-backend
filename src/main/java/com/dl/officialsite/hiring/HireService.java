@@ -12,7 +12,9 @@ import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder.In;
@@ -115,7 +117,17 @@ public class HireService {
     }
 
     public Page<HiringVO> all(Pageable pageable, List<Long> hiringIds) {
-        List<HiringVO> hiringVOList = new ArrayList<>();
+        // 查询hiringIDs下的所有技能标签
+        List<HiringSkill> allSkills = hiringSkillRepository.findByHiringId(hiringIds);
+
+        Map<Long, List<HiringSkillVO>> skillsMap = allSkills.stream()
+            .map(hiringSkill -> {
+                HiringSkillVO hiringSkillVO = new HiringSkillVO();
+                BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
+                return hiringSkillVO;
+            })
+            .collect(Collectors.groupingBy(HiringSkillVO::getHiringId));
+
         Page<Hiring> hiringPage = hireRepository.findAll(
             (root, criteriaQuery, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
@@ -129,43 +141,30 @@ public class HireService {
                     .getRestriction();
             }, pageable);
 
-        //查询hiringIDs下的所有技能标签
-        List<HiringSkillVO> mainSkills = hiringSkillRepository.findByHiringId(hiringIds)
-            .stream()
-            .map(hiringSkill -> {
-                HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                return hiringSkillVO;
+        List<HiringVO> hiringVOList = hiringPage.getContent().stream()
+            .map(hiring -> {
+                HiringVO hiringVO = new HiringVO();
+                BeanUtils.copyProperties(hiring, hiringVO);
+
+                List<HiringSkillVO> mainSkillList = skillsMap.getOrDefault(hiring.getId(), Collections.emptyList())
+                    .stream()
+                    .filter(skill -> skill.getType() == Constants.HIRING_MAIN_SKILL)
+                    .collect(Collectors.toList());
+
+                List<HiringSkillVO> otherSkillList = skillsMap.getOrDefault(hiring.getId(), Collections.emptyList())
+                    .stream()
+                    .filter(skill -> skill.getType() == Constants.HIRING_OTHER_SKILL)
+                    .collect(Collectors.toList());
+
+                hiringVO.setMainSkills(mainSkillList);
+                hiringVO.setOtherSkills(otherSkillList);
+                return hiringVO;
             })
             .collect(Collectors.toList());
 
-        List<HiringSkillVO> otherSkills = hiringSkillRepository.findByHiringId(hiringIds)
-            .stream()
-            .filter(hiringSkill -> hiringSkill.getType() == Constants.HIRING_OTHER_SKILL)
-            .map(hiringSkill -> {
-                HiringSkillVO hiringSkillVO = new HiringSkillVO();
-                BeanUtils.copyProperties(hiringSkill, hiringSkillVO);
-                return hiringSkillVO;
-            })
-            .collect(Collectors.toList());
-
-        //find HiringId in []  query one time !
-        hiringPage.getContent().forEach(hiring -> {
-            HiringVO hiringVO = new HiringVO();
-            BeanUtils.copyProperties(hiring, hiringVO);
-            List<HiringSkillVO> mainSkillList = mainSkills.stream().filter(mainSkill -> {
-                return mainSkill.getHiringId().equals(hiring.getId());
-            }).collect(Collectors.toList());
-            List<HiringSkillVO> otherSkillList = otherSkills.stream().filter(mainSkill -> {
-                return mainSkill.getHiringId().equals(hiring.getId());
-            }).collect(Collectors.toList());
-            hiringVO.setMainSkills(mainSkillList);
-            hiringVO.setOtherSkills(otherSkillList);
-            hiringVOList.add(hiringVO);
-        });
-        Page<HiringVO> hiringVOPage = new PageImpl<>(hiringVOList, pageable, hiringPage.getTotalElements());
-        return hiringVOPage;
+        return new PageImpl<>(hiringVOList, pageable, hiringPage.getTotalElements());
     }
+
 
     public HiringVO detail(Long id) {
         HiringVO hiringVO = new HiringVO();
