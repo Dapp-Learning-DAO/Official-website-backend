@@ -40,7 +40,7 @@ public class RedPacketController {
 
 
     @PostMapping("/create")
-    @Auth("admin")
+   //todo  @Auth("admin")
     public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
         RedPacket redPacket1 = redPacketRepository.save(redPacket);

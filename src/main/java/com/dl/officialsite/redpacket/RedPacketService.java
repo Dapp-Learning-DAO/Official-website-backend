@@ -70,7 +70,7 @@ public class RedPacketService {
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
 
-           log.info("redpacket array : " + redpacketsArray.get(0));
+          // log.info("redpacket array : " + redpacketsArray.get(0));
             List<RedPacket> redPacketList = redPacketRepository.findByStatus(0);
 
             for (int i = 0; i < redpacketsArray.size(); i++) {
@@ -85,15 +85,6 @@ public class RedPacketService {
                     if (!redPacketList.get(j).getId().equals(id))
                         continue;
 
-//                    Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
-//
-//                    if (claimed) {
-//                        log.info("redpacket id: " + id + "claimed: ");
-//                        redPacket.setStatus(1);
-//                        redPacketRepository.save(redPacket);
-//                        continue;
-//                    }
-
 
                     JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
 
@@ -104,6 +95,7 @@ public class RedPacketService {
                         redPacketRepository.save(redPacket);
                         continue;
                     }
+
 
                     if (claimers.size() > redPacket.getClaimedAddress().size()) {
                         ArrayList<String> claimersList = new ArrayList<>();
@@ -117,8 +109,14 @@ public class RedPacketService {
                         redPacket.setClaimedAddress(claimersList);
                         log.info("update claimed address : " + id);
                         redPacketRepository.save(redPacket);
+                    }
 
-
+                  //refund
+               Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
+                    if (claimed) {
+                        log.info("redpacket id: " + id + "claimed: ");
+                        redPacket.setStatus(1);
+                        redPacketRepository.save(redPacket);
                     }
                 }
             }
