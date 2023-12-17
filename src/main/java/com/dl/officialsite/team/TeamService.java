@@ -329,4 +329,33 @@ public class TeamService {
     }
 
 
+    public void update(Team team, String address) {
+        if(team.getAdministrator()!= null ) {
+           if( !checkMemberIsSupperAdmin(address)) {
+               throw new BizException(CodeEnums.NOT_THE_SUPER_ADMIN.getCode(),
+                       CodeEnums.NOT_THE_SUPER_ADMIN.getMsg());
+           }
+           Team teamdb =  teamRepository.findById(team.getId()).get();
+           teamdb.setAdministrator(team.getAdministrator());
+           teamRepository.save(teamdb);
+        } else {
+            Team teamdb =  teamRepository.findById(team.getId()).get();
+            if(team.getTeamName()!=null) {
+                teamdb.setTeamName(team.getTeamName());
+            }
+            if(team.getTeamProfile()!=null) {
+                teamdb.setTeamProfile(team.getTeamProfile());
+            }
+            teamRepository.save(teamdb);
+        }
+
+    }
+
+    public boolean checkMemberIsSupperAdmin(String address) {
+        Team adminTeam = teamRepository.findById(1L).get();
+        if(adminTeam.getAdministrator().equals(address)){
+            return true;
+        }
+        return false;
+    }
 }

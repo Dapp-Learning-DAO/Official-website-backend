@@ -43,10 +43,10 @@ public class TeamController {
     /**
      * 更改管理员 todo
      */
-    @PostMapping()
+    @PostMapping("update")
     @Auth("admin")
     BaseResponse update(@RequestBody Team team, @RequestParam String address) {
-       // Team TeamNew =  teamService.update(team);
+        teamService.update(team,address);
         return BaseResponse.successWithData(null);
     }
 
