@@ -73,7 +73,7 @@ public class RedPacketController {
     BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
         List<RedPacket> result;
         if(status == 0) {
-             result = redPacketRepository.findByUnclaimedPacket("%" + address + "%");
+             result = redPacketRepository.findByUnclaimedPacket("%" + address + "%", 0);
         } else {
              result = redPacketRepository.findByClaimedPacket("%" + address + "%");
 
