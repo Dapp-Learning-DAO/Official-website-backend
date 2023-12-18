@@ -41,7 +41,7 @@ public class RedPacketService {
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
-        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 -3600*24*90);
+        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 - 3600*24*90);
 
         String graphQL = "\" {" +
                 "  redpackets {" +
@@ -82,13 +82,13 @@ public class RedPacketService {
 
                     RedPacket redPacket = redPacketList.get(j);
                    // log.info("redPacket: " + redPacket);
-                    if (!redPacketList.get(j).getId().equals(id))
+                    if (!redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
                         continue;
 
 
                     JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
 
-                    // redPacket.getAddressList() is the total claimer.
+                    // redPacket.getAddressList() is the whole claimer.
                     if (claimers.size() == redPacket.getAddressList().size()) {
                         log.info("redpacket id: " + id + " aLL claimed  ");
                         redPacket.setStatus(1);

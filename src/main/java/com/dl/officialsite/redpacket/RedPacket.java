@@ -36,6 +36,7 @@ public class RedPacket {
     @NotNull
     private String creator;
     @NotNull
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> addressList;
     @NotNull
