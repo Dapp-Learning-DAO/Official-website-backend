@@ -69,8 +69,6 @@ public class RedPacketService {
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-
-          // log.info("redpacket array : " + redpacketsArray.get(0));
             List<RedPacket> redPacketList = redPacketRepository.findByStatus(0);
 
             for (int i = 0; i < redpacketsArray.size(); i++) {
@@ -96,12 +94,12 @@ public class RedPacketService {
                     redPacket.setClaimedAddress(claimersList);
 
                     // redPacket.getAddressList() is the whole claimer.
-                    if (claimers.size() == redPacket.getAddressList().size()) {
-                        log.info("redpacket id: " + id + " aLL claimed  ");
-                        redPacket.setStatus(1);
-                        redPacketRepository.save(redPacket);
-                        continue;
-                    }
+//                    if (claimers.size() == redPacket.getAddressList().size()) {
+//                        log.info("redpacket id: " + id + " aLL claimed  ");
+//                        redPacket.setStatus(1);
+//                        redPacketRepository.save(redPacket);
+//                        continue;
+//                    }
 
 
 //                    if (claimers.size() > redPacket.getClaimedAddress().size()) {
