@@ -1,3 +1,7 @@
+INSERT INTO member (address, email, nickName, role,githubId)
+VALUES
+("0x1F7b953113f4dFcBF56a1688529CC812865840e1", "yanyanho126@gmail.com", "Yan", 0, "yanyanho");
+
 
 INSERT INTO team ( team_name, team_profile, administrator, authority)
 VALUES

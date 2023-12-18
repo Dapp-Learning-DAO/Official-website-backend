@@ -1,8 +1,10 @@
 package com.dl.officialsite.team;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
+import com.dl.officialsite.member.MemberService;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
@@ -28,6 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private MemberService memberService;
 
 
     /**

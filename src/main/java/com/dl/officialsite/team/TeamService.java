@@ -1,9 +1,11 @@
 package com.dl.officialsite.team;
 
 
+import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.login.enums.UserRoleEnum;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
@@ -58,14 +60,27 @@ public class TeamService {
     @Autowired
     private EmailService emailService;
 
-    @Autowired
-    private MemberService memberService;
 
+    @Autowired
+    private  MemberService memberService;
 
 
     @Transactional
     public Team add(Team team) {
-        return teamRepository.save(team);
+
+        Member  member = memberService.getMemberByAddress(team.getAdministrator());
+        if(member==null) {
+            throw new BizException(CodeEnums.NOT_FOUND_MEMBER.getCode(),CodeEnums.NOT_FOUND_MEMBER.getMsg() );
+        }
+        teamRepository.save(team);
+        TeamMember teamMember = new TeamMember();
+        teamMember.setTeamId(team.getId());
+        teamMember.setMemberId(member.getId());
+        teamMember.setRole(UserRoleEnum.ADMIN);
+        teamMember.setStatus(0);
+        teamMemberRepository.save(teamMember);
+        return team;
+
     }
 
     public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(String teamName , int status) {
