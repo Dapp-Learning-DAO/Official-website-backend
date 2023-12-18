@@ -49,7 +49,7 @@ public class RedPacketController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    BaseResponse getMemberById(@RequestParam String id, @RequestParam String address)   {
+    BaseResponse getRedpacketById(@RequestParam String id, @RequestParam String address)   {
 
         Optional<RedPacket> redPacket =  redPacketRepository.findById(id);
         if(!redPacket.isPresent()){
@@ -72,10 +72,10 @@ public class RedPacketController {
     @RequestMapping(value = "/query/user", method = RequestMethod.GET)
     BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
         List<RedPacket> result;
-        if(status!= null) {
-             result = redPacketRepository.findByAddressAndStatus("%" + address + "%", status);
+        if(status == 0) {
+             result = redPacketRepository.findByUnclaimedPacket("%" + address + "%");
         } else {
-             result = redPacketRepository.findByAddress("%" + address + "%");
+             result = redPacketRepository.findByClaimedPacket("%" + address + "%");
 
         }
         return BaseResponse.successWithData(result);

@@ -65,6 +65,9 @@ public class LoginFilter extends OncePerRequestFilter {
             }
 
 
+            String addressInHeader = request.getParameter("address");
+
+
             //Must login
             if(!HttpSessionUtils.isUserLogin(request.getSession())){
                 dumpError(response);
@@ -74,6 +77,11 @@ public class LoginFilter extends OncePerRequestFilter {
             //Since logon, put a temporary user data
             SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
             UserPrincipleData userPrinciple = new UserPrincipleData();
+
+            if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
+                dumpForbidden(response);
+                return;
+            }
             userPrinciple.setAddress(sessionUserInfo.getAddress());
             List<TeamMember> teams = loadTeams(sessionUserInfo.getAddress());
             userPrinciple.setTeams(teams);
@@ -105,5 +113,14 @@ public class LoginFilter extends OncePerRequestFilter {
         out.close();
     }
 
+
+    private void dumpForbidden(HttpServletResponse response) throws IOException{
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        ObjectMapper objectMapper =  new  ObjectMapper();
+        out.write( objectMapper.writeValueAsString(   BaseResponse.failWithReason("2002", "not forbidden to query others")));
+        out.flush();
+        out.close();
+    }
 
 }

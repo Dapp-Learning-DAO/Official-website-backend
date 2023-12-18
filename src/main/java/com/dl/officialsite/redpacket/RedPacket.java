@@ -47,13 +47,15 @@ public class RedPacket {
     @NotNull
     private String chainId;
 
-    //0 uncompleted  1 completed
+    //0 uncompleted  1 completed  2 异常
     private  Integer status;
+
     private Long amount;
 
     //usdc or dai
     private String token;
     @Column(columnDefinition = "TEXT")
+
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
 
