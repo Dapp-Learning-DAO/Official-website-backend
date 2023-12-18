@@ -85,8 +85,15 @@ public class RedPacketService {
                     if (!redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
                         continue;
 
-
                     JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
+
+                    ArrayList<String> claimersList = new ArrayList<>();
+                    for (int k = 0; k < claimers.size(); k++) {
+                        String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
+                        //log.info("claimer address: " + s);
+                        claimersList.add(s);
+                    }
+                    redPacket.setClaimedAddress(claimersList);
 
                     // redPacket.getAddressList() is the whole claimer.
                     if (claimers.size() == redPacket.getAddressList().size()) {
@@ -98,21 +105,12 @@ public class RedPacketService {
 
 
                     if (claimers.size() > redPacket.getClaimedAddress().size()) {
-                        ArrayList<String> claimersList = new ArrayList<>();
-
-                        //todo
-                        for (int k = 0; k < claimers.size(); k++) {
-                            String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                            //log.info("claimer address: " + s);
-                            claimersList.add(s);
-                        }
-                        redPacket.setClaimedAddress(claimersList);
                         log.info("update claimed address : " + id);
                         redPacketRepository.save(redPacket);
                     }
 
                   //refund
-               Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
+                     Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
                     if (claimed) {
                         log.info("redpacket id: " + id + "claimed: ");
                         redPacket.setStatus(1);
