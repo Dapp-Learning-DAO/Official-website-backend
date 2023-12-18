@@ -53,7 +53,7 @@ public class RedPacket {
 
     //usdc or dai
     private String token;
-
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
 
