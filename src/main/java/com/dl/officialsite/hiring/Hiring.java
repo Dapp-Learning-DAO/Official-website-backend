@@ -54,8 +54,8 @@ public class Hiring {
     private String address;
 
     /**
-     * 0:jd 删除
-     * 1:jd 招聘中
+     * 0:jd 招聘中
+     * 1:jd 删除
      * 2:jd 过期
      * 设置默认值,默认值为招聘中
      */

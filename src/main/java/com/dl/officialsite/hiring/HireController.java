@@ -43,7 +43,7 @@ public class HireController {
     }
 
     /**
-     * 修改简历
+     * 修改简历 todo
      */
     @PutMapping
     public BaseResponse update(@RequestParam String address,@RequestBody HiringVO hiringVO) {

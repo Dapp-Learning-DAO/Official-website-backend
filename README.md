@@ -30,6 +30,20 @@ https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/{uuid}
 ## graph ql 集成
 "https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest"
 
+```agsl
+{
+  redpackets  {
+                id   
+    happyRedPacketId
+    				name
+                  hasRefundedOrAllClaimed  
+                     claimers {
+                      claimer
+                    } 
+                  }
+}
+```
+
 ## TODO
 1. 头像 简历
 2. 红包改造，奖励认领自动化。

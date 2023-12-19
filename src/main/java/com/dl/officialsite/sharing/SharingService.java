@@ -4,9 +4,11 @@ import com.dl.officialsite.common.base.PagedList;
 import com.dl.officialsite.common.base.Pagination;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
+import com.dl.officialsite.team.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,9 @@ public class SharingService  {
 
     @Autowired(required=true)
     private HttpServletRequest request;
+
+    @Autowired
+    TeamService teamService;
 
 
     public Share createSharing(Share share, String address) {
@@ -49,34 +55,32 @@ public class SharingService  {
     public void updateSharing(UpdateSharingReq req, String address) {
         //Verify
         Optional<Share> existed = this.sharingRepository.findById(req.getId());
-        if(!existed.isPresent()){
+        if (!existed.isPresent()) {
             throw new BizException(CodeEnums.SHARING_NOT_FOUND);
         }
         Share sharing = existed.get();
-//        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
-//        Member member = this.memberRepository.findByAddress(userInfo.getAddress()).get();
+        Member member = this.memberRepository.findByAddress(address).get();
 
-//        if(!Objects.equals(sharing.getMemberId(), member.getId())){
-//            throw new BizException(CodeEnums.SHARING_NOT_FOUND);
-//        }
+        if (Objects.equals(sharing.getMemberAddress(), member.getAddress()) || teamService.checkMemberIsAdmin(address)) {
 
-//        if(!Objects.equals(sharing.getMemberId(), req.getMemberId())){
-//            throw new BizException(CodeEnums.SHARING_NOT_OWNER);
-//        }
-        if(sharing.getLockStatus() == SharingLockStatus.LOCKED.getCode()){
-            throw new BizException(CodeEnums.SHARING_LOCKED);
+
+            if (sharing.getLockStatus() == SharingLockStatus.LOCKED.getCode()) {
+                throw new BizException(CodeEnums.SHARING_LOCKED);
+            }
+            //Update
+            sharing.setTheme(req.getTheme());
+            sharing.setDate(req.getDate());
+            sharing.setTime(req.getTime());
+            sharing.setPresenter(req.getPresenter());
+            sharing.setOrg(req.getOrg());
+            sharing.setTwitter(req.getTwitter());
+            sharing.setSharingDoc(req.getSharingDoc());
+            sharing.setLabel(req.getLabel());
+
+            this.sharingRepository.save(sharing);
+        } else {
+            throw new BizException(CodeEnums.SHARING_NOT_OWNER_OR_ADMIN);
         }
-        //Update
-        sharing.setTheme(req.getTheme());
-        sharing.setDate(req.getDate());
-        sharing.setTime(req.getTime());
-        sharing.setPresenter(req.getPresenter());
-        sharing.setOrg(req.getOrg());
-        sharing.setTwitter(req.getTwitter());
-        sharing.setSharingDoc(req.getSharingDoc());
-        sharing.setLabel(req.getLabel());
-
-        this.sharingRepository.save(sharing);
     }
 
 
