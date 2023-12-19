@@ -47,7 +47,7 @@ public class RedPacket {
     @NotNull
     private String chainId;
 
-    //0 uncompleted  1 completed  2 异常
+    //0 uncompleted  1 completed  2 超时  3 refund
     private  Integer status;
 
     private Long amount;

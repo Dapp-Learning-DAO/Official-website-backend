@@ -101,13 +101,12 @@ public class RedPacketService {
 //                        continue;
 //                    }
 
-
 //                    if (claimers.size() > redPacket.getClaimedAddress().size()) {
 //                        log.info("update claimed address : " + id);
 //                        redPacketRepository.save(redPacket);
 //                    }
 
-                  //refund
+                  //refund or claimed all
                      Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
                     if (claimed) {
                         log.info("redpacket id: " + id + "claimed: ");
