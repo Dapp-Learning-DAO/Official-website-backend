@@ -81,6 +81,13 @@ public class RedPacketController {
         return BaseResponse.successWithData(result);
     }
 
+    @RequestMapping(value = "/query/user/timeout", method = RequestMethod.GET)
+    BaseResponse getTimeoutRedPacketByAddress(@RequestParam String address) {
+        List<RedPacket> result;
+        result = redPacketRepository.findByUnclaimedTimeOutPacket("%" + address + "%");
+        return BaseResponse.successWithData(result);
+    }
+
     @PostMapping(value = "/query/all")
     BaseResponse getAllRedPacketByCriteria(@RequestParam String address,
                                         @RequestBody   RedPacketVo redPacket,

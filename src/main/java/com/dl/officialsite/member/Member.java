@@ -15,6 +15,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+import static com.dl.officialsite.common.privacy.PrivacyTypeEnum.CUSTOMER;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -71,8 +73,11 @@ public class Member  implements Serializable
     //todo
     private Long workStatus;
 
-    @JsonIgnore
+    @PrivacyEncrypt(type= CUSTOMER)
     private String resume;
+
+   //todo 
+
 
 
 }
