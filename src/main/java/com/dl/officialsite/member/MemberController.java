@@ -116,7 +116,7 @@ public class MemberController {
     @PostMapping("/create")
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
 
-            Member _member = memberService.save(member);
+            MemberVo _member = memberService.save(member);
             return BaseResponse.successWithData(_member);
     }
 
@@ -166,7 +166,7 @@ public class MemberController {
             if (member.getWorkStatus()!= null) {
                 _member.setWorkStatus(member.getWorkStatus());
             }
-            return BaseResponse.successWithData(memberRepository.save(_member));
+            return BaseResponse.successWithData(memberService.save(_member));
         } else {
             return BaseResponse.failWithReason("1001","no user found");
         }

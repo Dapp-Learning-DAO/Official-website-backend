@@ -59,8 +59,12 @@ public class MemberService {
         return null;
     }
 
-    public Member save(Member member) {
-        return memberRepository.save(member);
+    public MemberVo save(Member member) {
+            memberRepository.save(member);
+            MemberVo memberVo = new MemberVo();
+        BeanUtils.copyProperties(member, memberVo);
+         return memberVo;
+
     }
 
     public MemberVo getMemberPrivacyInfo(String address) {
