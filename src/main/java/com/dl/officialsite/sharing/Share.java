@@ -97,6 +97,10 @@ public class Share {
     @Column(name = "meeting_type", nullable = false)
     private int meetingType = SharingMeetingType.TENCENT.getCode();
 
+    //unclaim, claimed, timeout
+    @Column(name = "reward_status")
+    private Integer rewardStatus;
+
     @Column(name = "meeting_id")
     private String meetingId;
 

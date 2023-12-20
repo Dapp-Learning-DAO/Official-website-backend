@@ -44,11 +44,6 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-
-logging:
-  level:
-    org.springframework.security: debug
-
 ipfs:
   #url: "/ip4/127.0.0.1/tcp/5001"
   url: ""
@@ -73,3 +68,4 @@ qcloud:
   bucketName: ""
   # 地区选择
   regionName: ""
+
