@@ -73,7 +73,8 @@ public class Member  implements Serializable
     //todo
     private Long workStatus;
 
-    @PrivacyEncrypt(type= CUSTOMER)
+    //@PrivacyEncrypt(type= CUSTOMER)
+    @JsonIgnore
     private String resume;
 
    //todo 
