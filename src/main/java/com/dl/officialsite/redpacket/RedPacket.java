@@ -29,6 +29,7 @@ public class RedPacket {
     @NotNull
     @Column(length = 66)
     private String  name;
+
     @NotNull
     @Id
     @Column(length = 66)
@@ -58,7 +59,6 @@ public class RedPacket {
     //usdc or dai
     private String token;
     @Column(columnDefinition = "TEXT")
-
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
 

@@ -108,16 +108,13 @@ public class Share {
     private String meetingLink;
 
     @Column
-    private Integer rewardAmount;
-
-    @Column
     private String youtubeLink;
 
     @Column
     private String bilibiliLink;
 
     @Column
-    private String otherMemdiumLink;
+    private String otherMediumLink;
 
     @CreatedDate
     @Column(updatable = false)
