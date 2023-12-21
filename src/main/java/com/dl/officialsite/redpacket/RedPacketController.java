@@ -40,7 +40,6 @@ public class RedPacketController {
 
 
     @PostMapping("/create")
-   //todo  @Auth("admin")
     public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
         redPacket.setCreator(address);
         RedPacket redPacket1 = redPacketRepository.save(redPacket);
@@ -61,8 +60,9 @@ public class RedPacketController {
 
     @RequestMapping(value = "/query/all", method = RequestMethod.GET)
     BaseResponse getRedPacketAll(@RequestParam String address,
+
                                 @RequestParam(defaultValue = "1") Integer pageNumber,
-                              @RequestParam(defaultValue = "10") Integer pageSize)   {
+                                @RequestParam(defaultValue = "10") Integer pageSize)   {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         return BaseResponse.successWithData(redPacketRepository.findAll(pageable));
@@ -70,21 +70,21 @@ public class RedPacketController {
 
 
     @RequestMapping(value = "/query/user", method = RequestMethod.GET)
-    BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status) {
+    BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status,   @RequestParam String chainId) {
         List<RedPacket> result;
         if(status == 0) {
-             result = redPacketRepository.findByUnclaimedPacket("%" + address + "%", 0);
+             result = redPacketRepository.findByUnclaimedPacket("%" + address + "%", 0, chainId);
         } else {
-             result = redPacketRepository.findByClaimedPacket("%" + address + "%");
+             result = redPacketRepository.findByClaimedPacket("%" + address + "%", chainId);
 
         }
         return BaseResponse.successWithData(result);
     }
 
     @RequestMapping(value = "/query/user/timeout", method = RequestMethod.GET)
-    BaseResponse getTimeoutRedPacketByAddress(@RequestParam String address) {
+    BaseResponse getTimeoutRedPacketByAddress(@RequestParam String address, @RequestParam String chainId) {
         List<RedPacket> result;
-        result = redPacketRepository.findByUnclaimedTimeOutPacket("%" + address + "%");
+        result = redPacketRepository.findByUnclaimedTimeOutPacket("%" + address + "%", chainId );
         return BaseResponse.successWithData(result);
     }
 
@@ -105,6 +105,9 @@ public class RedPacketController {
                 }
                 if (redPacket.getName() != null) {
                     predicates.add(criteriaBuilder.like(root.get("name"),  "%"+ redPacket.getName() +"%") );
+                }
+                if  (redPacket.getChainId() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("chainId"),  redPacket.getChainId() ) );
                 }
                 if (redPacket.getCreator() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("creator"),  redPacket.getCreator()));

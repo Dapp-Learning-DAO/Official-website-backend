@@ -37,7 +37,58 @@ public class RedPacketService {
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
-        HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
+        for (String chainId : new String[]{"10", "11155111"}) {
+            HttpEntity entity = getHttpEntityFromChain(chainId);
+            if (entity != null) {
+                String jsonResponse = EntityUtils.toString(entity);
+                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 30));
+                JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+                JsonObject data = jsonObject.getAsJsonObject("data");
+                JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
+                List<RedPacket> redPacketList = redPacketRepository.findByStatusAndChainId(0, chainId);
+
+                for (int i = 0; i < redpacketsArray.size(); i++) {
+                    // Access each element in the array
+                    JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
+                    String id = redpacketObject.get("id").getAsString();
+                    for (int j = 0; j < redPacketList.size(); j++) {
+                        RedPacket redPacket = redPacketList.get(j);
+                        if (!redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
+                            continue;
+                        JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
+
+                        ArrayList<String> claimersList = new ArrayList<>();
+                        for (int k = 0; k < claimers.size(); k++) {
+                            String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
+                            //log.info("claimer address: " + s);
+                            claimersList.add(s);
+                        }
+                        redPacket.setClaimedAddress(claimersList);
+
+                        //refund or claimed all
+                        Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
+                        if (claimed) {
+                            log.info("redpacket id: " + id + "claimed: ");
+                            redPacket.setStatus(1);
+                        }
+
+                        redPacketRepository.save(redPacket);
+                    }
+                }
+            }
+        }
+    }
+
+    private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
+        HttpPost request = null;
+       switch (chainId) {
+           case "10":  // op
+               request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
+               break;
+           case "11155111": //sepolia
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/version/latest");
+       }
+
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
@@ -60,67 +111,10 @@ public class RedPacketService {
 
         request.setEntity(new StringEntity(query));
         HttpResponse response = httpClient.execute(request);
-       // System.out.println("response" + response);
+        // System.out.println("response" + response);
         HttpEntity entity = response.getEntity();
-
-        if (entity != null) {
-            String jsonResponse = EntityUtils.toString(entity);
-            log.info("response from the graph: "+ jsonResponse.substring(0,30));
-            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-            JsonObject data = jsonObject.getAsJsonObject("data");
-            JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-            List<RedPacket> redPacketList = redPacketRepository.findByStatus(0);
-
-            for (int i = 0; i < redpacketsArray.size(); i++) {
-                // Access each element in the array
-                JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-                 // log.info("redpackt object : " + redpacketObject);
-                String id = redpacketObject.get("id").getAsString();
-                for (int j = 0; j < redPacketList.size(); j++) {
-
-                    RedPacket redPacket = redPacketList.get(j);
-                   // log.info("redPacket: " + redPacket);
-                    if (!redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
-                        continue;
-
-                    JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
-
-                    ArrayList<String> claimersList = new ArrayList<>();
-                    for (int k = 0; k < claimers.size(); k++) {
-                        String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                        //log.info("claimer address: " + s);
-                        claimersList.add(s);
-                    }
-                    redPacket.setClaimedAddress(claimersList);
-
-                    // redPacket.getAddressList() is the whole claimer.
-//                    if (claimers.size() == redPacket.getAddressList().size()) {
-//                        log.info("redpacket id: " + id + " aLL claimed  ");
-//                        redPacket.setStatus(1);
-//                        redPacketRepository.save(redPacket);
-//                        continue;
-//                    }
-
-//                    if (claimers.size() > redPacket.getClaimedAddress().size()) {
-//                        log.info("update claimed address : " + id);
-//                        redPacketRepository.save(redPacket);
-//                    }
-
-                  //refund or claimed all
-                     Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
-                    if (claimed) {
-                        log.info("redpacket id: " + id + "claimed: ");
-                        redPacket.setStatus(1);
-                    }
-
-                    redPacketRepository.save(redPacket);
-                }
-            }
-        }
+        return entity;
     }
-
-
-
 
 
 //    @Scheduled(cron = "0 0/5 * * * ? ")
