@@ -1,6 +1,7 @@
 package com.dl.officialsite.sharing;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.SharingByUserResp;
 
@@ -43,6 +44,7 @@ public class SharingController {
      * 删除分享
      */
     @PostMapping("delete")
+    @Auth("admin")
     public BaseResponse deleteSharing(@RequestParam("shareId") long shareId,  @RequestParam("address") String address){
         this.sharingService.deleteSharing(shareId, address);
         return BaseResponse.success();

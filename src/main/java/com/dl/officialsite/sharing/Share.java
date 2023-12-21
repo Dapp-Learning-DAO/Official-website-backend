@@ -73,19 +73,19 @@ public class Share {
     /**
      * 分享人
      */
-    @Column(name = "member_address",length = 42, nullable = false)
+    @Column(name = "member_address",length = 42)
     private String memberAddress;
 
     /**
      * 文档连接
      */
-    @Column(name = "sharing_doc", nullable = true)
+    @Column(name = "sharing_doc")
     private String sharingDoc;
 
     /**
      * 标签类别
      */
-    @Column(name = "label", nullable = true)
+    @Column(name = "label")
     private String label;
 
     /**
@@ -109,6 +109,15 @@ public class Share {
 
     @Column
     private Integer rewardAmount;
+
+    @Column
+    private String youtubeLink;
+
+    @Column
+    private String bilibiliLink;
+
+    @Column
+    private String otherMemdiumLink;
 
     @CreatedDate
     @Column(updatable = false)
