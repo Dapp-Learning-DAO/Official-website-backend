@@ -22,7 +22,7 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
     int loadCountByUid(@Param("memberAddress") String memberAddress);
 
 
-    List<Share> findByIdsAndRewardStatus(List<Long> ids, Integer rewardStatus);
+    List<Share> findByIdInAndRewardStatus(List<Long> id, Integer rewardStatus);
 
 
 }

@@ -41,34 +41,36 @@ public class RewardService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "0 0/2 * * * ? ")
+    //@Scheduled(cron = "0 0/2 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : new String[]{"10", "11155111"}) {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 20));
+                log.info("response from the graph: chainId " + chainId + jsonResponse.substring(0, 20));
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-                //todo
-                Reward reward = new Reward();
-                List<Share> unClaimShareList = sharingRepository.findByIdsAndRewardStatus(reward.getSharingIds(), 1);
+                //todo get the uncompleted reward from db
+                List<Reward> reward = rewardRepository.findByStatus(0);
+                for(Reward reward1 : reward) {
 
-                for (int i = 0; i < redpacketsArray.size(); i++) {
-                    // Access each element in the array
-                    JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-                    String id = redpacketObject.get("id").getAsString();
-                    //get address
-                    //todo
-                    for (int j = 0; j < unClaimShareList.size(); j++) {
-                        Share share = unClaimShareList.get(j);
-                       if(share.getMemberAddress() == id) {
-                           share.setRewardStatus(1);
-                       }
+                    List<Share> unClaimShareList = sharingRepository.findByIdInAndRewardStatus(reward1.getSharingIds(), 1);
+                    for (int i = 0; i < redpacketsArray.size(); i++) {
+                        // Access each element in the array
+                        JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
+                        String id = redpacketObject.get("id").getAsString();
+                        //get address
+                        //todo
+                        for (int j = 0; j < unClaimShareList.size(); j++) {
+                            Share share = unClaimShareList.get(j);
+                            if (share.getMemberAddress() == id) {
+                                share.setRewardStatus(1);
+                            }
 
-                        sharingRepository.save(share);
+                            sharingRepository.save(share);
+                        }
                     }
                 }
             }
