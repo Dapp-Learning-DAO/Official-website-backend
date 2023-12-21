@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,11 @@ public class MemberService {
     }
 
     public MemberVo save(Member member) {
-            memberRepository.save(member);
+         //try {
+             memberRepository.save(member);
+       //  }catch (PersistenceException x) {
+
+
             MemberVo memberVo = new MemberVo();
         BeanUtils.copyProperties(member, memberVo);
          return memberVo;

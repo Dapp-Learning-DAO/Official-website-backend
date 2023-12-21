@@ -46,7 +46,7 @@ public class Member  implements Serializable
     @NotNull
     private String nickName;
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
-    @Column(unique=true,length = 20)
+    @Column(unique=true,length = 38)
     private String githubId;
     @Column(length = 20)
     private String tweetId;
