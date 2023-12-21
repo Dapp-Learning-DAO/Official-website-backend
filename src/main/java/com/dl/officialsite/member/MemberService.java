@@ -61,11 +61,7 @@ public class MemberService {
     }
 
     public MemberVo save(Member member) {
-         //try {
              memberRepository.save(member);
-       //  }catch (PersistenceException x) {
-
-
             MemberVo memberVo = new MemberVo();
         BeanUtils.copyProperties(member, memberVo);
          return memberVo;
