@@ -19,9 +19,9 @@ public class RewardController {
 
 
     @PostMapping("/create")
-    public BaseResponse createRedPacket(@Valid @RequestBody Reward redPacket, @RequestParam String address) {
-        redPacket.setCreator(address);
-        Reward redPacket1 = redPacketRepository.save(redPacket);
+    public BaseResponse createRedPacket(@Valid @RequestBody Reward reward, @RequestParam String address) {
+        reward.setCreator(address);
+        Reward redPacket1 = redPacketRepository.save(reward);
         return  BaseResponse.successWithData(redPacket1);
 
     }

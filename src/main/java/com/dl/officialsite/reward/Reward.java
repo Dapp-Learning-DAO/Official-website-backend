@@ -1,6 +1,8 @@
 package com.dl.officialsite.reward;
 
 
+import com.dl.officialsite.common.converter.IntegerListConverter;
+import com.dl.officialsite.common.converter.LongListConverter;
 import com.dl.officialsite.common.converter.StringListConverter;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -49,9 +51,8 @@ public class Reward {
 
     @NotNull
     @Column(columnDefinition = "TEXT")
-    @Convert(converter = StringListConverter.class)
+    @Convert(converter = LongListConverter.class)
     private List<Long> sharingIds;
-
 
     //the number of reward
     private Integer number;
@@ -64,12 +65,13 @@ public class Reward {
     @Column(updatable = false)
     private Long createTime;
 
+
+    @NotNull
+    private Long expireTime;
+
     private Long totalAmount;
 
+    @NotNull
     private Integer term;
-
-
-
-
 
 }
