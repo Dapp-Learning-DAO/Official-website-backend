@@ -13,7 +13,8 @@ contract MerkleDistributor is IMerkleDistributor {
     // This is a packed array of booleans.
     mapping(uint256 => uint256) private claimedBitMap;
 
-    constructor(address token_, bytes32 merkleRoot_, uint _duration) public {
+    constructor(address token_, bytes32 merkleRoot_, uint _duration, address _owner) public {
+        owner = _owner;
         token = token_;
         merkleRoot = merkleRoot_;
         expire_time = block.timestamp + _duration;

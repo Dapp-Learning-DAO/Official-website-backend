@@ -8,8 +8,8 @@ contract MerkleDistributorFactory {
 
     event DistributorCreated(address indexed distributorAddress);
 
-    function createDistributor(address token, bytes32 merkleRoot, uint _duration ) public {
-        MerkleDistributor distributor = new MerkleDistributor(token, merkleRoot, _duration);
+    function createDistributor(address token, bytes32 merkleRoot, uint _duration, address owner ) public {
+        MerkleDistributor distributor = new MerkleDistributor(token, merkleRoot, _duration,msg.sender);
         distributors.push(distributor);
         emit DistributorCreated(address(distributor));
     }

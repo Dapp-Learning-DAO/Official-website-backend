@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -87,6 +88,9 @@ public class Share {
      */
     @Column(name = "label")
     private String label;
+
+    @NotNull
+    private Integer term;
 
     /**
      * 锁定状态
