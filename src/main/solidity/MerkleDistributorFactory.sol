@@ -6,12 +6,12 @@ contract MerkleDistributorFactory {
     // Keep track of all created distributors
     MerkleDistributor[] public distributors;
 
-    event DistributorCreated(address indexed distributorAddress,address tokenAddress);
+    event DistributorCreated(address indexed distributorAddress,address tokenAddress,address owner,uint duration);
 
     function createDistributor(address token, bytes32 merkleRoot, uint _duration, address owner ) public {
         MerkleDistributor distributor = new MerkleDistributor(token, merkleRoot, _duration,msg.sender);
         distributors.push(distributor);
-        emit DistributorCreated(address(distributor),token);
+        emit DistributorCreated(address(distributor),token,owner,_duration);
     }
 
     function getDistributor(uint index) public view returns (MerkleDistributor) {
