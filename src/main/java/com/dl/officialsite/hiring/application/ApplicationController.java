@@ -4,6 +4,7 @@ import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.hiring.vo.ApplyVo;
 import com.dl.officialsite.hiring.vo.HiringVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,12 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ApplicationController {
 
-     private final ApplicationService applicationService;
-
-    public ApplicationController(ApplicationService applicationService) {
-        this.applicationService = applicationService;
-    }
-
+    @Autowired
+     private  ApplicationService applicationService;
     /**
      * 创建申请
      */

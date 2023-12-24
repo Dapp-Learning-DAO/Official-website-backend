@@ -23,7 +23,7 @@ public class RedPacketVo implements Serializable {
     private String chainId;
     private  Integer status;
     private Long amount;
-    private List<String> address;
+    private List<String> addressList;
 
     //contractAddress???
 }
