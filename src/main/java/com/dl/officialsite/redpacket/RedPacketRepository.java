@@ -23,11 +23,11 @@ public interface RedPacketRepository extends JpaRepository<RedPacket, String>,  
     List<RedPacket> findByClaimedPacket(@Param("address") String address, @Param("chainId") String chainId);
 
 
-    @Query(value = "select * from red_packet where address_list like ?1 and  claimed_address not like ?1 and  expire_time < UNIX_TIMESTAMP(current_timestamp()) and chain_id = ?2) ", nativeQuery = true)
+    @Query(value = "select * from red_packet where address_list like ?1 and  claimed_address not like ?1 and  expire_time < UNIX_TIMESTAMP(current_timestamp()) and chain_id = ?2 ", nativeQuery = true)
     List<RedPacket> findByUnclaimedTimeOutPacket(@Param("address") String address, @Param("chainId") String chainId );
 
     // @Query(value = "select * from red_packet where address_list like ?1 and  claimed_address not like ?1 and status = ?2 and expire_time > UNIX_TIMESTAMP(current_timestamp()) ", nativeQuery = true)
-    @Query(value = "select * from red_packet where address_list like ?1 and  claimed_address not like ?1 and status = ?2 and expire_time > UNIX_TIMESTAMP(current_timestamp()) and chain_id = ?3) ", nativeQuery = true)
+    @Query(value = "select * from red_packet where address_list like ?1 and  claimed_address not like ?1 and status = ?2 and expire_time > UNIX_TIMESTAMP(current_timestamp()) and chain_id = ?3 ", nativeQuery = true)
     List<RedPacket> findByUnclaimedPacket(@Param("address") String address, @Param("status") Integer status, @Param("chainId") String chainId);
 
 
