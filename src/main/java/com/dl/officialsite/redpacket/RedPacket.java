@@ -51,7 +51,8 @@ public class RedPacket {
     //0 uncompleted  1 completed  2 超时  3 refund
     private  Integer status;
 
-    private Long totalAmount;
+    //小数
+    private Double totalAmount;
 
     //the number of redpacket
     private Integer number;
