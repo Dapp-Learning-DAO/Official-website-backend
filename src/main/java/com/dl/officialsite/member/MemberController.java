@@ -116,6 +116,10 @@ public class MemberController {
     @PostMapping("/create")
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
 
+
+        if(member.getGithubId().equals("")) {
+            member.setGithubId(null);
+        }
             MemberVo _member = memberService.save(member);
             return BaseResponse.successWithData(_member);
     }
