@@ -36,7 +36,8 @@ https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/{uuid}
                 id   
     happyRedPacketId
     				name
-                  hasRefundedOrAllClaimed  
+                    refunded
+                 allClaimed  
                      claimers {
                       claimer
                     } 

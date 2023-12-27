@@ -66,8 +66,9 @@ public class RedPacketService {
                         redPacket.setClaimedAddress(claimersList);
 
                         //refund or claimed all
-                        Boolean claimed = redpacketObject.get("hasRefundedOrAllClaimed").getAsBoolean();
-                        if (claimed) {
+                        Boolean claimed = redpacketObject.get("allClaimed").getAsBoolean();
+                        Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
+                        if (claimed|| refunded) {
                             log.info("redpacket id: " + id + "claimed: ");
                             redPacket.setStatus(1);
                         }
@@ -97,7 +98,8 @@ public class RedPacketService {
         String graphQL = "\" {" +
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
-                "    hasRefundedOrAllClaimed   " +
+                "    refunded   " +
+                "    allClaimed  " +
                 "     claimers {" +
                 "      claimer" +
                 "    }" +
