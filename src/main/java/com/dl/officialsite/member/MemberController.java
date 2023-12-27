@@ -117,7 +117,7 @@ public class MemberController {
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
 
 
-        if(member.getGithubId().equals("")) {
+        if(member.getGithubId()!=null && member.getGithubId().equals("")) {
             member.setGithubId(null);
         }
             MemberVo _member = memberService.save(member);
