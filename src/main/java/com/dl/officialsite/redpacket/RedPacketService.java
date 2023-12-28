@@ -41,7 +41,7 @@ public class RedPacketService {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 30));
+                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 15));
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
