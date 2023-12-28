@@ -107,7 +107,10 @@ public class RedPacketService {
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
-        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 - 3600*24*90);
+        long time = currentTimeMillis / 1000 - 3600*24*90;
+        time = Math.max(time, 1703751864);
+        String creationTimeGtValue = String.valueOf(time);
+
 
         String graphQL = "\" {" +
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
