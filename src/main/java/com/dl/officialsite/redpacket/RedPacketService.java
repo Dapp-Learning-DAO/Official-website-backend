@@ -108,7 +108,7 @@ public class RedPacketService {
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
         long time = currentTimeMillis / 1000 - 3600*24*90;
-        time = Math.max(time, 1703751864);
+        time = Math.max(time, 1703751860);
         String creationTimeGtValue = String.valueOf(time);
 
 
