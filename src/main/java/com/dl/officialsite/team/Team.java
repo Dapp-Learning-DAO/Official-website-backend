@@ -1,14 +1,15 @@
 package com.dl.officialsite.team;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "team")
 public class Team {
 
@@ -24,4 +25,11 @@ public class Team {
 
     // dao admin , core contributor,  builder
     private int authority;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private Long createTime;
+    @LastModifiedDate
+    @Column( updatable = false ,nullable = false)
+    private Long updateTime;
 }

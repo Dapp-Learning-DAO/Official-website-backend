@@ -12,6 +12,10 @@ VALUES
 ("Dapp-Learning DAO translation group", "Translate blockchain-related documents ", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 4);
 
 
+INSERT INTO team_member(member_id, status, team_id)
+VALUES
+(1，0， 1);
+
 INSERT INTO sponsor(company, link, icon)
 VALUES
 ("ETHEREUM FOUNDATION", "https://jobs.lever.co/ethereumfoundation","https://lever-client-logos.s3.us-west-2.amazonaws.com/b4cfe414-b949-4989-b62f-e34bb1817ee3-1644535907857.png"),

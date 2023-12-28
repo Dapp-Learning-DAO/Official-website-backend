@@ -41,7 +41,7 @@ public class RedPacketService {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 20));
+                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 30));
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
@@ -66,12 +66,18 @@ public class RedPacketService {
                         redPacket.setClaimedAddress(claimersList);
 
                         //refund or claimed all
-                        Boolean claimed = redpacketObject.get("allClaimed").getAsBoolean();
+
+                        ////0 uncompleted  1 completed  2 超时  3 refunded
+                        Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                         Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
-                        if (claimed|| refunded) {
+                        if (allClaimed|| refunded) {
                             log.info("redpacket id: " + id + "claimed: ");
                             redPacket.setStatus(1);
                         }
+                        //todo
+//                       if( redPacket.getExpireTime()< System.currentTimeMillis()/1000 && !allClaimed && !refunded){
+//                           redPacket.setStatus(2);
+//                       }
 
                         redPacketRepository.save(redPacket);
                     }
