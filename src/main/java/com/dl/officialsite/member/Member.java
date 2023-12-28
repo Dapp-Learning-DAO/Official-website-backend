@@ -45,7 +45,7 @@ public class Member  implements Serializable
     @Column(unique=true,length = 20)
     @NotNull
     private String nickName;
-    private int role; // 0开发者，  1产品   2运营  3 测试  4 运维  5 设计师  6项目经理  7 研究员 8 投资人 9 市场 10 数据分析师  11 其他
+    private int role; // 0开发者，1 设计师  2产品   3运营  4 测试  5 运维  6项目经理  7 研究员 8 投资人 9 市场 10 数据分析师  11 其他
     @Column(unique=true,length = 38)
     private String githubId;
     @Column(length = 20)
