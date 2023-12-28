@@ -62,13 +62,13 @@ public class Share {
     /**
      * 分享所属组织
      */
-    @Column(name = "org",nullable = true)
+    @Column(name = "org")
     private String org;
 
     /**
      * 分享人twitter
      */
-    @Column(name = "twitter",nullable = true)
+    @Column(name = "twitter")
     private String twitter;
 
     /**
@@ -80,7 +80,7 @@ public class Share {
     /**
      * 文档连接
      */
-    @Column(name = "sharing_doc")
+    @Column(name = "sharing_doc",length = 128)
     private String sharingDoc;
 
     /**
