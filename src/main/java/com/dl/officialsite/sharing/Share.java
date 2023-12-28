@@ -50,8 +50,8 @@ public class Share {
     /**
      * 分享语言
      */
-    @Column(name = "language", nullable = false)
-    private int language = 0;  // 0 Chinese 1 English
+    @Column(columnDefinition = "integer default 0")
+    private int language ;  // 0 Chinese 1 English
 
     /**
      * 分享人昵称
@@ -89,7 +89,8 @@ public class Share {
     @Column(name = "label")
     private String label;
 
-    private Integer term=1;
+    @Column(columnDefinition = "integer default 1")
+    private Integer term;
 
     /**
      * 锁定状态
