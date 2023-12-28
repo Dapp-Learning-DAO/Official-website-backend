@@ -64,6 +64,7 @@ public class RedPacketService {
                         }
                         if(redPacket.getId() == null) {
                             redPacket.setId(id);
+                            redPacket.setStatus(0);
                         }
                         JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
 
