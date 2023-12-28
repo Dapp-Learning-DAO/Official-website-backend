@@ -55,13 +55,13 @@ public class RedPacketService {
                     for (int j = 0; j < redPacketList.size(); j++) {
                         RedPacket redPacket = redPacketList.get(j);
 
-                        if (id != null && !redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase())) {
+                        if (redPacket.getId()!= null && !redPacket.getId().toLowerCase().equals(id.toLowerCase())) {
                             continue;
                         }
-                        if (id == null && !redPacket.getName().toLowerCase().equals(name.toLowerCase())) {
+                        if (redPacket.getId()== null && !redPacket.getName().toLowerCase().equals(name.toLowerCase())) {
                             continue;
                         }
-                        if(id != null) {
+                        if(redPacket.getId() == null) {
                             redPacket.setId(id);
                         }
                         JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
