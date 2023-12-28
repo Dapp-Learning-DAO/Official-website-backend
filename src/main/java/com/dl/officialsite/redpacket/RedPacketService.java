@@ -34,7 +34,8 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "0 0/1 * * * ? ")
+   // @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "*/20 * * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : new String[]{"10", "11155111"}) {
