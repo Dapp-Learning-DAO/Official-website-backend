@@ -60,7 +60,6 @@ public class RedPacketController {
 
     @RequestMapping(value = "/query/all", method = RequestMethod.GET)
     BaseResponse getRedPacketAll(@RequestParam String address,
-
                                 @RequestParam(defaultValue = "1") Integer pageNumber,
                                 @RequestParam(defaultValue = "10") Integer pageSize)   {
 

@@ -32,7 +32,7 @@ public class Share {
     /**
      * 分享主题
      */
-    @Column(name = "theme", nullable = false)
+    @Column(name = "theme", nullable = false,length = 128)
     private String theme;
 
     /**

@@ -51,10 +51,19 @@ public class RedPacketService {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
                     String id = redpacketObject.get("id").getAsString();
+                    String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
                         RedPacket redPacket = redPacketList.get(j);
-                        if (!redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
+
+                        if (id != null && !redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase())) {
                             continue;
+                        }
+                        if (id == null && !redPacket.getName().toLowerCase().equals(name.toLowerCase())) {
+                            continue;
+                        }
+                        if(id != null) {
+                            redPacket.setId(id);
+                        }
                         JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
 
                         ArrayList<String> claimersList = new ArrayList<>();
@@ -71,7 +80,6 @@ public class RedPacketService {
                         Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                         Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
                         if (allClaimed|| refunded) {
-                            log.info("redpacket id: " + id + "claimed: ");
                             redPacket.setStatus(1);
                         }
                         //todo
@@ -105,6 +113,8 @@ public class RedPacketService {
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
+                "    name       " +
+                "   creationTime   " +
                 "    allClaimed  " +
                 "     claimers {" +
                 "      claimer" +
