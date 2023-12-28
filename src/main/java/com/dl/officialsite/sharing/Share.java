@@ -89,8 +89,7 @@ public class Share {
     @Column(name = "label")
     private String label;
 
-    @NotNull
-    private Integer term;
+    private Integer term=1;
 
     /**
      * 锁定状态
