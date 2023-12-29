@@ -92,7 +92,7 @@ public class RedPacketController {
                                         @RequestBody   RedPacketVo redPacket,
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize)   {
-        Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize);
+        Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Specification<RedPacket> queryParam = new Specification<RedPacket>() {
             @Override
             public Predicate toPredicate(Root<RedPacket> root, CriteriaQuery<?> criteriaQuery,

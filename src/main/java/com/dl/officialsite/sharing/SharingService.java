@@ -72,6 +72,7 @@ public class SharingService  {
             sharing.setTheme(req.getTheme());
             sharing.setDate(req.getDate());
             sharing.setTime(req.getTime());
+            sharing.setLanguage(req.getLanguage());
             sharing.setPresenter(req.getPresenter());
             sharing.setOrg(req.getOrg());
             sharing.setTwitter(req.getTwitter());
