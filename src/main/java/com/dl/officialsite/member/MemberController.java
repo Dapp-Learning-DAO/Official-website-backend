@@ -62,7 +62,7 @@ public class MemberController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     BaseResponse getAllMember(@RequestParam String address, @RequestParam(defaultValue = "1") Integer pageNumber,
                               @RequestParam(defaultValue = "10") Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.ASC, "createTime"));
         return BaseResponse.successWithData(memberRepository.findAll(pageable));
     }
 
@@ -72,7 +72,7 @@ public class MemberController {
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,Sort.by(Sort.Direction.DESC, "createTime"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,Sort.by(Sort.Direction.ASC, "createTime"));
         Specification<Member> queryParam = new Specification<Member>() {
             @Override
             public Predicate toPredicate(Root<Member> root, CriteriaQuery<?> criteriaQuery,
