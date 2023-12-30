@@ -22,7 +22,7 @@ import java.util.List;
 @Entity
 @DynamicUpdate
 @Table(name = "red_packet", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "id", columnNames = {"id"})
+        @UniqueConstraint(name = "name", columnNames = {"name"})
         })
 
 public class RedPacket {
@@ -30,10 +30,13 @@ public class RedPacket {
     @Column(length = 66)
     private String  name;
 
-    @NotNull
-    @Id
     @Column(length = 66)
     private String id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long redPacketId;
+
     @NotNull
     private String creator;
     @NotNull
@@ -48,7 +51,7 @@ public class RedPacket {
     @NotNull
     private String chainId;
 
-    //0 uncompleted  1 completed  2 超时  3 refund
+    //0 uncompleted  1 completed  2 超时  3 refund  4 pending
     private  Integer status;
 
     //小数

@@ -34,14 +34,15 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "0 0/1 * * * ? ")
+   // @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "*/20 * * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : new String[]{"10", "11155111"}) {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 20));
+                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 15));
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
@@ -51,10 +52,20 @@ public class RedPacketService {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
                     String id = redpacketObject.get("id").getAsString();
+                    String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
                         RedPacket redPacket = redPacketList.get(j);
-                        if (!redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
+
+                        if (redPacket.getId()!= null && !redPacket.getId().toLowerCase().equals(id.toLowerCase())) {
                             continue;
+                        }
+                        if (redPacket.getId()== null && !redPacket.getName().toLowerCase().equals(name.toLowerCase())) {
+                            continue;
+                        }
+                        if(redPacket.getId() == null) {
+                            redPacket.setId(id);
+                            redPacket.setStatus(0);
+                        }
                         JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
 
                         ArrayList<String> claimersList = new ArrayList<>();
@@ -66,12 +77,17 @@ public class RedPacketService {
                         redPacket.setClaimedAddress(claimersList);
 
                         //refund or claimed all
-                        Boolean claimed = redpacketObject.get("allClaimed").getAsBoolean();
+
+                        ////0 uncompleted  1 completed  2 超时  3 refunded
+                        Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                         Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
-                        if (claimed|| refunded) {
-                            log.info("redpacket id: " + id + "claimed: ");
+                        if (allClaimed|| refunded) {
                             redPacket.setStatus(1);
                         }
+                        //todo
+//                       if( redPacket.getExpireTime()< System.currentTimeMillis()/1000 && !allClaimed && !refunded){
+//                           redPacket.setStatus(2);
+//                       }
 
                         redPacketRepository.save(redPacket);
                     }
@@ -93,12 +109,17 @@ public class RedPacketService {
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
-        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 - 3600*24*90);
+        long time = currentTimeMillis / 1000 - 3600*24*90;
+        time = Math.max(time, 1703751860);
+        String creationTimeGtValue = String.valueOf(time);
+
 
         String graphQL = "\" {" +
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
+                "    name       " +
+                "   creationTime   " +
                 "    allClaimed  " +
                 "     claimers {" +
                 "      claimer" +

@@ -32,7 +32,7 @@ public class Share {
     /**
      * 分享主题
      */
-    @Column(name = "theme", nullable = false)
+    @Column(name = "theme", nullable = false,length = 128)
     private String theme;
 
     /**
@@ -50,8 +50,8 @@ public class Share {
     /**
      * 分享语言
      */
-    @Column(name = "language", nullable = false)
-    private int language = 0;  // 0 Chinese 1 English
+    @Column(columnDefinition = "integer default 0")
+    private int language ;  // 0 Chinese 1 English
 
     /**
      * 分享人昵称
@@ -62,13 +62,13 @@ public class Share {
     /**
      * 分享所属组织
      */
-    @Column(name = "org",nullable = true)
+    @Column(name = "org")
     private String org;
 
     /**
      * 分享人twitter
      */
-    @Column(name = "twitter",nullable = true)
+    @Column(name = "twitter")
     private String twitter;
 
     /**
@@ -80,7 +80,7 @@ public class Share {
     /**
      * 文档连接
      */
-    @Column(name = "sharing_doc")
+    @Column(name = "sharing_doc",length = 128)
     private String sharingDoc;
 
     /**
@@ -89,7 +89,7 @@ public class Share {
     @Column(name = "label")
     private String label;
 
-    @NotNull
+    @Column(columnDefinition = "integer default 1")
     private Integer term;
 
     /**

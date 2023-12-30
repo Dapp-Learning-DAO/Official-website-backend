@@ -45,7 +45,7 @@ public class Member  implements Serializable
     @Column(unique=true,length = 20)
     @NotNull
     private String nickName;
-    private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
+    private int role; // 0开发者，1 设计师  2产品   3运营  4 测试  5 运维  6项目经理  7 研究员 8 投资人 9 市场 10 数据分析师  11 其他
     @Column(unique=true,length = 38)
     private String githubId;
     @Column(length = 20)
@@ -56,8 +56,8 @@ public class Member  implements Serializable
     private String wechatId;
     private String avatar;
 
-    private String techStack;  //前端 ， 后端 ， 全栈， 运维， 测试, 密码学， 区块链底层，金融，数学
-    private String programing; //
+    private String techStack;  //前端 ，后端 ， 全栈， 运维，DBA,  UI/UX, AI， 密码学，智能合约，数据分析,  共识算法，金融，数学， 网络安全， 英语,  其他
+    private String programing;
     // optional
     private String interests; //兴趣
     private String city;
