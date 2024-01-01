@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
     #type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: {{SPRING_DATASOURCE_PASSWORD}}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     maximum-pool-size: 20
 
   jpa:
@@ -63,12 +63,12 @@ oauth:
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看
-  secretId: {{SECRET_ID}}
-  secretKey: {{SECRET_KEY}}
+  secretId: ${SECRET_ID}
+  secretKey: ${SECRET_KEY}
   # 指定要上传到的存储桶
-  bucketName: {{BUCKET_NAME}}
+  bucketName: ${BUCKET_NAME}
   # 地区选择
-  regionName: {{REGION_NAME}}
+  regionName: ${REGION_NAME}
 
 login:
   filter: true
