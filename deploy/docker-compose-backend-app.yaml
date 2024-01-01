@@ -14,3 +14,12 @@ services:
     volumes:
       - ./logs:/logs
     restart: always
+    networks:
+      - dl-backend
+
+
+
+networks:
+  dl-backend:
+    external:
+      name: dl-dependency-network
