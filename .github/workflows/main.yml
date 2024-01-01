@@ -46,7 +46,7 @@ jobs:
 
       - name: SSH login to server and restart service on DEV server
         uses: appleboy/ssh-action@master
-        if: contains(github.ref, "dev")
+        if: contains(github.ref, 'dev')
         with:
           host: ${{ vars.DEV_SERVER_HOST }}
           username: ${{ vars.SERVER_USERNAME }}
@@ -59,7 +59,7 @@ jobs:
 
       - name: SSH login to server and restart service on PROD server
         uses: appleboy/ssh-action@master
-        if: contains(github.ref, "main")
+        if: contains(github.ref, 'main')
         with:
           host: ${{ vars.PROD_SERVER_HOST }}
           username: ${{ vars.SERVER_USERNAME }}
