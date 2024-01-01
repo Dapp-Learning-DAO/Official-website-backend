@@ -16,8 +16,6 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       DOCKER_IMAGE_VERSION: dev-latest
       DOCKER_IMAGE_NAME: dl-official-website-backend
-      SERVER_USERNAME: ${{ vars.SERVER_USERNAME }}
-      SERVER_HOST: ${{ vars.SERVER_HOST }}
 
     steps:
       - name: Checkout repository
@@ -49,8 +47,8 @@ jobs:
       - name: SSH login to server and restart service
         uses: appleboy/ssh-action@master
         with:
-          host: $SERVER_HOST
-          username: $SERVER_USERNAME
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
