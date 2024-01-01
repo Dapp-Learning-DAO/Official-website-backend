@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
+      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       DOCKER_IMAGE_VERSION: dev-latest
       DOCKER_IMAGE_NAME: dl-official-website-backend
-      SERVER_USERNAME: ${{ env.SERVER_USERNAME }}
-      SERVER_HOST: ${{ env.SERVER_HOST }}
+      SERVER_USERNAME: ${{ vars.SERVER_USERNAME }}
+      SERVER_HOST: ${{ vars.SERVER_HOST }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     steps:
