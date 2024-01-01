@@ -3,7 +3,7 @@ LICENSE
 README.md
 build
 dist
-docker-compose.yaml
+deploy
 interface
 logs
 nginx.conf

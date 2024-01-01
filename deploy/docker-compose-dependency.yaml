@@ -31,21 +31,3 @@ services:
     restart: always
     depends_on:
       - ipfs
-
-  dl:
-    container_name: dl
-    image: yuanmomo/dl-official-website-backend:dev-latest
-    environment:
-      # change the profile name and password according to your env.
-      - spring_profiles_active=dev
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SECRET_ID=SECRET_KEY
-      - SECRET_KEY=SECRET_KEY
-    ports:
-      - '8080:8080'
-    volumes:
-      - ./logs:/logs
-    restart: always
-    depends_on:
-      - ipfs
-      - db

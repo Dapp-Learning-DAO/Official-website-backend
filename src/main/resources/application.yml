@@ -7,7 +7,7 @@ server:
         max-age: -1
 spring:
   datasource:
-    url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
     #type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: ${SPRING_DATASOURCE_PASSWORD}

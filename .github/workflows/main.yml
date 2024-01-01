@@ -53,5 +53,5 @@ jobs:
           port: 22
           script: |
             cd /root/Official-website-backend
-            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-            docker-compose up -d --force-recreate dl
+            docker compose pull 
+            docker compose down && docker compose up -d
