@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - dev
 
 jobs:
   deployment:
@@ -26,9 +26,9 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "DOCKER_IMAGE_VERSION=main-latest" >> $GITHUB_ENV
             echo "BRANCH_NAME=main" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
             echo "DOCKER_IMAGE_VERSION=dev-latest" >> $GITHUB_ENV
-            echo "BRANCH_NAME=develop" >> $GITHUB_ENV
+            echo "BRANCH_NAME=dev" >> $GITHUB_ENV
           fi
 
       - name: Display current branch
@@ -44,12 +44,26 @@ jobs:
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
 
-      - name: SSH login to server and restart service
+      - name: SSH login to server and restart service on DEV server
         uses: appleboy/ssh-action@master
+        if: contains(github.ref, "dev")
         with:
-          host: ${{ vars.SERVER_HOST }}
+          host: ${{ vars.DEV_SERVER_HOST }}
           username: ${{ vars.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /root/Official-website-backend
+            docker compose pull 
+            docker compose down && docker compose up -d
+
+      - name: SSH login to server and restart service on PROD server
+        uses: appleboy/ssh-action@master
+        if: contains(github.ref, "main")
+        with:
+          host: ${{ vars.PROD_SERVER_HOST }}
+          username: ${{ vars.SERVER_USERNAME }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           port: 22
           script: |
             cd /root/Official-website-backend
