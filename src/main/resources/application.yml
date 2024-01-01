@@ -7,11 +7,10 @@ server:
         max-age: -1
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
-#type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
+    #type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: 12345678
-#    password: {{SPRING_DATASOURCE_PASSWORD}}
+    password: {{SPRING_DATASOURCE_PASSWORD}}
     maximum-pool-size: 20
 
   jpa:
@@ -38,11 +37,13 @@ spring:
       cleanup-cron: 0 */3 * * * *
     timeout: 7200
 
-  profiles:
-    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+logging:
+  level:
+    org.springframework.security: debug
 
 ipfs:
   #url: "/ip4/127.0.0.1/tcp/5001"
@@ -54,18 +55,20 @@ web3j:
 oauth:
   registrations:
     github:
-      clientId: ""
-      clientSecret: ""
+      clientId: "Iv1.74aecf988af67044"
+      clientSecret: "d0f38f58e98bb3dbb9a6bf6a2e1211a4feb24767"
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看
-  secretId: ""
-  secretKey: ""
+  secretId: {{SECRET_ID}}
+  secretKey: {{SECRET_KEY}}
   # 指定要上传到的存储桶
-  bucketName: ""
+  bucketName: {{BUCKET_NAME}}
   # 地区选择
-  regionName: ""
+  regionName: {{REGION_NAME}}
 
+login:
+  filter: true
