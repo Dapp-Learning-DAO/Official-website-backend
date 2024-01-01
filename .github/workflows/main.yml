@@ -7,35 +7,17 @@ on:
       - develop
 
 jobs:
-  set-environment:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set environment name based on branch
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "ENV_VAR=prod" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-            echo "ENV_VAR=dev" >> $GITHUB_ENV
-          fi
-
-      - name: Display environment variable
-        run: |
-          echo "Current branch is $ENV_VAR"
-
   deployment:
-    needs: set-environment
-
     runs-on: ubuntu-latest
-    environment: $ENV_VAR
+    environment: dev
 
     env:
-      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       DOCKER_IMAGE_VERSION: dev-latest
       DOCKER_IMAGE_NAME: dl-official-website-backend
-      SERVER_USERNAME: ${{ vars.SERVER_USERNAME }}
-      SERVER_HOST: ${{ vars.SERVER_HOST }}
+      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     steps:
