@@ -27,8 +27,10 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "DOCKER_IMAGE_VERSION=main-latest" >> $GITHUB_ENV
+            echo "BRANCH_NAME=main" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
             echo "DOCKER_IMAGE_VERSION=dev-latest" >> $GITHUB_ENV
+            echo "BRANCH_NAME=develop" >> $GITHUB_ENV
           fi
 
       - name: Display current branch
