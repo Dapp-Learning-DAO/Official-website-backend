@@ -34,7 +34,7 @@ services:
 
   dl:
     container_name: dl
-    image: dl/dl-backend:dev-latest
+    image: dl/dl-official-website-backend:dev-latest
     environment:
       # change the profile name and password according to your env.
       - spring_profiles_active=dev
