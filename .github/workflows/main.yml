@@ -18,7 +18,6 @@ jobs:
       DOCKER_IMAGE_NAME: dl-official-website-backend
       SERVER_USERNAME: ${{ vars.SERVER_USERNAME }}
       SERVER_HOST: ${{ vars.SERVER_HOST }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     steps:
       - name: Checkout repository
@@ -52,10 +51,9 @@ jobs:
         with:
           host: $SERVER_HOST
           username: $SERVER_USERNAME
-          key: $SSH_PRIVATE_KEY
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            ssh-agent bash -c 'ssh-add - <<< "$SSH_PRIVATE_KEY"'
             cd /root/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
             docker-compose up -d --force-recreate dl
