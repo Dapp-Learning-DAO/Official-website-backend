@@ -6,9 +6,15 @@ services:
     environment:
       # change the profile name and password according to your env.
       - spring_profiles_active=dev
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SECRET_ID=SECRET_KEY
-      - SECRET_KEY=SECRET_KEY
+      - SPRING_DATASOURCE_PASSWORD=
+      - BUCKET_NAME=
+      - REGION_NAME=
+      - SECRET_ID=
+      - SECRET_KEY=
+      - GITHUB_CLIENT_ID=
+      - GITHUB_CLIENT_SECRET=
+      - MAIL_ADDRESS=
+      - MAIL_PASSWORD=
     ports:
       - '8080:8080'
     volumes:
