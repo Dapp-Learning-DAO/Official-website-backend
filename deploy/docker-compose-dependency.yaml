@@ -7,13 +7,14 @@ services:
       - MYSQL_DATABASE=dl
       - MYSQL_ROOT_PASSWORD=root
     ports:
-      - "3306:3306"
+      - 127.0.0.1:3306:3306
     networks:
-      - dl-dependency-network
+      - network
     volumes:
       - ./mysql_volume:/var/lib/mysql
-      #  - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      #- ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 networks:
-  dl-dependency-network:
+  network:
+    driver: bridge
     name: dl-dependency-network

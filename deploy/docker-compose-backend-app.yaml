@@ -1,6 +1,7 @@
-version: '3.2'
+version: '3.5'
 services:
-  dl:
+
+  dl-backend:
     container_name: dl-backend
     image: yuanmomo/dl-official-website-backend:dev-latest
     environment:
@@ -21,8 +22,10 @@ services:
       - ./logs:/logs
     restart: always
     networks:
-      - dl-dependency-network
+      - dl-backend
+
 
 networks:
-  dl-dependency-network:
+  dl-backend:
+    name: dl-dependency-network
     external: true

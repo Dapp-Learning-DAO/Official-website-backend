@@ -55,7 +55,7 @@ jobs:
           script: |
             cd /root/Official-website-backend
             docker compose pull 
-            docker compose down && docker compose up -d
+            docker-compose down && docker-compose up -d
 
       - name: SSH login to server and restart service on PROD server
         uses: appleboy/ssh-action@master
@@ -68,4 +68,4 @@ jobs:
           script: |
             cd /root/Official-website-backend
             docker compose pull 
-            docker compose down && docker compose up -d
+            docker-compose down && docker-compose up -d
