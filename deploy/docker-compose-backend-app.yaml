@@ -21,9 +21,8 @@ services:
       - ./logs:/logs
     restart: always
     networks:
-      - dl-backend
+      - dl-dependency-network
 
 networks:
-  dl-backend:
-    external:
-      name: dl-dependency-network
+  dl-dependency-network:
+    external: true
