@@ -22,8 +22,8 @@ spring:
   mail:
     host: smtp.163.com
     port: 465
-    username: 15503679582@163.com
-    password: OXWEDGWEOGIGVWJN
+    username: ${MAIL_ADDRESS}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -51,8 +51,8 @@ web3j:
 oauth:
   registrations:
     github:
-      clientId: "Iv1.74aecf988af67044"
-      clientSecret: "d0f38f58e98bb3dbb9a6bf6a2e1211a4feb24767"
+      clientId: "${GITHUB_CLIENT_ID}"
+      clientSecret: "${GITHUB_CLIENT_SECRET}"
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user
