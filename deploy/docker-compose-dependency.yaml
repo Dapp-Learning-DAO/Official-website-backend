@@ -14,30 +14,6 @@ services:
       - ./mysql_volume:/var/lib/mysql
       #  - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  ipfs:
-    image: ipfs/kubo:v0.14.0
-    ports:
-      - '5001:5001'
-      - "8081:8080"
-      - "4001:4001"
-    networks:
-      - dl-dependency-network
-    volumes:
-      - ./data/ipfs:/data/ipfs
-
-  nginx:
-    container_name: mynginx
-    image: nginx:latest
-    ports:
-      - '80:80'
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    restart: always
-    depends_on:
-      - ipfs
-    networks:
-      - dl-dependency-network
-
 networks:
   dl-dependency-network:
     name: dl-dependency-network
