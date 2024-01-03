@@ -1,39 +1,71 @@
-name: Official Backend CICD
+name: Deploy Official-website-backend to dev/prod Server
 
 on:
   push:
-    # 分支
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
+      - dev
 
 jobs:
-  build:
-    if: |
-      github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch'
+  deployment:
     runs-on: ubuntu-latest
-    name: Building background
+    environment: dev
+
+    env:
+      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_IMAGE_VERSION: dev-latest
+      DOCKER_IMAGE_NAME: dl-official-website-backend
+
     steps:
-      - run: |
-          echo Build is triggered
-      - name: deploy_app #开始部署
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set environment variables based on branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DOCKER_IMAGE_VERSION=main-latest" >> $GITHUB_ENV
+            echo "BRANCH_NAME=main" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            echo "DOCKER_IMAGE_VERSION=dev-latest" >> $GITHUB_ENV
+            echo "BRANCH_NAME=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Display current branch
+        run: |
+          echo "Current branch is $BRANCH_NAME"
+
+      - name: Build Docker image
+        run: |
+          docker build -t $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION .
+
+      - name: Push Docker image to registry
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+
+      - name: SSH login to server and restart service on DEV server
         uses: appleboy/ssh-action@master
+        if: contains(github.ref, 'dev')
         with:
-          host: ${{ secrets.HOST }} #服务器ip地址
-          username: ${{ secrets.USERNAME }} #服务器ssh用户名
-          password: ${{ secrets.PASSWORD }} #服务器ssh密码
-          port: ${{ secrets.PORT }} # 服务器ssh端口（默认22）
+          host: ${{ vars.DEV_SERVER_HOST }}
+          username: ${{ vars.SERVER_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          port: 22
           script: |
             cd /root/Official-website-backend
-            rm -rf dist
-            git pull
-            bash ./gradlew build -x test
-            cd dist
-            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
-            export SECRET_ID=${{secrets.SECRETID}}
-            export SECRET_KEY=${{secrets.SECRETKEY}}
-            export BUCKET_NAME=${{secrets.BUCKETNAME}}
-            export REGION_NAME=${{secrets.REGIONNAME}}
-            bash stop.sh
-            bash start.sh
+            docker compose pull 
+            docker compose down && docker compose up -d
 
+      - name: SSH login to server and restart service on PROD server
+        uses: appleboy/ssh-action@master
+        if: contains(github.ref, 'main')
+        with:
+          host: ${{ vars.PROD_SERVER_HOST }}
+          username: ${{ vars.SERVER_USERNAME }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /root/Official-website-backend
+            docker compose pull 
+            docker compose down && docker compose up -d

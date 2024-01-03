@@ -12,8 +12,6 @@
 .gitignore
 ./src/main/resources/
 
-src/main/resources/application-dev.yml
-
 HappyRedPacket.java
 
 # Package Files #

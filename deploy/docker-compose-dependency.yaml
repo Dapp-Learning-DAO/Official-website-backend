@@ -1,0 +1,19 @@
+version: '3.5'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      - MYSQL_DATABASE=dl
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    networks:
+      - dl-dependency-network
+    volumes:
+      - ./mysql_volume:/var/lib/mysql
+      #  - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  dl-dependency-network:
+    name: dl-dependency-network
