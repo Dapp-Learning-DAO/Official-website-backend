@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.ArrayList;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class MemberWithTeam extends Member
 {
 
