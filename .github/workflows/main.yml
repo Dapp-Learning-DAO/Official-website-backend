@@ -9,9 +9,10 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
+    environment: dl-backend-env
 
     env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       DOCKER_IMAGE_VERSION: dev-latest
       DOCKER_IMAGE_NAME: dl-official-website-backend
@@ -47,10 +48,10 @@ jobs:
         uses: appleboy/ssh-action@master
         if: contains(github.ref, 'dev')
         with:
-          host: ${{ secrets.DEV_SERVER_HOST }} #服务器ip地址
-          username: ${{ secrets.DEV_SERVER_USERNAME }} #服务器ssh用户名
+          host: ${{ vars.DEV_SERVER_HOST }} #服务器ip地址
+          username: ${{ vars.DEV_SERVER_USERNAME }} #服务器ssh用户名
           password: ${{ secrets.DEV_SSH_PRIVATE_KEY }} #服务器ssh密码
-          port: ${{ secrets.DEV_PORT }} # 服务器ssh端口（默认22）
+          port: ${{ vars.DEV_PORT }} # 服务器ssh端口（默认22）
           script: |
             cd /root/Official-website-backend
             docker compose pull 
@@ -60,10 +61,10 @@ jobs:
         uses: appleboy/ssh-action@master
         if: contains(github.ref, 'main')
         with:
-          host: ${{ secrets.PROD_SERVER_HOST }} #服务器ip地址
-          username: ${{ secrets.PROD_SERVER_USERNAME }} #服务器ssh用户名
+          host: ${{ vars.PROD_SERVER_HOST }} #服务器ip地址
+          username: ${{ vars.PROD_SERVER_USERNAME }} #服务器ssh用户名
           password: ${{ secrets.PROD_SSH_PRIVATE_KEY }} #服务器ssh密码
-          port: ${{ secrets.PROD_PORT }} # 服务器ssh端口（默认22）
+          port: ${{ vars.PROD_PORT }} # 服务器ssh端口（默认22）
           script: |
             cd /root/Official-website-backend
             docker compose pull 
