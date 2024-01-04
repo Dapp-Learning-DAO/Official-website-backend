@@ -110,7 +110,6 @@ public class OAuthProcessController {
                 "bind");
 
 
-
         /**
          * 3. Generate the full auth uri and let the browser redirect to github authorize page
          */
@@ -118,7 +117,7 @@ public class OAuthProcessController {
                 .queryParam("client_id", clientId)
                 .queryParam("response_type", responseType)
                 .queryParam("state", state)
-                .queryParam("redirect_uri", redirectUri)
+//                .queryParam("redirect_uri", redirectUri)
                 .build();
         response.sendRedirect(uriComponents.toUriString());
 
