@@ -50,7 +50,7 @@ jobs:
         with:
           host: ${{ vars.DEV_SERVER_HOST }} #服务器ip地址
           username: ${{ vars.DEV_SERVER_USERNAME }} #服务器ssh用户名
-          password: ${{ secrets.DEV_SSH_PRIVATE_KEY }} #服务器ssh密码
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }} #服务器ssh私钥
           port: ${{ vars.DEV_PORT }} # 服务器ssh端口（默认22）
           script: |
             cd /root/Official-website-backend
@@ -63,7 +63,7 @@ jobs:
         with:
           host: ${{ vars.PROD_SERVER_HOST }} #服务器ip地址
           username: ${{ vars.PROD_SERVER_USERNAME }} #服务器ssh用户名
-          password: ${{ secrets.PROD_SSH_PRIVATE_KEY }} #服务器ssh密码
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }} #服务器ssh私钥
           port: ${{ vars.PROD_PORT }} # 服务器ssh端口（默认22）
           script: |
             cd /root/Official-website-backend
