@@ -32,7 +32,7 @@ replay_pid*
 build
 gradle.properties
 
-application-hsy.yml
+application-local.yml
 
 
 .idea
