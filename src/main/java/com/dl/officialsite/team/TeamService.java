@@ -296,6 +296,25 @@ public class TeamService {
            return false;
     }
 
+    /**
+     * 检查是否为超级管理员
+     */
+    public boolean checkMemberIsSuperAdmin(String address) {
+
+        Member member =  memberService.getMemberByAddress(address);
+        if(member == null) {
+            return false;
+        }
+        // id 0
+        Team team = teamRepository.findById(1L).orElseThrow(() -> new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
+            CodeEnums.TEAM_NOT_EXIST.getMsg()));
+        String admin = team.getAdministrator();
+        if(admin.equals(address)) {
+            return true;
+        }
+        return false;
+    }
+
 
     public TeamsWithMembers getTeamById(Long teamId) {
         Optional<Team> optional = teamRepository.findById(teamId);
@@ -366,8 +385,10 @@ public class TeamService {
         return false;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void delete(Long teamId) {
         teamRepository.deleteById(teamId);
+        this.deleteTeamMember(teamId);
     }
 
     public void deleteTeamMember(Long teamId) {
