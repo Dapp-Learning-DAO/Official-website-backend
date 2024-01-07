@@ -37,4 +37,8 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long>,  
     List<TeamMember> findByTeamAndMembers(@Param("team_id")Long teamId, @Param("memberIds")List<Long> memberIds);
 
     List<TeamMember> findByMemberIdAndStatus(Long id, int i);
+
+    @Query(value = "delete from team_member where team_id = :teamId",
+        nativeQuery = true)
+    void deleteByTeamId(Long teamId);
 }
