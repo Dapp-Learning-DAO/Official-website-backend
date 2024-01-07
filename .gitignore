@@ -33,6 +33,7 @@ build
 gradle.properties
 
 application-local.yml
+README-Local.md
 
 
 .idea
