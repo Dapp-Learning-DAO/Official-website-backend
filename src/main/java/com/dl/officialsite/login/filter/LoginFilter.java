@@ -79,13 +79,14 @@ public class LoginFilter extends OncePerRequestFilter {
 
             //Must check addr
             boolean noCheckAddr = this.noAddrCheckApis.contains(uri);
+            log.info("{} noCheck {}", uri, noCheckAddr);
 
             if(!noCheckAddr){
-                String addressInHeader = request.getParameter("address");
-                if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
-                    dumpForbidden(response);
-                    return;
-                }
+//                String addressInHeader = request.getParameter("address");
+//                if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
+//                    dumpForbidden(response);
+//                    return;
+//                }
             }
 
 
