@@ -103,11 +103,11 @@ public class OAuthProcessController {
         String clientId = oAuthRegistration.getClientId();
         String responseType = AUTHORIZATION_CODE;
         String state = DEFAULT_STATE_GENERATOR.generateKey();
-        String redirectUri = expandRedirectUri(
-                registrationId,
-                request,
-                oAuthRegistration,
-                "bind");
+//        String redirectUri = expandRedirectUri(
+//                registrationId,
+//                request,
+//                oAuthRegistration,
+//                "bind");
 
 
         /**
@@ -175,6 +175,7 @@ public class OAuthProcessController {
          */
         IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
         Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
+        log.info("");
         bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
 
         response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
