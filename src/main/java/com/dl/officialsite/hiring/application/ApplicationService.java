@@ -54,7 +54,7 @@ public class ApplicationService {
             //添加应聘记录
             Application application = new Application();
             application.setHiringId(hiring.getId());
-            application.setMemeberId(member.getId());
+            application.setMemberId(member.getId());
             applicationRepository.save(application);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,5 +78,9 @@ public class ApplicationService {
         List<Long> hiringIds = applicationList.stream().map(Application::getHiringId).collect(
             Collectors.toList());
         return hireService.all(pageable, hiringIds);
+    }
+
+    public Application findByMemberIdAndHireId(Long memberId, Long hireId) {
+        return applicationRepository.findByMemberIdAndHiringId(memberId, hireId);
     }
 }

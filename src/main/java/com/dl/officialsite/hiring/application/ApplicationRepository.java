@@ -12,4 +12,5 @@ import java.util.List;
 public interface ApplicationRepository extends JpaRepository<Application, Long>,
     JpaSpecificationExecutor<Application> {
 
+    Application findByMemberIdAndHiringId(Long memberId, Long hireId);
 }
