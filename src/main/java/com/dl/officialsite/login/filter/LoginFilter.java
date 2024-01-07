@@ -52,6 +52,7 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/share/create");
         add("/share/update");
         add("/share/delete");
+        add("/oauth2/authorization/github");
     }} ;
 
     @Override

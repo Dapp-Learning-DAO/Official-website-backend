@@ -92,18 +92,6 @@ jar {
 			into 'dist/lib'
 		}
 		copy {
-			from file('src/main/resources/application-template.yml')
-			into 'dist/conf/'
-		}
-		copy {
-			from file('start.sh')
-			into 'dist/'
-		}
-		copy {
-			from file('stop.sh')
-			into 'dist/'
-		}
-		copy {
 			from file('.').listFiles().findAll { File f -> (f.name.endsWith('.sh') || f.name.endsWith('.env')) }
 			into 'dist'
 		}
@@ -129,13 +117,17 @@ ext  {
 }
 
 sourceSets {
-	main {
-//		solidity {
-//			srcDir {
-//				"$project/src/main/solidity"
-//			}
-//		}
-	}
+    main {
+        java {
+            srcDirs 'src/main/java'
+        }
+    }
+
+    test {
+        java {
+            srcDirs 'src/test/java'
+        }
+    }
 }
 
 //node {
