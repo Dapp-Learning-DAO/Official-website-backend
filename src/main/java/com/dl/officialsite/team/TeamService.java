@@ -385,8 +385,10 @@ public class TeamService {
         return false;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void delete(Long teamId) {
         teamRepository.deleteById(teamId);
+        this.deleteTeamMember(teamId);
     }
 
     public void deleteTeamMember(Long teamId) {

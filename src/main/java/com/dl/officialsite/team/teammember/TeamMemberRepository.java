@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.dl.officialsite.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -38,7 +39,8 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long>,  
 
     List<TeamMember> findByMemberIdAndStatus(Long id, int i);
 
-    @Query(value = "delete from team_member where team_id = :teamId",
+    @Query(value = "delete from team_member where team_id = :team_id",
         nativeQuery = true)
-    void deleteByTeamId(Long teamId);
+    @Modifying
+    void deleteByTeamId(@Param("team_id")Long teamId);
 }
