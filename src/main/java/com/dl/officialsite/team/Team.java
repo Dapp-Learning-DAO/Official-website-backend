@@ -20,7 +20,7 @@ public class Team {
     private String teamName;
     //团队简介
     private String teamProfile;
-    //管理员
+    //管理员,这是存的是钱包地址
     private String administrator;
 
     // dao admin , core contributor,  builder
