@@ -163,7 +163,10 @@ public class TeamController {
             throw new BizException(CodeEnums.NOT_DELETE_TEAM.getCode(),
                 CodeEnums.NOT_DELETE_TEAM.getMsg()) ;
         }
-        teamService.checkMemberIsAdmin(address);
+        if (!teamService.checkMemberIsAdmin(address)) {
+            throw new BizException(CodeEnums.NOT_THE_SUPER_ADMIN.getCode(),
+                CodeEnums.NOT_THE_SUPER_ADMIN.getMsg()) ;
+        }
         teamService.delete(teamId);
 
         return BaseResponse.successWithData(null);
