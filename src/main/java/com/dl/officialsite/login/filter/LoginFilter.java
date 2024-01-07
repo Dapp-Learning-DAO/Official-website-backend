@@ -79,10 +79,10 @@ public class LoginFilter extends OncePerRequestFilter {
             SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
             UserPrincipleData userPrinciple = new UserPrincipleData();
 
-//            if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
-//                dumpForbidden(response);
-//                return;
-//            }
+            if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
+                dumpForbidden(response);
+                return;
+            }
             userPrinciple.setAddress(sessionUserInfo.getAddress());
             List<TeamMember> teams = loadTeams(sessionUserInfo.getAddress());
             userPrinciple.setTeams(teams);

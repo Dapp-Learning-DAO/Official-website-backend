@@ -32,6 +32,8 @@ replay_pid*
 build
 gradle.properties
 
+application-hsy.yml
+
 
 .idea
 *.iml

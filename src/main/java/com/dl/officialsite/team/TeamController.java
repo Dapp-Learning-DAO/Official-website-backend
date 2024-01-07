@@ -83,6 +83,13 @@ public class TeamController {
         return BaseResponse.successWithData(null);
     }
 
+    @PostMapping("/exit/admin")
+    @Auth("admin")
+    BaseResponse exitByAdmin(@RequestBody TeamMemberJoinVO teamMember, @RequestParam String address) {
+        teamService.exit(teamMember, address );
+        return BaseResponse.successWithData(null);
+    }
+
     /**
      * 审批加入团队
      */
