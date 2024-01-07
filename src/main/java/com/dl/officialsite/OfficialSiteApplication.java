@@ -24,5 +24,3 @@ public class OfficialSiteApplication {
 		return Credentials.create("1");
 	}
 }
-
-

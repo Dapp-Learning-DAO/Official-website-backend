@@ -1,7 +1,6 @@
 package com.dl.officialsite.team;
 
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -15,7 +14,6 @@ import com.dl.officialsite.team.teammember.TeamMemberRepository;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
-import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.util.ArrayList;
 import java.util.List;
@@ -366,5 +364,13 @@ public class TeamService {
             return true;
         }
         return false;
+    }
+
+    public void delete(Long teamId) {
+        teamRepository.deleteById(teamId);
+    }
+
+    public void deleteTeamMember(Long teamId) {
+        teamMemberRepository.deleteByTeamId(teamId);
     }
 }
