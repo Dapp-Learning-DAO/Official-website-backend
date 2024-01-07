@@ -292,7 +292,7 @@ public class TeamService {
         }
         // id 0
         List<Long> adminMembers = teamMemberRepository.findByTeamId(1L);
-           if(adminMembers.contains(member)) {
+           if(adminMembers.contains(member.getId())) {
                return true;
         }
            return false;
