@@ -14,7 +14,12 @@ VALUES
 
 INSERT INTO team_member(member_id, status, team_id)
 VALUES
-(1，0， 1);
+(1，0， 1),
+(1，0， 2),
+(1，0， 3),
+(1，0， 4),
+(1，0， 5);
+
 
 INSERT INTO sponsor(company, link, icon)
 VALUES
