@@ -1,7 +1,6 @@
 package com.dl.officialsite.team;
 
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -15,7 +14,6 @@ import com.dl.officialsite.team.teammember.TeamMemberRepository;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
-import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.util.ArrayList;
 import java.util.List;
@@ -292,10 +290,29 @@ public class TeamService {
         }
         // id 0
         List<Long> adminMembers = teamMemberRepository.findByTeamId(1L);
-           if(adminMembers.contains(member)) {
+           if(adminMembers.contains(member.getId())) {
                return true;
         }
            return false;
+    }
+
+    /**
+     * 检查是否为超级管理员
+     */
+    public boolean checkMemberIsSuperAdmin(String address) {
+
+        Member member =  memberService.getMemberByAddress(address);
+        if(member == null) {
+            return false;
+        }
+        // id 0
+        Team team = teamRepository.findById(1L).orElseThrow(() -> new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
+            CodeEnums.TEAM_NOT_EXIST.getMsg()));
+        String admin = team.getAdministrator();
+        if(admin.equals(address)) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -366,5 +383,15 @@ public class TeamService {
             return true;
         }
         return false;
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void delete(Long teamId) {
+        teamRepository.deleteById(teamId);
+        this.deleteTeamMember(teamId);
+    }
+
+    public void deleteTeamMember(Long teamId) {
+        teamMemberRepository.deleteByTeamId(teamId);
     }
 }

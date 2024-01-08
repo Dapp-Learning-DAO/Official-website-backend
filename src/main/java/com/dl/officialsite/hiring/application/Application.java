@@ -25,7 +25,9 @@ public class Application {
 
     private Long hiringId ;
 
-    private Long memeberId;
+    private Long memberId;
+
+    private Integer status;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

@@ -45,11 +45,18 @@ public class ApplicationController {
      */
     @GetMapping("/list")
     public BaseResponse applyList(@RequestParam Long memberId,
+                                  @RequestParam String address,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Page<HiringVO> page = applicationService.applyList(memberId, pageable);
         return BaseResponse.successWithData(page);
+    }
+
+    @GetMapping("/status/member")
+    public BaseResponse memberStatus(@RequestParam Long memberId, @RequestParam Long hireId,  @RequestParam String address) {
+         Application application   = applicationService.findByMemberIdAndHireId(memberId, hireId);
+        return BaseResponse.successWithData(application);
     }
 
 

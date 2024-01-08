@@ -9,12 +9,18 @@ VALUES
 ("Dapp-Learning DAO  builders", "Those who are willing to participate in the community and make outstanding contributions to community building", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 1),
 ("Dapp-Learning DAO PR reviewers", "Responsible for review  PR of our repository", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 2),
 ("Dapp-Learning DAO sharing group", "sharing in Dapp-Learning and earn reward", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 3),
-("Dapp-Learning DAO translation group", "Translate blockchain-related documents ", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 4);
+("Dapp-Learning DAO translation group", "Translate blockchain-related documents ", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 4),
+("Hiring Team", "Hiring ", "0x1F7b953113f4dFcBF56a1688529CC812865840e1", 5);
 
 
 INSERT INTO team_member(member_id, status, team_id)
 VALUES
-(1，0， 1);
+(1，0， 1),
+(1，0， 2),
+(1，0， 3),
+(1，0， 4),
+(1，0， 5);
+
 
 INSERT INTO sponsor(company, link, icon)
 VALUES
