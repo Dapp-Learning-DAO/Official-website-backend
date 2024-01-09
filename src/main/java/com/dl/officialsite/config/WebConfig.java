@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setCookieName("JSESSIONID");
+       // serializer.setCookieName("JSESSIONID");
         serializer.setCookiePath("/");
         //serializer.setDomainNamePattern(".dapplearning.org");
         serializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$");
