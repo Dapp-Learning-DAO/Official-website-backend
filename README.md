@@ -61,3 +61,4 @@ https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/{uuid}
 - session filter:  https://blog.csdn.net/dothetrick/article/details/110356640
 - cos： https://cloud.tencent.com/developer/article/1559746
 - cos download: https://blog.csdn.net/qq_43960768/article/details/126731733 
+- twitter: https://rohankadam965.medium.com/how-to-implement-oauth-social-login-using-twitter-spring-boot-java-part-2-acff7f4b255a
