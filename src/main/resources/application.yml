@@ -23,15 +23,15 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5Dialect
   mail:
-    host: smtp.163.com
-    port: 465
+    host: ${SMTP_SERVER:smtp.gmail.com}
+    port: ${SMTP_SERVER_PORT:587}
     username: ${MAIL_ADDRESS}
     password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
-          ssl:
+          starttls:
             enable: true
   session:
     store-type: jdbc
