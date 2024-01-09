@@ -6,6 +6,7 @@ server:
     session:
       timeout: 60m
       cookie:
+        domain: .dapplearning.org
         max-age: -1
 spring:
   datasource:
