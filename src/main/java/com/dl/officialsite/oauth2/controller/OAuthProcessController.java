@@ -163,7 +163,7 @@ public class OAuthProcessController {
             throw new RuntimeException("Failed to get access token id ");
         }
         String accessToken = accessTokenResponse.getAccessToken();
-        log.info("access token received");
+        log.info("access token received: {}", accessToken);
         return BaseResponse.successWithData(accessToken);
         /**
          * 3. Get user info via access_token
