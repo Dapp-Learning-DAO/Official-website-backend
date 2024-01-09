@@ -10,22 +10,21 @@ import org.springframework.web.util.CookieGenerator;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Bean
-    public CookieGenerator cookieGenerator() {
-        CookieGenerator cookieGenerator = new CookieGenerator();
-        cookieGenerator.setCookieDomain(".dapplearning.org");
-        //cookieGenerator.setCookieName("cookieName");
-        cookieGenerator.setCookieMaxAge(  2 * 60 * 60); // 7 days
-        // Additional configurations
-        return cookieGenerator;
-    }
+//    @Bean
+//    public CookieGenerator cookieGenerator() {
+//        CookieGenerator cookieGenerator = new CookieGenerator();
+//        cookieGenerator.setCookieDomain(".dapplearning.org");
+//        //cookieGenerator.setCookieName("cookieName");
+//        cookieGenerator.setCookieMaxAge(  2 * 60 * 60); // 7 days
+//        // Additional configurations
+//        return cookieGenerator;
+//    }
 
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setCookieName("SESSION");
         serializer.setCookiePath("/");
-        //serializer.setDomainNamePattern(".dapplearning.org");
         serializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$");
        // serializer.setDomainNamePattern("^.+?\\.dapplearning\\.org$");
         return serializer;
