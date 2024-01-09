@@ -164,24 +164,26 @@ public class OAuthProcessController {
         }
         String accessToken = accessTokenResponse.getAccessToken();
         log.info("access token received");
+        return BaseResponse.successWithData(accessToken);
         /**
          * 3. Get user info via access_token
          */
-        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
-        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
-        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
-        log.info("user info {}", userInfo.getUsername());
-        Assert.notNull(userInfo, "failed to find userInfo");
+//        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
+//        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
+//        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
+//        log.info("user info {}", userInfo.getUsername());
+//        Assert.notNull(userInfo, "failed to find userInfo");
         /**
          * 4. Bind userInfo
          */
-        IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
-        Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
 
-        bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
-
-        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
-        return BaseResponse.successWithData(userInfo.getUsername());
+//        IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
+//        Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
+//
+//        bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
+//
+//        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
+//        return BaseResponse.successWithData(userInfo.getUsername());
     }
 
     @GetMapping("username/{registrationId}")
