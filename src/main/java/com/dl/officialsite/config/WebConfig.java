@@ -2,6 +2,8 @@ package com.dl.officialsite.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.CookieGenerator;
 
@@ -16,6 +18,16 @@ public class WebConfig implements WebMvcConfigurer {
         cookieGenerator.setCookieMaxAge(  2 * 60 * 60); // 7 days
         // Additional configurations
         return cookieGenerator;
+    }
+
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setCookieName("JSESSIONID");
+        serializer.setCookiePath("/");
+        serializer.setDomainName(".dapplearning.org");
+       // serializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$");
+        return serializer;
     }
 
     // Other configurations if needed
