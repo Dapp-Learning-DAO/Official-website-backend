@@ -63,6 +63,11 @@ oauth:
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user
+    twitter:
+      clientId:  "${TWITTER_CLIENT_KEY}"
+      clientSecret:  "${TWITTER_CLIENT_SECRET}"
+
+
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看

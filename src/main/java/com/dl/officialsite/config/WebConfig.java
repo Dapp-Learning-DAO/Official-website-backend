@@ -23,6 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        //JSESSIONID
         serializer.setCookieName("SESSION");
         serializer.setCookiePath("/");
         serializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$");
