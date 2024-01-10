@@ -23,6 +23,8 @@ public class Team {
     //管理员,这是存的是钱包地址
     private String administrator;
 
+    private String link;
+
     // dao admin , core contributor,  builder
     private int authority;
 

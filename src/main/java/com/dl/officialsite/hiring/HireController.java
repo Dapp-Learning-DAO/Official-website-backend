@@ -33,17 +33,17 @@ public class HireController {
     private HireService hireService;
 
     /**
-     * 添加简历
+     * 添加招聘
      */
     @PostMapping
-    @Auth("admin")
+    //@Auth("admin")
     public BaseResponse add(@RequestParam String address,@RequestBody HiringVO hiringVO) {
-        HiringVO hiringVO1 = hireService.add(hiringVO);
+        HiringVO hiringVO1 = hireService.add(hiringVO, address);
         return BaseResponse.successWithData(hiringVO1);
     }
 
     /**
-     * 修改简历
+     * 修改招聘
      */
     @PutMapping
     public BaseResponse update(@RequestParam String address,@RequestBody HiringVO hiringVO) {
@@ -52,11 +52,11 @@ public class HireController {
     }
 
     /**
-     * 删除简历
+     * 删除招聘
      */
 
     /**
-     * 查询简历详情
+     * 查询招聘详情
      */
     @GetMapping
     public BaseResponse detail(@RequestParam String address,@RequestParam Long id) {
@@ -65,7 +65,7 @@ public class HireController {
     }
 
     /**
-     * 查询所有简历
+     * 查询所有招聘
      */
     @GetMapping("/all")
     public BaseResponse all(@RequestParam String address,
@@ -77,7 +77,7 @@ public class HireController {
     }
 
     /**
-     * 按照类型查看简历
+     * 按照类型查看招聘
      */
     @GetMapping("/type")
     public BaseResponse all(@RequestParam String address,@RequestParam List<String> skills) {
