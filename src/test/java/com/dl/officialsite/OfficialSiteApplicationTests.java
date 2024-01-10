@@ -27,8 +27,9 @@ class OfficialSiteApplicationTests {
 
 
 	//Send a composed mail
-		emailService.sendSimpleMessage("342398690@qq.com", "Test Subject1", "Testing body11");
-
+		logger.info("---------");
+		emailService.sendSimpleMessage("411497616@qq.com", "Test Subject1", "Testing body11");
+		logger.info("--------- message send");
 	//Send a pre-configured mail
 		//emailService.sendPreConfiguredMail("Exception occurred everywhere.. where are you ????");
 	}
