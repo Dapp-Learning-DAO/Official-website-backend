@@ -372,6 +372,9 @@ public class TeamService {
             if(team.getTeamProfile()!=null) {
                 teamdb.setTeamProfile(team.getTeamProfile());
             }
+            if(team.getLink()!=null) {
+                teamdb.setLink(team.getLink());
+            }
             teamRepository.save(teamdb);
         }
 
