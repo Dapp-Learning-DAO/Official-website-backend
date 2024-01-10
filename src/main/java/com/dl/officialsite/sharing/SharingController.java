@@ -59,8 +59,9 @@ public class SharingController {
     public BaseResponse loadSharing(@RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
                                     @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
 
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("date").descending().and(Sort.by("time").descending()).and(Sort.by("id").descending()));
-        return BaseResponse.successWithData(this.sharingService.findAll(pageable));
+//        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("date").descending().and(Sort.by("time").descending()).and(Sort.by("id").descending()));
+//        return BaseResponse.successWithData(this.sharingService.findAll(pageable));
+        return BaseResponse.successWithData(this.sharingService.findAll(pageNo,pageSize));
     }
 
     /**

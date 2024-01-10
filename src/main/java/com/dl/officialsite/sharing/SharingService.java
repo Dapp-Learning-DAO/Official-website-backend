@@ -136,7 +136,16 @@ public class SharingService  {
         return resp;
     }
 
-    public Page<Share> findAll(Pageable pageable) {
-       return  sharingRepository.findAll(pageable);
+    public PagedList<Share> findAll(int pageNo, int pageSize) {
+        int offset  = (pageNo - 1)*pageSize;
+        int totalCount = this.sharingRepository.loadAllCount();
+        int totalPages =(totalCount + pageSize - 1) / pageSize;
+        List<Share> items = this.sharingRepository.findAllSharesPaged(offset, pageSize);
+
+        //  SharingByUserResp resp = new SharingByUserResp();
+        PagedList resp = new PagedList(items ,new Pagination(totalCount, totalPages, pageNo, items.size(), pageNo < totalPages));
+
+
+        return resp;
     }
 }
