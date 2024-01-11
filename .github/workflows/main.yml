@@ -48,15 +48,16 @@ jobs:
         run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest
 
       - name: SSH login to server and restart service on DEV server
         uses: appleboy/ssh-action@master
         if: contains(github.ref, 'dev')
         with:
-          host: ${{ vars.DEV_SERVER_HOST }} #服务器ip地址
-          username: ${{ vars.DEV_SERVER_USERNAME }} #服务器ssh用户名
-          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }} #服务器ssh私钥
-          port: ${{ vars.DEV_PORT }} # 服务器ssh端口（默认22）
+          host: ${{ vars.DEV_SERVER_HOST }}
+          username: ${{ vars.DEV_SERVER_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          port: ${{ vars.DEV_PORT }}
           script: |
             cd /root/Official-website-backend
             docker compose pull 
@@ -66,12 +67,13 @@ jobs:
         uses: appleboy/ssh-action@master
         if: startsWith(github.ref, 'refs/tags/v')
         with:
-          host: ${{ vars.PROD_SERVER_HOST }} #服务器ip地址
-          username: ${{ vars.PROD_SERVER_USERNAME }} #服务器ssh用户名
-          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }} #服务器ssh私钥
-          port: ${{ vars.PROD_PORT }} # 服务器ssh端口（默认22）
+          host: ${{ vars.PROD_SERVER_HOST }}
+          username: ${{ vars.PROD_SERVER_USERNAME }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          port: ${{ vars.PROD_PORT }}
           script: |
             cd /data/Official-website-backend-prepare-harry
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest
-            docker-compose down && docker-compose up -d
+            echo "Exec docker-compose down && docker-compose up -d in $(PWD)"
+#            docker-compose down && docker-compose up -d
