@@ -29,10 +29,11 @@ jobs:
             echo "BRANCH_OR_TAG_NAME=dev" >> $GITHUB_ENV
           else
             echo "Build production release for tag ${{ github.ref }}"
+            TAG_NAME=${GITHUB_REF#refs/*/}
             echo "RUN_ENV=prod" >> $GITHUB_ENV
-            echo "TAG_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-            echo "DOCKER_IMAGE_VERSION=$TAG_NAME"
-            echo "BRANCH_OR_TAG_NAME=$TAG_NAME"
+            echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+            echo "DOCKER_IMAGE_VERSION=${TAG_NAME}" >> $GITHUB_ENV
+            echo "BRANCH_OR_TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
           fi
 
       - name: Display current branch
