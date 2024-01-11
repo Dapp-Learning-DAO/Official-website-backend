@@ -64,6 +64,7 @@ jobs:
           username: ${{ vars.DEV_SERVER_USERNAME }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           port: ${{ vars.DEV_PORT }}
+          envs: DOCKER_USERNAME,DOCKER_IMAGE_NAME,RUN_ENV
           script: |
             cd /root/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
@@ -83,7 +84,7 @@ jobs:
           username: ${{ vars.PROD_SERVER_USERNAME }}
           key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           port: ${{ vars.PROD_PORT }}
-          envs: DOCKER_USERNAME,DOCKER_IMAGE_NAME,DOCKER_IMAGE_VERSION
+          envs: DOCKER_USERNAME,DOCKER_IMAGE_NAME,RUN_ENV
           script: |
             cd /data/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
