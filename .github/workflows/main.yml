@@ -72,7 +72,7 @@ jobs:
           key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           port: ${{ vars.PROD_PORT }}
           script: |
-            cd /data/Official-website-backend-prepare-harry
+            cd /data/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest
             echo "Exec docker-compose down && docker-compose up -d in $(PWD)" > deploy.txt
