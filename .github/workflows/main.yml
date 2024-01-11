@@ -75,5 +75,5 @@ jobs:
             cd /data/Official-website-backend-prepare-harry
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest
-            echo "Exec docker-compose down && docker-compose up -d in $(PWD)"
+            echo "Exec docker-compose down && docker-compose up -d in $(PWD)" > deploy.txt
 #            docker-compose down && docker-compose up -d
