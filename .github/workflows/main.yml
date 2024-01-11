@@ -43,13 +43,13 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION .
-          docker tag $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
+          docker tag $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
 
       - name: Push Docker image to registry
         run: |
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
 
       - name: SSH login to server and restart service on DEV server
         uses: appleboy/ssh-action@master
@@ -61,7 +61,7 @@ jobs:
           port: ${{ vars.DEV_PORT }}
           script: |
             cd /root/Official-website-backend
-            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
             docker-compose down && docker-compose up -d
 
       - name: SSH login to server and restart service on PROD server
@@ -74,7 +74,7 @@ jobs:
           port: ${{ vars.PROD_PORT }}
           script: |
             cd /data/Official-website-backend
-            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest
-            echo "Exec docker-compose down && docker-compose up -d in $(PWD)" > deploy.txt
+            echo "docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION" >> deploy.txt
+            echo "docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest" >> deploy.txt
+            echo "Exec docker-compose down && docker-compose up -d in `PWD`" >> deploy.txt
 #            docker-compose down && docker-compose up -d
