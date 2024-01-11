@@ -74,7 +74,7 @@ jobs:
           port: ${{ vars.PROD_PORT }}
           script: |
             cd /data/Official-website-backend
-            echo "docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION" >> deploy.txt
-            echo "docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest" >> deploy.txt
-            echo "Exec docker-compose down && docker-compose up -d in `PWD`" >> deploy.txt
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:prod-latest
+            echo "Exec docker-compose down && docker-compose up -d in `pwd`" >> deploy.txt
 #            docker-compose down && docker-compose up -d
