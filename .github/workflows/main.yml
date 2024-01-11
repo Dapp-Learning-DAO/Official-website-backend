@@ -15,7 +15,6 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      DOCKER_IMAGE_VERSION: dev-latest
       DOCKER_IMAGE_NAME: dl-official-website-backend
 
     steps:
