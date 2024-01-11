@@ -42,6 +42,7 @@ public class RewardService {
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
     //@Scheduled(cron = "0 0/2 * * * ? ")
+    @Scheduled(cron = "*/20 * * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : new String[]{"10", "11155111"}) {
