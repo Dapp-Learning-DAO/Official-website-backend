@@ -89,5 +89,5 @@ jobs:
             cd /data/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
-            echo "Exec docker-compose down && docker-compose up -d in `pwd`" >> deploy.txt
+            echo "Exec docker-compose down && docker-compose up -d in $(pwd) on $(date +'%Y-%m-%d %H:%M:%S')" > deploy.txt
 #            docker-compose down && docker-compose up -d
