@@ -35,14 +35,14 @@ public class RedPacketService {
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
    // @Scheduled(cron = "0 0/1 * * * ? ")
-   // @Scheduled(cron = "*/20 * * * * ? ")
+   @Scheduled(cron = "*/20 * * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : new String[]{"10", "11155111"}) {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 15));
+                //log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 15));
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");

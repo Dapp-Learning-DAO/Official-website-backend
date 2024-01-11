@@ -21,7 +21,7 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
   scp ./dist/apps/dl.jar  root@ip:/root/Official-website-backend/dist/apps
 
 ```
-
+42090FB96DF8B814C12CAEA86A62103BEFDA22A3263641D139E56E1498EBCE0B
 ## IPFS data
 /root/graph-node/docker/data/ipfs
 
@@ -29,7 +29,8 @@ https://github.com/spruceid/siwe-go/blob/main/message.go
 https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/{uuid}
 
 ## graph ql 集成
-"https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest"
+生产 ：https://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest
+测试： https://api.studio.thegraph.com/proxy/55957/redpacket-/version/latest/graphql
 
 ```agsl
 {
