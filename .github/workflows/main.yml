@@ -68,8 +68,8 @@ jobs:
         uses: appleboy/ssh-action@master
         if: startsWith(github.ref, 'refs/tags/v')
         env:
-          DOCKER_USERNAME: ${DOCKER_USERNAME}
-          DOCKER_IMAGE_NAME: ${DOCKER_IMAGE_NAME}
+          DOCKER_USERNAME: ${{env.DOCKER_USERNAME}}
+          DOCKER_IMAGE_NAME: ${{env.DOCKER_IMAGE_NAME}}
         with:
           host: ${{ vars.PROD_SERVER_HOST }}
           username: ${{ vars.PROD_SERVER_USERNAME }}
