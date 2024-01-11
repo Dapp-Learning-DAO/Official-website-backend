@@ -67,7 +67,7 @@ jobs:
           script: |
             cd /root/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
             docker-compose down && docker-compose up -d
 
       - name: SSH login to server and restart service on PROD server
@@ -87,6 +87,6 @@ jobs:
           script: |
             cd /data/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
             echo "Exec docker-compose down && docker-compose up -d in `pwd`" >> deploy.txt
 #            docker-compose down && docker-compose up -d
