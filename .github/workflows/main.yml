@@ -66,12 +66,17 @@ jobs:
 
       - name: SSH login to server and restart service on PROD server
         uses: appleboy/ssh-action@master
+        env:
+          DOCKER_USERNAME: ${{github.DOCKER_USERNAME}}
+          DOCKER_IMAGE_NAME: ${{github.DOCKER_IMAGE_NAME}}
+          DOCKER_IMAGE_VERSION: ${{ github.DOCKER_IMAGE_VERSION}}
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           host: ${{ vars.PROD_SERVER_HOST }}
           username: ${{ vars.PROD_SERVER_USERNAME }}
           key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           port: ${{ vars.PROD_PORT }}
+          allenvs: true
           script: |
             cd /data/Official-website-backend
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
