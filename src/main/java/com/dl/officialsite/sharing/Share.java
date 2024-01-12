@@ -80,7 +80,7 @@ public class Share {
     /**
      * 文档连接
      */
-    @Column(name = "sharing_doc",length = 128)
+    @Column(name = "sharing_doc",columnDefinition = "TEXT")
     private String sharingDoc;
 
     /**
@@ -101,9 +101,13 @@ public class Share {
     @Column(name = "meeting_type", nullable = false)
     private int meetingType = SharingMeetingType.TENCENT.getCode();
 
-    //unclaim, claimed, timeout
+    //wating, claimable, claimed, timeout
     @Column(name = "reward_status")
     private Integer rewardStatus;
+
+
+    @Column(name = "reward_amount")
+    private Integer rewardAmount;
 
     @Column(name = "meeting_id")
     private String meetingId;

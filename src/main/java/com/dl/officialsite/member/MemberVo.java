@@ -35,4 +35,8 @@ public class MemberVo {
     private int shareCount;
     private String resume;
     private Long workStatus;
+
+    private Integer githubStatus;
+
+    private Integer twitterStatus;
 }

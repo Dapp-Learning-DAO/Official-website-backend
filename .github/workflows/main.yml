@@ -1,39 +1,93 @@
-name: Official Backend CICD
+name: Deploy Official-website-backend to dev/prod Server
 
 on:
   push:
-    # 分支
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - dev
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  build:
-    if: |
-      github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch'
+  deployment:
     runs-on: ubuntu-latest
-    name: Building background
+    environment: dl-backend-env
+
+    env:
+      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_IMAGE_NAME: dl-official-website-backend
+
     steps:
-      - run: |
-          echo Build is triggered
-      - name: deploy_app #开始部署
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set environment variables based on branch or tag
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            echo "DOCKER_IMAGE_VERSION=dev-latest" >> $GITHUB_ENV
+            echo "RUN_ENV=dev" >> $GITHUB_ENV
+            echo "BRANCH_OR_TAG_NAME=dev" >> $GITHUB_ENV
+          else
+            echo "Build production release for tag ${{ github.ref }}"
+            TAG_NAME=${GITHUB_REF#refs/*/}
+            echo "RUN_ENV=prod" >> $GITHUB_ENV
+            echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+            echo "DOCKER_IMAGE_VERSION=${TAG_NAME}" >> $GITHUB_ENV
+            echo "BRANCH_OR_TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          fi
+
+      - name: Display current branch
+        run: |
+          echo "Current build is on $BRANCH_OR_TAG_NAME"
+
+      - name: Build Docker image
+        run: |
+          docker build -t $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION .
+          docker tag $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
+
+      - name: Push Docker image to registry
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+          docker push $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:${RUN_ENV}-latest
+
+      - name: SSH login to server and restart service on DEV server
         uses: appleboy/ssh-action@master
+        if: contains(github.ref, 'dev')
+        env:
+          DOCKER_USERNAME: ${{env.DOCKER_USERNAME}}
+          DOCKER_IMAGE_NAME: ${{env.DOCKER_IMAGE_NAME}}
+          DOCKER_IMAGE_VERSION: ${{env.DOCKER_IMAGE_VERSION}}
+          RUN_ENV: ${{env.RUN_ENV}}
         with:
-          host: ${{ secrets.HOST }} #服务器ip地址
-          username: ${{ secrets.USERNAME }} #服务器ssh用户名
-          password: ${{ secrets.PASSWORD }} #服务器ssh密码
-          port: ${{ secrets.PORT }} # 服务器ssh端口（默认22）
+          host: ${{ vars.DEV_SERVER_HOST }}
+          username: ${{ vars.DEV_SERVER_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          port: ${{ vars.DEV_PORT }}
+          envs: DOCKER_USERNAME,DOCKER_IMAGE_NAME,DOCKER_IMAGE_VERSION,RUN_ENV
           script: |
             cd /root/Official-website-backend
-            rm -rf dist
-            git pull
-            bash ./gradlew build -x test
-            cd dist
-            export DBPWD=${{secrets.SPRING_DATASOURCE_PASSWORD}}
-            export SECRET_ID=${{secrets.SECRETID}}
-            export SECRET_KEY=${{secrets.SECRETKEY}}
-            export BUCKET_NAME=${{secrets.BUCKETNAME}}
-            export REGION_NAME=${{secrets.REGIONNAME}}
-            bash stop.sh
-            bash start.sh
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
+            docker-compose down && docker-compose up -d
 
+      - name: SSH login to server and restart service on PROD server
+        uses: appleboy/ssh-action@master
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          DOCKER_USERNAME: ${{env.DOCKER_USERNAME}}
+          DOCKER_IMAGE_NAME: ${{env.DOCKER_IMAGE_NAME}}
+          DOCKER_IMAGE_VERSION: ${{env.DOCKER_IMAGE_VERSION}}
+          RUN_ENV: ${{env.RUN_ENV}}
+        with:
+          host: ${{ vars.PROD_SERVER_HOST }}
+          username: ${{ vars.PROD_SERVER_USERNAME }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          port: ${{ vars.PROD_PORT }}
+          envs: DOCKER_USERNAME,DOCKER_IMAGE_NAME,DOCKER_IMAGE_VERSION,RUN_ENV
+          script: |
+            cd /data/Official-website-backend
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+            docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
+            echo "Exec docker-compose down && docker-compose up -d in $(pwd) on $(date +'%Y-%m-%d %H:%M:%S')" > deploy.txt
+#            docker-compose down && docker-compose up -d

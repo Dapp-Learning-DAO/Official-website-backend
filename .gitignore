@@ -12,8 +12,6 @@
 .gitignore
 ./src/main/resources/
 
-src/main/resources/application-dev.yml
-
 HappyRedPacket.java
 
 # Package Files #
@@ -33,6 +31,9 @@ replay_pid*
 .gradle
 build
 gradle.properties
+
+application-local.yml
+README-Local.md
 
 
 .idea

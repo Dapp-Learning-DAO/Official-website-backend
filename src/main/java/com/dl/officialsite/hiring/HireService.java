@@ -19,6 +19,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Predicate;
+
+import com.dl.officialsite.member.MemberService;
+import com.dl.officialsite.member.MemberWithTeam;
+import com.dl.officialsite.team.Team;
+import com.dl.officialsite.team.vo.TeamsWithMembers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +58,27 @@ public class HireService {
     @Autowired
     private EmailService emailService;
 
+
+    @Autowired
+    private MemberService memberService;
     /**
      * 新增岗位
      * @param hiringVO
      * @return
      */
-    public HiringVO add(HiringVO hiringVO) {
+    public HiringVO add(HiringVO hiringVO, String address) {
+
+        //check in hiring team or in sharing team
+
+        MemberWithTeam memberWithTeam =  memberService.getMemberWithTeamInfoByAddress(address);
+        ArrayList<TeamsWithMembers> teams = memberWithTeam.getTeams();
+        List teamNames = teams.stream().map(x->x.getTeamName()).collect(Collectors.toList());
+        if(!teamNames.contains("Dapp-Learning DAO co-founders") && !teamNames.contains("Dapp-Learning DAO sharing group") && !teamNames.contains("Hiring Team")) {
+            throw new BizException("1001", "no permission");
+        }
+            //do nothing
+
+
         Hiring hiring = new Hiring();
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);

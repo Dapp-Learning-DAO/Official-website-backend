@@ -54,6 +54,9 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/share/delete");
     }} ;
 
+    private Set<String> noAddrCheckApis = new HashSet(){{
+       add("oauth2/bind/code/github");
+    }};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Login filter session id {}, request {}", request.getSession().getId(), request.getRequestURI());
@@ -64,28 +67,36 @@ public class LoginFilter extends OncePerRequestFilter {
                 return;
             }
 
-
-            String addressInHeader = request.getParameter("address");
-
-
             //Must login
             if(!HttpSessionUtils.isUserLogin(request.getSession())){
                 dumpError(response);
                 return;
             }
 
-            //Since logon, put a temporary user data
+            //Get user info from session
             SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(request.getSession());
-            UserPrincipleData userPrinciple = new UserPrincipleData();
 
-//            if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
-//                dumpForbidden(response);
-//                return;
-//            }
+
+            //Must check addr
+            boolean noCheckAddr = this.noAddrCheckApis.contains(uri);
+            log.info("{} noCheck {}", uri, noCheckAddr);
+
+            if(!noCheckAddr){
+//                String addressInHeader = request.getParameter("address");
+//                if(!sessionUserInfo.getAddress().equals(addressInHeader)) {
+//                    dumpForbidden(response);
+//                    return;
+//                }
+            }
+
+
+            //Since logon, put a temporary user data in the pipeline
+            UserPrincipleData userPrinciple = new UserPrincipleData();
             userPrinciple.setAddress(sessionUserInfo.getAddress());
             List<TeamMember> teams = loadTeams(sessionUserInfo.getAddress());
             userPrinciple.setTeams(teams);
             UserSecurityUtils.setPrincipleLogin(userPrinciple);
+
             filterChain.doFilter(request, response);
         }
         finally {

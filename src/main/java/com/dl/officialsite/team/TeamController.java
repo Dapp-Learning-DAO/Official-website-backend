@@ -1,6 +1,7 @@
 package com.dl.officialsite.team;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
@@ -8,15 +9,14 @@ import com.dl.officialsite.member.MemberService;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
-import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
-
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -83,6 +83,13 @@ public class TeamController {
         return BaseResponse.successWithData(null);
     }
 
+    @PostMapping("/exit/admin")
+    @Auth("admin")
+    BaseResponse exitByAdmin(@RequestBody TeamMemberJoinVO teamMember, @RequestParam String address) {
+        teamService.exit(teamMember, address );
+        return BaseResponse.successWithData(null);
+    }
+
     /**
      * 审批加入团队
      */
@@ -145,6 +152,24 @@ public class TeamController {
     BaseResponse getNeedApproveMembers(Long teamId, @RequestParam String address) {
         List<Member> members = teamService.getNeedApproveMembers(teamId);
         return BaseResponse.successWithData(members);
+    }
+
+    /**
+     * 删除Team
+     */
+    @DeleteMapping
+    BaseResponse delete(@RequestParam Long teamId, @RequestParam String address) {
+        if (teamId == 1L) {
+            throw new BizException(CodeEnums.NOT_DELETE_TEAM.getCode(),
+                CodeEnums.NOT_DELETE_TEAM.getMsg()) ;
+        }
+        if (!teamService.checkMemberIsSuperAdmin(address)) {
+            throw new BizException(CodeEnums.NOT_THE_SUPER_ADMIN.getCode(),
+                CodeEnums.NOT_THE_SUPER_ADMIN.getMsg()) ;
+        }
+        teamService.delete(teamId);
+
+        return BaseResponse.successWithData(null);
     }
 
 }

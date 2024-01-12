@@ -103,12 +103,11 @@ public class OAuthProcessController {
         String clientId = oAuthRegistration.getClientId();
         String responseType = AUTHORIZATION_CODE;
         String state = DEFAULT_STATE_GENERATOR.generateKey();
-        String redirectUri = expandRedirectUri(
-                registrationId,
-                request,
-                oAuthRegistration,
-                "bind");
-
+//        String redirectUri = expandRedirectUri(
+//                registrationId,
+//                request,
+//                oAuthRegistration,
+//                "bind");
 
 
         /**
@@ -118,7 +117,7 @@ public class OAuthProcessController {
                 .queryParam("client_id", clientId)
                 .queryParam("response_type", responseType)
                 .queryParam("state", state)
-                .queryParam("redirect_uri", redirectUri)
+//                .queryParam("redirect_uri", redirectUri)
                 .build();
         response.sendRedirect(uriComponents.toUriString());
 
@@ -164,22 +163,27 @@ public class OAuthProcessController {
             throw new RuntimeException("Failed to get access token id ");
         }
         String accessToken = accessTokenResponse.getAccessToken();
+        log.info("access token received: {}", accessToken);
+        return BaseResponse.successWithData(accessToken);
         /**
          * 3. Get user info via access_token
          */
-        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
-        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
-        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
-        Assert.notNull(userInfo, "failed to find userInfo");
+//        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
+//        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
+//        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
+//        log.info("user info {}", userInfo.getUsername());
+//        Assert.notNull(userInfo, "failed to find userInfo");
         /**
          * 4. Bind userInfo
          */
-        IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
-        Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
-        bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
 
-        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
-        return BaseResponse.successWithData(userInfo.getUsername());
+//        IOAuthBindHandler bindHandler = this.bindHandlers.get(registrationId);
+//        Assert.notNull(bindHandler, "bindHandler not found:"+registrationId);
+//
+//        bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
+//
+//        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
+//        return BaseResponse.successWithData(userInfo.getUsername());
     }
 
     @GetMapping("username/{registrationId}")

@@ -72,6 +72,9 @@ public class Member  implements Serializable
 
     //todo
     private Long workStatus;
+    private int githubStatus;
+
+    private int twitterStatus;
 
     //@PrivacyEncrypt(type= CUSTOMER)
     @JsonIgnore

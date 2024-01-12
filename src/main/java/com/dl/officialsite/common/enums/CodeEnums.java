@@ -31,9 +31,11 @@ public enum CodeEnums {
     TEAM_JOIN_APPLICATION_NOT_EXIST("1011", "team join application not exist"),
     //Sharing
     SHARING_NOT_FOUND("5001", "Sharing not found"),
-    SHARING_NOT_OWNER_OR_ADMIN("5002", "You are no sharing user or admin"),
+    SHARING_NOT_OWNER_OR_ADMIN("5002", "You are not sharing user or admin"),
 
-    SHARING_LOCKED("5003", "Sharing locked, please contact admin to unlock");
+    SHARING_LOCKED("5003", "Sharing locked, please contact admin to unlock"),
+
+    NOT_DELETE_TEAM("1019", "not delete admin team");
 
 
 

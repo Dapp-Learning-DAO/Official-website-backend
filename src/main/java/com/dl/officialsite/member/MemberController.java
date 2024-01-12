@@ -170,6 +170,12 @@ public class MemberController {
             if (member.getWorkStatus()!= null) {
                 _member.setWorkStatus(member.getWorkStatus());
             }
+            if (member.getGithubStatus() != null) {
+                _member.setGithubStatus(member.getGithubStatus());
+            }
+            if (member.getTwitterStatus() != null) {
+                _member.setTwitterStatus(member.getTwitterStatus());
+            }
             return BaseResponse.successWithData(memberService.save(_member));
         } else {
             return BaseResponse.failWithReason("1001","no user found");
