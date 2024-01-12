@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecificationExecutor<Share> {
 
-    @Query(value = "select * from share order by STR_TO_DATE(date,'%Y/%m/%d') desc,time desc,id desc limit :offset, :limit", nativeQuery = true)
+    @Query(value = "select * from share limit :offset, :limit", nativeQuery = true)
     List<Share> findAllSharesPaged(@Param("offset") int offset, @Param("limit") int limit);
 
     @Query(value = "select count(*) from share", nativeQuery = true)
