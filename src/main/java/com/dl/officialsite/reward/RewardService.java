@@ -49,7 +49,7 @@ public class RewardService {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                log.debug("response from the graph: chainId " + chainId + jsonResponse.substring(0, 20));
+                log.info("response from the graph: chainId " + chainId + jsonResponse.substring(0, 20));
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
