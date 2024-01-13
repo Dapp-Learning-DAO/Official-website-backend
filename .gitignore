@@ -49,3 +49,6 @@ README-Local.md
 /dist
 wallet/%
 node/*
+/gradleRepository
+/bin/main
+/.vscode/launch.json

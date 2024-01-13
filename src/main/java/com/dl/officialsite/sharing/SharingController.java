@@ -72,8 +72,7 @@ public class SharingController {
     }
 
     /**
-     * 查看用户的分享
-     */
+      */
     @GetMapping("user")
     public BaseResponse loadSharingByUser(@RequestParam("memberAddress") String memberAddress,
                                                              @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
