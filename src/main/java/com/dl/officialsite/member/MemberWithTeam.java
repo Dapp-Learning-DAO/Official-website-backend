@@ -2,17 +2,16 @@ package com.dl.officialsite.member;
 
 
 import com.dl.officialsite.team.Team;
-import com.dl.officialsite.team.vo.TeamsWithMembers;
-import lombok.*;
-
 import java.util.ArrayList;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class MemberWithTeam extends Member
 {
 
-    private ArrayList<TeamsWithMembers> teams;
+    private ArrayList<Team> teams;
 
     private boolean isAdmin;
 
