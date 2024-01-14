@@ -35,7 +35,9 @@ public enum CodeEnums {
 
     SHARING_LOCKED("5003", "Sharing locked, please contact admin to unlock"),
 
-    NOT_DELETE_TEAM("1019", "not delete admin team");
+    NOT_DELETE_TEAM("1019", "not delete admin team"),
+
+    INVALID_MEMBER("1023", "member is invalid");
 
 
 
