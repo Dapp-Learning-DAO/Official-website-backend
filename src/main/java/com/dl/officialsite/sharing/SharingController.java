@@ -58,9 +58,7 @@ public class SharingController {
     @GetMapping("all")
     public BaseResponse loadSharing(@RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
                                     @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
-
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("date").descending().and(Sort.by("time").descending()).and(Sort.by("id").descending()));
-        return BaseResponse.successWithData(this.sharingService.findAll(pageable));
+        return BaseResponse.successWithData(this.sharingService.findAll(pageNo,pageSize));
     }
 
     /**
@@ -74,8 +72,7 @@ public class SharingController {
     }
 
     /**
-     * 查看用户的分享
-     */
+      */
     @GetMapping("user")
     public BaseResponse loadSharingByUser(@RequestParam("memberAddress") String memberAddress,
                                                              @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
