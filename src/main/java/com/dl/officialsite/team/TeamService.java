@@ -160,7 +160,7 @@ public class TeamService {
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员" + member1.getNickName() + "加入申请";
+                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
                     String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
@@ -188,7 +188,7 @@ public class TeamService {
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员" + member1.getNickName() + "加入申请";
+                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
                     String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
@@ -362,6 +362,9 @@ public class TeamService {
             }
             if (team.getTeamProfile() != null) {
                 teamdb.setTeamProfile(team.getTeamProfile());
+            }
+            if(team.getLink()!=null) {
+                teamdb.setLink(team.getLink());
             }
             teamRepository.save(teamdb);
         }
