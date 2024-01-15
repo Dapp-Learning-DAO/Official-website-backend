@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.SignatureException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.web3j.crypto.Sign.getEthereumMessageHash;
 import static org.web3j.utils.Numeric.hexStringToByteArray;
@@ -118,6 +117,19 @@ public class LoginController {
 
     @GetMapping("/check-session")
     public BaseResponse checkSessionStatus( HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+        List<String> domains = new ArrayList<>();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                String domain = cookie.getDomain();
+                if (domain != null && !domain.isEmpty()) {
+                    logger.info("domains: "+ domain);
+                    domains.add(domain);
+                }
+            }
+        }
 
         if (request.isRequestedSessionIdValid()) {
 
