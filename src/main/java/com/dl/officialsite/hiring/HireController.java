@@ -2,7 +2,6 @@ package com.dl.officialsite.hiring;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.hiring.vo.HiringVO;
-import com.dl.officialsite.login.Auth;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
