@@ -11,6 +11,9 @@ import com.dl.officialsite.hiring.vo.HiringVO;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+import com.dl.officialsite.member.MemberService;
+import com.dl.officialsite.member.MemberWithTeam;
+import com.dl.officialsite.team.Team;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Predicate;
-
-import com.dl.officialsite.member.MemberService;
-import com.dl.officialsite.member.MemberWithTeam;
-import com.dl.officialsite.team.Team;
-import com.dl.officialsite.team.vo.TeamsWithMembers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +56,6 @@ public class HireService {
     @Autowired
     private EmailService emailService;
 
-
     @Autowired
     private MemberService memberService;
     /**
@@ -71,8 +68,8 @@ public class HireService {
         //check in hiring team or in sharing team
 
         MemberWithTeam memberWithTeam =  memberService.getMemberWithTeamInfoByAddress(address);
-        ArrayList<TeamsWithMembers> teams = memberWithTeam.getTeams();
-        List teamNames = teams.stream().map(x->x.getTeamName()).collect(Collectors.toList());
+        ArrayList<Team> teams = memberWithTeam.getTeams();
+        List teamNames = teams.stream().map(Team::getTeamName).collect(Collectors.toList());
         if(!teamNames.contains("Dapp-Learning DAO co-founders") && !teamNames.contains("Dapp-Learning DAO sharing group") && !teamNames.contains("Hiring Team")) {
             throw new BizException("1001", "no permission");
         }
