@@ -52,11 +52,11 @@ public class LoginController {
                 if (domain != null && !domain.isEmpty()) {
                     logger.info("domains: "+ domain);
                     domains.add(domain);
-                    if(cookie.getDomain().equals("dapplearning.org")){
-                        cookie.setMaxAge(0);
-                        cookie.setPath("/");
-                        response.addCookie(cookie);
-                    }
+//                    if(cookie.getDomain().equals("dapplearning.org")){
+//                        cookie.setMaxAge(0);
+//                        cookie.setPath("/");
+//                        response.addCookie(cookie);
+//                    }
                 }
             }
         }
