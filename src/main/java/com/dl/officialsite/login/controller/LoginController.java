@@ -1,6 +1,7 @@
 package com.dl.officialsite.login.controller;
 
 
+import cn.hutool.db.Session;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.login.model.SessionUserInfo;
@@ -18,6 +19,7 @@ import org.web3j.crypto.Sign;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.SignatureException;
@@ -37,8 +39,27 @@ public class LoginController {
 
 
     @GetMapping("/nonce")
-    public String getNonce( @RequestParam String address, HttpSession session) {
+    public String getNonce( @RequestParam String address, HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
         logger.info(session.getId());
+
+        Cookie[] cookies = request.getCookies();
+        List<String> domains = new ArrayList<>();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                String domain = cookie.getDomain();
+                if (domain != null && !domain.isEmpty()) {
+                    logger.info("domains: "+ domain);
+                    domains.add(domain);
+                    if(cookie.getDomain().equals("dapplearning.org")){
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+        }
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString().replaceAll("-", "");
 
