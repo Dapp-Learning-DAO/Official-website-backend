@@ -111,7 +111,8 @@ public class LoginController {
 
     @GetMapping("/logout")
     public BaseResponse logout(@RequestParam String address, HttpSession session) {
-        HttpSessionUtils.clearLogin(session);
+            HttpSessionUtils.clearLogin(session);
+            session.invalidate();
         return  BaseResponse.successWithData(null);
     }
 
