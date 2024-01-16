@@ -48,34 +48,37 @@ public class TwitterController {
     }
 
     @GetMapping("/oauth2/authorize/normal/twitter")
-    public void twitterOauthLogin(HttpServletResponse response) throws IOException {
-        String authorizeUrl = this.generateAuthorizeUrl();
+    public void twitterOauthLogin(
+        @RequestParam(name = "test", defaultValue = "false") boolean test,
+        HttpServletResponse response
+    ) throws IOException {
+        String authorizeUrl = this.generateAuthorizeUrl(test);
         response.sendRedirect(authorizeUrl);
     }
 
-    private String generateAuthorizeUrl() {
+    private String generateAuthorizeUrl(boolean test) {
         OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuthToken requestToken = oauthOperations.fetchRequestToken(twitterConfig.getCallbackUrl(), null);
 
-        // Save user's oauth_token_secret for exchanging the profile
-        if (UserSecurityUtils.getUserLogin() != null) {
+        OAuth1Parameters oAuth1Parameters = new OAuth1Parameters(new HashMap<>());
+        if (test){
+            oAuth1Parameters.add("secret", requestToken.getSecret());
+        }else{
+            // Save user's oauth_token_secret for exchanging the profile
             UserSecurityUtils.getUserLogin().setTwitterOauthTokenSecret(requestToken.getSecret());
         }
-        log.info("secret: {} for {}", requestToken.getSecret(), requestToken.getValue());
-        return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+        log.info("oAuthToken: {}, secret: {}", requestToken.getValue(), requestToken.getSecret());
+        return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), oAuth1Parameters);
     }
 
     @GetMapping("/oauth2/callback/twitter")
     public BaseResponse getTwitter(
         @RequestParam("oauth_token") String oauthToken,
-        @RequestParam("oauth_verifier") String oauthVerifier
+        @RequestParam("oauth_verifier") String oauthVerifier,
+        @RequestParam("secret") String secret
     ) {
-        String twitterUserName = fetchProfile(oauthToken, oauthVerifier);
+        String twitterUserName = fetchProfile(oauthToken, oauthVerifier, secret);
         return BaseResponse.successWithData(twitterUserName);
-    }
-
-    private String fetchProfile(String oAuthToken, String verifier) {
-        return this.fetchProfile(oAuthToken, verifier, null);
     }
 
     private String fetchProfile(String oAuthToken, String verifier, String secret) {
@@ -114,13 +117,15 @@ public class TwitterController {
         TwitterController twitterController = new TwitterController();
         twitterController.oAuthConfig = oAuthConfig1;
         twitterController.setUpTwitter();
-//        String test = twitterController.generateAuthorizeUrl();
+
+
+//        String test = twitterController.generateAuthorizeUrl(true);
 //        System.out.println(test);
 
         // 1st parameter: oauth_token
         // 2st parameter: oauth_verifier
         // 3st parameter: secret
-        String name = twitterController.fetchProfile("", "");
+        String name = twitterController.fetchProfile("", "", "");
         System.out.println(name);
     }
 }
