@@ -118,7 +118,7 @@ public class TwitterController {
         // 1st parameter: oauth_token
         // 2st parameter: oauth_verifier
         // 3st parameter: secret
-        String name = twitterController.fetchProfile();
+        String name = twitterController.fetchProfile("","");
         System.out.println(name);
     }
 }
