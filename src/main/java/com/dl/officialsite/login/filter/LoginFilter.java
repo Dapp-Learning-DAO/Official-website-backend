@@ -21,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,6 +61,24 @@ public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Login filter session id {}, request {}", request.getSession().getId(), request.getRequestURI());
+
+        Cookie[] cookies = request.getCookies();
+        List<String> domains = new ArrayList<>();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                String domain = cookie.getDomain();
+                if (domain != null && !domain.isEmpty()) {
+                    logger.info("login filter domains: "+ domain);
+                    domains.add(domain);
+                    if(cookie.getDomain().equals("dapplearning.org")){
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+        }
         try{
             String uri = request.getRequestURI();
             if (noLoginApis.contains(uri) || uri.contains("swagger")) {
