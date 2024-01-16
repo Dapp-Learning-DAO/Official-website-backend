@@ -77,4 +77,4 @@ qcloud:
   regionName: ${REGION_NAME}
 
 login:
-  filter: {LOGIN_FILTER:true}
+  filter: ${LOGIN_FILTER:true}
