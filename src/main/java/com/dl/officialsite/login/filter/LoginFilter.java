@@ -63,10 +63,14 @@ public class LoginFilter extends OncePerRequestFilter {
         log.info("Login filter session id {}, request {}", request.getSession().getId(), request.getRequestURI());
 
         Cookie[] cookies = request.getCookies();
+
+
         List<String> domains = new ArrayList<>();
 
+        // for v1.0.1 login problem, pls delete this code in the future
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                logger.info("login filter cookie: "+ cookie.getName());
                 String domain = cookie.getDomain();
                 if (domain != null && !domain.isEmpty()) {
                     logger.info("login filter domains: "+ domain);
