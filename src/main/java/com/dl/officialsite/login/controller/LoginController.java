@@ -43,23 +43,6 @@ public class LoginController {
         HttpSession session = request.getSession();
         logger.info(session.getId());
 
-        Cookie[] cookies = request.getCookies();
-        List<String> domains = new ArrayList<>();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                String domain = cookie.getDomain();
-                if (domain != null && !domain.isEmpty()) {
-                    logger.info("domains: "+ domain);
-                    domains.add(domain);
-                    if(cookie.getDomain().equals("dapplearning.org")){
-                        cookie.setMaxAge(0);
-                        cookie.setPath("/");
-                        response.addCookie(cookie);
-                    }
-                }
-            }
-        }
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString().replaceAll("-", "");
 
