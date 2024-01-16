@@ -1,6 +1,8 @@
 package com.dl.officialsite.oauth2.controller;
 
 
+import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -14,64 +16,109 @@ import org.springframework.social.twitter.api.TwitterProfile;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @Slf4j
 public class TwitterController {
 
-
     @Autowired
     private OAuthConfig oAuthConfig;
 
-    @GetMapping("/oauth2/callback/twitter")
-    public void getTwitter() {
+    private TwitterConnectionFactory connectionFactory = null;
+    RegistrationConfig twitterConfig = null;
 
-        RegistrationConfig oAuthRegistration = oAuthConfig.getRegistrations().get("twitter");
-        if (oAuthRegistration == null){
+    @PostConstruct
+    public void setUpTwitter() {
+        twitterConfig = oAuthConfig.getRegistrations().get("twitter");
+        if (twitterConfig == null) {
             //TODO
             throw new RuntimeException("Invalid registrationId");
         }
-
-        log.info("oAuthRegistration.getClientId() = " + oAuthRegistration.getClientId());
-        log.info("oAuthRegistration.getClientSecret() = " + oAuthRegistration.getClientSecret());
-        TwitterConnectionFactory connectionFactory =
-                new TwitterConnectionFactory(oAuthRegistration.getClientId(),oAuthRegistration.getClientSecret());
-        OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
-        OAuthToken requestToken = oauthOperations.fetchRequestToken("https://api.twitter.com/oauth/request_token", null);
-
-        OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
-                new AuthorizedRequestToken(requestToken, ""), null);
-        System.out.println("Token Value:- accesstoken");
-//        accessToken.getSecret();
-//        accessToken.getValue();
-        Twitter twitter = new TwitterTemplate(oAuthRegistration.getClientId(),
-                oAuthRegistration.getClientSecret(),
-                accessToken.getValue(),
-                accessToken.getSecret());
-        TwitterProfile profile = twitter.userOperations().getUserProfile();
-        System.out.println(profile.toString());
-
+        connectionFactory = new TwitterConnectionFactory(twitterConfig.getClientId(), twitterConfig.getClientSecret());
+        log.info("Successfully set up Twitter....");
     }
 
-
     @GetMapping("/oauth2/authorize/normal/twitter")
-    public void twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        RegistrationConfig oAuthRegistration = oAuthConfig.getRegistrations().get("twitter");
-        if (oAuthRegistration == null){
-            throw new RuntimeException("Invalid registrationId");
-        }
-        TwitterConnectionFactory connectionFactory =
-                new TwitterConnectionFactory(oAuthRegistration.getClientId(),oAuthRegistration.getClientSecret());
-        OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
-        oauthOperations.toString();
-        OAuthToken requestToken = oauthOperations.fetchRequestToken("https://api.twitter.com/oauth/request_token", null);
-        String authorizeUrl = oauthOperations.buildAuthorizeUrl(String.valueOf(requestToken), OAuth1Parameters.NONE);
+    public void twitterOauthLogin(HttpServletResponse response) throws IOException {
+        String authorizeUrl = this.generateAuthorizeUrl();
         response.sendRedirect(authorizeUrl);
+    }
+
+    private String generateAuthorizeUrl() {
+        OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
+        OAuthToken requestToken = oauthOperations.fetchRequestToken(twitterConfig.getCallbackUrl(), null);
+
+        // Save user's oauth_token_secret for exchanging the profile
+        if (UserSecurityUtils.getUserLogin() != null) {
+            UserSecurityUtils.getUserLogin().setTwitterOauthTokenSecret(requestToken.getSecret());
+        }
+        log.info("secret: {} for {}", requestToken.getSecret(), requestToken.getValue());
+        return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+    }
+
+    @GetMapping("/oauth2/callback/twitter")
+    public BaseResponse getTwitter(
+        @RequestParam("oauth_token") String oauthToken,
+        @RequestParam("oauth_verifier") String oauthVerifier
+    ) {
+        String twitterUserName = fetchProfile(oauthToken, oauthVerifier);
+        return BaseResponse.successWithData(twitterUserName);
+    }
+
+    private String fetchProfile(String oAuthToken, String verifier) {
+        return this.fetchProfile(oAuthToken, verifier, null);
+    }
+
+    private String fetchProfile(String oAuthToken, String verifier, String secret) {
+        OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
+
+
+        String twitterOauthTokenSecret =
+            Optional.ofNullable(secret).orElseGet(() -> UserSecurityUtils.getUserLogin().getTwitterOauthTokenSecret());
+
+        OAuthToken accessToken = oauthOperations.exchangeForAccessToken(new AuthorizedRequestToken(
+            new OAuthToken(oAuthToken, twitterOauthTokenSecret), verifier), OAuth1Parameters.NONE);
+
+        Twitter twitter = new TwitterTemplate(twitterConfig.getClientId(),
+            twitterConfig.getClientSecret(),
+            accessToken.getValue(),
+            accessToken.getSecret());
+        TwitterProfile profile = twitter.userOperations().getUserProfile();
+        log.info("User's name:[{}]", profile.getName());
+        return profile.getName();
+    }
+
+    public static void main(String[] args) {
+        OAuthConfig oAuthConfig1 = new OAuthConfig();
+
+        oAuthConfig1.setRegistrations(Map.of(
+            "twitter",
+            // 1st parameter: apiKey
+            // 2st parameter: apiSecret
+            // 6st parameter: callbackUrl
+            new RegistrationConfig("", "",
+                null, null, null,
+                "")
+        ));
+
+        TwitterController twitterController = new TwitterController();
+        twitterController.oAuthConfig = oAuthConfig1;
+        twitterController.setUpTwitter();
+//        String test = twitterController.generateAuthorizeUrl();
+//        System.out.println(test);
+
+        // 1st parameter: oauth_token
+        // 2st parameter: oauth_verifier
+        // 3st parameter: secret
+        String name = twitterController.fetchProfile();
+        System.out.println(name);
     }
 }

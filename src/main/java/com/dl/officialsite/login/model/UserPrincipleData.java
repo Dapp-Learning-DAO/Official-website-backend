@@ -15,4 +15,6 @@ public class UserPrincipleData {
     private String address;
 
     private List<TeamMember> teams;
+
+    private String twitterOauthTokenSecret;
 }

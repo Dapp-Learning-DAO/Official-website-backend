@@ -57,6 +57,7 @@ public class LoginFilter extends OncePerRequestFilter {
 
     private Set<String> noAddrCheckApis = new HashSet(){{
        add("oauth2/bind/code/github");
+       add("oauth2/callback/twitter");
     }};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
