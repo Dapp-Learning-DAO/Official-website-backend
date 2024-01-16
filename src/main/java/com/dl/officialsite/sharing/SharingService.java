@@ -12,7 +12,9 @@ import com.dl.officialsite.team.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -136,7 +138,8 @@ public class SharingService  {
         return resp;
     }
 
-    public Page<Share> findAll(Pageable pageable) {
-       return  sharingRepository.findAll(pageable);
+    public Page<Share> findAll(int pageNo, int pageSize) {
+         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("date").descending().and(Sort.by("time").descending()).and(Sort.by("id").descending()));
+        return this.sharingRepository.findAllByPage(pageable);
     }
 }

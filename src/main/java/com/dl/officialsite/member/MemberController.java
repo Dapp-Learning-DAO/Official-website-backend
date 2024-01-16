@@ -182,6 +182,14 @@ public class MemberController {
         }
     }
 
+
+    @DeleteMapping()
+    public BaseResponse deleteMember(@RequestParam String address) {
+        memberService.deleteMember(address);
+        return BaseResponse.success();
+    }
+
+
 //todo query
 
     // findByNickName

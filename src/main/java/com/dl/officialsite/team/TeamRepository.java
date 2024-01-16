@@ -1,6 +1,5 @@
 package com.dl.officialsite.team;
 
-import com.dl.officialsite.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -11,8 +10,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @Description TeamRepository
  **/
 public interface TeamRepository extends JpaRepository<Team, Long>, JpaSpecificationExecutor<Team> {
-
-
 
 
 

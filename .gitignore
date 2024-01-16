@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+*.pdf
 
 # BlueJ files
 *.ctxt
@@ -49,3 +50,6 @@ README-Local.md
 /dist
 wallet/%
 node/*
+/gradleRepository
+/bin/main
+/.vscode/launch.json

@@ -43,4 +43,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long>,  
         nativeQuery = true)
     @Modifying
     void deleteByTeamId(@Param("team_id")Long teamId);
+    @Modifying
+    @Query(value ="delete from team_member where member_id = :member_id", nativeQuery = true)
+    void deleteByMemberId(@Param("member_id")Long memberId);
 }

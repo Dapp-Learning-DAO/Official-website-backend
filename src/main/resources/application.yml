@@ -6,8 +6,7 @@ server:
     session:
       timeout: 60m
       cookie:
-       # domain:  "*.dapplearning.org"
-        max-age: -1
+        max-age: 3600
 spring:
   datasource:
     url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
