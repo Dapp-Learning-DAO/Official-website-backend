@@ -61,7 +61,7 @@ public class ApplicationService {
             Application application = new Application();
             application.setHiringId(hiring.getId());
             application.setMemberId(member.getId());
-            application.setCreateName(createJDMember.getNickName());
+            application.setCreatorName(createJDMember.getNickName());
             application.setMemberName(member.getNickName());
             applicationRepository.save(application);
         } catch (Exception e) {
@@ -102,7 +102,7 @@ public class ApplicationService {
         return (root, query, builder) -> {
             // Adding conditions for the query
             return builder.and(
-                builder.like(root.get("createName"), "%" + applySearchVo.getCreateName() + "%"),
+                builder.like(root.get("creatorName"), "%" + applySearchVo.getCreatorName() + "%"),
                 builder.like(root.get("memberName"), "%" + applySearchVo.getMemberName() + "%"),
                 builder.greaterThan(root.get("createTime"), applySearchVo.getApplyTime())
             );

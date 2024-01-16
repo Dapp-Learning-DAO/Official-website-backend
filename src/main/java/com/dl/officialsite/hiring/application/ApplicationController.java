@@ -64,8 +64,10 @@ public class ApplicationController {
      * 查询所有岗位的投递状态
      */
     @PostMapping("/status/all")
-    public BaseResponse status(@RequestBody ApplySearchVo applySearchVo, @RequestParam String address) {
-        Pageable pageable = PageRequest.of(applySearchVo.getPageNumber() - 1, applySearchVo.getPageSize(), Sort.by(Sort.Direction.DESC, "createTime"));
+    public BaseResponse status(@RequestBody ApplySearchVo applySearchVo, @RequestParam String address,
+        @RequestParam(defaultValue = "0") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Page<Application> page = applicationService.applySearch(applySearchVo, pageable);
         return BaseResponse.successWithData(page);
     }

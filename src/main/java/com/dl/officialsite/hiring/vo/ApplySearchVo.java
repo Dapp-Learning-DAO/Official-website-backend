@@ -26,15 +26,11 @@ public class ApplySearchVo {
     /**
      * 岗位创建人
      */
-    private String createName;
+    private String creatorName;
 
     /**
      * 投递时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date applyTime;
-
-    private Integer pageNumber;
-
-    private Integer pageSize;
 }

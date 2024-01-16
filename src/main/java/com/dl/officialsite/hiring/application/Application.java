@@ -31,7 +31,7 @@ public class Application {
     /**
      * 岗位创建人
      */
-    private String createName;
+    private String creatorName;
 
     /**
      * 投递人ID
@@ -44,8 +44,8 @@ public class Application {
     private String memberName;
 
     /**
-     * 投资状态
-     * todo 这里添加状态说明
+     * 投递状态
+     * 投递和未投递两个状态，投递是1，未投递0
      */
     private Integer status;
 
