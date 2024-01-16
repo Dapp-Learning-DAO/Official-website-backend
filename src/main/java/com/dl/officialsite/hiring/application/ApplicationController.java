@@ -1,6 +1,7 @@
 package com.dl.officialsite.hiring.application;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.hiring.vo.ApplySearchVo;
 import com.dl.officialsite.hiring.vo.ApplyVo;
 import com.dl.officialsite.hiring.vo.HiringVO;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,15 @@ public class ApplicationController {
         return BaseResponse.successWithData(application);
     }
 
+    /**
+     * 查询所有岗位的投递状态
+     */
+    @PostMapping("/status/all")
+    public BaseResponse status(@RequestBody ApplySearchVo applySearchVo, @RequestParam String address) {
+        Pageable pageable = PageRequest.of(applySearchVo.getPageNumber() - 1, applySearchVo.getPageSize(), Sort.by(Sort.Direction.DESC, "createTime"));
+        Page<Application> page = applicationService.applySearch(applySearchVo, pageable);
+        return BaseResponse.successWithData(page);
+    }
 
 
 }

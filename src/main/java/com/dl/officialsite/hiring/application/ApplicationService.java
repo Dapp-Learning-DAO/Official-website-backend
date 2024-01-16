@@ -6,6 +6,7 @@ import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.hiring.HireService;
 import com.dl.officialsite.hiring.Hiring;
+import com.dl.officialsite.hiring.vo.ApplySearchVo;
 import com.dl.officialsite.hiring.vo.ApplyVo;
 import com.dl.officialsite.hiring.vo.HiringVO;
 import com.dl.officialsite.mail.EmailService;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,12 +51,18 @@ public class ApplicationService {
             .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
         Member member = memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
+
+        Member createJDMember =
+            memberRepository.findByAddress(hiring.getAddress()).orElseThrow(() -> new BizException(
+            NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         try {
-            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ applyVo.getFile() );
+            //emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ applyVo.getFile() );
             //添加应聘记录
             Application application = new Application();
             application.setHiringId(hiring.getId());
             application.setMemberId(member.getId());
+            application.setCreateName(createJDMember.getNickName());
+            application.setMemberName(member.getNickName());
             applicationRepository.save(application);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -82,5 +90,22 @@ public class ApplicationService {
 
     public Application findByMemberIdAndHireId(Long memberId, Long hireId) {
         return applicationRepository.findByMemberIdAndHiringId(memberId, hireId);
+    }
+
+    public Page<Application> applySearch(ApplySearchVo applySearchVo, Pageable pageable) {
+        Specification<Application> specification =
+            this.hasDescriptionAndNickName(applySearchVo);
+        return applicationRepository.findAll(specification, pageable);
+    }
+
+    public static Specification<Application> hasDescriptionAndNickName(ApplySearchVo applySearchVo) {
+        return (root, query, builder) -> {
+            // Adding conditions for the query
+            return builder.and(
+                builder.like(root.get("createName"), "%" + applySearchVo.getCreateName() + "%"),
+                builder.like(root.get("memberName"), "%" + applySearchVo.getMemberName() + "%"),
+                builder.greaterThan(root.get("createTime"), applySearchVo.getApplyTime())
+            );
+        };
     }
 }
