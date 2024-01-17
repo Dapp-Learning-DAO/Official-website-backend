@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -75,7 +74,7 @@ public class TwitterController {
     public BaseResponse getTwitter(
         @RequestParam("oauth_token") String oauthToken,
         @RequestParam("oauth_verifier") String oauthVerifier,
-        @RequestParam("secret") String secret
+        @RequestParam(value = "secret", required = false) String secret
     ) {
         String twitterUserName = fetchProfile(oauthToken, oauthVerifier, secret);
         return BaseResponse.successWithData(twitterUserName);
