@@ -23,10 +23,30 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * hiring表ID
+     */
     private Long hiringId ;
 
+    /**
+     * 岗位创建人
+     */
+    private String creatorName;
+
+    /**
+     * 投递人ID
+     */
     private Long memberId;
 
+    /**
+     * 投递人姓名
+     */
+    private String memberName;
+
+    /**
+     * 投递状态
+     * 投递和未投递两个状态，投递是1，未投递0
+     */
     private Integer status;
 
     @CreationTimestamp
