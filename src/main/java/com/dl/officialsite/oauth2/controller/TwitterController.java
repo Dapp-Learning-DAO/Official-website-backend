@@ -1,6 +1,7 @@
 package com.dl.officialsite.oauth2.controller;
 
 
+import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class TwitterController {
     private OAuthConfig oAuthConfig;
 
     @GetMapping("/oauth2/callback/twitter")
-    public void getTwitter() {
+    public BaseResponse<TwitterProfile> getTwitter() {
 
         RegistrationConfig oAuthRegistration = oAuthConfig.getRegistrations().get("twitter");
         if (oAuthRegistration == null){
@@ -54,7 +55,7 @@ public class TwitterController {
                 accessToken.getValue(),
                 accessToken.getSecret());
         TwitterProfile profile = twitter.userOperations().getUserProfile();
-        System.out.println(profile.toString());
+       return  BaseResponse.successWithData(profile);
 
     }
 
