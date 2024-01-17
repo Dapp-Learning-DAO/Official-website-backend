@@ -19,4 +19,6 @@ public class RegistrationConfig {
 
     private String userInfoUri;
 
+    private String callbackUrl;
+
 }

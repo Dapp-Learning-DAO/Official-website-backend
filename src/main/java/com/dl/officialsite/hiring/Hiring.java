@@ -51,6 +51,9 @@ public class Hiring {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
+    /**
+     * 创建岗位人地址
+     */
     private String address;
 
     /**

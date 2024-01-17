@@ -65,6 +65,7 @@ oauth:
     twitter:
       clientId:  "${TWITTER_CLIENT_KEY}"
       clientSecret:  "${TWITTER_CLIENT_SECRET}"
+      callbackUrl: "${TWITTER_CALLBACK_URL}"
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看
@@ -76,4 +77,4 @@ qcloud:
   regionName: ${REGION_NAME}
 
 login:
-  filter: true
+  filter: ${LOGIN_FILTER:true}
