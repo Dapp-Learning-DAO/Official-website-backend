@@ -32,9 +32,9 @@ public class TwitterController {
 
     @Autowired
     private OAuthConfig oAuthConfig;
-
     private TwitterConnectionFactory connectionFactory = null;
     RegistrationConfig twitterConfig = null;
+
 
     @PostConstruct
     public void setUpTwitter() {
@@ -100,32 +100,32 @@ public class TwitterController {
         return profile.getName();
     }
 
-    public static void main(String[] args) {
-        OAuthConfig oAuthConfig1 = new OAuthConfig();
-        Map<String, RegistrationConfig> registrationConfigMap = new HashMap<>();
-        oAuthConfig1.setRegistrations(registrationConfigMap);
-        registrationConfigMap.put(
-            "twitter",
-            // 1st parameter: apiKey
-            // 2st parameter: apiSecret
-            // 6st parameter: callbackUrl
-            new RegistrationConfig("", "",
-                null, null, null,
-                ""));
-
-
-        TwitterController twitterController = new TwitterController();
-        twitterController.oAuthConfig = oAuthConfig1;
-        twitterController.setUpTwitter();
-
-
-//        String test = twitterController.generateAuthorizeUrl(true);
-//        System.out.println(test);
-
-        // 1st parameter: oauth_token
-        // 2st parameter: oauth_verifier
-        // 3st parameter: secret
-        String name = twitterController.fetchProfile("", "", "");
-        System.out.println(name);
-    }
+//    public static void main(String[] args) {
+//        OAuthConfig oAuthConfig1 = new OAuthConfig();
+//        Map<String, RegistrationConfig> registrationConfigMap = new HashMap<>();
+//        oAuthConfig1.setRegistrations(registrationConfigMap);
+//        registrationConfigMap.put(
+//            "twitter",
+//            // 1st parameter: apiKey
+//            // 2st parameter: apiSecret
+//            // 6st parameter: callbackUrl
+//            new RegistrationConfig("", "",
+//                null, null, null,
+//                ""));
+//
+//
+//        TwitterController twitterController = new TwitterController();
+//        twitterController.oAuthConfig = oAuthConfig1;
+//        twitterController.setUpTwitter();
+//
+//
+////        String test = twitterController.generateAuthorizeUrl(true);
+////        System.out.println(test);
+//
+//        // 1st parameter: oauth_token
+//        // 2st parameter: oauth_verifier
+//        // 3st parameter: secret
+//        String name = twitterController.fetchProfile("", "", "");
+//        System.out.println(name);
+//    }
 }
