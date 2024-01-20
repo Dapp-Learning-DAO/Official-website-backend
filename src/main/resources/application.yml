@@ -76,5 +76,8 @@ qcloud:
   # 地区选择
   regionName: ${REGION_NAME}
 
+chain:
+  ids: ["11155111"]
+
 login:
   filter: ${LOGIN_FILTER:true}

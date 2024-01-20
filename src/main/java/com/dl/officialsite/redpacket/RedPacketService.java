@@ -1,6 +1,7 @@
 package com.dl.officialsite.redpacket;
 
 
+import com.dl.officialsite.config.ChainConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -34,13 +35,17 @@ public class RedPacketService {
     @Autowired
     private RedPacketRepository redPacketRepository;
 
+    @Autowired
+    private ChainConfig chainConfig;
+
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
    // @Scheduled(cron = "0 0/1 * * * ? ")
-   @Scheduled(cron = "*/20 * * * * ? ")
+   @Scheduled(cron = "*/10 * * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
-        for (String chainId : new String[]{"10", "11155111"}) {
+        for (String chainId : chainConfig.getIds()) {
+            log.info("chain_id " + chainId);
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
@@ -53,6 +58,8 @@ public class RedPacketService {
                 for (int i = 0; i < redpacketsArray.size(); i++) {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
+
+                    log.info(redpacketObject.toString());
                     Long id = redpacketObject.get("nonce").getAsLong();
                  //   String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
@@ -111,6 +118,7 @@ public class RedPacketService {
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
+                "  nonce  " +
                 "    name       " +
                 "   creationTime   " +
                 "    allClaimed  " +

@@ -22,7 +22,8 @@ import java.util.List;
 @Entity
 @DynamicUpdate
 @Table(name = "red_packet", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "name", columnNames = {"name"})
+        @UniqueConstraint(name = "name", columnNames = {"name"}),
+        @UniqueConstraint(name = "id", columnNames = {"id"} )
         })
 
 public class RedPacket {
