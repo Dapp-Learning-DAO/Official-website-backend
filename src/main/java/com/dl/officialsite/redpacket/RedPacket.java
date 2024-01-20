@@ -30,8 +30,8 @@ public class RedPacket {
     @Column(length = 66)
     private String  name;
 
-    @Column(length = 66)
-    private String id;
+   // @Column(length = 66)   // string to Long
+    private Long id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

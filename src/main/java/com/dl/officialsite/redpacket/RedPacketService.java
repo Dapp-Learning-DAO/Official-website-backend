@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,44 +53,35 @@ public class RedPacketService {
                 for (int i = 0; i < redpacketsArray.size(); i++) {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-                    String id = redpacketObject.get("id").getAsString();
-                    String name = redpacketObject.get("name").getAsString();
+                    Long id = redpacketObject.get("nonce").getAsLong();
+                 //   String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
                         RedPacket redPacket = redPacketList.get(j);
 
-                        if (redPacket.getId()!= null && !redPacket.getId().toLowerCase().equals(id.toLowerCase())) {
+                        if (!Objects.equals(redPacket.getId(), id)) {
                             continue;
                         }
-                        if (redPacket.getId()== null && !redPacket.getName().toLowerCase().equals(name.toLowerCase())) {
-                            continue;
-                        }
-                        if(redPacket.getId() == null) {
-                            redPacket.setId(id);
-                            redPacket.setStatus(0);
-                        }
-                        JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
 
+                        JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
                         ArrayList<String> claimersList = new ArrayList<>();
                         for (int k = 0; k < claimers.size(); k++) {
                             String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                            //log.info("claimer address: " + s);
                             claimersList.add(s);
                         }
                         redPacket.setClaimedAddress(claimersList);
 
                         //refund or claimed all
 
-                        ////0 uncompleted  1 completed  2 超时  3 refunded
+                        ////0 uncompleted  1 completed    2 overtime 3 refund
                         Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                         Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
-                        if (allClaimed|| refunded) {
+                        if (allClaimed) {
                             redPacket.setStatus(1);
-                        }
-                        //todo
-//                       if( redPacket.getExpireTime()< System.currentTimeMillis()/1000 && !allClaimed && !refunded){
-//                           redPacket.setStatus(2);
-//                       }
-
+                        } else if (refunded) {
+                            redPacket.setStatus(3);
+                        } else if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
+                           redPacket.setStatus(2);
+                       }
                         redPacketRepository.save(redPacket);
                     }
                 }
@@ -110,7 +103,7 @@ public class RedPacketService {
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
         long time = currentTimeMillis / 1000 - 3600*24*90;
-        time = Math.max(time, 1703751860);
+       // time = Math.max(time, 1703751860);
         String creationTimeGtValue = String.valueOf(time);
 
 
