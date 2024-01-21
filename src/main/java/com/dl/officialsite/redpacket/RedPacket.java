@@ -1,6 +1,7 @@
 package com.dl.officialsite.redpacket;
 
 
+import com.dl.officialsite.common.converter.BigIntegerListConverter;
 import com.dl.officialsite.common.converter.StringListConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -69,6 +70,8 @@ public class RedPacket {
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
 
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = BigIntegerListConverter.class)
     private List<BigInteger> claimedValues;
 
 }
