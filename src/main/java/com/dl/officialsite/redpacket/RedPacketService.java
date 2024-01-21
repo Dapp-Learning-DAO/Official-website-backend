@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,13 +72,16 @@ public class RedPacketService {
 
                         JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
                         ArrayList<String> claimersList = new ArrayList<>();
+                        ArrayList<BigInteger> claimedValueList = new ArrayList<>();
                         for (int k = 0; k < claimers.size(); k++) {
                             String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                            String value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsString();
-                            s = s + ":" + value;
+                            BigInteger value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsBigInteger();
                             claimersList.add(s);
+                            claimedValueList.add(value);
+
                         }
                         redPacket.setClaimedAddress(claimersList);
+                        redPacket.setClaimedValues(claimedValueList);
 
                         //refund or claimed all
 

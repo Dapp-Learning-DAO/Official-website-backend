@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.util.List;
 
 @Getter
@@ -63,8 +64,11 @@ public class RedPacket {
 
     //usdc or dai
     private String token;
+
     @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
+
+    private List<BigInteger> claimedValues;
 
 }
