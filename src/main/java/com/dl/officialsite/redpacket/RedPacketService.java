@@ -103,7 +103,7 @@ public class RedPacketService {
                request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
                break;
            case "11155111": //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/version/latest");
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.9");
        }
 
         request.setHeader("Content-Type", "application/json");

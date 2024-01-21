@@ -77,7 +77,7 @@ qcloud:
   regionName: ${REGION_NAME}
 
 chain:
-  ids: ["11155111"]
+  ids: ["11155111","10"]
 
 login:
   filter: ${LOGIN_FILTER:true}
