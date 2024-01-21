@@ -2,6 +2,7 @@ package com.dl.officialsite.reward;
 
 
 import com.dl.officialsite.common.constants.Constants;
+import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.sharing.Share;
 import com.dl.officialsite.sharing.SharingRepository;
 import com.google.gson.JsonArray;
@@ -37,12 +38,15 @@ public class RewardService {
     @Autowired
     private SharingRepository sharingRepository;
 
+    @Autowired
+    private ChainConfig chainConfig;
+
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
     //@Scheduled(cron = "0 0/2 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
-        for (String chainId : new String[]{Constants.CHAIN_ID_OP, Constants.CHAIN_ID_SEPOLIA, Constants.CHAIN_ID_SCROLL}) {
+        for (String chainId : chainConfig.getIds()) {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
