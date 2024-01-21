@@ -1,6 +1,7 @@
 package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.distributor.RedPacket;
 import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;

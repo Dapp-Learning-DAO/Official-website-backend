@@ -1,5 +1,6 @@
 package com.dl.officialsite.redpacket;
 
+import com.dl.officialsite.distributor.RedPacket;
 import com.dl.officialsite.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
