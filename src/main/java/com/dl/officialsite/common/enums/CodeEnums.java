@@ -37,7 +37,9 @@ public enum CodeEnums {
 
     NOT_DELETE_TEAM("1019", "not delete admin team"),
 
-    INVALID_MEMBER("1023", "member is invalid");
+    INVALID_MEMBER("1023", "member is invalid"),
+
+    APPLY_REPEAT("1024", "apply repeat");
 
 
 

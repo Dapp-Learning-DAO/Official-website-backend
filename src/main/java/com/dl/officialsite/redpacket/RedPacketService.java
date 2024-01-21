@@ -1,6 +1,7 @@
 package com.dl.officialsite.redpacket;
 
 
+import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.ChainConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -52,7 +53,10 @@ public class RedPacketService {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
-                //log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 15));
+                log.info("response from the graph: chainId{}, data {} ", chainId ,jsonResponse);
+                if (jsonResponse.contains("errors")) {
+                    return;
+                }
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
@@ -107,12 +111,11 @@ public class RedPacketService {
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
        switch (chainId) {
-           case "10":  // op
-              // request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/dapp-learning-redpacket/v0.0.10");
+           case Constants.CHAIN_ID_OP:  // op
+               request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
                break;
-           case "11155111": //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.11");
+           case Constants.CHAIN_ID_SEPOLIA: //sepolia
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.9");
        }
 
         request.setHeader("Content-Type", "application/json");
