@@ -6,12 +6,6 @@ import com.dl.officialsite.config.ChainConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,6 +19,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * @ClassName TeamService
  * @Author jackchen
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
  * @Description TODO
  **/
 @Service
-@Slf4j
+@Slf4j(topic = "RedPacket")
 @Configuration
 public class RedPacketService {
 
