@@ -102,10 +102,11 @@ public class RedPacketService {
         HttpPost request = null;
        switch (chainId) {
            case "10":  // op
-               request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
+              // request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/dapp-learning-redpacket/v0.0.10");
                break;
            case "11155111": //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.9");
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.11");
        }
 
         request.setHeader("Content-Type", "application/json");
