@@ -73,6 +73,8 @@ public class RedPacketService {
                         ArrayList<String> claimersList = new ArrayList<>();
                         for (int k = 0; k < claimers.size(); k++) {
                             String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
+                            String value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsString();
+                            s = s + ":" + value;
                             claimersList.add(s);
                         }
                         redPacket.setClaimedAddress(claimersList);
@@ -124,6 +126,7 @@ public class RedPacketService {
                 "    allClaimed  " +
                 "     claimers {" +
                 "      claimer" +
+                "     claimedValue " +
                 "    }" +
                 "  }" +
                 "}\"";
