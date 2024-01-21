@@ -20,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 @Slf4j
+@Configuration
 public class RedPacketService {
 
     @Autowired
@@ -41,9 +43,9 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-   // @Scheduled(cron = "0 0/1 * * * ? ")
-   @Scheduled(cron = "*/20 * * * * ? ")
-    public void updateRedpacketStatus() throws IOException {
+   @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
+
+   public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : chainConfig.getIds()) {
             log.info("chain_id " + chainId);
