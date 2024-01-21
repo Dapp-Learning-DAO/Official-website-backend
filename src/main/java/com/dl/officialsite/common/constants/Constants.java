@@ -42,4 +42,10 @@ public class Constants {
     public static final int JD_ING = 1;
 
     public static final int JD_INVAILD = 2;
+
+    public static final String CHAIN_ID_OP = "10";
+
+    public static final String CHAIN_ID_SCROLL = "534352";
+
+    public static final String CHAIN_ID_SEPOLIA = "11155111";
 }

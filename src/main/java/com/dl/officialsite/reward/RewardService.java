@@ -1,11 +1,14 @@
 package com.dl.officialsite.reward;
 
 
+import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.sharing.Share;
 import com.dl.officialsite.sharing.SharingRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,12 +18,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName TeamService
@@ -44,7 +42,7 @@ public class RewardService {
     //@Scheduled(cron = "0 0/2 * * * ? ")
     public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
-        for (String chainId : new String[]{"10", "11155111"}) {
+        for (String chainId : new String[]{Constants.CHAIN_ID_OP, Constants.CHAIN_ID_SEPOLIA, Constants.CHAIN_ID_SCROLL}) {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             if (entity != null) {
                 String jsonResponse = EntityUtils.toString(entity);
@@ -80,10 +78,10 @@ public class RewardService {
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
        switch (chainId) {
-           case "10":  // op
+           case Constants.CHAIN_ID_OP:  // op
                request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
                break;
-           case "11155111": //sepolia
+           case Constants.CHAIN_ID_SEPOLIA: //sepolia
                request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/version/latest");
        }
 

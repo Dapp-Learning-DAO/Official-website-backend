@@ -78,7 +78,7 @@ public class ApplicationService {
         List<Application> applicationList = applicationRepository.findAll(
             (root, criteriaQuery, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
-                predicates.add(criteriaBuilder.equal(root.get("memeberId"), memberId));
+                predicates.add(criteriaBuilder.equal(root.get("memberId"), memberId));
 
                 return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
                     .getRestriction();
