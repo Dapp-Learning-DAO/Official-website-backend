@@ -3,6 +3,7 @@ package com.dl.officialsite.hiring.application;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_JD;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 
+import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.hiring.HireService;
 import com.dl.officialsite.hiring.Hiring;
@@ -63,6 +64,7 @@ public class ApplicationService {
             application.setMemberId(member.getId());
             application.setCreatorName(createJDMember.getNickName());
             application.setMemberName(member.getNickName());
+            application.setStatus(Constants.APPLYING);
             applicationRepository.save(application);
         } catch (Exception e) {
             throw new RuntimeException(e);
