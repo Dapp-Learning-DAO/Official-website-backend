@@ -42,4 +42,20 @@ public class Constants {
     public static final int JD_ING = 1;
 
     public static final int JD_INVAILD = 2;
+
+    /**
+     * 投递和未投递两个状态，投递是1，未投递0
+     */
+    public static final int APPLYING = 1;
+
+    /**
+     * 投递和未投递两个状态，投递是1，未投递0
+     */
+    public static final int NOT_APPLYING = 0;
+
+    public static final String CHAIN_ID_OP = "10";
+
+    public static final String CHAIN_ID_SCROLL = "534352";
+
+    public static final String CHAIN_ID_SEPOLIA = "11155111";
 }

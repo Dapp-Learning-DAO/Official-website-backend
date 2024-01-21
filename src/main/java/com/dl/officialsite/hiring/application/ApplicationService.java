@@ -3,6 +3,7 @@ package com.dl.officialsite.hiring.application;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_JD;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 
+import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.hiring.HireService;
 import com.dl.officialsite.hiring.Hiring;
@@ -56,13 +57,14 @@ public class ApplicationService {
             memberRepository.findByAddress(hiring.getAddress()).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         try {
-            //emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ applyVo.getFile() );
+            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ applyVo.getFile() );
             //添加应聘记录
             Application application = new Application();
             application.setHiringId(hiring.getId());
             application.setMemberId(member.getId());
             application.setCreatorName(createJDMember.getNickName());
             application.setMemberName(member.getNickName());
+            application.setStatus(Constants.APPLYING);
             applicationRepository.save(application);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,7 +80,7 @@ public class ApplicationService {
         List<Application> applicationList = applicationRepository.findAll(
             (root, criteriaQuery, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
-                predicates.add(criteriaBuilder.equal(root.get("memeberId"), memberId));
+                predicates.add(criteriaBuilder.equal(root.get("memberId"), memberId));
 
                 return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
                     .getRestriction();
