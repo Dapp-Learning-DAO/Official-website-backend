@@ -78,11 +78,11 @@ public class RedPacketService {
 
                         JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
                         ArrayList<String> claimersList = new ArrayList<>();
-                        ArrayList<BigInteger> claimedValueList = new ArrayList<>();
+                        ArrayList<String> claimedValueList = new ArrayList<>();
                         for (int k = 0; k < claimers.size(); k++) {
-                            String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                            BigInteger value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsBigInteger();
-                            claimersList.add(s);
+                            String claimer = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
+                            String value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsString();
+                            claimersList.add(claimer);
                             claimedValueList.add(value);
 
                         }

@@ -77,7 +77,7 @@ public class RedPacket {
     private List<String> claimedAddress;
 
     @Column(columnDefinition = "TEXT")
-    @Convert(converter = BigIntegerListConverter.class)
-    private List<BigInteger> claimedValues;
+    @Convert(converter = StringListConverter.class)
+    private List<String> claimedValues;
 
 }
