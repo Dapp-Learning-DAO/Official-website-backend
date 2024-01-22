@@ -63,11 +63,13 @@ public class RedPacketService {
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
                 JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
                 String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
-                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
-                    return;
-                } else {
-                    lastUpdateTimestamp = lastTimestampFromGraph;
-                }
+
+                // open in prod
+//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+//                    return;
+//                } else {
+//                    lastUpdateTimestamp = lastTimestampFromGraph;
+//                }
 
 
                 List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
@@ -77,7 +79,6 @@ public class RedPacketService {
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
 
                     Long id = redpacketObject.get("nonce").getAsLong();
-                 //   String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
                         RedPacket redPacket = redPacketList.get(j);
 
