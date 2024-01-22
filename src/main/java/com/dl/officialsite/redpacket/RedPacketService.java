@@ -101,6 +101,8 @@ public class RedPacketService {
                         ////0 uncompleted  1 completed    2 overtime 3 refund
                         Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                         Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
+                        log.info("****** refunded"+ refunded);
+                        log.info("****** allClaimed"+ allClaimed);
                         if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
                             redPacket.setStatus(2);
                         }
