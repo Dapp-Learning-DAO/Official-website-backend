@@ -8,8 +8,6 @@ import com.dl.officialsite.sharing.SharingRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,6 +19,9 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
  * @ClassName TeamService
  * @Author jackchen
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Service;
  * @Description TODO
  **/
 @Service
-@Slf4j
+@Slf4j(topic = "RedPacket")
 public class RewardService {
 
     @Autowired
