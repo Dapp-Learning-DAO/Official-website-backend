@@ -66,7 +66,7 @@ public class RedPacket {
     //usdc or dai
     private String token;
 
-    private int decimal;
+    private Integer token_decimal;
 
     private String tokenSymbol;
 
