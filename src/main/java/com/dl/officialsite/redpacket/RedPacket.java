@@ -53,7 +53,7 @@ public class RedPacket {
     @NotNull
     private String chainId;
 
-    //0 uncompleted  1 completed  2 超时  3 refund  4 pending
+    //0 uncompleted  1 completed  2 超时  3 refund
     private  Integer status;
 
     private Boolean ifRandom;

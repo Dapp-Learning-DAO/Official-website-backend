@@ -71,7 +71,7 @@ public class RedPacketService {
 
 
                 List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
-
+                   log.info("redPacketList size " + redPacketList.size());
                 for (int i = 0; i < redpacketsArray.size(); i++) {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
