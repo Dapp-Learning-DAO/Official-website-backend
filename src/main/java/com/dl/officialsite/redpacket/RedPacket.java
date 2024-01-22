@@ -57,6 +57,8 @@ public class RedPacket {
     //0 uncompleted  1 completed  2 超时  3 refund  4 pending
     private  Integer status;
 
+    private Boolean ifRandom;
+
     //小数
     private Double totalAmount;
 
