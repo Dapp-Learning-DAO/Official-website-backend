@@ -64,7 +64,7 @@ public class RedPacketService {
                 JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
                 String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
 
-                // open in prod
+                // open in prod todo 
 //                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
 //                    return;
 //                } else {

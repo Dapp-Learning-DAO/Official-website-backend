@@ -23,9 +23,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "red_packet", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "id", columnNames = {"id"} )
-        })
+@Table(name = "red_packet", schema = "dl")
 
 public class RedPacket {
     @NotNull
