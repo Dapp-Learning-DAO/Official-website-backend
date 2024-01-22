@@ -18,4 +18,4 @@ delete  from red_packet;
 alter table red_packet MODIFY COLUMN id bigint;
 
 
-alter table red_packet
+alter table red_packet drop index  name;

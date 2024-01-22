@@ -98,18 +98,19 @@ public class RedPacketService {
                         redPacket.setClaimedAddress(claimersList);
                         redPacket.setClaimedValues(claimedValueList);
 
-                        //refund or claimed all
-
                         ////0 uncompleted  1 completed    2 overtime 3 refund
                         Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                         Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
+                        if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
+                            redPacket.setStatus(2);
+                        }
                         if (allClaimed) {
                             redPacket.setStatus(1);
-                        } else if (refunded) {
+                        }
+                        if (refunded) {
                             redPacket.setStatus(3);
-                        } else if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
-                           redPacket.setStatus(2);
-                       }
+                        }
+
                         redPacketRepository.save(redPacket);
                     }
                 }
