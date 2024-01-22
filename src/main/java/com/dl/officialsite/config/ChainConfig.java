@@ -1,13 +1,13 @@
 package com.dl.officialsite.config;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix="chain")
 @Data
 public class ChainConfig {
 
+   @Value("#{'${CHAIN_IDS:11155111,10}'.split(',')}")
    private  String[] ids;
 }

@@ -7,15 +7,24 @@ services:
     environment:
       # change the profile name and password according to your env.
       - spring_profiles_active=dev
+      # MySQL password
       - SPRING_DATASOURCE_PASSWORD=
+      # QCloud
       - BUCKET_NAME=
       - REGION_NAME=
       - SECRET_ID=
       - SECRET_KEY=
+      # GitHub and Twitter
       - GITHUB_CLIENT_ID=
       - GITHUB_CLIENT_SECRET=
+      - TWITTER_CLIENT_KEY=
+      - TWITTER_CLIENT_SECRET=
+      - TWITTER_CALLBACK_URL=
+      # GMAIL
       - MAIL_ADDRESS=
       - MAIL_PASSWORD=
+      # Chain ids
+      - CHAIN_IDS=
     ports:
       - '8080:8080'
     volumes:
