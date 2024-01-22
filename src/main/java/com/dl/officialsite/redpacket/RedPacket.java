@@ -23,14 +23,16 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "red_packet", schema = "dl")
+@Table(name = "red_packet", schema = "dl",
+         uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "chain_id"})}
+)
 
 public class RedPacket {
     @NotNull
     @Column(length = 66)
     private String  name;
 
-   // @Column(length = 66)   // string to Long
+    @Column(length = 64)   //
     private Long id;
 
     @Id
@@ -49,7 +51,7 @@ public class RedPacket {
     @Column(updatable = false)
     private Long createTime;
     @NotNull
-    @Column(length = 66)
+    @Column(length = 66, name = "chain_id")
     private String chainId;
 
     //0 uncompleted  1 completed  2 超时  3 refund
