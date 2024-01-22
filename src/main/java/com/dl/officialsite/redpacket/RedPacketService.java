@@ -44,6 +44,8 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
+    private String lastUpdateTimestamp= "";
+
    @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
 
    public void updateRedpacketStatus() throws IOException {
@@ -60,13 +62,22 @@ public class RedPacketService {
                 JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
+                JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
+                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsString();
+                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+                    return;
+                } else {
+                    lastUpdateTimestamp = lastTimestampFromGraph;
+                }
+
+
                 List<RedPacket> redPacketList = redPacketRepository.findByStatusAndChainId(0, chainId);
 
                 for (int i = 0; i < redpacketsArray.size(); i++) {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
 
-                    log.info(redpacketObject.toString());
+                    //log.info(redpacketObject.toString());
                     Long id = redpacketObject.get("nonce").getAsLong();
                  //   String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
@@ -138,7 +149,10 @@ public class RedPacketService {
                 "      claimer" +
                 "     claimedValue " +
                 "    }" +
-                "  }" +
+
+                "  lastupdates ( orderBy : lastupdateTimestamp , orderDirection: desc) {\n" +
+                "    lastupdateTimestamp\n" +
+                "    }" +
                 "}\"";
 
 
