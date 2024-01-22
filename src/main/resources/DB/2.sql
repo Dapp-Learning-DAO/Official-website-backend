@@ -2,7 +2,7 @@
 drop table application;
 create table application
 (
-    id           bigint auto_increment
+    id     bigint auto_increment
         primary key,
     create_time  datetime     not null,
     creator_name varchar(255) null,
@@ -15,7 +15,11 @@ create table application
     engine = InnoDB;
 
 delete  from red_packet;
+
 alter table red_packet MODIFY COLUMN id bigint;
 
-
 alter table red_packet drop index  name;
+
+ALTER TABLE red_packet DROP INDEX id;
+
+alter table red_packet add unique index id_chain id_chain(id,chain_id);

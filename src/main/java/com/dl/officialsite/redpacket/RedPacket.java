@@ -49,6 +49,7 @@ public class RedPacket {
     @Column(updatable = false)
     private Long createTime;
     @NotNull
+    @Column(length = 66)
     private String chainId;
 
     //0 uncompleted  1 completed  2 超时  3 refund
