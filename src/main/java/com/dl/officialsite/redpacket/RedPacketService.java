@@ -70,7 +70,7 @@ public class RedPacketService {
                 }
 
 
-                List<RedPacket> redPacketList = redPacketRepository.findByStatusAndChainId(0, chainId);
+                List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
 
                 for (int i = 0; i < redpacketsArray.size(); i++) {
                     // Access each element in the array
