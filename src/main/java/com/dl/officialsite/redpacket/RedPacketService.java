@@ -47,7 +47,6 @@ public class RedPacketService {
     private String lastUpdateTimestamp= "";
 
    @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
-
    public void updateRedpacketStatus() throws IOException {
         log.info("schedule task begin --------------------- ");
         for (String chainId : chainConfig.getIds()) {
@@ -64,11 +63,11 @@ public class RedPacketService {
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
                 JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
                 String lastTimestampFromGraph = lastupdatesArray.get(0).getAsString();
-                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
-                    return;
-                } else {
-                    lastUpdateTimestamp = lastTimestampFromGraph;
-                }
+//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+//                    return;
+//                } else {
+//                    lastUpdateTimestamp = lastTimestampFromGraph;
+//                }
 
 
                 List<RedPacket> redPacketList = redPacketRepository.findByStatusAndChainId(0, chainId);
