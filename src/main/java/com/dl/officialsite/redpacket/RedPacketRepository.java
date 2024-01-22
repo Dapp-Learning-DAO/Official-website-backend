@@ -36,7 +36,7 @@ public interface RedPacketRepository extends JpaRepository<RedPacket, String>,  
     List<RedPacket> findByStatusAndChainId(@Param("status") Integer status, @Param("chainId") String chainId);
 
 
-    @Query(value = "select * from red_packet where  status in （0,2） and chain_id = ?1  order by create_time desc", nativeQuery = true)
+    @Query(value = "select * from red_packet where  status IN (0,2) and chain_id = ?1  order by create_time desc", nativeQuery = true)
     List<RedPacket> findUnfinishedRedpacketByChainId(@Param("chainId") String chainId);
 
 }
