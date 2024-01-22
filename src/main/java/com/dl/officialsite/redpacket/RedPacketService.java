@@ -115,7 +115,7 @@ public class RedPacketService {
                request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
                break;
            case Constants.CHAIN_ID_SEPOLIA: //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.9");
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/version/latest");
        }
 
         request.setHeader("Content-Type", "application/json");
@@ -152,61 +152,6 @@ public class RedPacketService {
         HttpEntity entity = response.getEntity();
         return entity;
     }
-
-
-//    @Scheduled(cron = "0 0/5 * * * ? ")
-//    public void syncNotSavingDBRedpacket() throws IOException {
-//        log.info("schedule task begin --------------------- ");
-//        HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
-//        request.setHeader("Content-Type", "application/json");
-//        // Define your GraphQL query
-//        long currentTimeMillis = System.currentTimeMillis();
-//        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 - 3600*24*7);
-//
-//        String graphQL = "\" {" +
-//                "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
-//                "    id     " +
-//                "    hasRefundedOrAllClaimed   " +
-//                "     claimers {" +
-//                "      claimer" +
-//                "    }" +
-//                "  }" +
-//                "}\"";
-//
-//
-//        String query = "{ \"query\": " +
-//                graphQL +
-//                " }";
-//
-//        request.setEntity(new StringEntity(query));
-//        HttpResponse response = httpClient.execute(request);
-//        HttpEntity entity = response.getEntity();
-//
-//        if (entity != null) {
-//            String jsonResponse = EntityUtils.toString(entity);
-//            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-//            JsonObject data = jsonObject.getAsJsonObject("data");
-//            JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-//
-//            // log.info("redpacket array : " + redpacketsArray.get(0));
-//            List<RedPacket> redPacketList = redPacketRepository.findAll();
-//
-//            for (int i = 0; i < redpacketsArray.size(); i++) {
-//
-//                JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-//                String id = redpacketObject.get("id").getAsString();
-//                for (int j = 0; j < redPacketList.size(); j++) {
-//
-//                    RedPacket redPacket = redPacketList.get(j);
-//                    if (redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
-//                        continue;
-//                    todo
-//                    //redPacketRepository.save(redPacket);
-//
-//                }
-//            }
-//        }
-//    }
 }
 
 
