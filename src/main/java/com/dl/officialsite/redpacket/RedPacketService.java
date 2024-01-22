@@ -62,12 +62,12 @@ public class RedPacketService {
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
                 JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
-                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsString();
-//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
-//                    return;
-//                } else {
-//                    lastUpdateTimestamp = lastTimestampFromGraph;
-//                }
+                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
+                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+                    return;
+                } else {
+                    lastUpdateTimestamp = lastTimestampFromGraph;
+                }
 
 
                 List<RedPacket> redPacketList = redPacketRepository.findByStatusAndChainId(0, chainId);
@@ -76,7 +76,6 @@ public class RedPacketService {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
 
-                    //log.info(redpacketObject.toString());
                     Long id = redpacketObject.get("nonce").getAsLong();
                  //   String name = redpacketObject.get("name").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
@@ -140,18 +139,17 @@ public class RedPacketService {
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
-                "  nonce  " +
+                "    nonce  " +
                 "    name       " +
-                "   creationTime   " +
+                "    creationTime   " +
                 "    allClaimed  " +
-                "     claimers {" +
-                "      claimer" +
-                "     claimedValue " +
+                "    claimers {" +
+                "    claimer" +
+                "    claimedValue " +
                 "    }" +
+                " }" +
+                "  lastupdates (orderBy : lastupdateTimestamp , orderDirection: desc) { lastupdateTimestamp}" +
 
-                "  lastupdates ( orderBy : lastupdateTimestamp , orderDirection: desc) {\n" +
-                "    lastupdateTimestamp\n" +
-                "    }" +
                 "}\"";
 
 
