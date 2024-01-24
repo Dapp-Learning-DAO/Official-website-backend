@@ -78,7 +78,7 @@ public class RedPacketService {
                     // Access each element in the array
                     JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
 
-                    Long id = redpacketObject.get("nonce").getAsLong();
+                    String id = redpacketObject.get("id").getAsString();
                     for (int j = 0; j < redPacketList.size(); j++) {
                         RedPacket redPacket = redPacketList.get(j);
 
@@ -143,7 +143,7 @@ public class RedPacketService {
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
-                "    nonce  " +
+                "   lock " +
                 "    name       " +
                 "    creationTime   " +
                 "    allClaimed  " +
