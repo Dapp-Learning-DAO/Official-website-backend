@@ -66,6 +66,7 @@ public class RedPacket {
     //the number of redpacket
     private Integer number;
 
+    private String lock;
     //usdc or dai
     private String token;
 
