@@ -16,10 +16,17 @@ create table application
 
 delete  from red_packet;
 
-alter table red_packet MODIFY COLUMN id bigint;
+alter table red_packet MODIFY COLUMN id bigint(20);
+
+alter table red_packet MODIFY COLUMN chain_id varchar(66);
 
 alter table red_packet drop index  name;
 
 ALTER TABLE red_packet DROP INDEX id;
 
-alter table red_packet add unique index id_chain id_chain(id,chain_id);
+
+alter table red_packet add unique index id_chain(id,chain_id);
+
+alter table red_packet MODIFY COLUMN id  varchar(66);
+
+ALTER TABLE red_packet add INDEX id(id);
