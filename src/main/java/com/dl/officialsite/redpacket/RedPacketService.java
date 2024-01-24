@@ -62,7 +62,7 @@ public class RedPacketService {
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
                 JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
-                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
+         //       String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
 
                 // open in prod todo 
 //                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
@@ -152,7 +152,7 @@ public class RedPacketService {
                 "    claimedValue " +
                 "    }" +
                 " }" +
-                "  lastupdates (orderBy : lastupdateTimestamp , orderDirection: desc) { lastupdateTimestamp}" +
+                "  lastupdates (orderBy : lastupdateTimestamp , orderDirection: desc) { lastupdateTimestamp} " +
 
                 "}\"";
 
