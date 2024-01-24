@@ -143,7 +143,7 @@ public class RedPacketService {
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
-                "    nonce  " +
+                "   lock " +
                 "    name       " +
                 "    creationTime   " +
                 "    allClaimed  " +
