@@ -32,7 +32,7 @@ public class RedPacket {
     @Column(length = 66)
     private String  name;
 
-    @Column(length = 64)   //
+    @Column(length = 66)   //
     @NotNull
     private String id;
 
@@ -66,7 +66,11 @@ public class RedPacket {
     //the number of redpacket
     private Integer number;
 
+    @Column(length = 66)
     private String hashLock;
+
+    @Column(length = 66)
+    private String message;
     //usdc or dai
     private String token;
 

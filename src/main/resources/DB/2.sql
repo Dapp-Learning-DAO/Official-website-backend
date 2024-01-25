@@ -29,4 +29,4 @@ alter table red_packet add unique index id_chain(id,chain_id);
 
 alter table red_packet MODIFY COLUMN id  varchar(66);
 
-ALTER TABLE red_packet add INDEX id(id);
+ALTER TABLE red_packet add  unique INDEX id(id);
