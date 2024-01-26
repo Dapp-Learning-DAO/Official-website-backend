@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -26,8 +27,9 @@ public class Bounty {
     /**
      * 创建岗位人地址
      */
-    @Embedded
-    private Member member;
+    @Column(length = 42)
+    @NotNull
+    private String creator;
 
     private String title;
 
