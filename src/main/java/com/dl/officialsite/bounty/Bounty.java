@@ -31,17 +31,23 @@ public class Bounty {
     @NotNull
     private String creator;
 
+    // 标题
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
+
+    //薪资范围
     private String salary;
    // 线性释放， 指数释放
-    private int paymentType;
+    //支付类型
+    private Integer paymentType;
 
-    private String projectLength;
+    //项目周期
+    private String projectPeriod;
 
+    // 所需技能
     private String techTag;
 
     /**
@@ -54,11 +60,9 @@ public class Bounty {
      */
     private int status;
 
+    // 创建人公司
     private String company;
 
-    private String tags;
-
-    private String benefits;
 
 
     @CreationTimestamp
