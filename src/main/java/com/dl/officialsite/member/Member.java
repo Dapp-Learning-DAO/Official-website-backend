@@ -25,6 +25,7 @@ import static com.dl.officialsite.common.privacy.PrivacyTypeEnum.CUSTOMER;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@Embeddable
 @DynamicUpdate
 @Table(name = "member", schema = "dl", uniqueConstraints = {
         @UniqueConstraint(name = "address", columnNames = {"address"}),

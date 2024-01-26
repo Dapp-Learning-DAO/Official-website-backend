@@ -62,14 +62,22 @@ public class RedPacketService {
                 JsonObject data = jsonObject.getAsJsonObject("data");
                 JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
                 JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
-         //     String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
+                log.info("lastupdatesArray"+ lastupdatesArray.toString());
 
-                // open in prod todo 
-//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
-//                    return;
-//                } else {
-//                    lastUpdateTimestamp = lastTimestampFromGraph;
-//                }
+
+                // open in prod todo
+                if(lastupdatesArray.size() != 0){
+                    String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
+
+                    if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+                        return;
+                    } else {
+                        lastUpdateTimestamp = lastTimestampFromGraph;
+                    }
+                }
+
+
+
 
 
                 List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);

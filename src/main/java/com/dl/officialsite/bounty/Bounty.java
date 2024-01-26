@@ -1,6 +1,7 @@
 package com.dl.officialsite.bounty;
 
 
+import com.dl.officialsite.member.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,25 +26,29 @@ public class Bounty {
     /**
      * 创建岗位人地址
      */
-    private String creator;
+    @Embedded
+    private Member member;
 
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String Salary;
+    private String salary;
    // 线性释放， 指数释放
     private int paymentType;
 
-    private Long projectLength;
+    private String projectLength;
+
+    private String techTag;
 
     /**
      * 0:jd 招聘中
      * 1: 已匹配
-     * 1:jd 删除
-     * 2:jd 过期
-     * 设置默认值,默认值为招聘中
+     * 2:jd 已完成结算
+     * 3:jd 已过期
+     * 4：jd 已退款
+     * 5: 已删除
      */
     private int status;
 
