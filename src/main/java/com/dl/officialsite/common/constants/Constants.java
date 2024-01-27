@@ -55,7 +55,7 @@ public class Constants {
 
     public static final String CHAIN_ID_OP = "10";
 
-    public static final String CHAIN_ID_SCROLL = "534352";
-
     public static final String CHAIN_ID_SEPOLIA = "11155111";
+    public static final String CHAIN_ID_SCROOL = "534352";
+    public static final String CHAIN_ID_ARBITRUM = "42161";
 }

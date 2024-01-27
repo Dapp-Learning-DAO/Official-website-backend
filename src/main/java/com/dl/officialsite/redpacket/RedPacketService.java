@@ -65,7 +65,6 @@ public class RedPacketService {
                 log.info("lastupdatesArray"+ lastupdatesArray.toString());
 
 
-                // open in prod todo
                 if(lastupdatesArray.size() != 0){
                     String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
 
@@ -134,8 +133,15 @@ public class RedPacketService {
                break;
            case Constants.CHAIN_ID_SEPOLIA: //sepolia
                request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/version/latest");
-       }
+               break;
+           case Constants.CHAIN_ID_SCROOL: //scrool
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/scroll-redpacket/version/latest");
+               break;
+           case Constants.CHAIN_ID_ARBITRUM: //arbitrum
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/arbitrum-one-redpacket/version/latest");
+               break;
 
+       }
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
