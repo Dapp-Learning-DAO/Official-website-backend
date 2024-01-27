@@ -129,16 +129,16 @@ public class RedPacketService {
         HttpPost request = null;
        switch (chainId) {
            case Constants.CHAIN_ID_OP:  // op
-               request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/optimism/version/latest");
                break;
            case Constants.CHAIN_ID_SEPOLIA: //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/version/latest");
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/sepolia/version/latest");
                break;
-           case Constants.CHAIN_ID_SCROOL: //scrool
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/scroll-redpacket/version/latest");
+           case Constants.CHAIN_ID_SCROLL: //scrool
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/scroll/version/latest");
                break;
            case Constants.CHAIN_ID_ARBITRUM: //arbitrum
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/arbitrum-one-redpacket/version/latest");
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/arbitrum/version/latest");
                break;
 
        }
