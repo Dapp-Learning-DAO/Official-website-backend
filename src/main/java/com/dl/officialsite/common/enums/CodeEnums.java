@@ -39,7 +39,9 @@ public enum CodeEnums {
 
     INVALID_MEMBER("1023", "member is invalid"),
 
-    APPLY_REPEAT("1024", "apply repeat");
+    APPLY_REPEAT("1024", "apply repeat"),
+
+    NOT_FOUND_BOUNTY("2001", "not found bounty");
 
 
 
