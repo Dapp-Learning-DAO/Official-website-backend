@@ -38,16 +38,15 @@ public class BountyController {
     /**
      * 创建bounty
      */
-    @PutMapping
+    @PostMapping
     public BaseResponse add(@RequestBody BountyVo bountyVo, @RequestParam String address) {
-        bountyService.add(bountyVo, address);
-        return BaseResponse.successWithData(null);
+        return BaseResponse.successWithData(bountyService.add(bountyVo, address));
     }
 
     /**
      * 更新bounty
      */
-    @PostMapping
+    @PutMapping
     public BaseResponse update(@RequestBody BountyVo bountyVo, @RequestParam String address) {
         bountyService.update(bountyVo, address);
         return BaseResponse.successWithData(null);

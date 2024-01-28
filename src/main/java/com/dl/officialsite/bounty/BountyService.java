@@ -30,10 +30,12 @@ public class BountyService {
         this.bountyRepository = bountyRepository;
     }
 
-    public void add(BountyVo bountyVo, String address) {
+    public BountyVo add(BountyVo bountyVo, String address) {
         Bounty bounty = new Bounty();
         BeanUtils.copyProperties(bountyVo, bounty);
         bountyRepository.save(bounty);
+        bountyVo.setId(bounty.getId());
+        return bountyVo;
     }
 
     public void update(BountyVo bountyVo, String address) {
