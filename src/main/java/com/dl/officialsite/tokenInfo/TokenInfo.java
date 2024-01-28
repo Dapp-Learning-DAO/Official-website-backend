@@ -1,4 +1,4 @@
-package com.dl.officialsite.distributor;
+package com.dl.officialsite.tokenInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -19,32 +18,17 @@ import javax.validation.constraints.NotNull;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "distribute_info", schema = "dl")
-public class DistributeInfo {
+@Table(name = "tb_token_info", schema = "dl")
+
+public class TokenInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long creatorId;
-    @NotNull
-    @Column(length = 66)
-    private String name;
-    @NotNull
-    @Column(length = 66)
-    private String message;
-    @Column(length = 66)
-    @NotNull
-    private String contractKey;
-    private String contractAddress;
-    private String merkleRoot;
-    private Long expireTime;
-    @NotNull
     private Long chainId;
-    @NotNull
-    private Long tokenId;
-    @NotNull
-    private Double totalAmount;
-    @NotNull
-    private Integer distributeType;
+    private String tokenAddress;
+    private String tokenName;
+    private String tokenSymbol;
+    private Integer tokenDecimal;
     private Integer status;
     @UpdateTimestamp
     private Long updateTime;

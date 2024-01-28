@@ -1,7 +1,6 @@
 package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.base.BaseResponse;
-import com.dl.officialsite.distributor.RedPacket;
 import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;
@@ -40,43 +39,41 @@ public class RedPacketController {
     private RedPacketRepository redPacketRepository;
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
-
     @PostMapping("/create")
     public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
 
         RedPacket redPacket1 = redPacketRepository.save(redPacket);
-        return  BaseResponse.successWithData(redPacket1);
+        return BaseResponse.successWithData(redPacket1);
 
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    BaseResponse getRedpacketById(@RequestParam String id, @RequestParam String address)   {
+    BaseResponse getRedpacketById(@RequestParam String id, @RequestParam String address) {
 
-        Optional<RedPacket> redPacket =  redPacketRepository.findById(id);
-        if(!redPacket.isPresent()){
+        Optional<RedPacket> redPacket = redPacketRepository.findById(id);
+        if (!redPacket.isPresent()) {
             return BaseResponse.failWithReason("1001", "no user found");
         }
         return BaseResponse.successWithData(redPacket.get());
     }
 
-
     @RequestMapping(value = "/query/all", method = RequestMethod.GET)
     BaseResponse getRedPacketAll(@RequestParam String address,
-                                @RequestParam(defaultValue = "1") Integer pageNumber,
-                                @RequestParam(defaultValue = "10") Integer pageSize)   {
+            @RequestParam(defaultValue = "1") Integer pageNumber,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         return BaseResponse.successWithData(redPacketRepository.findAll(pageable));
     }
 
-
     @RequestMapping(value = "/query/user", method = RequestMethod.GET)
-    BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status,   @RequestParam String chainId) {
+    BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status,
+            @RequestParam String chainId) {
         List<RedPacket> result;
-        if(status == 0) {
-             result = redPacketRepository.findByUnclaimedPacket("%" + address + "%", 0, chainId);
+        if (status == 0) {
+            result = redPacketRepository.findByUnclaimedPacket("%" + address + "%", 0, chainId);
         } else {
-             result = redPacketRepository.findByClaimedPacket("%" + address + "%", chainId);
+            result = redPacketRepository.findByClaimedPacket("%" + address + "%", chainId);
 
         }
         return BaseResponse.successWithData(result);
@@ -85,51 +82,48 @@ public class RedPacketController {
     @RequestMapping(value = "/query/user/timeout", method = RequestMethod.GET)
     BaseResponse getTimeoutRedPacketByAddress(@RequestParam String address, @RequestParam String chainId) {
         List<RedPacket> result;
-        result = redPacketRepository.findByUnclaimedTimeOutPacket("%" + address + "%", chainId );
+        result = redPacketRepository.findByUnclaimedTimeOutPacket("%" + address + "%", chainId);
         return BaseResponse.successWithData(result);
     }
 
     @PostMapping(value = "/query/all")
     BaseResponse getAllRedPacketByCriteria(@RequestParam String address,
-                                        @RequestBody   RedPacketVo redPacket,
-                                        @RequestParam(defaultValue = "1") Integer pageNumber,
-                                        @RequestParam(defaultValue = "10") Integer pageSize)   {
-        Pageable pageable =  PageRequest.of(pageNumber-1 , pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+            @RequestBody RedPacketVo redPacket,
+            @RequestParam(defaultValue = "1") Integer pageNumber,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Specification<RedPacket> queryParam = new Specification<RedPacket>() {
             @Override
             public Predicate toPredicate(Root<RedPacket> root, CriteriaQuery<?> criteriaQuery,
-                                         CriteriaBuilder criteriaBuilder) {
+                    CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (redPacket.getId() != null) {
                     logger.info(redPacket.getId());
-                    predicates.add(criteriaBuilder.like(root.get("id"),  "%"+redPacket.getId()+"%") );
+                    predicates.add(criteriaBuilder.like(root.get("id"), "%" + redPacket.getId() + "%"));
                 }
                 if (redPacket.getName() != null) {
-                    predicates.add(criteriaBuilder.like(root.get("name"),  "%"+ redPacket.getName() +"%") );
+                    predicates.add(criteriaBuilder.like(root.get("name"), "%" + redPacket.getName() + "%"));
                 }
-                if  (redPacket.getChainId() != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("chainId"),  redPacket.getChainId() ) );
+                if (redPacket.getChainId() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("chainId"), redPacket.getChainId()));
                 }
                 if (redPacket.getCreator() != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("creator"),  redPacket.getCreator()));
+                    predicates.add(criteriaBuilder.equal(root.get("creator"), redPacket.getCreator()));
                 }
                 if (redPacket.getExpireTime() != null) {
-                    predicates.add(criteriaBuilder.lessThan(root.get("expireTime"),  redPacket.getExpireTime()));
+                    predicates.add(criteriaBuilder.lessThan(root.get("expireTime"), redPacket.getExpireTime()));
                 }
                 if (redPacket.getCreateTime() != null) {
-                    predicates.add(criteriaBuilder.greaterThan(root.get("createTime"),  redPacket.getCreateTime()));
+                    predicates.add(criteriaBuilder.greaterThan(root.get("createTime"), redPacket.getCreateTime()));
                 }
                 if (redPacket.getStatus() != null) {
-                    predicates.add(criteriaBuilder.like(root.get("status"), "%"+ redPacket.getStatus()+ "%"));
+                    predicates.add(criteriaBuilder.like(root.get("status"), "%" + redPacket.getStatus() + "%"));
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
 
-        return BaseResponse.successWithData(redPacketRepository.findAll(queryParam,  pageable));
+        return BaseResponse.successWithData(redPacketRepository.findAll(queryParam, pageable));
     }
-
-
-
 
 }

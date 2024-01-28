@@ -1,4 +1,4 @@
-package com.dl.officialsite.distributor;
+package com.dl.officialsite.distributor.distributeClaimer;
 
 import com.dl.officialsite.common.converter.BigIntegerListConverter;
 import com.dl.officialsite.common.converter.StringListConverter;
@@ -13,8 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
-import java.util.List;
 
 @Getter
 @Setter
@@ -23,25 +21,20 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "distribute_member_info", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "uin_distribute_member", columnNames = { "distribute_id", "member_id" }),
-        @UniqueConstraint(name = "idx_member", columnNames = { "member_id" }),
-        @UniqueConstraint(name = "id", columnNames = { "id" })
-})
-
-public class DistributeMemberInfo {
+@Table(name = "distribute_claimer", schema = "dl")
+public class DistributeClaimer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     private Long distributeId;
     @NotNull
-    private Long memberId;
-    private BigInteger distributeAmount;
+    private Long chainId;
+    @NotNull
+    private Long claimerId;
+    private Double distributeAmount;
     @NotNull
     private Integer status;
-    @NotNull
-    private Long expireTime;
     @UpdateTimestamp
     @Column(updatable = true)
     private Long updateTime;

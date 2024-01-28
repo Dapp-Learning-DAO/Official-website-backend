@@ -29,4 +29,12 @@ public class MemberManager {
             throw new BizException(CodeEnums.NOT_FOUND_MEMBER);
         return member;
     }
+
+    public Member requireMembeIdExist(Long id) {
+        Optional<Member> optionalRsp = memberRepository.findById(id);
+        if (!optionalRsp.isPresent())
+            throw new BizException(CodeEnums.NOT_FOUND_MEMBER);
+
+        return optionalRsp.get();
+    }
 }

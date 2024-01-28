@@ -53,3 +53,4 @@ node/*
 /gradleRepository
 /bin/main
 /.vscode/launch.json
+/src/main/resources/application-dev.yml

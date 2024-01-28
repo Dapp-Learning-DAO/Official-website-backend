@@ -3,7 +3,6 @@ package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.ChainConfig;
-import com.dl.officialsite.distributor.RedPacket;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

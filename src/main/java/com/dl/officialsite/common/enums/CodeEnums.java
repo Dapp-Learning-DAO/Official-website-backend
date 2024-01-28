@@ -41,10 +41,18 @@ public enum CodeEnums {
     APPLY_REPEAT("1024", "apply repeat"),
 
     // distribute
-    ID_NEED_EMPTY("6001", "id not null"),
-    INVALID_CHAIN_ID("6002", "invalid chain"),
-    DUPLICATE_NONCE("6003", "duplicate nonce"),
-    DUPLICATE_ANME("6004", "duplicate name"),
+    ID_NEED_EMPTY("6000", "Id is invalid"),
+    INVALID_ID("6001", "Id is invalid"),
+    INVALID_CHAIN_ID("6002", "Invalid chain"),
+    DUPLICATE_MESSAGE("6003", "Iuplicate name"),
+    NOT_SUPPORT_MODIFY("6004", "Not support modify"),
+    ONLY_CREATOE("6005", "Only creator"),
+    EMPTY_CLAIMER("6006", "Empty claimer"),
+    INVALID_AMOUNT("6007", "Invalid amount"),
+
+    // token
+    TOKEN_INVALID_ID("6001", "Invalid token"),
+
     ;
 
     private String code;

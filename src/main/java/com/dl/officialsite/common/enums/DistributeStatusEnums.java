@@ -1,18 +1,17 @@
-package com.dl.officialsite.distributor;
+package com.dl.officialsite.common.enums;
 
-public enum DistributorStatusEnums {
+public enum DistributeStatusEnums {
 
     UN_COMPLETED(0, "unCompleted"),
     COMPLETED(1, "completed"),
     TIME_OUT(2, "overtime"),
     REFUND(3, "refund");
 
-    // 0 uncompleted 1 completed 2 超时 3 refund 4 pending
 
     private Integer data;
     private String msg;
 
-    DistributorStatusEnums(Integer data, String msg) {
+    DistributeStatusEnums(Integer data, String msg) {
         this.data = data;
         this.msg = msg;
     }

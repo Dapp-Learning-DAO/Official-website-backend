@@ -1,11 +1,17 @@
 package com.dl.officialsite.distributor;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.distributor.DistributeController;
+import com.dl.officialsite.distributor.DistributeService;
+import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
+import com.dl.officialsite.distributor.vo.GetDistributeClaimerByPageReqVo;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.member.MemberService;
-import com.dl.officialsite.redpacket.Distribute;
+import com.dl.officialsite.redpacket.RedPacket;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -29,35 +35,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
-@RequestMapping("/distribute")
-public class DistributeController {
+@RequestMapping("/distribute-claimer")
+public class DistributeClaimerController {
 
     @Autowired
-    private DistributeService distributeService;
+    private DistributeClaimerService distributeClaimerService;
 
-    public static final Logger logger = LoggerFactory.getLogger(DistributeController.class);
-
-    @PostMapping("/create")
-    public BaseResponse createDistributor(@Valid @RequestBody DistributeInfo param) {
-        return BaseResponse.successWithData(distributeService.createDistribute(param));
-    }
-
-    @DeleteMapping("/{id}")
-    public BaseResponse createDistribute(@PathVariable("id") Long id) {
-        distributeService.deleteDistribute(id);
+    @PostMapping("/add")
+    public BaseResponse addDistributeClaimer(@Valid @RequestBody AddDistributeClaimerReqVo param) {
+        distributeClaimerService.saveClaimer(param);
         return BaseResponse.success();
     }
 
-    @GetMapping(value = "/detail/{id}")
-    BaseResponse getRedpacketById(@PathVariable("id") Long id) {
-        DistributeInfoVo distributeInfoVo = distributeService.queryDistributeDetail(id);
-        return BaseResponse.successWithData(distributeInfoVo);
+    @DeleteMapping("/{id}")
+    public BaseResponse deletDistributeClaimer(@PathVariable("id") Long id) {
+        distributeClaimerService.deleteDistributeClaimer(id);
+        return BaseResponse.success();
     }
 
     @GetMapping(value = "/page")
-    BaseResponse getDistributeByPage(@RequestParam GetDistributeByPageReqVo param) {
-        return BaseResponse.successWithData(distributeService.queryDistributeByPage(param));
+    BaseResponse getDistributeByPage(@RequestParam GetDistributeClaimerByPageReqVo param) {
+        return BaseResponse.successWithData(distributeClaimerService.queryDistributeClaimerByPage(param));
     }
 
 }
