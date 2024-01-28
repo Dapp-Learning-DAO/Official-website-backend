@@ -55,7 +55,7 @@ public class RedPacket {
     @Column(length = 66, name = "chain_id")
     private String chainId;
 
-    // 0 onchain  1 completed  2 超时  3 refund   4 db
+    // 0 onchain  1 completed  2 超时  3 refund   4/null db
     private  Integer status;
 
     private Boolean ifRandom;
