@@ -18,13 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.plugins.SpringIntegrationPluginNotPresentInClassPathCondition;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @ClassName TeamService
@@ -45,7 +41,7 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    private String lastUpdateTimestamp= "";
+    private Map<String, String> lastUpdateTimestampMap= new HashMap<>();
 
    @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
    public void updateRedpacketStatus()  {
@@ -80,10 +76,10 @@ public class RedPacketService {
             if(lastupdatesArray.size() != 0){
                 String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
 
-                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestampMap.get(chainId))){
                     return ;
                 } else {
-                    lastUpdateTimestamp = lastTimestampFromGraph;
+                    lastUpdateTimestampMap.put( chainId, lastTimestampFromGraph);
                 }
             }
 
