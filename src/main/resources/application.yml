@@ -91,6 +91,6 @@ bot:
     groupId: ${GROUP_ID:-1002053666506}
     timeoutInSeconds: ${TELEGRAM_BOT_TIMEOUT:10}
     topicNameToMessageThreadIdMap:
-      hiring_and_job: 2
-      sharing_team: 3
+      sharing_team: ${SHARING_TEAM_ID}
+      hiring_and_job_team: ${HIRING_AND_JOB_TEAM_ID}
 
