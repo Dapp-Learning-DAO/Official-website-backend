@@ -115,6 +115,10 @@ public class RedPacketService {
                     Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
                     log.info("****** refunded"+ refunded);
                     log.info("****** allClaimed"+ allClaimed);
+
+                    if(redPacket.getStatus() == null) {
+                        redPacket.setStatus(0);
+                    }
                     if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
                         redPacket.setStatus(2);
                     }
@@ -124,6 +128,7 @@ public class RedPacketService {
                     if (refunded) {
                         redPacket.setStatus(3);
                     }
+
 
                     redPacketRepository.save(redPacket);
                 }
