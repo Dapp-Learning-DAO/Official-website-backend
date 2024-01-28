@@ -84,3 +84,13 @@ chain:
 
 login:
   filter: ${LOGIN_FILTER:true}
+
+bot:
+  telegram:
+    botToken: ${BOT_TOKEN}
+    groupId: ${GROUP_ID:-1002053666506}
+    timeoutInSeconds: ${TELEGRAM_BOT_TIMEOUT:10}
+    topicNameToMessageThreadIdMap:
+      hiring_and_job: 2
+      sharing_team: 3
+
