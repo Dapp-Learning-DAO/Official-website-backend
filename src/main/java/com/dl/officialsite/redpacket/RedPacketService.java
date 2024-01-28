@@ -77,14 +77,19 @@ public class RedPacketService {
                 String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
 
                 if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestampMap.get(chainId))){
+                    log.info("chainId "+ chainId + "no event update");
                     return ;
                 } else {
                     lastUpdateTimestampMap.put( chainId, lastTimestampFromGraph);
+                    log.info("chainId "+ chainId + "set new  event update: "+ lastTimestampFromGraph );
                 }
             }
 
             List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
-               log.info("redPacketList size " + redPacketList.size());
+//           redPacketList.stream().forEach(redPacket -> {
+//                   log.info("name: " + redPacket.getName() + " status "  +  redPacket.getStatus());
+//               });
+
             for (int i = 0; i < redpacketsArray.size(); i++) {
                 // Access each element in the array
                 JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
@@ -93,7 +98,7 @@ public class RedPacketService {
                 for (int j = 0; j < redPacketList.size(); j++) {
                     RedPacket redPacket = redPacketList.get(j);
 
-                    if (!Objects.equals(redPacket.getId(), id)) {
+                    if (!redPacket.getId().equals(id)) {
                         continue;
                     }
 
@@ -113,10 +118,11 @@ public class RedPacketService {
                     ////0 uncompleted  1 completed    2 overtime 3 refund
                     Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
                     Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
-                    log.info("****** refunded"+ refunded);
-                    log.info("****** allClaimed"+ allClaimed);
+//                    log.info("****** refunded"+ refunded);
+//                    log.info("****** allClaimed"+ allClaimed);
 
                     if(redPacket.getStatus() == null) {
+                        log.info(redPacket.getName() + "****** upchain successfully" );
                         redPacket.setStatus(0);
                     }
                     if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
