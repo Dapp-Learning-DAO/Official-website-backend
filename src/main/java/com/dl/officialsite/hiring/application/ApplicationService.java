@@ -15,6 +15,7 @@ import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @ClassName ApplicationService
@@ -107,12 +109,18 @@ public class ApplicationService {
 
     public static Specification<Application> hasDescriptionAndNickName(ApplySearchVo applySearchVo) {
         return (root, query, builder) -> {
+            List<Predicate> predicates = new LinkedList<>();
             // Adding conditions for the query
-            return builder.and(
-                builder.like(root.get("creatorName"), "%" + applySearchVo.getCreatorName() + "%"),
-                builder.like(root.get("memberName"), "%" + applySearchVo.getMemberName() + "%"),
-                builder.greaterThan(root.get("createTime"), applySearchVo.getApplyTime())
-            );
+            if (!ObjectUtils.isEmpty(applySearchVo.getCreatorName())) {
+                predicates.add(builder.like(root.get("creatorName"), "%" + applySearchVo.getCreatorName() + "%"));
+            }
+            if (!ObjectUtils.isEmpty(applySearchVo.getMemberName())) {
+                predicates.add(builder.like(root.get("memberName"), "%" + applySearchVo.getMemberName() + "%"));
+            }
+            if (!ObjectUtils.isEmpty(applySearchVo.getApplyTime())) {
+                predicates.add(builder.greaterThan(root.get("createTime"), "%" + applySearchVo.getApplyTime() + "%"));
+            }
+            return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };
     }
 }

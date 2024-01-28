@@ -1,45 +1,29 @@
-package com.dl.officialsite.bounty;
-
+package com.dl.officialsite.bounty.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+/**
+ * @ClassName BountyVo
+ * @Author jackchen
+ * @Date 2024/1/28 11:19
+ * @Description BountyVo
+ **/
 @Data
-@Entity
-@Table(name = "bounty")
-@EntityListeners(AuditingEntityListener.class)
-public class Bounty {
+public class BountyVo {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     /**
      * 创建岗位人地址
      */
-    @Column(length = 42)
-    @NotNull
     private String creator;
 
     // 标题
     private String title;
 
-    @Column(columnDefinition = "TEXT")
     private String description;
-
 
     //薪资范围
     private String salary;
@@ -62,15 +46,9 @@ public class Bounty {
     // 创建人公司
     private String company;
 
-
-    @CreationTimestamp
-    @Column(updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-
-
 }
