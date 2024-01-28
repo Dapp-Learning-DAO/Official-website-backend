@@ -1,20 +1,13 @@
 package com.dl.officialsite.config;
 
 import lombok.Data;
-
-import java.util.Arrays;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "chain")
 @Data
 public class ChainConfig {
 
-   private String[] ids;
-
-   public boolean isContainId(String targetId) {
-      return Arrays.stream(ids).anyMatch(s -> s.equals(targetId));
-   }
+   @Value("#{'${CHAIN_IDS:11155111,10}'.split(',')}")
+   private  String[] ids;
 }

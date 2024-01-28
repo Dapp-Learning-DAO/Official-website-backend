@@ -23,18 +23,18 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "red_packet", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "name", columnNames = {"name"}),
-        @UniqueConstraint(name = "id", columnNames = {"id"} )
-        })
+@Table(name = "red_packet", schema = "dl",
+         uniqueConstraints = {@UniqueConstraint(name = "id",columnNames = {"id"})}
+)
 
 public class RedPacket {
     @NotNull
     @Column(length = 66)
     private String  name;
 
-   // @Column(length = 66)   // string to Long
-    private Long id;
+    @Column(length = 66)   //
+    @NotNull
+    private String id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,10 +52,13 @@ public class RedPacket {
     @Column(updatable = false)
     private Long createTime;
     @NotNull
+    @Column(length = 66, name = "chain_id")
     private String chainId;
 
-    //0 uncompleted  1 completed  2 超时  3 refund  4 pending
+    // 0 onchain  1 completed  2 超时  3 refund   4 db
     private  Integer status;
+
+    private Boolean ifRandom;
 
     //小数
     private Double totalAmount;
@@ -63,15 +66,26 @@ public class RedPacket {
     //the number of redpacket
     private Integer number;
 
+    @Column(length = 66)
+    private String hashLock;
+
+    @Column(length = 66)
+    private String message;
     //usdc or dai
     private String token;
+
+    private Integer tokenDecimal;
+
+    private String tokenSymbol;
+
+    private String tokenName;
 
     @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
 
     @Column(columnDefinition = "TEXT")
-    @Convert(converter = BigIntegerListConverter.class)
-    private List<BigInteger> claimedValues;
+    @Convert(converter = StringListConverter.class)
+    private List<String> claimedValues;
 
 }

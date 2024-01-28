@@ -12,6 +12,8 @@ public class BigIntegerListConverter implements AttributeConverter<List<BigInteg
 
     @Override
     public String convertToDatabaseColumn(List<BigInteger> intList) {
+        if (intList == null)
+            return null;
         List<String> result = new ArrayList<>();
         for(BigInteger i : intList) {
            result.add(i.toString());
@@ -21,6 +23,9 @@ public class BigIntegerListConverter implements AttributeConverter<List<BigInteg
 
     @Override
     public List<BigInteger> convertToEntityAttribute(String string) {
+
+        if (string == null)
+            return null;
 
         String [] list= string.split(SPLIT_CHAR);
         List<BigInteger> intList = new ArrayList<>();

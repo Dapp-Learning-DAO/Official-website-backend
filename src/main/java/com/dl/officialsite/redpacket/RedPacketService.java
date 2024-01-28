@@ -1,17 +1,12 @@
 package com.dl.officialsite.redpacket;
 
 
+import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.distributor.RedPacket;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,6 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import springfox.documentation.spring.web.plugins.SpringIntegrationPluginNotPresentInClassPathCondition;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @ClassName TeamService
@@ -32,7 +34,7 @@ import org.springframework.stereotype.Service;
  * @Description TODO
  **/
 @Service
-@Slf4j
+@Slf4j(topic = "RedPacket")
 @Configuration
 public class RedPacketService {
 
@@ -44,78 +46,114 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-   @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
+    private String lastUpdateTimestamp= "";
 
-   public void updateRedpacketStatus() throws IOException {
+   @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
+   public void updateRedpacketStatus()  {
         log.info("schedule task begin --------------------- ");
         for (String chainId : chainConfig.getIds()) {
-            log.info("chain_id " + chainId);
-            HttpEntity entity = getHttpEntityFromChain(chainId);
-            if (entity != null) {
-                String jsonResponse = EntityUtils.toString(entity);
-                //log.info("response from the graph: chainId "  + chainId + jsonResponse.substring(0, 15));
-                JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-                JsonObject data = jsonObject.getAsJsonObject("data");
-                JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-                List<RedPacket> redPacketList = redPacketRepository.findByStatusAndChainId(0, chainId);
+            try {
+                updateRedpacketStatusByChainId(chainId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("updateRedpacketStatusByChainId:  " + chainId + " error:"+ e.getMessage());
+            }
+        }
+    }
 
-                for (int i = 0; i < redpacketsArray.size(); i++) {
-                    // Access each element in the array
-                    JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
+    private void updateRedpacketStatusByChainId(String chainId) throws IOException {
+        log.info("chain_id " + chainId);
+        HttpEntity entity = getHttpEntityFromChain(chainId);
+        if (entity != null) {
+            String jsonResponse = EntityUtils.toString(entity);
 
-                    log.info(redpacketObject.toString());
-                    Long id = redpacketObject.get("nonce").getAsLong();
-                 //   String name = redpacketObject.get("name").getAsString();
-                    for (int j = 0; j < redPacketList.size(); j++) {
-                        RedPacket redPacket = redPacketList.get(j);
+            if (jsonResponse.contains("errors")) {
+                log.info("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
+                return;
+            }
+            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+            JsonObject data = jsonObject.getAsJsonObject("data");
+            JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
+            JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
+            log.info("lastupdatesArray"+ lastupdatesArray.toString());
 
-                        if (!Objects.equals(redPacket.getId(), id)) {
-                            continue;
-                        }
 
-                        JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
-                        ArrayList<String> claimersList = new ArrayList<>();
-                        ArrayList<BigInteger> claimedValueList = new ArrayList<>();
-                        for (int k = 0; k < claimers.size(); k++) {
-                            String s = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                            BigInteger value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsBigInteger();
-                            claimersList.add(s);
-                            claimedValueList.add(value);
+            if(lastupdatesArray.size() != 0){
+                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
 
-                        }
-                        redPacket.setClaimedAddress(claimersList);
-                        redPacket.setClaimedValues(claimedValueList);
+                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)){
+                    return ;
+                } else {
+                    lastUpdateTimestamp = lastTimestampFromGraph;
+                }
+            }
 
-                        //refund or claimed all
+            List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
+               log.info("redPacketList size " + redPacketList.size());
+            for (int i = 0; i < redpacketsArray.size(); i++) {
+                // Access each element in the array
+                JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
 
-                        ////0 uncompleted  1 completed    2 overtime 3 refund
-                        Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
-                        Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
-                        if (allClaimed) {
-                            redPacket.setStatus(1);
-                        } else if (refunded) {
-                            redPacket.setStatus(3);
-                        } else if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
-                           redPacket.setStatus(2);
-                       }
-                        redPacketRepository.save(redPacket);
+                String id = redpacketObject.get("id").getAsString();
+                for (int j = 0; j < redPacketList.size(); j++) {
+                    RedPacket redPacket = redPacketList.get(j);
+
+                    if (!Objects.equals(redPacket.getId(), id)) {
+                        continue;
                     }
+
+                    JsonArray claimers = redpacketObject.getAsJsonArray("claimers");
+                    ArrayList<String> claimersList = new ArrayList<>();
+                    ArrayList<String> claimedValueList = new ArrayList<>();
+                    for (int k = 0; k < claimers.size(); k++) {
+                        String claimer = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
+                        String value = claimers.get(k).getAsJsonObject().get("claimedValue").getAsString();
+                        claimersList.add(claimer);
+                        claimedValueList.add(value);
+
+                    }
+                    redPacket.setClaimedAddress(claimersList);
+                    redPacket.setClaimedValues(claimedValueList);
+
+                    ////0 uncompleted  1 completed    2 overtime 3 refund
+                    Boolean allClaimed = redpacketObject.get("allClaimed").getAsBoolean();
+                    Boolean refunded = redpacketObject.get("refunded").getAsBoolean();
+                    log.info("****** refunded"+ refunded);
+                    log.info("****** allClaimed"+ allClaimed);
+                    if( redPacket.getExpireTime()< System.currentTimeMillis()/1000){
+                        redPacket.setStatus(2);
+                    }
+                    if (allClaimed) {
+                        redPacket.setStatus(1);
+                    }
+                    if (refunded) {
+                        redPacket.setStatus(3);
+                    }
+
+                    redPacketRepository.save(redPacket);
                 }
             }
         }
+
     }
 
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
        switch (chainId) {
-           case "10":  // op
-              // request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/dapp-learning-redpacket/v0.0.10");
+           case Constants.CHAIN_ID_OP:  // op
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/optimism/version/latest");
                break;
-           case "11155111": //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/redpacket-/v0.0.11");
-       }
+           case Constants.CHAIN_ID_SEPOLIA: //sepolia
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/sepolia/version/latest");
+               break;
+           case Constants.CHAIN_ID_SCROLL: //scrool
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/scroll/version/latest");
+               break;
+           case Constants.CHAIN_ID_ARBITRUM: //arbitrum
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/arbitrum/version/latest");
+               break;
 
+       }
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
@@ -128,15 +166,17 @@ public class RedPacketService {
                 "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
-                "  nonce  " +
+                "   lock " +
                 "    name       " +
-                "   creationTime   " +
+                "    creationTime   " +
                 "    allClaimed  " +
-                "     claimers {" +
-                "      claimer" +
-                "     claimedValue " +
+                "    claimers {" +
+                "    claimer" +
+                "    claimedValue " +
                 "    }" +
-                "  }" +
+                " }" +
+                "  lastupdates (orderBy : lastupdateTimestamp , orderDirection: desc) { lastupdateTimestamp } " +
+
                 "}\"";
 
 
@@ -150,61 +190,6 @@ public class RedPacketService {
         HttpEntity entity = response.getEntity();
         return entity;
     }
-
-
-//    @Scheduled(cron = "0 0/5 * * * ? ")
-//    public void syncNotSavingDBRedpacket() throws IOException {
-//        log.info("schedule task begin --------------------- ");
-//        HttpPost request = new HttpPost("http://api.studio.thegraph.com/proxy/55957/dapp-learning-redpacket/version/latest");
-//        request.setHeader("Content-Type", "application/json");
-//        // Define your GraphQL query
-//        long currentTimeMillis = System.currentTimeMillis();
-//        String creationTimeGtValue = String.valueOf(currentTimeMillis / 1000 - 3600*24*7);
-//
-//        String graphQL = "\" {" +
-//                "  redpackets (where: { creationTime_gt: "+  creationTimeGtValue + " }) {" +
-//                "    id     " +
-//                "    hasRefundedOrAllClaimed   " +
-//                "     claimers {" +
-//                "      claimer" +
-//                "    }" +
-//                "  }" +
-//                "}\"";
-//
-//
-//        String query = "{ \"query\": " +
-//                graphQL +
-//                " }";
-//
-//        request.setEntity(new StringEntity(query));
-//        HttpResponse response = httpClient.execute(request);
-//        HttpEntity entity = response.getEntity();
-//
-//        if (entity != null) {
-//            String jsonResponse = EntityUtils.toString(entity);
-//            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-//            JsonObject data = jsonObject.getAsJsonObject("data");
-//            JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-//
-//            // log.info("redpacket array : " + redpacketsArray.get(0));
-//            List<RedPacket> redPacketList = redPacketRepository.findAll();
-//
-//            for (int i = 0; i < redpacketsArray.size(); i++) {
-//
-//                JsonObject redpacketObject = redpacketsArray.get(i).getAsJsonObject();
-//                String id = redpacketObject.get("id").getAsString();
-//                for (int j = 0; j < redPacketList.size(); j++) {
-//
-//                    RedPacket redPacket = redPacketList.get(j);
-//                    if (redPacketList.get(j).getId().toLowerCase().equals(id.toLowerCase()))
-//                        continue;
-//                    todo
-//                    //redPacketRepository.save(redPacket);
-//
-//                }
-//            }
-//        }
-//    }
 }
 
 

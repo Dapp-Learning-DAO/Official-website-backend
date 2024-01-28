@@ -6,6 +6,7 @@ import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;
 import com.dl.officialsite.member.MemberRepository;
+import com.dl.officialsite.member.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class RedPacketController {
 
     @PostMapping("/create")
     public BaseResponse createRedPacket(@Valid @RequestBody RedPacket redPacket, @RequestParam String address) {
-        redPacket.setCreator(address);
+
         RedPacket redPacket1 = redPacketRepository.save(redPacket);
         return  BaseResponse.successWithData(redPacket1);
 

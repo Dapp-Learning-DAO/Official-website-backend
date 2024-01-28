@@ -38,6 +38,8 @@ public enum CodeEnums {
 
     INVALID_MEMBER("1023", "member is invalid"),
 
+    APPLY_REPEAT("1024", "apply repeat"),
+
     // distribute
     ID_NEED_EMPTY("6001", "id not null"),
     INVALID_CHAIN_ID("6002", "invalid chain"),

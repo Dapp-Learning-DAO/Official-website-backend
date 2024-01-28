@@ -1,5 +1,6 @@
 package com.dl.officialsite.hiring.application;
 
+import static com.dl.officialsite.common.enums.CodeEnums.APPLY_REPEAT;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_JD;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 
@@ -56,6 +57,10 @@ public class ApplicationService {
         Member createJDMember =
             memberRepository.findByAddress(hiring.getAddress()).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
+        applicationRepository.findByMemberIdAndHiringId(member.getId(), hiring.getId())
+            .ifPresent(application -> {
+                throw new BizException(APPLY_REPEAT.getCode(), APPLY_REPEAT.getMsg());
+            });
         try {
             emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ applyVo.getFile() );
             //添加应聘记录
@@ -91,7 +96,7 @@ public class ApplicationService {
     }
 
     public Application findByMemberIdAndHireId(Long memberId, Long hireId) {
-        return applicationRepository.findByMemberIdAndHiringId(memberId, hireId);
+        return applicationRepository.findByMemberIdAndHiringId(memberId, hireId).orElse(null);
     }
 
     public Page<Application> applySearch(ApplySearchVo applySearchVo, Pageable pageable) {
