@@ -25,6 +25,11 @@ services:
       - MAIL_PASSWORD=
       # Chain ids
       - CHAIN_IDS=
+      # Telegram
+      - BOT_TOKEN=
+      - GROUP_ID=
+      - SHARING_TEAM_ID=
+      - HIRING_AND_JOB_TEAM_ID=
     ports:
       - '8080:8080'
     volumes:
