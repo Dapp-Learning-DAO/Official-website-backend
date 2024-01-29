@@ -23,11 +23,9 @@ public class DistributeManager {
     private DistributeRepository distributeRepository;
 
     public DistributeInfo requireIdIsValid(Long id) {
-
-        // check name
         Optional<DistributeInfo> optionalRsp = this.distributeRepository.findById(id);
         if (!optionalRsp.isPresent())
-            throw new BizException(CodeEnums.TOKEN_INVALID_ID);
+            throw new BizException(CodeEnums.INVALID_ID);
         return optionalRsp.get();
     }
 

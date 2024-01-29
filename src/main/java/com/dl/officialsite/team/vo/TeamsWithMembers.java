@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dl.officialsite.team.Team;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @ClassName TeamsMembersVo
@@ -13,6 +14,7 @@ import lombok.Data;
  * @Description TeamsMembersVo
  **/
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class TeamsWithMembers extends Team {
 
     //only for specific member with team info

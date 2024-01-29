@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -18,16 +19,21 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "tb_token_info", schema = "dl")
+@Table(name = "token_info", schema = "dl")
 
 public class TokenInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long chainId;
+    @NotNull
+    private String chainId;
+    @NotNull
     private String tokenAddress;
+    @NotNull
     private String tokenName;
+    @NotNull
     private String tokenSymbol;
+    @NotNull
     private Integer tokenDecimal;
     private Integer status;
     @UpdateTimestamp

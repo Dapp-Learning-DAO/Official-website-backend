@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class GetDistributeClaimerByPageReqVo extends PageReqBase {
+public class GetTokenByPageReqVo extends PageReqBase {
     private Long id;
+    private String chainId;
 }
-
-

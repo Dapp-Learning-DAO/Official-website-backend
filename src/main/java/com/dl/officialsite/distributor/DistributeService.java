@@ -1,6 +1,5 @@
 package com.dl.officialsite.distributor;
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.enums.DistributeClaimerStatusEnums;
@@ -10,22 +9,18 @@ import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimer;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerRepository;
-import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerService;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberManager;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.redpacket.RedPacketRepository;
-import com.dl.officialsite.distribute.Distribute;
 import com.dl.officialsite.tokenInfo.TokenInfo;
 import com.dl.officialsite.tokenInfo.TokenInfoManager;
 import com.dl.officialsite.tokenInfo.TokenInfoRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import cn.hutool.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -140,7 +135,7 @@ public class DistributeService {
                 }
             }
 
-            List<Distribute> distributeList = distributeManager.findUnfinishedDistributeByChainId(chainId);
+            List<DistributeInfo> distributeList = distributeManager.findUnfinishedDistributeByChainId(chainId);
             log.info("distributeList size " + distributeList.size());
             for (int i = 0; i < distributesArray.size(); i++) {
                 // Access each element in the array

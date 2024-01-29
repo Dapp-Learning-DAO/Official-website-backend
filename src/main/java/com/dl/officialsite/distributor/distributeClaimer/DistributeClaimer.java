@@ -29,7 +29,7 @@ public class DistributeClaimer {
     @NotNull
     private Long distributeId;
     @NotNull
-    private Long chainId;
+    private String chainId;
     @NotNull
     private Long claimerId;
     private Double distributeAmount;

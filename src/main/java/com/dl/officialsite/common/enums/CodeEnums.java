@@ -41,7 +41,7 @@ public enum CodeEnums {
     APPLY_REPEAT("1024", "apply repeat"),
 
     // distribute
-    ID_NEED_EMPTY("6000", "Id is invalid"),
+    ID_NEED_EMPTY("6000", "Id need empty"),
     INVALID_ID("6001", "Id is invalid"),
     INVALID_CHAIN_ID("6002", "Invalid chain"),
     DUPLICATE_MESSAGE("6003", "Iuplicate name"),
@@ -49,9 +49,6 @@ public enum CodeEnums {
     ONLY_CREATOE("6005", "Only creator"),
     EMPTY_CLAIMER("6006", "Empty claimer"),
     INVALID_AMOUNT("6007", "Invalid amount"),
-
-    // token
-    TOKEN_INVALID_ID("6001", "Invalid token"),
 
     ;
 

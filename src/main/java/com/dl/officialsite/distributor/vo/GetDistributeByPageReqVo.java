@@ -2,13 +2,13 @@ package com.dl.officialsite.distributor.vo;
 
 import com.dl.officialsite.common.base.PageReqBase;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class GetDistributeByPageReqVo extends PageReqBase {
     private Long id;
     private String address;

@@ -2,7 +2,7 @@ drop table if exists tb_distribute;
 
 create table tb_token_info (
     id bigint auto_increment primary key,
-    chain_id bigint not null,
+    chain_id varchar(255) not null,
     token_address varchar(255) not null,
     token_mame varchar(255) not null,
     token_symbol varchar(255) not null,
@@ -23,7 +23,7 @@ create table distribute_info (
     contract_key varchar(255) default null,
     merkle_root varchar(255) default null,
     expire_time bigint default null,
-    chain_id bigint not null,
+    chain_id varchar(255) not null,
     token_id bigint not null,
     total_amount bigint not null,
     distribute_type tinyint(4) not null,
@@ -45,7 +45,7 @@ drop table if exists tb_distribute_address;
 
 create table distribute_claimer (
     id bigint auto_increment primary key,
-    chain_id bigint not null,
+    chain_id varchar(255) not null,
     distribute_id bigint not null,
     claimer_id bigint null,
     distribute_amount bigint not null,

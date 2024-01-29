@@ -38,7 +38,7 @@ public class DistributeInfo {
     private String merkleRoot;
     private Long expireTime;
     @NotNull
-    private Long chainId;
+    private String chainId;
     @NotNull
     private Long tokenId;
     @NotNull

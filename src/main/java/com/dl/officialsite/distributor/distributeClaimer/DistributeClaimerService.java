@@ -1,33 +1,23 @@
-package com.dl.officialsite.distributor;
+package com.dl.officialsite.distributor.distributeClaimer;
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.enums.DistributeClaimerStatusEnums;
 import com.dl.officialsite.common.enums.DistributeStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
-import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.distributor.DistributeInfo;
 import com.dl.officialsite.distributor.DistributeManager;
 import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo;
 import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo.ClaimerInfo;
-import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerByPageReqVo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerRspVo;
 import com.dl.officialsite.member.Member;
-import com.dl.officialsite.member.MemberController;
 import com.dl.officialsite.member.MemberManager;
-import com.dl.officialsite.member.MemberRepository;
-import com.dl.officialsite.tokenInfo.TokenInfo;
-import com.dl.officialsite.tokenInfo.TokenInfoManager;
-import com.dl.officialsite.tokenInfo.TokenInfoRepository;
 
 import cn.hutool.core.util.ArrayUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
@@ -39,10 +29,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
@@ -50,8 +36,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.web3j.crypto.Hash;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 

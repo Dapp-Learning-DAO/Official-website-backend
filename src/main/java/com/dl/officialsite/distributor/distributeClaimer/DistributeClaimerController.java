@@ -1,4 +1,4 @@
-package com.dl.officialsite.distributor;
+package com.dl.officialsite.distributor.distributeClaimer;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.distributor.DistributeController;

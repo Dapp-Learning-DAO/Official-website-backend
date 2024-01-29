@@ -19,7 +19,7 @@ public class DistributeClaimerManager {
         // check name
         Optional<DistributeClaimer> optionalRsp = this.distributeClaimerRepository.findById(id);
         if (!optionalRsp.isPresent())
-            throw new BizException(CodeEnums.TOKEN_INVALID_ID);
+            throw new BizException(CodeEnums.INVALID_ID);
         return optionalRsp.get();
     }
 }
