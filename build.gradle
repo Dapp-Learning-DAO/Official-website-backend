@@ -70,6 +70,9 @@ dependencies {
 	implementation("com.apollographql.apollo:apollo-runtime:2.5.14")
 	//implementation 'org.hibernate.validator:hibernate-validator:6.0.10.Final'
 
+	// Telegram
+	implementation 'com.github.pengrad:java-telegram-bot-api:7.0.1'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

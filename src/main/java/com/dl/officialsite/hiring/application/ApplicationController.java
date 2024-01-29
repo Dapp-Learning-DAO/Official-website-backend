@@ -67,6 +67,9 @@ public class ApplicationController {
     public BaseResponse status(@RequestBody ApplySearchVo applySearchVo, @RequestParam String address,
         @RequestParam(defaultValue = "0") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
+        if (pageNumber > 0) {
+            pageNumber = pageNumber - 1;
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Page<Application> page = applicationService.applySearch(applySearchVo, pageable);
         return BaseResponse.successWithData(page);

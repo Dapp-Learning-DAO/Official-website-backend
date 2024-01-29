@@ -25,6 +25,9 @@ public class Hiring {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * 岗位名称
+     */
     private String position;
 
     @Column(columnDefinition = "TEXT")
@@ -36,8 +39,14 @@ public class Hiring {
 
     private String company;
 
+    /**
+     * 工作年限
+     */
     private String yearlySalary;
 
+    /**
+     * 岗位优势
+     */
     private String benefits;
 
     private String twitter;
