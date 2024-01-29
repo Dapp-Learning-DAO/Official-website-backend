@@ -1,5 +1,6 @@
 package com.dl.officialsite.distributor.distributeClaimer;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ public class DistributeClaimerManager {
     private DistributeClaimerRepository distributeClaimerRepository;
 
     public DistributeClaimer requireIdIsValid(Long id) {
-
         // check name
         Optional<DistributeClaimer> optionalRsp = this.distributeClaimerRepository.findById(id);
         if (!optionalRsp.isPresent())
