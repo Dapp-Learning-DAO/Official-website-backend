@@ -14,5 +14,7 @@ public interface DistributeClaimerRepository
     @Query(value = "select * from distribute_claimer where distribute_id = :distributeId and claimer_id=:claimerId", nativeQuery = true)
     Optional<DistributeClaimer> findByDistributeAndClaimer(@Param("distributeId") Long distributeId,
             @Param("claimerId") Long claimerId);
+    @Query(value = "select * from distribute_claimer where distribute_id = :distributeId order by id asc", nativeQuery = true)
+    Optional<List<DistributeClaimer>> findByDistribute(@Param("distributeId") Long distributeId);
 
 }

@@ -5,6 +5,7 @@ import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.enums.DistributeClaimerStatusEnums;
 import com.dl.officialsite.common.enums.DistributeStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.common.utils.MerkleTree;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.config.ConstantConfig;
@@ -24,6 +25,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +49,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -56,9 +58,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.web3j.crypto.Hash;
 import org.springframework.data.domain.Page;
+import org.web3j.crypto.Hash;
 
 @Service
 @Slf4j
@@ -199,7 +200,7 @@ public class DistributeService {
                             log.warn("distribute:${} claimMember:{} configAmount:{} claimed:${}", distribute.getId(),
                                     claimer, updateRow.getDistributeAmount(), claimedValue);
                         }
-                        updateRow.setDistributeAmount(Double.valueOf(claimedValue));
+                        updateRow.setDistributeAmount(BigDecimal.valueOf(Long.valueOf(claimedValue)));
 
                         // check status
                         if (updateRow.getStatus().toString() != DistributeClaimerStatusEnums.UN_CLAIM.getData()
@@ -391,10 +392,83 @@ public class DistributeService {
         return distributeRepository.findAll(queryParam, pageable);
     }
 
+
+    // query detail
+    public String buildAndSaveMerkleTreeRoot(Long distributeId) {
+        log.info("[buildAndSaveMerkleTreeRoot] distributeId :{} ", distributeId);
+        // check distribute
+        DistributeInfo distributeInfo = distributeManager.requireIdIsValid(distributeId);
+        if (distributeInfo.getStatus() != DistributeStatusEnums.UN_COMPLETED.getData())
+            return distributeInfo.getMerkleRoot();
+
+        // current user TODO test.dev
+        String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
+        if (constantConfig.getLoginFilter())
+            creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
+        Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
+        if (distributeInfo.getCreatorId() != member.getId())
+            throw new BizException(CodeEnums.ONLY_CREATOE);
+
+        // build tree
+        MerkleTree merkleTree = buildTreeByDistributeId(distributeInfo);
+        // build root
+        String merkleRoot =  merkleTree.buildTreeRoot();
+        //save
+        distributeInfo.setMerkleRoot(merkleRoot);
+        distributeRepository.save(distributeInfo);
+        return merkleRoot;
+    }
+
+    // query detail
+    public String generateMerkleProof(Long distributeId,Long claimerId) {
+        log.info("[buildAndSaveMerkleTreeProof] distributeId :{} claimerId:{}", distributeId,claimerId);
+        // check distribute
+        DistributeInfo distributeInfo = distributeManager.requireIdIsValid(distributeId);
+        // build tree
+        MerkleTree merkleTree = buildTreeByDistributeId(distributeInfo);
+        //check member
+        Optional<DistributeClaimer> opRsp = distributeClaimerRepository.findByDistributeAndClaimer(distributeId,claimerId);
+        if(!opRsp.isPresent())
+            throw new BizException(CodeEnums.INVALID_ID);
+        //build proof
+        return merkleTree.generateProof(opRsp.get().getId());
+
+    }
+
+
+    private MerkleTree buildTreeByDistributeId(DistributeInfo distributeInfo) {
+        Long distributeId = distributeInfo.getId();
+        // check token
+        TokenInfo tokenInfo = tokenInfoManager.requireTokenIdIsValid(distributeInfo.getTokenId());
+
+        // get all claimer
+        Optional<List<DistributeClaimer>> allDistributeClaimer = distributeClaimerRepository
+                .findByDistribute(distributeId);
+        if (!allDistributeClaimer.isPresent())
+            throw new BizException(CodeEnums.INVALID_ID);
+
+        // 准备待加入默克尔树的数据块
+        List<String> leaves = new ArrayList<>();
+        for (int i = 0; i < allDistributeClaimer.get().size(); i++) {
+            DistributeClaimer distributeClaimer = allDistributeClaimer.get().get(i);
+            Member claimer = memberManager.requireMembeIdExist(distributeClaimer.getClaimerId());
+            BigInteger tokenAmount = distributeClaimer.getDistributeAmount()
+                    .multiply(BigDecimal.TEN.pow(tokenInfo.getTokenDecimal())).toBigInteger();
+            String leafData = distributeClaimer.getId() + claimer.getAddress() + tokenAmount;
+            leaves.add(leafData);
+        }
+
+        // 使用MerkleTree类的静态方法createTree()生成默克尔树
+        MerkleTree merkleTree = new MerkleTree(leaves);
+        return merkleTree;
+    }
+
+
     public static String buildDistributeContractId(String address, String message) {
         // Address addr = new Address(address);
         // Utf8String utf8Str = new Utf8String(message);
-        return Hash.sha3(address.concat(message));
+        return  Hash.sha3(address.concat(message));
+//      return Hash.sha2_256(address.concat(message).getBytes(StandardCharsets.UTF_8)).toString();
     }
 
 }

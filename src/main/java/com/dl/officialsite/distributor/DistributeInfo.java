@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -43,7 +44,7 @@ public class DistributeInfo {
     @NotNull
     private Long tokenId;
     @NotNull
-    private Double totalAmount;
+    private BigDecimal totalAmount;
     private Integer claimerCount;
     @NotNull
     private Integer distributeType;

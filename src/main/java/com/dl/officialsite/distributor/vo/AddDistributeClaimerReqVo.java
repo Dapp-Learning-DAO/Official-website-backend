@@ -1,5 +1,6 @@
 package com.dl.officialsite.distributor.vo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,6 @@ public class AddDistributeClaimerReqVo {
     @Data
     public static class ClaimerInfo {
         private Long claimerId;
-        private Double amount;
+        private BigDecimal amount;
     }
 }

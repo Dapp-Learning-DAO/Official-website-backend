@@ -16,6 +16,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -39,7 +40,7 @@ public class DistributeClaimer {
     private String chainId;
     @NotNull
     private Long claimerId;
-    private Double distributeAmount;
+    private BigDecimal distributeAmount;
     @NotNull
     private Integer status;
 
