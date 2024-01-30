@@ -1,9 +1,12 @@
 package com.dl.officialsite.distributor;
 
+import cn.hutool.core.date.DateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -37,7 +41,6 @@ public class DistributeInfo {
     private String contractKey;
     private String contractAddress;
     private String merkleRoot;
-    private Long expireTime;
     @NotNull
     private String chainId;
     @NotNull
@@ -47,10 +50,15 @@ public class DistributeInfo {
     @NotNull
     private Integer distributeType;
     private Integer status;
-    @CreatedDate
-    @Column(updatable = false)
-    private Long createTime;
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
+
     @LastModifiedDate
-    @Column( updatable = false ,nullable = false)
-    private Long updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Long expireTime;
 }

@@ -1,5 +1,6 @@
 package com.dl.officialsite.tokenInfo;
 
+import com.dl.officialsite.common.enums.TokenStatusEnums;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,7 @@ public class TokenInfoService {
         if (!Arrays.asList(chainConfig.getIds()).contains(String.valueOf(param.getChainId())))
             throw new BizException(CodeEnums.INVALID_CHAIN_ID);
 
+        param.setStatus(TokenStatusEnums.NORMAL.getData());
         return tokenInfoRepository.save(param);
     }
 

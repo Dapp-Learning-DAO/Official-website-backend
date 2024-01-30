@@ -4,7 +4,7 @@ create table token_info (
     id bigint auto_increment primary key,
     chain_id varchar(255) not null,
     token_address varchar(255) not null,
-    token_mame varchar(255) not null,
+    token_name varchar(255) not null,
     token_symbol varchar(255) not null,
     token_decimal int(11) not null,
     status tinyint(4) not null default 0,
