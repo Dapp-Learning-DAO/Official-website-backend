@@ -46,6 +46,7 @@ public class TelegramBotConfig {
         String topicNameLowerCase = Optional.of(topicName)
             .map(topic -> StringUtils.replaceAll(topic, " ", "_"))
             .map(topicWithUnderscore -> StringUtils.lowerCase(topicWithUnderscore))
+            .filter(StringUtils::isNotBlank)
             .orElse(null);
 
         return this.topicNameToMessageThreadIdMap.entrySet().stream()
