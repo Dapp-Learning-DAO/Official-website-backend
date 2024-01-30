@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 public interface DistributeClaimerRepository
         extends JpaRepository<DistributeClaimer, Long>, JpaSpecificationExecutor<DistributeClaimer> {
 
-    @Query(value = "select * from distribute_claimer where distribute_id = :distributeId and claimer_id=claimerId", nativeQuery = true)
+    @Query(value = "select * from distribute_claimer where distribute_id = :distributeId and claimer_id=:claimerId", nativeQuery = true)
     Optional<DistributeClaimer> findByDistributeAndClaimer(@Param("distributeId") Long distributeId,
             @Param("claimerId") Long claimerId);
 

@@ -1,6 +1,6 @@
-drop table if exists tb_distribute;
+drop table if exists token_info;
 
-create table tb_token_info (
+create table token_info (
     id bigint auto_increment primary key,
     chain_id varchar(255) not null,
     token_address varchar(255) not null,
@@ -14,6 +14,7 @@ create table tb_token_info (
     KEY `index_status` (`status`)
 ) engine = InnoDB;
 
+drop table if exists distribute_info;
 create table distribute_info (
     id bigint auto_increment primary key,
     creator_id bigint not null,
@@ -32,7 +33,7 @@ create table distribute_info (
     create_time datetime not null,
     UNIQUE KEY `uin_chain_creator_message` (
         `chain_id`,
-        `creator_member_id`,
+        `creator_id`,
         `distribute_message`
     ),
     UNIQUE KEY `uin_chain_contract` (`chain_id`, `contract_address`),
@@ -56,8 +57,3 @@ create table distribute_claimer (
     KEY `index_claimer` (`claimer_id`),
     KEY `index_status` (`status`)
 ) engine = InnoDB;
-
-ALTER TABLE
-    Share
-ADD
-    COLUMN distribute_id bigint default null;

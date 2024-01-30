@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -35,10 +36,10 @@ public class DistributeClaimer {
     private Double distributeAmount;
     @NotNull
     private Integer status;
-    @UpdateTimestamp
-    @Column(updatable = true)
-    private Long updateTime;
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;
+    @LastModifiedDate
+    @Column( updatable = false ,nullable = false)
+    private Long updateTime;
 }
