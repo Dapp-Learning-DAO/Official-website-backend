@@ -51,6 +51,7 @@ public enum CodeEnums {
     ONLY_CREATOE("6005", "Only creator"),
     EMPTY_CLAIMER("6006", "Empty claimer"),
     INVALID_AMOUNT("6007", "Invalid amount"),
+    DISTRIBUTE_KEY_NOT_MATCH("6008", "Distribute key not match"),
 
     ;
 

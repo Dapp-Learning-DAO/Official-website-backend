@@ -32,13 +32,13 @@ public class DistributeController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    BaseResponse getRedpacketById(@PathVariable("id") Long id) {
+    BaseResponse getDistributeById(@PathVariable("id") Long id) {
         DistributeInfoVo distributeInfoVo = distributeService.queryDistributeDetail(id);
         return BaseResponse.successWithData(distributeInfoVo);
     }
 
     @GetMapping(value = "/page")
-    BaseResponse getDistributeByPage(@RequestParam GetDistributeByPageReqVo param) {
+    BaseResponse getDistributeByPage(@ModelAttribute GetDistributeByPageReqVo param) {
         return BaseResponse.successWithData(distributeService.queryDistributeByPage(param));
     }
 

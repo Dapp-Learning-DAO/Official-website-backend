@@ -2,15 +2,21 @@ package com.dl.officialsite.distributor.distributeClaimer;
 
 import com.dl.officialsite.common.converter.BigIntegerListConverter;
 import com.dl.officialsite.common.converter.StringListConverter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,10 +42,13 @@ public class DistributeClaimer {
     private Double distributeAmount;
     @NotNull
     private Integer status;
-    @CreatedDate
-    @Column(updatable = false)
-    private Long createTime;
+
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
+
     @LastModifiedDate
-    @Column( updatable = false ,nullable = false)
-    private Long updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 }

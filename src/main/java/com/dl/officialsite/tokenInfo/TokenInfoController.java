@@ -37,7 +37,7 @@ public class TokenInfoController {
     }
 
     @GetMapping(value = "/page")
-    BaseResponse getTokenByPage(@RequestParam GetTokenByPageReqVo param) {
+    BaseResponse getTokenByPage(@ModelAttribute GetTokenByPageReqVo param) {
         return BaseResponse.successWithData(tokenInfoService.queryToekenByPage(param));
     }
 

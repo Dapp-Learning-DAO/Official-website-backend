@@ -17,9 +17,12 @@ public class AddDistributeClaimerReqVo {
     private Long distributeId;
     private List<ClaimerInfo> claimerList;
 
-    @Data
+    @Getter
+    @Setter
     @NoArgsConstructor
-    public class ClaimerInfo {
+    @AllArgsConstructor
+    @Data
+    public static class ClaimerInfo {
         private Long claimerId;
         private Double amount;
     }

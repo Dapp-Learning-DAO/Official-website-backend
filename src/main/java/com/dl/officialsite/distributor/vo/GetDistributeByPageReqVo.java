@@ -18,4 +18,5 @@ public class GetDistributeByPageReqVo extends PageReqBase {
     private Long expireTime;
     private Integer status;
     private Long createTime;
+    private Integer distributeType;
 }

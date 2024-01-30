@@ -1,6 +1,5 @@
 package com.dl.officialsite.distributor;
 
-import cn.hutool.core.date.DateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -37,7 +34,7 @@ public class DistributeInfo {
     @Column(length = 66)
     private String message;
     @Column(length = 66)
-    @NotNull
+//    @NotNull
     private String contractKey;
     private String contractAddress;
     private String merkleRoot;
@@ -47,6 +44,7 @@ public class DistributeInfo {
     private Long tokenId;
     @NotNull
     private Double totalAmount;
+    private Integer claimerCount;
     @NotNull
     private Integer distributeType;
     private Integer status;

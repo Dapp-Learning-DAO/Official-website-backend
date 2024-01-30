@@ -7,6 +7,7 @@ import com.dl.officialsite.common.enums.DistributeStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.config.ChainConfig;
+import com.dl.officialsite.config.ConstantConfig;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimer;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerRepository;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
@@ -94,6 +95,11 @@ public class DistributeService {
 
     @Autowired
     private TokenInfoRepository tokenInfoRepository;
+
+    @Autowired
+    private ConstantConfig constantConfig;
+
+
 
     @Scheduled(cron = "${jobs.distribute.corn:0/10 * * * * ?}")
     public void updateDistributeStatus() {
@@ -270,8 +276,10 @@ public class DistributeService {
     public DistributeInfo createDistribute(DistributeInfo param) {
         log.info("[createDistribute] param : ", String.valueOf(param));
 
-        // current user
-        String creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
+        // current user TODO test.dev
+        String creatorAddress =  "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
+        if(constantConfig.getLoginFilter())
+             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
         Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
         param.setCreatorId(member.getId());
         // check ID
@@ -283,12 +291,15 @@ public class DistributeService {
         // check token
         this.tokenInfoManager.requireTokenIdIsValid(param.getTokenId());
         // distribute key
-        if (StringUtils.isEmpty(param.getContractKey())) {
-            String distributeKey = buildDistributeContractId(creatorAddress, param.getMessage());
+        String distributeKey = buildDistributeContractId(creatorAddress, param.getMessage());
+        if(StringUtils.isBlank(param.getContractKey())){
             param.setContractKey(distributeKey);
+        } else if(!distributeKey.equals(param.getContractKey())){
+            throw new BizException(CodeEnums.DISTRIBUTE_KEY_NOT_MATCH);
         }
 
         // save
+        param.setStatus(DistributeStatusEnums.UN_COMPLETED.getData());
         return distributeRepository.save(param);
     }
 
@@ -299,8 +310,10 @@ public class DistributeService {
         // check id
         DistributeInfo distributeInfo = distributeManager.requireIdIsValid(id);
 
-        // check creator
-        String creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
+        // current user TODO test.dev
+        String creatorAddress =  "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
+        if(constantConfig.getLoginFilter())
+            creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
         Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
         if (distributeInfo.getCreatorId() != member.getId())
             throw new BizException(CodeEnums.ONLY_CREATOE);

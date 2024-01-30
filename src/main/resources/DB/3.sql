@@ -18,8 +18,9 @@ drop table if exists distribute_info;
 create table distribute_info (
     id bigint auto_increment primary key,
     creator_id bigint not null,
-    distribute_name varchar(255) not null,
-    distribute_message varchar(255) not null,
+    name varchar(255) not null,
+    claimer_count int(11) default null,
+    message varchar(255) not null,
     contract_address varchar(255) default null,
     contract_key varchar(255) default null,
     merkle_root varchar(255) default null,
@@ -34,7 +35,7 @@ create table distribute_info (
     UNIQUE KEY `uin_chain_creator_message` (
         `chain_id`,
         `creator_id`,
-        `distribute_message`
+        `message`
     ),
     UNIQUE KEY `uin_chain_contract` (`chain_id`, `contract_address`),
     UNIQUE KEY `uin_chain_contract_key` (`chain_id`, `contract_key`),
@@ -42,7 +43,7 @@ create table distribute_info (
     KEY `index_status` (`status`)
 ) engine = InnoDB;
 
-drop table if exists tb_distribute_address;
+drop table if exists distribute_claimer;
 
 create table distribute_claimer (
     id bigint auto_increment primary key,

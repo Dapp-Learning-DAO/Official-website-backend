@@ -5,10 +5,12 @@ import com.dl.officialsite.common.enums.DistributeClaimerStatusEnums;
 import com.dl.officialsite.common.enums.DistributeStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
+import com.dl.officialsite.config.ConstantConfig;
 import com.dl.officialsite.distributor.DistributeInfo;
 import com.dl.officialsite.distributor.DistributeManager;
 import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo;
 import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo.ClaimerInfo;
+import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerByPageReqVo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerRspVo;
 import com.dl.officialsite.member.Member;
@@ -19,6 +21,7 @@ import cn.hutool.core.util.ArrayUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dl.officialsite.tokenInfo.TokenInfo;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +32,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
@@ -56,6 +60,9 @@ public class DistributeClaimerService {
     @Autowired
     private DistributeClaimerManager distributeClaimerManager;
 
+    @Autowired
+    private ConstantConfig constantConfig;
+
     // save
     @Transactional(rollbackOn = Exception.class)
     public void saveClaimer(AddDistributeClaimerReqVo param) {
@@ -65,7 +72,10 @@ public class DistributeClaimerService {
         DistributeInfo distributeInfo = distributeManager.requireIdIsValid(param.getDistributeId());
 
         // check creator
-        String creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
+        // current user TODO test.dev
+        String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
+        if (constantConfig.getLoginFilter())
+            creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
         Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
         if (distributeInfo.getCreatorId() != member.getId())
             throw new BizException(CodeEnums.ONLY_CREATOE);
@@ -89,18 +99,19 @@ public class DistributeClaimerService {
             // check record
             Optional<DistributeClaimer> opRsp = distributeClaimerRepository
                     .findByDistributeAndClaimer(param.getDistributeId(), claimerInfo.getClaimerId());
+            DistributeClaimer newRow = null;
             if (opRsp.isPresent()) {
-                DistributeClaimer newRow = opRsp.get();
+                newRow = opRsp.get();
                 newRow.setDistributeAmount(claimerInfo.getAmount());
-                distributeClaimerRepository.save(newRow);
             } else {
-                DistributeClaimer newRow = new DistributeClaimer();
+                newRow = new DistributeClaimer();
+                newRow.setDistributeId(param.getDistributeId());
                 newRow.setChainId(distributeInfo.getChainId());
                 newRow.setClaimerId(claimerInfo.getClaimerId());
                 newRow.setDistributeAmount(claimerInfo.getAmount());
                 newRow.setStatus(DistributeClaimerStatusEnums.CREATING.getData());
-                distributeClaimerRepository.save(newRow);
             }
+            distributeClaimerRepository.save(newRow);
 
         }
     }
@@ -157,11 +168,24 @@ public class DistributeClaimerService {
         return new PageImpl<>(voList, pageable, dbRsp.getTotalElements());
     }
 
+
+    // query detail
+    public GetDistributeClaimerRspVo queryDistributeClaimerDetail(Long id) {
+        log.info("[queryDistributeClaimerDetail] id :{} ", id);
+
+        // check id
+        DistributeClaimer distributeClaimer = distributeClaimerManager.requireIdIsValid(id);
+
+        return convertToGetDistributeClaimerRspVo(distributeClaimer);
+    }
+
+
     private GetDistributeClaimerRspVo convertToGetDistributeClaimerRspVo(DistributeClaimer distributeClaimer) {
         // check member
         Member member = memberManager.requireMembeIdExist(distributeClaimer.getClaimerId());
         // set address
         GetDistributeClaimerRspVo rspVo = new GetDistributeClaimerRspVo();
+        BeanUtils.copyProperties(distributeClaimer, rspVo);
         rspVo.setClaimerAddress(member.getAddress());
         return rspVo;
     }
