@@ -85,9 +85,6 @@ public class RedPacketService {
 //            }
 
             List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
-//           redPacketList.stream().forEach(redPacket -> {
-//                   log.info("name: " + redPacket.getName() + " status "  +  redPacket.getStatus());
-//               });
 
             for (int i = 0; i < redpacketsArray.size(); i++) {
                 // Access each element in the array
