@@ -57,7 +57,6 @@ public class RedPacketService {
     }
 
     private void updateRedpacketStatusByChainId(String chainId) throws IOException {
-        log.info("chain_id " + chainId);
         HttpEntity entity = getHttpEntityFromChain(chainId);
         if (entity != null) {
             String jsonResponse = EntityUtils.toString(entity);
@@ -70,25 +69,22 @@ public class RedPacketService {
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
             JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
-            log.info("lastupdatesArray"+ lastupdatesArray.toString());
+            log.debug("lastupdatesArray"+ lastupdatesArray.toString());
 
-
-            if(lastupdatesArray.size() != 0){
-                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
-
-                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestampMap.get(chainId))){
-                    log.info("chainId "+ chainId + "no event update");
-                    return ;
-                } else {
-                    lastUpdateTimestampMap.put( chainId, lastTimestampFromGraph);
-                    log.info("chainId "+ chainId + "set new  event update: "+ lastTimestampFromGraph );
-                }
-            }
+    // todo
+//            if(lastupdatesArray.size() != 0){
+//                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
+//
+//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestampMap.get(chainId))){
+//                    log.debug("chainId "+ chainId + "no event update");
+//                    return ;
+//                } else {
+//                    lastUpdateTimestampMap.put( chainId, lastTimestampFromGraph);
+//                    log.debug("chainId "+ chainId + "set new  event update: "+ lastTimestampFromGraph );
+//                }
+//            }
 
             List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
-//           redPacketList.stream().forEach(redPacket -> {
-//                   log.info("name: " + redPacket.getName() + " status "  +  redPacket.getStatus());
-//               });
 
             for (int i = 0; i < redpacketsArray.size(); i++) {
                 // Access each element in the array
