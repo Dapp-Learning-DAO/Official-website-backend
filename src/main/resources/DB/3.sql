@@ -50,7 +50,7 @@ create table distribute_claimer (
     chain_id varchar(255) not null,
     distribute_id bigint not null,
     claimer_id bigint null,
-    distribute_amount bigint not null,
+    distribute_amount  decimal(30,9) not null,
     status tinyint(4) not null,
     update_time datetime not null,
     create_time datetime not null,
