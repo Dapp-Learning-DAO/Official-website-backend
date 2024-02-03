@@ -4,6 +4,7 @@ import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
 
 import com.dl.officialsite.bounty.vo.BountySearchVo;
 import com.dl.officialsite.bounty.vo.BountyVo;
+import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import java.util.LinkedList;
@@ -26,8 +27,12 @@ public class BountyService {
 
     private final BountyRepository bountyRepository;
 
-    public BountyService(BountyRepository bountyRepository) {
+    private final BountyMemberMapRepository bountyMemberMapRepository;
+
+    public BountyService(BountyRepository bountyRepository,
+        BountyMemberMapRepository bountyMemberMapRepository) {
         this.bountyRepository = bountyRepository;
+        this.bountyMemberMapRepository = bountyMemberMapRepository;
     }
 
     public BountyVo add(BountyVo bountyVo, String address) {
@@ -75,5 +80,33 @@ public class BountyService {
         BountyVo bountyVo = new BountyVo();
         BeanUtils.copyProperties(bounty, bountyVo);
         return bountyVo;
+    }
+
+    public void apply(Long bountyId, String address) {
+        bountyRepository.findById(bountyId)
+            .orElseThrow(() -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
+        BountyMemberMap bountyMemberMap = new BountyMemberMap();
+        bountyMemberMap.setBountyId(bountyId);
+        bountyMemberMap.setMemberAddress(address);
+        bountyMemberMap.setStatus(Constants.BOUNTY_MEMBER_MAP_STATUS_APPLY);
+        bountyMemberMapRepository.save(bountyMemberMap);
+    }
+
+    public Page<BountyVo> myBounty(MyBountySearchVo myBountySearchVo, Pageable pageable) {
+        return bountyMemberMapRepository.findAll((Specification<BountyMemberMap>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new LinkedList<>();
+            predicates.add(criteriaBuilder.equal(root.get("memberAddress"),
+                myBountySearchVo.getMemberAddress()));
+            if (myBountySearchVo.getStatus() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), myBountySearchVo.getStatus()));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }, pageable).map(bountyMemberMap -> {
+            Bounty bounty = bountyRepository.findById(bountyMemberMap.getBountyId())
+                .orElseThrow(() -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
+            BountyVo bountyVo = new BountyVo();
+            BeanUtils.copyProperties(bounty, bountyVo);
+            return bountyVo;
+        });
     }
 }

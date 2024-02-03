@@ -3,6 +3,7 @@ package com.dl.officialsite.bounty;
 
 import com.dl.officialsite.bounty.vo.BountySearchVo;
 import com.dl.officialsite.bounty.vo.BountyVo;
+import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.base.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -83,7 +84,21 @@ public class BountyController {
     }
 
     // 2 bounty申请和匹配
+    @PostMapping("/apply")
+    public BaseResponse apply(@RequestParam Long bountyId, @RequestParam String address) {
+        bountyService.apply(bountyId, address);
+        return BaseResponse.successWithData(null);
+    }
 
+    //查看自己名下的bounty
+    @PostMapping("/mybounty")
+    public BaseResponse myBounty(@RequestBody MyBountySearchVo myBountySearchVo,
+        @RequestParam(defaultValue = "1") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Page<BountyVo> page = bountyService.myBounty(myBountySearchVo,pageable);
+        return BaseResponse.successWithData(page);
+    }
 
 
 
