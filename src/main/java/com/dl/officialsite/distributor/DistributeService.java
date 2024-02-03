@@ -14,6 +14,7 @@ import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerManage
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerRepository;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
+import com.dl.officialsite.distributor.vo.GetDistributeClaimerRspVo;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberManager;
 import com.dl.officialsite.member.MemberRepository;
@@ -39,6 +40,7 @@ import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -58,13 +60,10 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 import org.web3j.crypto.Hash;
 
 @Service
@@ -323,7 +322,7 @@ public class DistributeService {
                 TokenInfo tokenInfo = tokenInfoRepository.save(newToken);
                 tokenId = tokenInfo.getId();
             }
-        }else {
+        } else {
             tokenInfoManager.requireIdIsValid(tokenId);
         }
 
@@ -385,34 +384,11 @@ public class DistributeService {
         // check id
         DistributeInfo distributeInfo = distributeManager.requireIdIsValid(id);
 
-        // copy attribute
-        DistributeInfoVo distributeInfoVo = new DistributeInfoVo();
-        BeanUtils.copyProperties(distributeInfo, distributeInfoVo);
-
-        // query member
-        Optional<Member> memberOptional = memberRepository.findById(id);
-        memberOptional.ifPresent(memberRow -> distributeInfoVo.setCreator(memberRow.getAddress()));
-
-        // query token
-        Optional<TokenInfo> tokenOptional = tokenInfoRepository.findById(id);
-        tokenOptional.ifPresent(row -> {
-            distributeInfoVo.setToken(row.getTokenAddress());
-            distributeInfoVo.setTokenDecimal(row.getTokenDecimal());
-            distributeInfoVo.setTokenName(row.getTokenName());
-            distributeInfoVo.setTokenSymbol(row.getTokenSymbol());
-        });
-
-        // query claimer
-        Pair<List<String>, List<BigDecimal>> pairRsp = distributeClaimerManager
-                .getAllClaimerAndValueAsListByDistributeId(id);
-        distributeInfoVo.setClaimedAddress(pairRsp.getKey());
-        distributeInfoVo.setClaimedValues(pairRsp.getValue());
-
-        return distributeInfoVo;
+        return convertDistributeInfoToDistributeInfoVo(distributeInfo);
     }
 
     // query by page
-    public Page<DistributeInfo> queryDistributeByPage(GetDistributeByPageReqVo param) {
+    public Page<DistributeInfoVo> queryDistributeByPage(GetDistributeByPageReqVo param) {
         log.info("[queryDistributeByPage]");
 
         Pageable pageable = PageRequest.of(param.getPageNumber() - 1, param.getPageSize(),
@@ -451,7 +427,40 @@ public class DistributeService {
             }
         };
 
-        return distributeRepository.findAll(queryParam, pageable);
-    }
 
+        Page<DistributeInfo> dbRsp = distributeRepository.findAll(queryParam, pageable);
+        List<DistributeInfoVo> voList = dbRsp.getContent().stream()
+                .map(this::convertDistributeInfoToDistributeInfoVo)
+                .collect(Collectors.toList());
+        return new PageImpl<>(voList, pageable, dbRsp.getTotalElements());
+
+
+        }
+
+    public DistributeInfoVo convertDistributeInfoToDistributeInfoVo(DistributeInfo distribute) {
+
+        // copy attribute
+        DistributeInfoVo distributeInfoVo = new DistributeInfoVo();
+        BeanUtils.copyProperties(distribute, distributeInfoVo);
+
+        // query member
+        Optional<Member> memberOptional = memberRepository.findById(distribute.getCreatorId());
+        memberOptional.ifPresent(memberRow -> distributeInfoVo.setCreator(memberRow.getAddress()));
+
+        // query token
+        Optional<TokenInfo> tokenOptional = tokenInfoRepository.findById(distribute.getTokenId());
+        tokenOptional.ifPresent(row -> {
+            distributeInfoVo.setToken(row.getTokenAddress());
+            distributeInfoVo.setTokenDecimal(row.getTokenDecimal());
+            distributeInfoVo.setTokenName(row.getTokenName());
+            distributeInfoVo.setTokenSymbol(row.getTokenSymbol());
+        });
+
+        // query claimer
+        Pair<List<String>, List<BigDecimal>> pairRsp = distributeClaimerManager
+                .getAllClaimerAndValueAsListByDistributeId(distribute.getId());
+        distributeInfoVo.setClaimedAddress(pairRsp.getKey());
+        distributeInfoVo.setClaimedValues(pairRsp.getValue());
+        return distributeInfoVo;
+    }
 }
