@@ -18,6 +18,9 @@ public class DistributeClaimerController {
 
     @Autowired
     private DistributeClaimerService distributeClaimerService;
+    @Autowired
+    private DistributeClaimerManager distributeClaimerManager;
+
 
     @PostMapping("/add")
     public BaseResponse addDistributeClaimer(@Valid @RequestBody AddDistributeClaimerReqVo param) {
@@ -27,7 +30,7 @@ public class DistributeClaimerController {
 
     @GetMapping(value = "/detail/{id}")
     BaseResponse getDistributeClaimerById(@PathVariable("id") Long id) {
-        GetDistributeClaimerRspVo distributeClaimerInfoVo = distributeClaimerService.queryDistributeClaimerDetail(id);
+        GetDistributeClaimerRspVo distributeClaimerInfoVo = distributeClaimerManager.queryDistributeClaimerDetail(id);
         return BaseResponse.successWithData(distributeClaimerInfoVo);
     }
 

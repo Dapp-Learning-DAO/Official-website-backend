@@ -4,12 +4,13 @@ import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.enums.DistributeClaimerStatusEnums;
 import com.dl.officialsite.common.enums.DistributeStatusEnums;
+import com.dl.officialsite.common.enums.TokenStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
-import com.dl.officialsite.common.utils.MerkleTree;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.config.ConstantConfig;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimer;
+import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerManager;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerRepository;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
@@ -24,22 +25,27 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import cn.hutool.core.lang.Pair;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -98,9 +104,10 @@ public class DistributeService {
     private TokenInfoRepository tokenInfoRepository;
 
     @Autowired
+    private DistributeClaimerManager distributeClaimerManager;
+
+    @Autowired
     private ConstantConfig constantConfig;
-
-
 
     @Scheduled(cron = "${jobs.distribute.corn:0/10 * * * * ?}")
     public void updateDistributeStatus() {
@@ -274,13 +281,14 @@ public class DistributeService {
     }
 
     // create new distribute
-    public DistributeInfo createDistribute(DistributeInfo param) {
+    @Transactional(rollbackOn = Exception.class)
+    public DistributeInfo createDistribute(DistributeInfoVo param) {
         log.info("[createDistribute] param : ", String.valueOf(param));
 
         // current user TODO test.dev
-        String creatorAddress =  "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
-        if(constantConfig.getLoginFilter())
-             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
+        String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
+        if (constantConfig.getLoginFilter())
+            creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
         Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
         param.setCreatorId(member.getId());
         // check ID
@@ -289,19 +297,61 @@ public class DistributeService {
         // check chain
         if (!Arrays.asList(chainConfig.getIds()).contains(String.valueOf(param.getChainId())))
             throw new BizException(CodeEnums.INVALID_CHAIN_ID);
-        // check token
-        this.tokenInfoManager.requireTokenIdIsValid(param.getTokenId());
-        // distribute key
-        String distributeKey = buildDistributeContractId(creatorAddress, param.getMessage());
-        if(StringUtils.isBlank(param.getContractKey())){
-            param.setContractKey(distributeKey);
-        } else if(!distributeKey.equals(param.getContractKey())){
-            throw new BizException(CodeEnums.DISTRIBUTE_KEY_NOT_MATCH);
+
+        // check distribute claimer
+        Set<String> claimedSet = new HashSet<>(param.getClaimedAddress());
+        if (claimedSet.size() != param.getClaimedAddress().size())
+            throw new BizException(CodeEnums.DUPLICATE_CLAIMER);
+        if (claimedSet.size() != param.getClaimedValues().size())
+            throw new BizException(CodeEnums.SIZE_NOT_MATCH);
+        // check and save token
+        Long tokenId = param.getTokenId();
+        if (null == tokenId) {
+            Optional<TokenInfo> tokenOptional = this.tokenInfoRepository.findByChainAndAddress(param.getChainId(),
+                    param.getToken());
+            if (tokenOptional.isPresent()) {
+                tokenId = tokenOptional.get().getId();
+            } else {
+                TokenInfo newToken = new TokenInfo();
+                newToken.setChainId(param.getChainId());
+                newToken.setTokenAddress(param.getToken());
+                newToken.setTokenName(param.getTokenName());
+                newToken.setTokenDecimal(param.getTokenDecimal());
+                newToken.setTokenSymbol(param.getTokenSymbol());
+                newToken.setStatus(TokenStatusEnums.NORMAL.getData());
+
+                TokenInfo tokenInfo = tokenInfoRepository.save(newToken);
+                tokenId = tokenInfo.getId();
+            }
+        }else {
+            tokenInfoManager.requireIdIsValid(tokenId);
         }
 
-        // save
-        param.setStatus(DistributeStatusEnums.UN_COMPLETED.getData());
-        return distributeRepository.save(param);
+        // save distribute
+        DistributeInfo newDistributeInfo = new DistributeInfo();
+        BeanUtils.copyProperties(param, newDistributeInfo);
+        newDistributeInfo.setTokenId(tokenId);
+        newDistributeInfo.setStatus(DistributeStatusEnums.UN_COMPLETED.getData());
+        DistributeInfo savedDistribute = distributeRepository.save(newDistributeInfo);
+
+        // check and save claimer
+        for (int i = 0; i < claimedSet.size(); i++) {
+            String claimer = param.getClaimedAddress().get(i);
+            BigDecimal value = param.getClaimedValues().get(i);
+            // check member
+            Member claimerMember = memberManager.requireMemberAddressExist(claimer);
+
+            // save claimer
+            DistributeClaimer newRow = new DistributeClaimer();
+            newRow.setDistributeId(savedDistribute.getId());
+            newRow.setChainId(savedDistribute.getChainId());
+            newRow.setClaimerId(claimerMember.getId());
+            newRow.setDistributeAmount(value);
+            newRow.setStatus(DistributeClaimerStatusEnums.CREATING.getData());
+            distributeClaimerRepository.save(newRow);
+        }
+
+        return queryDistributeDetail(savedDistribute.getId());
     }
 
     // update distribute
@@ -312,8 +362,8 @@ public class DistributeService {
         DistributeInfo distributeInfo = distributeManager.requireIdIsValid(id);
 
         // current user TODO test.dev
-        String creatorAddress =  "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
-        if(constantConfig.getLoginFilter())
+        String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
+        if (constantConfig.getLoginFilter())
             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
         Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
         if (distributeInfo.getCreatorId() != member.getId())
@@ -328,6 +378,7 @@ public class DistributeService {
     }
 
     // query detail
+    @Transactional(rollbackOn = Exception.class)
     public DistributeInfoVo queryDistributeDetail(Long id) {
         log.info("[queryDistributeDetail] id :{} ", id);
 
@@ -340,11 +391,22 @@ public class DistributeService {
 
         // query member
         Optional<Member> memberOptional = memberRepository.findById(id);
-        memberOptional.ifPresent(memberRow -> distributeInfoVo.setCreatorAddress(memberRow.getAddress()));
+        memberOptional.ifPresent(memberRow -> distributeInfoVo.setCreator(memberRow.getAddress()));
 
         // query token
         Optional<TokenInfo> tokenOptional = tokenInfoRepository.findById(id);
-        tokenOptional.ifPresent(row -> distributeInfoVo.setTokenAddress(row.getTokenAddress()));
+        tokenOptional.ifPresent(row -> {
+            distributeInfoVo.setToken(row.getTokenAddress());
+            distributeInfoVo.setTokenDecimal(row.getTokenDecimal());
+            distributeInfoVo.setTokenName(row.getTokenName());
+            distributeInfoVo.setTokenSymbol(row.getTokenSymbol());
+        });
+
+        // query claimer
+        Pair<List<String>, List<BigDecimal>> pairRsp = distributeClaimerManager
+                .getAllClaimerAndValueAsListByDistributeId(id);
+        distributeInfoVo.setClaimedAddress(pairRsp.getKey());
+        distributeInfoVo.setClaimedValues(pairRsp.getValue());
 
         return distributeInfoVo;
     }
@@ -390,85 +452,6 @@ public class DistributeService {
         };
 
         return distributeRepository.findAll(queryParam, pageable);
-    }
-
-
-    // query detail
-    public String buildAndSaveMerkleTreeRoot(Long distributeId) {
-        log.info("[buildAndSaveMerkleTreeRoot] distributeId :{} ", distributeId);
-        // check distribute
-        DistributeInfo distributeInfo = distributeManager.requireIdIsValid(distributeId);
-        if (distributeInfo.getStatus() != DistributeStatusEnums.UN_COMPLETED.getData())
-            return distributeInfo.getMerkleRoot();
-
-        // current user TODO test.dev
-        String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
-        if (constantConfig.getLoginFilter())
-            creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
-        Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
-        if (distributeInfo.getCreatorId() != member.getId())
-            throw new BizException(CodeEnums.ONLY_CREATOE);
-
-        // build tree
-        MerkleTree merkleTree = buildTreeByDistributeId(distributeInfo);
-        // build root
-        String merkleRoot =  merkleTree.buildTreeRoot();
-        //save
-        distributeInfo.setMerkleRoot(merkleRoot);
-        distributeRepository.save(distributeInfo);
-        return merkleRoot;
-    }
-
-    // query detail
-    public String generateMerkleProof(Long distributeId,Long claimerId) {
-        log.info("[buildAndSaveMerkleTreeProof] distributeId :{} claimerId:{}", distributeId,claimerId);
-        // check distribute
-        DistributeInfo distributeInfo = distributeManager.requireIdIsValid(distributeId);
-        // build tree
-        MerkleTree merkleTree = buildTreeByDistributeId(distributeInfo);
-        //check member
-        Optional<DistributeClaimer> opRsp = distributeClaimerRepository.findByDistributeAndClaimer(distributeId,claimerId);
-        if(!opRsp.isPresent())
-            throw new BizException(CodeEnums.INVALID_ID);
-        //build proof
-        return merkleTree.generateProof(opRsp.get().getId());
-
-    }
-
-
-    private MerkleTree buildTreeByDistributeId(DistributeInfo distributeInfo) {
-        Long distributeId = distributeInfo.getId();
-        // check token
-        TokenInfo tokenInfo = tokenInfoManager.requireTokenIdIsValid(distributeInfo.getTokenId());
-
-        // get all claimer
-        Optional<List<DistributeClaimer>> allDistributeClaimer = distributeClaimerRepository
-                .findByDistribute(distributeId);
-        if (!allDistributeClaimer.isPresent())
-            throw new BizException(CodeEnums.INVALID_ID);
-
-        // 准备待加入默克尔树的数据块
-        List<String> leaves = new ArrayList<>();
-        for (int i = 0; i < allDistributeClaimer.get().size(); i++) {
-            DistributeClaimer distributeClaimer = allDistributeClaimer.get().get(i);
-            Member claimer = memberManager.requireMembeIdExist(distributeClaimer.getClaimerId());
-            BigInteger tokenAmount = distributeClaimer.getDistributeAmount()
-                    .multiply(BigDecimal.TEN.pow(tokenInfo.getTokenDecimal())).toBigInteger();
-            String leafData = distributeClaimer.getId() + claimer.getAddress() + tokenAmount;
-            leaves.add(leafData);
-        }
-
-        // 使用MerkleTree类的静态方法createTree()生成默克尔树
-        MerkleTree merkleTree = new MerkleTree(leaves);
-        return merkleTree;
-    }
-
-
-    public static String buildDistributeContractId(String address, String message) {
-        // Address addr = new Address(address);
-        // Utf8String utf8Str = new Utf8String(message);
-        return  Hash.sha3(address.concat(message));
-//      return Hash.sha2_256(address.concat(message).getBytes(StandardCharsets.UTF_8)).toString();
     }
 
 }

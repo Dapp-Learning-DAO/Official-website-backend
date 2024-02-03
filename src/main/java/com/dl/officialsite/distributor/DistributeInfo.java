@@ -35,17 +35,17 @@ public class DistributeInfo {
     @Column(length = 66)
     private String message;
     @Column(length = 66)
-//    @NotNull
+    @NotNull
     private String contractKey;
     private String contractAddress;
     private String merkleRoot;
     @NotNull
     private String chainId;
-    @NotNull
+//    @NotNull
     private Long tokenId;
     @NotNull
     private BigDecimal totalAmount;
-    private Integer claimerCount;
+    private Integer number;
     @NotNull
     private Integer distributeType;
     private Integer status;

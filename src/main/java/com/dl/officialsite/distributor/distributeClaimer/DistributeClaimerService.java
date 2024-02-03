@@ -5,7 +5,6 @@ import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.enums.DistributeClaimerStatusEnums;
 import com.dl.officialsite.common.enums.DistributeStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
-import com.dl.officialsite.common.utils.MerkleTree;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.config.ConstantConfig;
 import com.dl.officialsite.distributor.DistributeInfo;
@@ -16,7 +15,6 @@ import com.dl.officialsite.distributor.vo.GetDistributeClaimerByPageReqVo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerRspVo;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberManager;
-import com.dl.officialsite.tokenInfo.TokenInfo;
 import com.dl.officialsite.tokenInfo.TokenInfoManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -32,7 +30,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -163,30 +160,13 @@ public class DistributeClaimerService {
         // GetDistributeClaimerRspVo
         Page<DistributeClaimer> dbRsp = distributeClaimerRepository.findAll(queryParam, pageable);
         List<GetDistributeClaimerRspVo> voList = dbRsp.getContent().stream()
-                .map(this::convertToGetDistributeClaimerRspVo)
+                .map(row -> distributeClaimerManager.convertToGetDistributeClaimerRspVo(row))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(voList, pageable, dbRsp.getTotalElements());
     }
 
-    // query detail
-    public GetDistributeClaimerRspVo queryDistributeClaimerDetail(Long id) {
-        log.info("[queryDistributeClaimerDetail] id :{} ", id);
 
-        // check id
-        DistributeClaimer distributeClaimer = distributeClaimerManager.requireIdIsValid(id);
-
-        return convertToGetDistributeClaimerRspVo(distributeClaimer);
-    }
-
-    private GetDistributeClaimerRspVo convertToGetDistributeClaimerRspVo(DistributeClaimer distributeClaimer) {
-        // check member
-        Member member = memberManager.requireMembeIdExist(distributeClaimer.getClaimerId());
-        // set address
-        GetDistributeClaimerRspVo rspVo = new GetDistributeClaimerRspVo();
-        BeanUtils.copyProperties(distributeClaimer, rspVo);
-        rspVo.setClaimerAddress(member.getAddress());
-        return rspVo;
-    }
+    
 
 }

@@ -1,10 +1,6 @@
 package com.dl.officialsite.distributor;
 
 import com.dl.officialsite.common.base.BaseResponse;
-import com.dl.officialsite.common.enums.DistributeStatusEnums;
-import com.dl.officialsite.common.utils.MerkleTree;
-import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimer;
-import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerManager;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerService;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
@@ -28,7 +24,7 @@ public class DistributeController {
     public static final Logger logger = LoggerFactory.getLogger(DistributeController.class);
 
     @PostMapping("/create")
-    public BaseResponse createDistributor(@Valid @RequestBody DistributeInfo param) {
+    public BaseResponse createDistributor(@Valid @RequestBody DistributeInfoVo param) {
         return BaseResponse.successWithData(distributeService.createDistribute(param));
     }
 
@@ -49,15 +45,5 @@ public class DistributeController {
         return BaseResponse.successWithData(distributeService.queryDistributeByPage(param));
     }
 
-
-    @PostMapping("/merkle/root/{id}")
-    public BaseResponse buildMerkleTree(@PathVariable("id") Long id) {
-        return BaseResponse.successWithData(distributeService.buildAndSaveMerkleTreeRoot(id));
-    }
-
-    @GetMapping("/merkle/proof")
-    public BaseResponse generateMerkleProof(@RequestParam("distributeId") Long distributeId,@RequestParam("claimerId") Long claimerId) {
-        return BaseResponse.successWithData(distributeService.generateMerkleProof(distributeId,claimerId));
-    }
 
 }

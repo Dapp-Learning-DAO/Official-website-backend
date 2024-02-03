@@ -10,6 +10,7 @@ import com.dl.officialsite.distributor.DistributeInfo;
 
 import antlr.Token;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
@@ -28,17 +29,14 @@ public class TokenInfoManager {
     }
 
     public TokenInfo requireIdIsValid(Long id) {
-        // check supper admin TODO
-        //  String address = UserSecurityUtils.getUserLogin().getAddress();
-        //  if (!teamService.checkMemberIsSuperAdmin(address)) {
-        //  throw new BizException(CodeEnums.NOT_THE_ADMIN.getCode(),
-        //  CodeEnums.NOT_THE_ADMIN.getMsg());
-        //  }
-
         Optional<TokenInfo> optionalRsp = this.tokenInfoRepository.findById(id);
         if (!optionalRsp.isPresent())
             throw new BizException(CodeEnums.INVALID_ID);
         return optionalRsp.get();
     }
+
+
+    
+
 
 }
