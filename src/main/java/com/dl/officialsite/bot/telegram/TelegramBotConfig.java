@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Data
-@ConfigurationProperties(prefix = "bot.telegram")
+@ConfigurationProperties(prefix = "bot.telegram", ignoreInvalidFields = true)
 public class TelegramBotConfig {
     private String botToken;
     private Long groupId;

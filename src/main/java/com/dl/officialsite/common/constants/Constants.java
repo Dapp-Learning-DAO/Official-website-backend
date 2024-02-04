@@ -63,4 +63,14 @@ public class Constants {
      * 0:jd 招聘中 1: 已匹配 2:jd 已完成结算 3:jd 已过期 4：jd 已退款 5: 已删除
      */
     public static final int BOUNTY_STATUS_DELETE = 5;
+
+    /**
+     * 申请中
+     */
+    public static final Integer BOUNTY_MEMBER_MAP_STATUS_APPLY = 1;
+
+    /**
+     * 完成
+     */
+    public static final Integer BOUNTY_MEMBER_MAP_STATUS_FINISH = 2;
 }
