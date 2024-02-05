@@ -54,5 +54,4 @@ node/*
 /bin/main
 /.vscode/launch.json
 /src/main/resources/application-cpx.yml
-/src/main/resources/application-dev.yml
-/src/main/resources/*.yml
+/readcpx.md
