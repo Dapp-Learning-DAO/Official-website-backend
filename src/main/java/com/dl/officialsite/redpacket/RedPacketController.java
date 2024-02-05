@@ -119,6 +119,8 @@ public class RedPacketController {
                 if (redPacket.getStatus() != null) {
                     predicates.add(criteriaBuilder.like(root.get("status"), "%" + redPacket.getStatus() + "%"));
                 }
+                predicates.add(criteriaBuilder.isNotNull(root.get("status")));
+
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
