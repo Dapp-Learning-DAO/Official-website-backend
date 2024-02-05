@@ -4,9 +4,12 @@ import javax.persistence.*;
 
 import com.dl.officialsite.login.enums.UserRoleEnum;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.sql.Timestamp;
 
 /**
  * @ClassName TeamMember
@@ -17,6 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@DynamicUpdate
 @Table(name = "team_member")
 public class TeamMember {
 

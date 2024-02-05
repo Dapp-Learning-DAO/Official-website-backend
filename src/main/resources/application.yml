@@ -57,6 +57,8 @@ web3j:
 jobs:
   redpacket:
     corn: "0/10 * * * * ?"
+  distribute:
+    corn: "0/10 * * * * ?"
 oauth:
   registrations:
     github:
