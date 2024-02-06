@@ -59,23 +59,4 @@ public class DistributeClaimerManager {
         return rspVo;
     }
 
-    public Pair<List<String>, List<BigDecimal>> getAllClaimerAndValueAsListByDistributeId(Long distributeId) {
-        Optional<List<DistributeClaimer>> distributeClaimerOp = distributeClaimerRepository
-                .findByDistribute(distributeId);
-        List<String> claimers = new ArrayList<>();
-        List<BigDecimal> values = new ArrayList<>();
-        Pair<List<String>, List<BigDecimal>> pairRsp = Pair.of(claimers, values);
-        if (distributeClaimerOp.isPresent()) {
-            List<DistributeClaimer> rowList = distributeClaimerOp.get();
-            for (int i = 0; i < rowList.size(); i++) {
-                GetDistributeClaimerRspVo rspVo = convertToGetDistributeClaimerRspVo(rowList.get(i));
-                claimers.add(rspVo.getClaimerAddress());
-                values.add(rspVo.getDistributeAmount());
-            }
-        }
-
-        return pairRsp;
-
-    }
-
 }

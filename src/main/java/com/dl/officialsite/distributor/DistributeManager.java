@@ -30,7 +30,7 @@ public class DistributeManager {
     }
 
     List<DistributeInfo> findUnfinishedDistributeByChainId(String chainId) {
-        List<Integer> unFinishStatus = Arrays.asList(DistributeStatusEnums.COMPLETED.getData(),
+        List<Integer> unFinishStatus = Arrays.asList(DistributeStatusEnums.UN_COMPLETED.getData(),
                 DistributeStatusEnums.COMPLETED.getData());
         return this.distributeRepository.findByChainIdAndStatus(chainId, unFinishStatus);
     }
