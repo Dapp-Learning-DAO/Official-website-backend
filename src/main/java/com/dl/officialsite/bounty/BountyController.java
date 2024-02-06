@@ -100,6 +100,13 @@ public class BountyController {
         return BaseResponse.successWithData(page);
     }
 
+    //批准申请
+    @PutMapping("/approve")
+    public BaseResponse approve(@RequestParam Long bountyId, @RequestParam String memberAddress) {
+        bountyService.approve(bountyId, memberAddress);
+        return BaseResponse.successWithData(null);
+    }
+
 
 
 
