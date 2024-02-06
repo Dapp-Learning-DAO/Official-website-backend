@@ -79,6 +79,8 @@ public class BountyService {
             .orElseThrow(() -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
         BountyVo bountyVo = new BountyVo();
         BeanUtils.copyProperties(bounty, bountyVo);
+        List<BountyMemberMap> bountyMemberMas = findBountyMemberMapByBountyId(id);
+        bountyVo.setBountyMemberMaps(bountyMemberMas);
         return bountyVo;
     }
 
@@ -90,6 +92,15 @@ public class BountyService {
         bountyMemberMap.setMemberAddress(address);
         bountyMemberMap.setStatus(Constants.BOUNTY_MEMBER_MAP_STATUS_APPLY);
         bountyMemberMapRepository.save(bountyMemberMap);
+    }
+
+    public List<BountyMemberMap> findBountyMemberMapByBountyId(Long bounty) {
+        return bountyMemberMapRepository.findAll(
+            (Specification<BountyMemberMap>) (root, query, criteriaBuilder) -> {
+                List<Predicate> predicates = new LinkedList<>();
+                predicates.add(criteriaBuilder.equal(root.get("bountyId"), bounty));
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            });
     }
 
     public Page<BountyVo> myBounty(MyBountySearchVo myBountySearchVo, Pageable pageable) {

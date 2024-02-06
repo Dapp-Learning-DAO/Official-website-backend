@@ -11,7 +11,13 @@ import lombok.Data;
 @Data
 public class MyBountySearchVo {
 
+    /**
+     * 申请状态
+     */
     private Integer status;
 
+    /**
+     * 申请人地址
+     */
     private String memberAddress;
 }

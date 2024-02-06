@@ -1,7 +1,9 @@
 package com.dl.officialsite.bounty.vo;
 
+import com.dl.officialsite.bounty.BountyMemberMap;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -45,6 +47,8 @@ public class BountyVo {
 
     // 创建人公司
     private String company;
+
+    private List<BountyMemberMap> bountyMemberMaps;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
