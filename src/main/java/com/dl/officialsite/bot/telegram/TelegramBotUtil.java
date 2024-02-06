@@ -15,25 +15,25 @@ import java.util.Optional;
 @Slf4j
 public class TelegramBotUtil {
 
-    public static Pair<Boolean, String> sendMarkdownV2MessageToGeneral(TelegramBot tgBog, Long chatId, String text) {
-        return sendMarkdownV2MessageToTopic(tgBog, chatId, text, null);
+    public static Pair<Boolean, String> sendMarkdownV2MessageToGeneral(TelegramBot tgBot, Long chatId, String text) {
+        return sendMarkdownV2MessageToTopic(tgBot, chatId, text, null);
     }
 
-    public static Pair<Boolean, String> sendMarkdownV2MessageToTopic(TelegramBot tgBog, Long chatId, String text, Integer messageThreadId) {
-        return sendMessageToTopic(tgBog, chatId, text, ParseMode.MarkdownV2, messageThreadId);
+    public static Pair<Boolean, String> sendMarkdownV2MessageToTopic(TelegramBot tgBot, Long chatId, String text, Integer messageThreadId) {
+        return sendMessageToTopic(tgBot, chatId, text, ParseMode.MarkdownV2, messageThreadId);
     }
 
 
-    public static Pair<Boolean, String> sendMessageToTopic(TelegramBot tgBog, Long chatId, String text, ParseMode parseMode,
+    public static Pair<Boolean, String> sendMessageToTopic(TelegramBot tgBot, Long chatId, String text, ParseMode parseMode,
                                                            Integer messageThreadId) {
-        Assert.notNull(tgBog, "Telegram bot is not initialized.");
+        Assert.notNull(tgBot, "Telegram bot is not initialized.");
 
         SendMessage request = new SendMessage(chatId, text).parseMode(parseMode).replyMarkup(new ForceReply());
         if (messageThreadId != null && messageThreadId != 0) {
             request.messageThreadId(messageThreadId);
         }
 
-        SendResponse sendResponse = tgBog.execute(request);
+        SendResponse sendResponse = tgBot.execute(request);
         boolean result = sendResponse.isOk();
         String message = Optional.ofNullable(sendResponse.description()).orElse("");
 
