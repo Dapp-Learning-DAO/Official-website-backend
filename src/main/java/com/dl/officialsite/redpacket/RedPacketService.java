@@ -41,8 +41,6 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    private Map<String, String> lastUpdateTimestampMap= new HashMap<>();
-
    @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
    public void updateRedpacketStatus()  {
         log.info("schedule task begin --------------------- ");
