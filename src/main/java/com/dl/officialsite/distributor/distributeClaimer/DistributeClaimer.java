@@ -28,8 +28,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-//@DynamicUpdate
-@Table(name = "distribute_claimer", schema = "dl")
+// @DynamicUpdate
+@Table(name = "distribute_claimer", schema = "dl", indexes = {
+        @Index(name = "idx_claimer", columnList = "claimer"),
+        @Index(name = "idx_status", columnList = "status"),
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "uin_distribute_claimer", columnNames = { "distributeId", "claimer" })
+})
 public class DistributeClaimer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +44,7 @@ public class DistributeClaimer {
     @NotNull
     private String chainId;
     @NotNull
-    private Long claimerId;
+    private String claimer;
     private BigDecimal distributeAmount;
     @NotNull
     private Integer status;

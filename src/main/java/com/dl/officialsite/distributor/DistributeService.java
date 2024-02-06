@@ -149,18 +149,20 @@ public class DistributeService {
                 // Access each element in the array
                 JsonObject distributeObject = distributesArray.get(i).getAsJsonObject();
 
-                String id = distributeObject.get("id").getAsString();
+                String redpacketId = distributeObject.get("redpacketId").getAsString();
+                String distributorContractAddress = distributeObject.get("id").getAsString();
                 Long expireTimestamp = distributeObject.get("expireTimestamp").getAsLong();
                 for (int j = 0; j < distributeList.size(); j++) {
                     DistributeInfo distribute = distributeList.get(j);
 
-                    if (!Objects.equals(distribute.getContractKey(), id)) {
+                    if (!Objects.equals(distribute.getContractKey(), redpacketId)) {
                         continue;
                     }
 
                     //
-                    distributeClaimerRepository.updateClaimStatus(distribute.getId(),DistributeClaimerStatusEnums.CLAIMED.getData(), DistributeClaimerStatusEnums.UN_CLAIM.getData());
-
+                    distributeClaimerRepository.updateClaimStatus(distribute.getId(),
+                            DistributeClaimerStatusEnums.CLAIMED.getData(),
+                            DistributeClaimerStatusEnums.UN_CLAIM.getData());
 
                     //// 0 uncompleted 1 completed 2 overtime 3 refund
                     Boolean allClaimed = distributeObject.get("allClaimed").getAsBoolean();
@@ -168,6 +170,7 @@ public class DistributeService {
                     log.info("****** refunded:" + refunded);
                     log.info("****** allClaimed:" + allClaimed);
                     distribute.setStatus(DistributeStatusEnums.COMPLETED.getData());
+                    distribute.setContractAddress(distributorContractAddress);
                     if (expireTimestamp < System.currentTimeMillis() / 1000) {
                         distribute.setStatus(DistributeStatusEnums.TIME_OUT.getData());
                     }
@@ -186,16 +189,16 @@ public class DistributeService {
                         String claimer = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
                         String claimedValue = claimers.get(k).getAsJsonObject().get("amount").getAsString();
 
-                        // check member
-                        Member claimerRow = memberManager.getMemberByAddress(claimer);
-                        if (Objects.isNull(claimerRow)) {
-                            log.warn("invalid claimMember:{} claimedValue:{}", claimer, claimedValue);
-                            continue;
-                        }
+                        // // check member
+                        // Member claimerRow = memberManager.getMemberByAddress(claimer);
+                        // if (Objects.isNull(claimerRow)) {
+                        // log.warn("invalid claimMember:{} claimedValue:{}", claimer, claimedValue);
+                        // continue;
+                        // }
 
                         // check claimerRow
                         Optional<DistributeClaimer> opRsp = distributeClaimerRepository
-                                .findByDistributeAndClaimer(distribute.getId(), claimerRow.getId());
+                                .findByDistributeAndClaimer(distribute.getId(), claimer);
                         if (!opRsp.isPresent()) {
                             log.warn("invalid distribute:${} claimMember:{}", distribute.getId(), claimer);
                             continue;
@@ -222,22 +225,27 @@ public class DistributeService {
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
         switch (chainId) {
-//                      case Constants.CHAIN_ID_OP:  // op
-//               request = new HttpPost("https://api.studio.thegraph.com/query/55957/optimism-merkledistributor/version/latest");
-//               break;
-           case Constants.CHAIN_ID_SEPOLIA: //sepolia
-               request = new HttpPost("https://api.studio.thegraph.com/query/55957/sepolia-merkledistributor/version/latest");
-               break;
-//           case Constants.CHAIN_ID_SCROLL: //scrool
-//               request = new HttpPost("https://api.studio.thegraph.com/query/55957/scroll-merkledistributor/version/latest");
-//               break;
-//           case Constants.CHAIN_ID_ARBITRUM: //arbitrum
-//               request = new HttpPost("https://api.studio.thegraph.com/query/55957/arbitrum-merkledistributor/version/latest");
-//               break;
+            // case Constants.CHAIN_ID_OP: // op
+            // request = new
+            // HttpPost("https://api.studio.thegraph.com/query/55957/optimism-merkledistributor/version/latest");
+            // break;
+            case Constants.CHAIN_ID_SEPOLIA: // sepolia
+                request = new HttpPost(
+                        "https://api.studio.thegraph.com/query/55957/sepolia-merkledistributor/version/latest");
+                break;
+            // case Constants.CHAIN_ID_SCROLL: //scrool
+            // request = new
+            // HttpPost("https://api.studio.thegraph.com/query/55957/scroll-merkledistributor/version/latest");
+            // break;
+            // case Constants.CHAIN_ID_ARBITRUM: //arbitrum
+            // request = new
+            // HttpPost("https://api.studio.thegraph.com/query/55957/arbitrum-merkledistributor/version/latest");
+            // break;
 
         }
 
-        if(request==null)return null;
+        if (request == null)
+            return null;
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
@@ -252,6 +260,7 @@ public class DistributeService {
                 "    name       " +
                 "    creationTimestamp   " +
                 "    expireTimestamp   " +
+                "    redpacketId   " +
                 "    allClaimed  " +
                 "    claimers {" +
                 "    claimer" +
@@ -281,8 +290,8 @@ public class DistributeService {
         String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
         if (constantConfig.getLoginFilter())
             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
-        Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
-        param.setCreatorId(member.getId());
+        // Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
+        param.setCreator(creatorAddress);
         // check ID
         if (!Objects.isNull(param.getId()))
             throw new BizException(CodeEnums.ID_NEED_EMPTY);
@@ -331,13 +340,13 @@ public class DistributeService {
             String claimer = param.getClaimedAddress().get(i);
             BigDecimal value = param.getClaimedValues().get(i);
             // check member
-            Member claimerMember = memberManager.requireMemberAddressExist(claimer);
+            // Member claimerMember = memberManager.requireMemberAddressExist(claimer);
 
             // save claimer
             DistributeClaimer newRow = new DistributeClaimer();
             newRow.setDistributeId(savedDistribute.getId());
             newRow.setChainId(savedDistribute.getChainId());
-            newRow.setClaimerId(claimerMember.getId());
+            newRow.setClaimer(claimer);
             newRow.setDistributeAmount(value);
             newRow.setStatus(DistributeClaimerStatusEnums.CREATING.getData());
             distributeClaimerRepository.save(newRow);
@@ -357,8 +366,8 @@ public class DistributeService {
         String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
         if (constantConfig.getLoginFilter())
             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
-        Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
-        if (distributeInfo.getCreatorId() != member.getId())
+        // Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
+        if (!distributeInfo.getCreator().equals(creatorAddress))
             throw new BizException(CodeEnums.ONLY_CREATOE);
 
         // check status
@@ -434,9 +443,11 @@ public class DistributeService {
         DistributeInfoVo distributeInfoVo = new DistributeInfoVo();
         BeanUtils.copyProperties(distribute, distributeInfoVo);
 
-        // query member
-        Optional<Member> memberOptional = memberRepository.findById(distribute.getCreatorId());
-        memberOptional.ifPresent(memberRow -> distributeInfoVo.setCreator(memberRow.getAddress()));
+        // // query member
+        // Optional<Member> memberOptional =
+        // memberRepository.findById(distribute.getCreatorId());
+        // memberOptional.ifPresent(memberRow ->
+        // distributeInfoVo.setCreator(memberRow.getAddress()));
 
         // query token
         Optional<TokenInfo> tokenOptional = tokenInfoRepository.findById(distribute.getTokenId());
@@ -455,8 +466,9 @@ public class DistributeService {
         if (distributeClaimerOp.isPresent()) {
             List<DistributeClaimer> rowList = distributeClaimerOp.get();
             for (int i = 0; i < rowList.size(); i++) {
-                GetDistributeClaimerRspVo rspVo = distributeClaimerManager.convertToGetDistributeClaimerRspVo(rowList.get(i));
-                claimerList.add(rspVo.getClaimerAddress());
+                GetDistributeClaimerRspVo rspVo = distributeClaimerManager
+                        .convertToGetDistributeClaimerRspVo(rowList.get(i));
+                claimerList.add(rspVo.getClaimer());
                 valueList.add(rspVo.getDistributeAmount());
                 statusList.add(rspVo.getStatus());
             }

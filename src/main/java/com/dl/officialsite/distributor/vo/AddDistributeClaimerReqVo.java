@@ -24,7 +24,7 @@ public class AddDistributeClaimerReqVo {
     @AllArgsConstructor
     @Data
     public static class ClaimerInfo {
-        private Long claimerId;
+        private String claimer;
         private BigDecimal amount;
     }
 }

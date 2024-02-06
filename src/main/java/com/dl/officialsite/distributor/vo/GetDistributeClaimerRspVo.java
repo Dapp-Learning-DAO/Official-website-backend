@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class GetDistributeClaimerRspVo extends DistributeClaimer {
-    private String claimerAddress;
+//    private String claimerAddress;
 }

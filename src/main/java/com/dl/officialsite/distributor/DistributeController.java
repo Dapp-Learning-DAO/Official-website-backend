@@ -24,7 +24,7 @@ public class DistributeController {
     public static final Logger logger = LoggerFactory.getLogger(DistributeController.class);
 
     @PostMapping("/create")
-    public BaseResponse createDistributor(@Valid @RequestBody DistributeInfoVo param) {
+    public BaseResponse createDistributor(@RequestBody DistributeInfoVo param) {
         return BaseResponse.successWithData(distributeService.createDistribute(param));
     }
 
