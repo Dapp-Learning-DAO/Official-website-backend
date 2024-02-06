@@ -26,10 +26,14 @@ services:
       # Chain ids
       - CHAIN_IDS=
       # Telegram
-      - BOT_TOKEN=
-      - GROUP_ID=
-      - SHARING_TEAM_ID=
-      - HIRING_AND_JOB_TEAM_ID=
+      - TG_BOT_TOKEN=
+      - TG_GROUP_ID=
+      - TG_SHARING_TEAM_ID=
+      - TG_HIRING_AND_JOB_TEAM_ID=
+      # Discord
+      - DISCORD_BOT_TOKEN=
+      - DISCORD_GENERAL_CHAT_CHANNEL_ID=
+      - DISCORD_HIRING_AND_APPLYING_CHANNEL_ID=
     ports:
       - '8080:8080'
     volumes:

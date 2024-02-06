@@ -1,6 +1,8 @@
 package com.dl.officialsite.bounty;
 
 
+import com.dl.officialsite.bounty.vo.ApplyBountyVo;
+import com.dl.officialsite.bounty.vo.BountyMemberVo;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
 import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.bounty.vo.MyBountySearchVo;
@@ -69,9 +71,24 @@ public class BountyController {
      * 查询bounty详情
      */
     @GetMapping("/detail")
-    public BaseResponse detail(@RequestParam Long id, @RequestParam String address) {
+    public BaseResponse detail(@RequestParam Long id,
+        @RequestParam String address,
+        @RequestParam(defaultValue = "1") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize) {
         BountyVo bountyVo = bountyService.findById(id);
         return BaseResponse.successWithData(bountyVo);
+    }
+
+    /**
+     * 查询bounty申请人下的信息
+     */
+    @GetMapping("/detail/member")
+    public BaseResponse detailMember(@RequestParam Long id, @RequestParam String address,
+        @RequestParam(defaultValue = "1") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Page<BountyMemberVo> page = bountyService.findBountyMemberMapByBountyId(id,pageable);
+        return BaseResponse.successWithData(page);
     }
 
     /**
@@ -98,6 +115,20 @@ public class BountyController {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Page<BountyVo> page = bountyService.myBounty(myBountySearchVo,pageable);
         return BaseResponse.successWithData(page);
+    }
+
+    //批准申请
+    @PutMapping("/approve")
+    public BaseResponse approve(@RequestParam String address,
+     @RequestBody ApplyBountyVo applyBountyVo   ) {
+        bountyService.approve(applyBountyVo);
+        return BaseResponse.successWithData(null);
+    }
+
+    //查看自己是否投递过这个bounty
+    @GetMapping("/isapply")
+    public BaseResponse isApply(@RequestParam Long bountyId, @RequestParam String address) {
+        return BaseResponse.successWithData(bountyService.isApply(bountyId, address));
     }
 
 
