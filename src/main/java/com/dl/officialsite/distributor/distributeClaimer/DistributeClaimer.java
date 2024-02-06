@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-@DynamicUpdate
+//@DynamicUpdate
 @Table(name = "distribute_claimer", schema = "dl")
 public class DistributeClaimer {
     @Id

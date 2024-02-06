@@ -19,9 +19,9 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 @Entity
-@DynamicUpdate
+//@DynamicUpdate
 @Table(name = "distribute_info", schema = "dl")
 public class DistributeInfo {
     @Id

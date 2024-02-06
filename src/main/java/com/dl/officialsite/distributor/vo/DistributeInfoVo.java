@@ -19,8 +19,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@Entity
+//@EntityListeners(AuditingEntityListener.class)
+//@Entity
 public class DistributeInfoVo extends DistributeInfo {
     private String creator;
 
@@ -39,4 +39,7 @@ public class DistributeInfoVo extends DistributeInfo {
 
     @Convert(converter = StringListConverter.class)
     private List<BigDecimal> claimedValues;
+
+    @Convert(converter = StringListConverter.class)
+    private List<Integer> claimedStatus;
 }

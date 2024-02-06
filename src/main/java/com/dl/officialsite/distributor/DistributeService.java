@@ -47,7 +47,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -64,15 +63,11 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.Hash;
 
 @Service
 @Slf4j
 @Configuration
 public class DistributeService {
-
-    @Autowired
-    private RedPacketRepository redPacketRepository;
 
     @Autowired
     private ChainConfig chainConfig;
@@ -133,7 +128,7 @@ public class DistributeService {
             }
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
             JsonObject data = jsonObject.getAsJsonObject("data");
-            JsonArray distributesArray = data.getAsJsonArray("distributes");
+            JsonArray distributesArray = data.getAsJsonArray("distributors");
             JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
             log.info("lastupdatesArray" + lastupdatesArray.toString());
 
@@ -155,27 +150,33 @@ public class DistributeService {
                 JsonObject distributeObject = distributesArray.get(i).getAsJsonObject();
 
                 String id = distributeObject.get("id").getAsString();
+                Long expireTimestamp = distributeObject.get("expireTimestamp").getAsLong();
                 for (int j = 0; j < distributeList.size(); j++) {
                     DistributeInfo distribute = distributeList.get(j);
 
-                    if (!Objects.equals(distribute.getId(), id)) {
+                    if (!Objects.equals(distribute.getContractKey(), id)) {
                         continue;
                     }
+
+                    //
+                    distributeClaimerRepository.updateClaimStatus(distribute.getId(),DistributeClaimerStatusEnums.CLAIMED.getData(), DistributeClaimerStatusEnums.UN_CLAIM.getData());
+
 
                     //// 0 uncompleted 1 completed 2 overtime 3 refund
                     Boolean allClaimed = distributeObject.get("allClaimed").getAsBoolean();
                     Boolean refunded = distributeObject.get("refunded").getAsBoolean();
-                    log.info("****** refunded" + refunded);
-                    log.info("****** allClaimed" + allClaimed);
-                    if (distribute.getExpireTime() < System.currentTimeMillis() / 1000) {
+                    log.info("****** refunded:" + refunded);
+                    log.info("****** allClaimed:" + allClaimed);
+                    distribute.setStatus(DistributeStatusEnums.COMPLETED.getData());
+                    if (expireTimestamp < System.currentTimeMillis() / 1000) {
                         distribute.setStatus(DistributeStatusEnums.TIME_OUT.getData());
                     }
-                    if (allClaimed) {
-                        distribute.setStatus(DistributeStatusEnums.COMPLETED.getData());
-                    }
+                    // if (allClaimed) {
+                    // }
                     if (refunded) {
                         distribute.setStatus(DistributeStatusEnums.REFUND.getData());
                     }
+                    distribute.setExpireTime(expireTimestamp);
                     distributeRepository.save(distribute);
 
                     JsonArray claimers = distributeObject.getAsJsonArray("claimers");
@@ -183,7 +184,7 @@ public class DistributeService {
                     // ArrayList<String> claimedValueList = new ArrayList<>();
                     for (int k = 0; k < claimers.size(); k++) {
                         String claimer = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
-                        String claimedValue = claimers.get(k).getAsJsonObject().get("claimedValue").getAsString();
+                        String claimedValue = claimers.get(k).getAsJsonObject().get("amount").getAsString();
 
                         // check member
                         Member claimerRow = memberManager.getMemberByAddress(claimer);
@@ -202,25 +203,16 @@ public class DistributeService {
 
                         // check amount
                         DistributeClaimer updateRow = opRsp.get();
-                        if (updateRow.getDistributeAmount().toString() != claimedValue) {
+                        updateRow.setStatus(DistributeClaimerStatusEnums.UN_CLAIM.getData());
+                        if (!StringUtils.equals(updateRow.getDistributeAmount().toString(), claimedValue)) {
                             log.warn("distribute:${} claimMember:{} configAmount:{} claimed:${}", distribute.getId(),
                                     claimer, updateRow.getDistributeAmount(), claimedValue);
                         }
                         updateRow.setDistributeAmount(BigDecimal.valueOf(Long.valueOf(claimedValue)));
-
-                        // check status
-                        if (updateRow.getStatus().toString() != DistributeClaimerStatusEnums.UN_CLAIM.getData()
-                                .toString()) {
-                            log.warn("distribute:${} claimMember:{}  claimed:${} dataStatus:{}", distribute.getId(),
-                                    claimer, claimedValue, updateRow.getStatus().toString());
-                        }
                         updateRow.setStatus(DistributeClaimerStatusEnums.CLAIMED.getData());
 
                         distributeClaimerRepository.save(updateRow);
                     }
-                    // distribute.setClaimedAddress(claimersList);
-                    // distribute.setClaimedValues(claimedValueList);
-
                 }
             }
         }
@@ -230,20 +222,22 @@ public class DistributeService {
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
         switch (chainId) {
-            case Constants.CHAIN_ID_OP: // op
-                request = new HttpPost("https://api.studio.thegraph.com/query/64274/optimism/version/latest");
-                break;
-            case Constants.CHAIN_ID_SEPOLIA: // sepolia
-                request = new HttpPost("https://api.studio.thegraph.com/query/64274/sepolia/version/latest");
-                break;
-            case Constants.CHAIN_ID_SCROLL: // scrool
-                request = new HttpPost("https://api.studio.thegraph.com/query/64274/scroll/version/latest");
-                break;
-            case Constants.CHAIN_ID_ARBITRUM: // arbitrum
-                request = new HttpPost("https://api.studio.thegraph.com/query/64274/arbitrum/version/latest");
-                break;
+//                      case Constants.CHAIN_ID_OP:  // op
+//               request = new HttpPost("https://api.studio.thegraph.com/query/55957/optimism-merkledistributor/version/latest");
+//               break;
+           case Constants.CHAIN_ID_SEPOLIA: //sepolia
+               request = new HttpPost("https://api.studio.thegraph.com/query/55957/sepolia-merkledistributor/version/latest");
+               break;
+//           case Constants.CHAIN_ID_SCROLL: //scrool
+//               request = new HttpPost("https://api.studio.thegraph.com/query/55957/scroll-merkledistributor/version/latest");
+//               break;
+//           case Constants.CHAIN_ID_ARBITRUM: //arbitrum
+//               request = new HttpPost("https://api.studio.thegraph.com/query/55957/arbitrum-merkledistributor/version/latest");
+//               break;
 
         }
+
+        if(request==null)return null;
         request.setHeader("Content-Type", "application/json");
         // Define your GraphQL query
         long currentTimeMillis = System.currentTimeMillis();
@@ -252,20 +246,19 @@ public class DistributeService {
         String creationTimeGtValue = String.valueOf(time);
 
         String graphQL = "\" {" +
-                "  distributes (where: { creationTime_gt: " + creationTimeGtValue + " }) {" +
+                "  distributors (where: { creationTimestamp_gt: " + creationTimeGtValue + " }) {" +
                 "    id     " +
                 "    refunded   " +
-                "   lock " +
                 "    name       " +
-                "    creationTime   " +
+                "    creationTimestamp   " +
+                "    expireTimestamp   " +
                 "    allClaimed  " +
                 "    claimers {" +
                 "    claimer" +
-                "    claimedValue " +
+                "    amount " +
                 "    }" +
                 " }" +
                 "  lastupdates (orderBy : lastupdateTimestamp , orderDirection: desc) { lastupdateTimestamp } " +
-
                 "}\"";
 
         String query = "{ \"query\": " +
@@ -427,15 +420,13 @@ public class DistributeService {
             }
         };
 
-
         Page<DistributeInfo> dbRsp = distributeRepository.findAll(queryParam, pageable);
         List<DistributeInfoVo> voList = dbRsp.getContent().stream()
                 .map(this::convertDistributeInfoToDistributeInfoVo)
                 .collect(Collectors.toList());
         return new PageImpl<>(voList, pageable, dbRsp.getTotalElements());
 
-
-        }
+    }
 
     public DistributeInfoVo convertDistributeInfoToDistributeInfoVo(DistributeInfo distribute) {
 
@@ -456,11 +447,26 @@ public class DistributeService {
             distributeInfoVo.setTokenSymbol(row.getTokenSymbol());
         });
 
-        // query claimer
-        Pair<List<String>, List<BigDecimal>> pairRsp = distributeClaimerManager
-                .getAllClaimerAndValueAsListByDistributeId(distribute.getId());
-        distributeInfoVo.setClaimedAddress(pairRsp.getKey());
-        distributeInfoVo.setClaimedValues(pairRsp.getValue());
+        List<String> claimerList = new ArrayList<>();
+        List<BigDecimal> valueList = new ArrayList<>();
+        List<Integer> statusList = new ArrayList<>();
+        Optional<List<DistributeClaimer>> distributeClaimerOp = distributeClaimerRepository
+                .findByDistribute(distribute.getId());
+        if (distributeClaimerOp.isPresent()) {
+            List<DistributeClaimer> rowList = distributeClaimerOp.get();
+            for (int i = 0; i < rowList.size(); i++) {
+                GetDistributeClaimerRspVo rspVo = distributeClaimerManager.convertToGetDistributeClaimerRspVo(rowList.get(i));
+                claimerList.add(rspVo.getClaimerAddress());
+                valueList.add(rspVo.getDistributeAmount());
+                statusList.add(rspVo.getStatus());
+            }
+
+            // query claimer
+            distributeInfoVo.setClaimedAddress(claimerList);
+            distributeInfoVo.setClaimedValues(valueList);
+            distributeInfoVo.setClaimedStatus(statusList);
+        }
         return distributeInfoVo;
+
     }
 }
