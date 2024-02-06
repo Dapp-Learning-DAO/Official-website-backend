@@ -1,6 +1,7 @@
 package com.dl.officialsite.bounty;
 
 
+import com.dl.officialsite.bounty.vo.ApplyBountyVo;
 import com.dl.officialsite.bounty.vo.BountyMemberVo;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
 import com.dl.officialsite.bounty.vo.BountyVo;
@@ -118,8 +119,9 @@ public class BountyController {
 
     //批准申请
     @PutMapping("/approve")
-    public BaseResponse approve(@RequestParam Long bountyId, @RequestParam String memberAddress) {
-        bountyService.approve(bountyId, memberAddress);
+    public BaseResponse approve(@RequestParam String address,
+     @RequestBody ApplyBountyVo applyBountyVo   ) {
+        bountyService.approve(applyBountyVo);
         return BaseResponse.successWithData(null);
     }
 

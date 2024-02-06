@@ -3,6 +3,7 @@ package com.dl.officialsite.bounty;
 import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
 
+import com.dl.officialsite.bounty.vo.ApplyBountyVo;
 import com.dl.officialsite.bounty.vo.BountyMemberVo;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
 import com.dl.officialsite.bounty.vo.BountyVo;
@@ -148,8 +149,9 @@ public class BountyService {
         });
     }
 
-    public void approve(Long bountyId, String memberAddress) {
-        bountyMemberMapRepository.findByBountyIdAndMemberAddress(bountyId, memberAddress)
+    public void approve(ApplyBountyVo applyBountyVo) {
+        bountyMemberMapRepository.findByBountyIdAndMemberAddress(applyBountyVo.getBountyId(),
+                applyBountyVo.getAddress())
             .ifPresent(bountyMemberMap -> {
                 bountyMemberMap.setStatus(BOUNTY_MEMBER_MAP_STATUS_FINISH);
                 bountyMemberMapRepository.save(bountyMemberMap);
