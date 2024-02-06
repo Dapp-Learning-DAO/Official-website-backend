@@ -1,5 +1,6 @@
 package com.dl.officialsite.bounty;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -12,4 +13,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface BountyMemberMapRepository extends JpaRepository<BountyMemberMap, Long>,
     JpaSpecificationExecutor<BountyMemberMap> {
 
+
+    Optional<BountyMemberMap> findByBountyIdAndMemberAddress(Long bountyId, String memberAddress);
 }
