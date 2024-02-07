@@ -56,9 +56,9 @@ web3j:
 
 jobs:
   redpacket:
-    corn: "0/5 * * * * ?"
+    corn: ${CRON_REDPACKET:0/5 * * * * ?}
   distribute:
-    corn: "0/20 * * * * ?"
+    corn: ${CRON_DIS:0/30 * * * * ?}
 oauth:
   registrations:
     github:
