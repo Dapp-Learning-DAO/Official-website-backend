@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.dl.officialsite.distributor.DistributeInfo;
 
@@ -22,8 +21,6 @@ import java.util.List;
 //@EntityListeners(AuditingEntityListener.class)
 //@Entity
 public class DistributeInfoVo extends DistributeInfo {
-    private String creator;
-
     //usdc or dai
     @NotNull
     private String token;

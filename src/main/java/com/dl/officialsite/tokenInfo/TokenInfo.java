@@ -1,6 +1,5 @@
 package com.dl.officialsite.tokenInfo;
 
-import cn.hutool.core.date.DateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,7 +21,8 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "token_info", schema = "dl")
+@Table(name = "token_info", schema = "dl", uniqueConstraints = {
+        @UniqueConstraint(name = "uin_chain_token", columnNames = { "chainId", "tokenAddress" }) })
 public class TokenInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

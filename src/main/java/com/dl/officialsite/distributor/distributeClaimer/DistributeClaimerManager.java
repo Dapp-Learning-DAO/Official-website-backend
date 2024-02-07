@@ -51,11 +51,11 @@ public class DistributeClaimerManager {
         // set address
         GetDistributeClaimerRspVo rspVo = new GetDistributeClaimerRspVo();
         BeanUtils.copyProperties(distributeClaimer, rspVo);
-
-        // check member
-        Optional<Member> memberOp = memberRepository.findById(distributeClaimer.getClaimerId());
-        if (memberOp.isPresent())
-            rspVo.setClaimerAddress(memberOp.get().getAddress());
+//
+//        // check member
+//        Optional<Member> memberOp = memberRepository.findById(distributeClaimer.getClaimerId());
+//        if (memberOp.isPresent())
+//            rspVo.setClaimerAddress(memberOp.get().getAddress());
         return rspVo;
     }
 

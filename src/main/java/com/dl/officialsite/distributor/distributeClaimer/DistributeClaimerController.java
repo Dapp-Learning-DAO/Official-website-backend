@@ -23,7 +23,7 @@ public class DistributeClaimerController {
 
 
     @PostMapping("/add")
-    public BaseResponse addDistributeClaimer(@Valid @RequestBody AddDistributeClaimerReqVo param) {
+    public BaseResponse addDistributeClaimer( @RequestBody AddDistributeClaimerReqVo param) {
         distributeClaimerService.saveClaimer(param);
         return BaseResponse.success();
     }

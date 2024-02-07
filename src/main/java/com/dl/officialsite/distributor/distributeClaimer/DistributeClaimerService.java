@@ -70,9 +70,11 @@ public class DistributeClaimerService {
         String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
         if (constantConfig.getLoginFilter())
             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
-        Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
-        if (distributeInfo.getCreatorId() != member.getId())
+        if (!distributeInfo.getCreator().equals(creatorAddress))
             throw new BizException(CodeEnums.ONLY_CREATOE);
+        // Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
+        // if (distributeInfo.getCreatorId() != member.getId())
+        // throw new BizException(CodeEnums.ONLY_CREATOE);
 
         // check status
         if (distributeInfo.getStatus() != DistributeStatusEnums.UN_COMPLETED.getData())
@@ -88,11 +90,11 @@ public class DistributeClaimerService {
             if (claimerInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0)
                 throw new BizException(CodeEnums.INVALID_AMOUNT);
             // check member
-            memberManager.requireMembeIdExist(claimerInfo.getClaimerId());
+            // memberManager.requireMembeIdExist(claimerInfo.getClaimerId());
 
             // check record
             Optional<DistributeClaimer> opRsp = distributeClaimerRepository
-                    .findByDistributeAndClaimer(param.getDistributeId(), claimerInfo.getClaimerId());
+                    .findByDistributeAndClaimer(param.getDistributeId(), claimerInfo.getClaimer());
             DistributeClaimer newRow = null;
             if (opRsp.isPresent()) {
                 newRow = opRsp.get();
@@ -101,7 +103,7 @@ public class DistributeClaimerService {
                 newRow = new DistributeClaimer();
                 newRow.setDistributeId(param.getDistributeId());
                 newRow.setChainId(distributeInfo.getChainId());
-                newRow.setClaimerId(claimerInfo.getClaimerId());
+                newRow.setClaimer(claimerInfo.getClaimer());
                 newRow.setDistributeAmount(claimerInfo.getAmount());
                 newRow.setStatus(DistributeClaimerStatusEnums.CREATING.getData());
             }
@@ -129,9 +131,11 @@ public class DistributeClaimerService {
         String creatorAddress = "0x1F7b953113f4dFcBF56a1688529CC812865840e2";
         if (constantConfig.getLoginFilter())
             creatorAddress = UserSecurityUtils.getUserLogin().getAddress();
-        Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
-        if (distributeInfo.getCreatorId() != member.getId())
+        // Member member = this.memberManager.requireMemberAddressExist(creatorAddress);
+        if (!distributeInfo.getCreator().equals(creatorAddress))
             throw new BizException(CodeEnums.ONLY_CREATOE);
+        // if (distributeInfo.getCreatorId() != member.getId())
+        // throw new BizException(CodeEnums.ONLY_CREATOE);
 
         // delete
         distributeClaimerRepository.deleteById(id);
@@ -165,8 +169,5 @@ public class DistributeClaimerService {
 
         return new PageImpl<>(voList, pageable, dbRsp.getTotalElements());
     }
-
-
-    
 
 }
