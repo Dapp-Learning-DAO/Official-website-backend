@@ -28,7 +28,7 @@ repositories {
 
 
 
-dependencies {
+dependencies{
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation ('org.springframework.boot:spring-boot-starter-web')
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -69,6 +69,12 @@ dependencies {
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 	implementation("com.apollographql.apollo:apollo-runtime:2.5.14")
 	//implementation 'org.hibernate.validator:hibernate-validator:6.0.10.Final'
+
+	// Telegram
+	implementation 'com.github.pengrad:java-telegram-bot-api:7.0.1'
+    // Discord
+    implementation "net.dv8tion:JDA:5.0.0-beta.20"
+
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

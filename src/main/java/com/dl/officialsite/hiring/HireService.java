@@ -86,6 +86,8 @@ public class HireService {
 
         hiringSkillRepository.saveAll(hiringSkillList);
         hiringVO.setId(hiring.getId());
+
+        // formate hiringVO and send telegram and discord message
         return hiringVO;
     }
 

@@ -1,6 +1,5 @@
 package com.dl.officialsite.common.enums;
 
-
 /**
  * @ClassName CodeEnums
  * @Author jackchen
@@ -29,7 +28,7 @@ public enum CodeEnums {
     NOT_THE_SUPER_ADMIN("1018", "user not the super admin"),
     NOT_AUTHORITY_FOR_EXIT("1018", "user not the authority for exit"),
     TEAM_JOIN_APPLICATION_NOT_EXIST("1011", "team join application not exist"),
-    //Sharing
+    // Sharing
     SHARING_NOT_FOUND("5001", "Sharing not found"),
     SHARING_NOT_OWNER_OR_ADMIN("5002", "You are not sharing user or admin"),
 
@@ -37,9 +36,24 @@ public enum CodeEnums {
 
     NOT_DELETE_TEAM("1019", "not delete admin team"),
 
-    INVALID_MEMBER("1023", "member is invalid");
+    INVALID_MEMBER("1023", "member is invalid"),
 
+    APPLY_REPEAT("1024", "apply repeat"),
 
+    NOT_FOUND_BOUNTY("2001", "not found bounty"),
+
+    // distribute
+    ID_NEED_EMPTY("6000", "Id need empty"),
+    INVALID_ID("6001", "Id is invalid"),
+    INVALID_CHAIN_ID("6002", "Invalid chain"),
+    DUPLICATE_MESSAGE("6003", "Iuplicate name"),
+    NOT_SUPPORT_MODIFY("6004", "Not support modify"),
+    ONLY_CREATOE("6005", "Only creator"),
+    EMPTY_CLAIMER("6006", "Empty claimer"),
+    INVALID_AMOUNT("6007", "Invalid amount"),
+    DUPLICATE_CLAIMER("6008", "Duplicate claimer"),
+    SIZE_NOT_MATCH("6009", "Size not match"),
+    ;
 
     private String code;
 

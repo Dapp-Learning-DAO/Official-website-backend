@@ -54,6 +54,11 @@ logging:
 web3j:
   client-address: "https://polygon-rpc.com"
 
+jobs:
+  redpacket:
+    corn: ${CRON_REDPACKET:0/5 * * * * ?}
+  distribute:
+    corn: ${CRON_DIS:0/30 * * * * ?}
 oauth:
   registrations:
     github:
@@ -65,6 +70,7 @@ oauth:
     twitter:
       clientId:  "${TWITTER_CLIENT_KEY}"
       clientSecret:  "${TWITTER_CLIENT_SECRET}"
+      callbackUrl: "${TWITTER_CALLBACK_URL}"
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看
@@ -75,5 +81,25 @@ qcloud:
   # 地区选择
   regionName: ${REGION_NAME}
 
+chain:
+  ids: ["11155111","10", "534352", "42161"]
+
 login:
-  filter: true
+  filter: ${LOGIN_FILTER:true}
+
+bot:
+  discord:
+    botToken: ${DISCORD_BOT_TOKEN}
+    channelNameIdMap:
+      general_chat: ${DISCORD_GENERAL_CHAT_CHANNEL_ID}
+      sharing_team: ${DISCORD_SHARING_TEAM_CHANNEL_ID}
+      hiring_and_applying: ${DISCORD_HIRING_AND_APPLYING_CHANNEL_ID}
+  telegram:
+    botToken: ${TG_BOT_TOKEN}
+    groupId: ${TG_GROUP_ID}
+    timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
+    topicNameToMessageThreadIdMap:
+      general_chat: ${TG_GENERAL_CHAT_ID}
+      sharing_team: ${TG_SHARING_TEAM_ID}
+      hiring_and_job_team: ${TG_HIRING_AND_JOB_TEAM_ID}
+

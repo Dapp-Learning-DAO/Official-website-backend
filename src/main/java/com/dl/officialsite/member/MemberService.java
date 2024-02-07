@@ -69,6 +69,8 @@ public class MemberService {
         memberRepository.save(member);
         MemberVo memberVo = new MemberVo();
         BeanUtils.copyProperties(member, memberVo);
+        //todo
+        //add asy event to nofigy in telegram and discord
         return memberVo;
 
     }

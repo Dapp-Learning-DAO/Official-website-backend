@@ -1,6 +1,7 @@
 package com.dl.officialsite.redpacket;
 
 
+import com.dl.officialsite.common.converter.BigIntegerListConverter;
 import com.dl.officialsite.common.converter.StringListConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 import java.util.List;
 
 @Getter
@@ -21,16 +23,17 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "red_packet", schema = "dl", uniqueConstraints = {
-        @UniqueConstraint(name = "name", columnNames = {"name"})
-        })
+@Table(name = "red_packet", schema = "dl",
+         uniqueConstraints = {@UniqueConstraint(name = "id",columnNames = {"id"})}
+)
 
 public class RedPacket {
     @NotNull
     @Column(length = 66)
     private String  name;
 
-    @Column(length = 66)
+    @Column(length = 66)   //
+    @NotNull
     private String id;
 
     @Id
@@ -49,10 +52,13 @@ public class RedPacket {
     @Column(updatable = false)
     private Long createTime;
     @NotNull
+    @Column(length = 66, name = "chain_id")
     private String chainId;
 
-    //0 uncompleted  1 completed  2 超时  3 refund  4 pending
+    // 0 onchain  1 completed  2 超时  3 refund   4/null db
     private  Integer status;
+
+    private Boolean ifRandom;
 
     //小数
     private Double totalAmount;
@@ -60,10 +66,26 @@ public class RedPacket {
     //the number of redpacket
     private Integer number;
 
+    @Column(length = 66)
+    private String hashLock;
+
+    @Column(length = 66)
+    private String message;
     //usdc or dai
     private String token;
+
+    private Integer tokenDecimal;
+
+    private String tokenSymbol;
+
+    private String tokenName;
+
     @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> claimedAddress;
+
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = StringListConverter.class)
+    private List<String> claimedValues;
 
 }
