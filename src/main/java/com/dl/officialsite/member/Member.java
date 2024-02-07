@@ -28,9 +28,9 @@ import static com.dl.officialsite.common.privacy.PrivacyTypeEnum.CUSTOMER;
 @DynamicUpdate
 @Table(name = "member", schema = "dl", uniqueConstraints = {
         @UniqueConstraint(name = "address", columnNames = {"address"}),
-        @UniqueConstraint(name = "tweetId", columnNames = {"tweet_id"}),
-        @UniqueConstraint(name = "githubId", columnNames = {"github_id"}),
-        @UniqueConstraint(name = "nickName", columnNames = {"nick_name"})})
+        @UniqueConstraint(name = "tweetId", columnNames = {"tweetId"}),
+        @UniqueConstraint(name = "githubId", columnNames = {"githubId"}),
+        @UniqueConstraint(name = "nickName", columnNames = {"nickName"})})
 public class Member  implements Serializable
 {
 
