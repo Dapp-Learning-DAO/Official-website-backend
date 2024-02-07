@@ -36,6 +36,9 @@ services:
       - DISCORD_GENERAL_CHAT_CHANNEL_ID=
       - DISCORD_SHARING_TEAM_CHANNEL_ID=
       - DISCORD_HIRING_AND_APPLYING_CHANNEL_ID=
+      # CRON
+      - CRON_REDPACKET=
+      - CRON_DIS=
     ports:
       - '8080:8080'
     volumes:

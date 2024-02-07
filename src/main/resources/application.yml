@@ -56,9 +56,9 @@ web3j:
 
 jobs:
   redpacket:
-    corn: "0/10 * * * * ?"
+    corn: ${CRON_REDPACKET:0/5 * * * * ?}
   distribute:
-    corn: "0/10 * * * * ?"
+    corn: ${CRON_DIS:0/30 * * * * ?}
 oauth:
   registrations:
     github:
@@ -96,7 +96,7 @@ bot:
       hiring_and_applying: ${DISCORD_HIRING_AND_APPLYING_CHANNEL_ID}
   telegram:
     botToken: ${TG_BOT_TOKEN}
-    groupId: ${TG_GROUP_ID:-1002053666506}
+    groupId: ${TG_GROUP_ID}
     timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
     topicNameToMessageThreadIdMap:
       general_chat: ${TG_GENERAL_CHAT_ID}
