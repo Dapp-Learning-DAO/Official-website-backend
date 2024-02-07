@@ -92,12 +92,14 @@ bot:
     botToken: ${DISCORD_BOT_TOKEN}
     channelNameIdMap:
       general_chat: ${DISCORD_GENERAL_CHAT_CHANNEL_ID}
+      sharing_team: ${DISCORD_SHARING_TEAM_CHANNEL_ID}
       hiring_and_applying: ${DISCORD_HIRING_AND_APPLYING_CHANNEL_ID}
   telegram:
     botToken: ${TG_BOT_TOKEN}
     groupId: ${TG_GROUP_ID:-1002053666506}
     timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
     topicNameToMessageThreadIdMap:
+      general_chat: ${TG_GENERAL_CHAT_ID}
       sharing_team: ${TG_SHARING_TEAM_ID}
       hiring_and_job_team: ${TG_HIRING_AND_JOB_TEAM_ID}
 
