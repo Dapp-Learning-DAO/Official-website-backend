@@ -19,5 +19,4 @@ delete  from red_packet;
 
 alter table red_packet drop index  name;
 ALTER TABLE red_packet DROP INDEX id;
-alter table red_packet MODIFY COLUMN id  varchar(66);
 ALTER TABLE red_packet add  unique INDEX id(id);
