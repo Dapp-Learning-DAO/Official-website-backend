@@ -65,7 +65,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
+@Slf4j(topic = "Distribute")
 @Configuration
 public class DistributeService {
 
