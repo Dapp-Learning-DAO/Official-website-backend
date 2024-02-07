@@ -55,3 +55,6 @@ node/*
 /.vscode/launch.json
 /src/main/resources/application-cpx.yml
 /readcpx.md
+./docker-compose.yaml
+./mysql_volume
+

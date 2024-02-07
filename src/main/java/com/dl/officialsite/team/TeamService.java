@@ -133,12 +133,12 @@ public class TeamService {
 
     @Transactional(rollbackOn = Exception.class)
     public void join(TeamMemberJoinVO teamMember) {
-        Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
+        Optional<TeamMember> teamMemberOptional = teamMemberRepository.findByTeamAndMember(
                 teamMember.getTeamId(), teamMember.getMemberId());
 
         // refactor
-        if (optional.isPresent()) {
-            TeamMember teamMember2 = optional.get();
+        if (teamMemberOptional.isPresent()) {
+            TeamMember teamMember2 = teamMemberOptional.get();
             // already apply
             if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
                 throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
@@ -154,14 +154,15 @@ public class TeamService {
             teamMemberRepository.save(teamMember2);
             // 发送邮件
             Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            Member member = memberRepository.findById(teamMember.getMemberId()).get();
             String administratorAddress = team.getAdministrator();
             if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
                 Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
-                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
+                    String subject = "新成员加入通知： team:"+team.getTeamName() + "有新成员"+ member.getNickName()+"加入申请！";
+                    String content = "新成员加入通知: 点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
@@ -176,20 +177,22 @@ public class TeamService {
                         CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
             }
         } else {
+            //todo
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
             teamMember1.setStatus(Constants.REQUEST_TEAM);
             teamMemberRepository.save(teamMember1);
             // 发送邮件
             Team team = teamRepository.findById(teamMember.getTeamId()).get();
+            Member member = memberRepository.findById(teamMember.getMemberId()).get();
             String administratorAddress = team.getAdministrator();
             if (!ObjectUtils.isEmpty(administratorAddress) || !"".equals(administratorAddress)) {
                 Optional<Member> admin = memberRepository.findByAddress(administratorAddress);
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = team.getTeamName() + "团队新成员"+ member1.getNickName()+"加入申请";
-                    String content = "点击此链接去处理" + "https://dapplearning.org/team/admin";
+                    String subject = "新成员加入通知： team:"+team.getTeamName() + "有新成员"+ member.getNickName()+"加入申请！";
+                    String content = "新成员加入通知: 点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
@@ -225,6 +228,7 @@ public class TeamService {
             }
         });
         teamMemberRepository.saveAll(teamMembers);
+        // todo 增加discord telegram 通知   显示成员名 + 加入 + 团队名
     }
 
     public void exit(TeamMemberJoinVO teamMember, String address) {
