@@ -22,11 +22,13 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "distribute_info", schema = "dl", uniqueConstraints = {
+@Table(name = "distribute_info", schema = "dl", indexes = {
+        @Index(name = "idx_status", columnList = "status")
+}, uniqueConstraints = {
         @UniqueConstraint(name = "uin_chain_user_message", columnNames = { "chainId", "creator", "message" }),
         @UniqueConstraint(name = "uin_chain_key", columnNames = { "chainId", "contractKey" }),
         @UniqueConstraint(name = "uin_chain_address", columnNames = { "chainId", "contractAddress" }),
-        @UniqueConstraint(name = "idx_status", columnNames = { "status" })
+
 })
 public class DistributeInfo {
     @Id
