@@ -4,13 +4,12 @@ import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerService;
 import com.dl.officialsite.distributor.vo.DistributeInfoVo;
 import com.dl.officialsite.distributor.vo.GetDistributeByPageReqVo;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/distribute")
@@ -45,5 +44,9 @@ public class DistributeController {
         return BaseResponse.successWithData(distributeService.queryDistributeByPage(param));
     }
 
-
+    @RequestMapping(value = "/query/claimer", method = RequestMethod.GET)
+    BaseResponse getTimeoutDistributeByAddress(@RequestParam String claimer, @RequestParam String chainId, @RequestParam List<Integer> statusList) {
+        List<DistributeInfoVo> result = distributeService.getDistributeByChainAndClaimerAndStatus(claimer, chainId,statusList);
+        return BaseResponse.successWithData(result);
+    }
 }

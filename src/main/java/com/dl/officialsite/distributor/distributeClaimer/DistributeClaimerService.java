@@ -10,14 +10,12 @@ import com.dl.officialsite.config.ConstantConfig;
 import com.dl.officialsite.distributor.DistributeInfo;
 import com.dl.officialsite.distributor.DistributeManager;
 import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo;
-import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo.ClaimerInfo;
+import com.dl.officialsite.distributor.vo.AddDistributeClaimerReqVo.NewClaimerInfo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerByPageReqVo;
 import com.dl.officialsite.distributor.vo.GetDistributeClaimerRspVo;
-import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberManager;
 import com.dl.officialsite.tokenInfo.TokenInfoManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.*;
@@ -81,11 +79,11 @@ public class DistributeClaimerService {
             throw new BizException(CodeEnums.NOT_SUPPORT_MODIFY);
 
         // check claimerId
-        List<ClaimerInfo> claimerList = param.getClaimerList();
+        List<NewClaimerInfo> claimerList = param.getClaimerList();
         if (ArrayUtil.isEmpty(claimerList))
             throw new BizException(CodeEnums.EMPTY_CLAIMER);
         for (int i = 0; i < claimerList.size(); i++) {
-            ClaimerInfo claimerInfo = claimerList.get(i);
+            NewClaimerInfo claimerInfo = claimerList.get(i);
             // check amount
             if (claimerInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0)
                 throw new BizException(CodeEnums.INVALID_AMOUNT);
