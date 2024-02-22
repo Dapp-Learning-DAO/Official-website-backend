@@ -35,6 +35,7 @@ public class DistributeInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
+    @Column(length = 42)
     private String creator;
     @NotNull
     @Column(length = 66)
@@ -45,6 +46,7 @@ public class DistributeInfo {
     @Column(length = 66)
     @NotNull
     private String contractKey;
+    @Column(length = 42)
     private String contractAddress;
     private String merkleRoot;
     @NotNull

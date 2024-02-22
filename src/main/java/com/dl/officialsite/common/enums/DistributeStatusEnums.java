@@ -2,11 +2,11 @@ package com.dl.officialsite.common.enums;
 
 public enum DistributeStatusEnums {
 
-    UN_COMPLETED(0, "unCompleted"),
-    COMPLETED(1, "completed"),
+    UN_COMPLETED(null, "unCompleted"),//default
+    COMPLETED(0, "completed"),
+    ALL_CLAIMED(1, "allClaimed"),
     TIME_OUT(2, "overtime"),
     REFUND(3, "refund");
-
 
     private Integer data;
     private String msg;
