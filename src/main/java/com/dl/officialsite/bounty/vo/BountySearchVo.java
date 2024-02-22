@@ -18,4 +18,7 @@ public class BountySearchVo {
 
     // 标题
     private String title;
+
+    //状态
+    private Integer status;
 }

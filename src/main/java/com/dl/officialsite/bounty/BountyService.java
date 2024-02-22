@@ -70,6 +70,10 @@ public class BountyService {
                 predicates.add(criteriaBuilder.like(root.get("title"),
                     "%" + bountySearchVo.getTitle() + "%"));
             }
+            if (bountySearchVo.getStatus() != null) {
+                predicates.add(
+                    criteriaBuilder.equal(root.get("status"), bountySearchVo.getStatus()));
+            }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable).map(bounty -> {
             BountyVo bountyVo = new BountyVo();
