@@ -61,7 +61,7 @@ public class DistributeService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    private String lastUpdateTimestamp = "";
+    // private String lastUpdateTimestamp = "";
 
     @Autowired
     private DistributeRepository distributeRepository;
@@ -119,16 +119,17 @@ public class DistributeService {
             JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
             log.info("lastupdatesArray" + lastupdatesArray.toString());
 
-            if (lastupdatesArray.size() != 0) {
-                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp")
-                        .getAsString();
+            // if (lastupdatesArray.size() != 0) {
+            // String lastTimestampFromGraph =
+            // lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp")
+            // .getAsString();
 
-                if (Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)) {
-                    return;
-                } else {
-                    lastUpdateTimestamp = lastTimestampFromGraph;
-                }
-            }
+            // if (Objects.equals(lastTimestampFromGraph, lastUpdateTimestamp)) {
+            // return;
+            // } else {
+            // lastUpdateTimestamp = lastTimestampFromGraph;
+            // }
+            // }
 
             List<DistributeInfo> distributeList = distributeManager.findUnfinishedDistributeByChainId(chainId);
             log.info("distributeList size " + distributeList.size());
@@ -151,33 +152,39 @@ public class DistributeService {
                             DistributeClaimerStatusEnums.UN_CLAIM.getData(),
                             DistributeClaimerStatusEnums.CREATING.getData());
 
-                    //// 0 uncompleted 1 completed 2 overtime 3 refund
                     Boolean allClaimed = distributeObject.get("allClaimed").getAsBoolean();
                     Boolean refunded = distributeObject.get("refunded").getAsBoolean();
-                    log.info("******redPacketId:"+redpacketId+" refunded:" + refunded+" allClaimed:" + allClaimed);
-                    distribute.setStatus(DistributeStatusEnums.COMPLETED.getData());
-                    distribute.setContractAddress(distributorContractAddress);
-                    if (expireTimestamp < System.currentTimeMillis() / 1000) {
-                        distribute.setStatus(DistributeStatusEnums.TIME_OUT.getData());
+                    log.info(
+                            "******redPacketId:" + redpacketId + " refunded:" + refunded + " allClaimed:" + allClaimed);
 
+                    if (distribute.getStatus() == null) {
+                        log.info(distribute.getName() + "****** upchain successfully");
+                        distribute.setStatus(DistributeStatusEnums.COMPLETED.getData());
+                        distribute.setContractAddress(distributorContractAddress);
+                    }
+                    if (allClaimed) {
+                        distribute.setStatus(DistributeStatusEnums.ALL_CLAIMED.getData());
+                    }
+                    if (refunded || expireTimestamp < System.currentTimeMillis() / 1000) {
                         // unClaim -> expire
                         distributeClaimerRepository.updateClaimStatus(distribute.getId(),
                                 DistributeClaimerStatusEnums.NOT_CLAIM_AND_EXPIRE.getData(),
                                 DistributeClaimerStatusEnums.UN_CLAIM.getData());
-                    }
+                        if (expireTimestamp < System.currentTimeMillis() / 1000)
+                            distribute.setStatus(DistributeStatusEnums.TIME_OUT.getData());
+                        if (refunded)
+                            distribute.setStatus(DistributeStatusEnums.REFUND.getData());
 
-                    if (refunded) {
-                        distribute.setStatus(DistributeStatusEnums.REFUND.getData());
                     }
                     distribute.setExpireTime(expireTimestamp);
                     distributeRepository.save(distribute);
 
                     JsonArray claimers = distributeObject.getAsJsonArray("claimers");
-                    log.info("******redPacketId:"+redpacketId+" claimersSize:" + claimers.size());
+                    log.info("******redPacketId:" + redpacketId + " claimersSize:" + claimers.size());
                     for (int k = 0; k < claimers.size(); k++) {
                         String claimer = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
                         String claimedValue = claimers.get(k).getAsJsonObject().get("amount").getAsString();
-                        log.info("redpacketId:{} claimer:{} claimed:{}", redpacketId, claimer,claimedValue);
+                        log.info("redpacketId:{} claimer:{} claimed:{}", redpacketId, claimer, claimedValue);
 
                         // check claimerRow
                         Optional<DistributeClaimer> opRsp = distributeClaimerRepository
@@ -319,6 +326,7 @@ public class DistributeService {
         DistributeInfo newDistributeInfo = new DistributeInfo();
         BeanUtils.copyProperties(param, newDistributeInfo);
         newDistributeInfo.setTokenId(tokenId);
+        newDistributeInfo.setNumber(param.getClaimerList().size());
         newDistributeInfo.setStatus(DistributeStatusEnums.UN_COMPLETED.getData());
         DistributeInfo savedDistribute = distributeRepository.save(newDistributeInfo);
 
