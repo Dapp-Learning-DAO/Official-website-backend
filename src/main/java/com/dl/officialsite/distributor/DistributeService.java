@@ -154,8 +154,7 @@ public class DistributeService {
                     //// 0 uncompleted 1 completed 2 overtime 3 refund
                     Boolean allClaimed = distributeObject.get("allClaimed").getAsBoolean();
                     Boolean refunded = distributeObject.get("refunded").getAsBoolean();
-                    log.info("****** refunded:" + refunded);
-                    log.info("****** allClaimed:" + allClaimed);
+                    log.info("******redPacketId:"+redpacketId+" refunded:" + refunded+" allClaimed:" + allClaimed);
                     distribute.setStatus(DistributeStatusEnums.COMPLETED.getData());
                     distribute.setContractAddress(distributorContractAddress);
                     if (expireTimestamp < System.currentTimeMillis() / 1000) {
@@ -174,15 +173,18 @@ public class DistributeService {
                     distributeRepository.save(distribute);
 
                     JsonArray claimers = distributeObject.getAsJsonArray("claimers");
+                    log.info("******redPacketId:"+redpacketId+" claimersSize:" + claimers.size());
                     for (int k = 0; k < claimers.size(); k++) {
                         String claimer = claimers.get(k).getAsJsonObject().get("claimer").getAsString();
                         String claimedValue = claimers.get(k).getAsJsonObject().get("amount").getAsString();
+                        log.info("redpacketId:{} claimer:{} claimed:{}", redpacketId, claimer,claimedValue);
 
                         // check claimerRow
                         Optional<DistributeClaimer> opRsp = distributeClaimerRepository
                                 .findByDistributeAndClaimer(distribute.getId(), claimer);
+
                         if (!opRsp.isPresent()) {
-                            log.warn("invalid distribute:${} claimMember:{}", distribute.getId(), claimer);
+                            log.warn("invalid distribute:{} claimMember:{}", distribute.getId(), claimer);
                             continue;
                         }
 
@@ -190,7 +192,7 @@ public class DistributeService {
                         DistributeClaimer updateRow = opRsp.get();
                         // updateRow.setStatus(DistributeClaimerStatusEnums.UN_CLAIM.getData());
                         if (!StringUtils.equals(updateRow.getDistributeAmount().toString(), claimedValue)) {
-                            log.warn("distribute:${} claimMember:{} configAmount:{} claimed:${}", distribute.getId(),
+                            log.warn("distribute:${} claimMember:{} configAmount:{} claimed:{}", distribute.getId(),
                                     claimer, updateRow.getDistributeAmount(), claimedValue);
                         }
                         // updateRow.setDistributeAmount(BigDecimal.valueOf(Long.valueOf(claimedValue)));
