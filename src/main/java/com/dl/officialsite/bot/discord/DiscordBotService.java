@@ -4,12 +4,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 
 @Component
 @EnableConfigurationProperties(DiscordBotConfig.class)
 public class DiscordBotService {
+
     @Autowired
     private DiscordBotConfig discordBotConfig;
 
