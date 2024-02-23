@@ -1,26 +1,19 @@
 package com.dl.officialsite.distributor.distributeClaimer;
 
-import com.dl.officialsite.common.converter.BigIntegerListConverter;
-import com.dl.officialsite.common.converter.StringListConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -45,10 +38,10 @@ public class DistributeClaimer {
     private String chainId;
     @NotNull
     private String claimer;
+    @Column(precision = 36, scale = 18)
     private BigDecimal distributeAmount;
     @NotNull
     private Integer status;
-
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
