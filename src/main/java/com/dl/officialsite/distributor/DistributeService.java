@@ -48,11 +48,13 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
+@Slf4j(topic = "Distribute")
 @Configuration
 public class DistributeService {
 
@@ -274,7 +276,7 @@ public class DistributeService {
 
     // create new distribute
     @Transactional(rollbackOn = Exception.class)
-    public DistributeInfo createDistribute(DistributeInfoVo param) {
+    public DistributeInfoVo createDistribute(DistributeInfoVo param) {
         log.info("[createDistribute] param : ", String.valueOf(param));
 
         // current user TODO test.dev
@@ -334,9 +336,6 @@ public class DistributeService {
         for (int i = 0; i < param.getClaimerList().size(); i++) {
             String claimer = param.getClaimerList().get(i).getAddress();
             BigDecimal value = param.getClaimerList().get(i).getValue();
-            // check member
-            // Member claimerMember = memberManager.requireMemberAddressExist(claimer);
-
             // save claimer
             DistributeClaimer newRow = new DistributeClaimer();
             newRow.setDistributeId(savedDistribute.getId());
@@ -486,7 +485,7 @@ public class DistributeService {
                         .convertToGetDistributeClaimerRspVo(rowList.get(i));
                 ClaimerInfo claimerInfo = new ClaimerInfo();
                 claimerInfo.setAddress(rspVo.getClaimer());
-                claimerInfo.setValue(rspVo.getDistributeAmount());
+                claimerInfo.setValue(rspVo.getDistributeAmount().stripTrailingZeros());
                 claimerInfo.setStatus(rspVo.getStatus());
                 claimerInfoList.add(claimerInfo);
             }
