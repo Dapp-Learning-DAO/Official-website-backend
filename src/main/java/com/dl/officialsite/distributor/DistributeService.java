@@ -54,7 +54,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
+@Slf4j(topic = "Distribute")
 @Configuration
 public class DistributeService {
 
