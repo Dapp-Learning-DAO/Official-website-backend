@@ -62,6 +62,9 @@ public class Bounty {
     // 创建人公司
     private String company;
 
+    //流支付ID
+    private String streamId;
+
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
