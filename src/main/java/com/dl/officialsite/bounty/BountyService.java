@@ -49,6 +49,8 @@ public class BountyService {
         bounty.setCreator(bountyVo.getCreator().getAddress());
         bountyRepository.save(bounty);
         bountyVo.setId(bounty.getId());
+        Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+        bountyVo.setCreator(creatorInfo);
         return bountyVo;
     }
 
