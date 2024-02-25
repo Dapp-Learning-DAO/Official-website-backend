@@ -224,10 +224,10 @@ public class DistributeService {
                 break;
             case Constants.CHAIN_ID_SEPOLIA: // sepolia
                 request = new HttpPost(
-                        "https://api.studio.thegraph.com/query/64403/sepolia/version/latest");
+                        "https://api.studio.thegraph.com/query/64403/sepolia/v0.0.12");
                 break;
             case Constants.CHAIN_ID_SCROLL: // scroll
-                request = new HttpPost("https://api.studio.thegraph.com/query/64403/scroll/version/latest/graphql");
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/scroll/version/latest");
                 break;
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
                 request = new HttpPost("https://api.studio.thegraph.com/query/64403/arbitrum/version/latest");
