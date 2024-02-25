@@ -46,6 +46,7 @@ public class BountyService {
     public BountyVo add(BountyVo bountyVo, String address) {
         Bounty bounty = new Bounty();
         BeanUtils.copyProperties(bountyVo, bounty);
+        bounty.setCreator(bountyVo.getCreator().getAddress());
         bountyRepository.save(bounty);
         bountyVo.setId(bounty.getId());
         return bountyVo;
@@ -153,6 +154,8 @@ public class BountyService {
                     () -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
             BountyVo bountyVo = new BountyVo();
             BeanUtils.copyProperties(bounty, bountyVo);
+            Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+            bountyVo.setCreator(creatorInfo);
             return bountyVo;
         });
     }
