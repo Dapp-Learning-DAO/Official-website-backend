@@ -55,6 +55,7 @@
     </appender>
 
 
+
     <appender name="DistributeAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/distribute-task.log</file>
@@ -66,6 +67,7 @@
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
+
             <fileNamePattern>${LOGS}/archived/distribute-task-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <maxHistory>30</maxHistory>
@@ -91,12 +93,8 @@
     <logger name="RedPacket" level="info" additivity="false">
         <appender-ref ref="RedPacketAppender" />
     </logger>
-
     <logger name="Distribute" level="info" additivity="false">
         <appender-ref ref="DistributeAppender" />
     </logger>
-
-
-
 
 </configuration>
