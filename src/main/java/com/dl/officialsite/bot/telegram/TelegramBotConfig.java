@@ -36,7 +36,11 @@ public class TelegramBotConfig {
             .writeTimeout(timeoutInSeconds, TimeUnit.SECONDS)     // Set the write timeout
             .build();
 
-        tgBot = new TelegramBot.Builder(botToken).okHttpClient(client).build();
+        if (StringUtils.containsIgnoreCase(botToken,"TG_BOT_TOKEN")){
+            log.warn("Telegram is not configured properly!!!");
+        }else{
+            tgBot = new TelegramBot.Builder(botToken).okHttpClient(client).build();
+        }
         log.info("The Telegram Bot is initialized with detail:[{}]!!!", this.toString());
     }
 

@@ -24,7 +24,11 @@ public class DiscordBotConfig {
     @PostConstruct
     public void init() throws InterruptedException {
         log.info("Start to init Discord bot ...");
-        jdaBot = JDABuilder.createDefault(botToken).build().awaitReady();
+        if (StringUtils.containsIgnoreCase(botToken,"DISCORD_BOT_TOKEN")){
+            log.warn("Discord is not configured properly!!!");
+        }else{
+            jdaBot = JDABuilder.createDefault(botToken).build().awaitReady();
+        }
         log.info("The Discord Bot is initialized and ready with detail:[{}]!!!", this.toString());
     }
 
