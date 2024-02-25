@@ -157,7 +157,7 @@ public class SharingService {
             share.setStatus(status);
             Member member = memberRepository.findByAddress(share.getMemberAddress())
                 .orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_MEMBER));
-            sendMailBySharingStatus(status, member);
+            sendMailBySharingStatus(share, member);
             sharingRepository.save(share);
 
         } else {
@@ -165,14 +165,14 @@ public class SharingService {
         }
     }
 
-    private void sendMailBySharingStatus(Integer status, Member member) {
-        if (status.equals(SharingStatus.SHARING)) {
+    private void sendMailBySharingStatus(Share share, Member member) {
+        if (share.getStatus().equals(SharingStatus.SHARING)) {
             emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Approval",
-                "Congratulations🎉！ Your sharing has been approved, please check it in the "
-                    + "sharing list");
-        } else if (status.equals(SharingStatus.PENDING_REWARD)) {
+                "Congratulations🎉！ Your sharing👉👉👉" + share.getTheme() +"👈👈👈has been approved, "
+                    + "please check it in the sharing list\n https://dapplearning.org/");
+        } else if (share.getStatus().equals(SharingStatus.PENDING_REWARD)) {
             emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Finish",
-                "Congratulations🎉! Please claim your reward");
+                "Congratulations🎉! Please claim your reward\n https://dapplearning.org/");
         }
     }
 }
