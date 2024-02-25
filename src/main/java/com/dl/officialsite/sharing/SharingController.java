@@ -2,15 +2,16 @@ package com.dl.officialsite.sharing;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.login.Auth;
+import com.dl.officialsite.sharing.constant.SharingStatus;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
-import com.dl.officialsite.sharing.model.resp.SharingByUserResp;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/share")
@@ -28,6 +29,7 @@ public class SharingController {
      */
     @PostMapping("create")
     public BaseResponse createSharing(@RequestBody Share share, @RequestParam("address") String address){
+        share.setStatus(SharingStatus.PENDING);
         return BaseResponse.successWithData(this.sharingService.createSharing(share, address));
     }
 
@@ -47,6 +49,26 @@ public class SharingController {
     @Auth("admin")
     public BaseResponse deleteSharing(@RequestParam("shareId") long shareId,  @RequestParam("address") String address){
         this.sharingService.deleteSharing(shareId, address);
+        return BaseResponse.success();
+    }
+
+    /**
+     * 审批分享
+     */
+    @PostMapping("/approve")
+    public BaseResponse approveSharing(@RequestParam("shareId") Long shareId, @RequestParam(
+        "address") String address){
+        sharingService.approveSharing(shareId, address, SharingStatus.SHARING);
+        return BaseResponse.success();
+    }
+
+    /**
+     * 分享完成
+     */
+    @PostMapping("/finish")
+    public BaseResponse finishSharing(@RequestParam("shareId") Long shareId, @RequestParam(
+        "address") String address){
+        sharingService.approveSharing(shareId, address, SharingStatus.PENDING_REWARD);
         return BaseResponse.success();
     }
 
