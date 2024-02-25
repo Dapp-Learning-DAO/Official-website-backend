@@ -218,22 +218,19 @@ public class DistributeService {
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
         switch (chainId) {
-            // case Constants.CHAIN_ID_OP: // op
-            // request = new
-            // HttpPost("https://api.studio.thegraph.com/query/55957/optimism-merkledistributor/version/latest");
-            // break;
+            case Constants.CHAIN_ID_OP: // op
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/optimism/version/latest⁠");
+                break;
             case Constants.CHAIN_ID_SEPOLIA: // sepolia
                 request = new HttpPost(
-                        "https://api.studio.thegraph.com/query/55957/sepolia-merkledistributor/version/latest");
+                        "https://api.studio.thegraph.com/query/64403/sepolia/version/latest⁠");
                 break;
-            // case Constants.CHAIN_ID_SCROLL: //scrool
-            // request = new
-            // HttpPost("https://api.studio.thegraph.com/query/55957/scroll-merkledistributor/version/latest");
-            // break;
-            // case Constants.CHAIN_ID_ARBITRUM: //arbitrum
-            // request = new
-            // HttpPost("https://api.studio.thegraph.com/query/55957/arbitrum-merkledistributor/version/latest");
-            // break;
+            case Constants.CHAIN_ID_SCROLL: // scroll
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/scroll/version/latest/graphql");
+                break;
+            case Constants.CHAIN_ID_ARBITRUM: // arbitrum
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/arbitrum/version/latest⁠");
+                break;
 
         }
 
