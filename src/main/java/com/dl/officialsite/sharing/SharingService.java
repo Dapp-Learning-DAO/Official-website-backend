@@ -9,6 +9,10 @@ import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.team.TeamService;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,12 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -49,7 +47,6 @@ public class SharingService  {
 //        Optional<Member> memberOpt = this.memberRepository.findByAddress(userInfo.getAddress());
 //        Member member = memberOpt.get();
 //        if(member.getId() != req.)
-
         return this.sharingRepository.save(share);
     }
 
@@ -141,5 +138,15 @@ public class SharingService  {
     public Page<Share> findAll(int pageNo, int pageSize) {
          Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("date").descending().and(Sort.by("time").descending()).and(Sort.by("id").descending()));
         return this.sharingRepository.findAllByPage(pageable);
+    }
+
+    public void approveSharing(Long shareId, String address, Integer status) {
+        Share share = this.sharingRepository.findById(shareId).orElseThrow(() -> new BizException(CodeEnums.SHARING_NOT_FOUND));
+        if (teamService.checkMemberIsAdmin(address)) {
+            share.setStatus(status);
+            sharingRepository.save(share);
+        } else {
+            throw new BizException(CodeEnums.NOT_THE_ADMIN);
+        }
     }
 }
