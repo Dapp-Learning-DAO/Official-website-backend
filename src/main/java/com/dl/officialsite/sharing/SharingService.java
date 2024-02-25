@@ -167,7 +167,7 @@ public class SharingService {
 
     private void sendMailBySharingStatus(Share share, Member member) {
         if (share.getStatus().equals(SharingStatus.SHARING)) {
-            emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Approval",
+            emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Approved",
                 "Congratulations🎉！ Your sharing👉👉👉" + share.getTheme() +"👈👈👈has been approved, "
                     + "please check it in the sharing list\n https://dapplearning.org/");
         } else if (share.getStatus().equals(SharingStatus.PENDING_REWARD)) {
