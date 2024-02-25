@@ -157,7 +157,7 @@ public class SharingService {
             share.setStatus(status);
             Member member = memberRepository.findByAddress(share.getMemberAddress())
                 .orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_MEMBER));
-            sendMailBySharingStaus(status, member);
+            sendMailBySharingStatus(status, member);
             sharingRepository.save(share);
 
         } else {
@@ -165,7 +165,7 @@ public class SharingService {
         }
     }
 
-    private void sendMailBySharingStaus(Integer status, Member member) {
+    private void sendMailBySharingStatus(Integer status, Member member) {
         if (status.equals(SharingStatus.SHARING)) {
             emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Approval",
                 "Congratulations🎉！ Your sharing has been approved, please check it in the "
