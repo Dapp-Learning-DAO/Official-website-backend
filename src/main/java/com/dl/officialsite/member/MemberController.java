@@ -190,8 +190,6 @@ public class MemberController {
     }
 
 
-//todo query
-
     // findByNickName
     private Long getMemberId(HttpSession session) {
         Long memberId = (Long) session
