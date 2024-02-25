@@ -10,6 +10,7 @@ import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,6 +82,8 @@ public class BountyService {
             List<BountyMemberMap> bountyMember = findBountyMemberMapByBountyId(
                 bounty.getId());
             bountyVo.setBountyMemberMaps(bountyMember);
+            Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+            bountyVo.setCreator(creatorInfo);
             return bountyVo;
         });
     }

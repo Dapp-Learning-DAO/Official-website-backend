@@ -1,6 +1,8 @@
 package com.dl.officialsite.bounty.vo;
 
 import com.dl.officialsite.bounty.BountyMemberMap;
+import com.dl.officialsite.member.Member;
+import com.dl.officialsite.member.MemberVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
@@ -18,9 +20,9 @@ public class BountyVo {
     private Long id;
 
     /**
-     * 创建岗位人地址
+     * 创建人信息
      */
-    private String creator;
+    private Member creator;
 
     // 标题
     private String title;
