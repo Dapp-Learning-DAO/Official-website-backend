@@ -131,6 +131,13 @@ public class BountyController {
         return BaseResponse.successWithData(bountyService.isApply(bountyId, address));
     }
 
+    //关联流支付与bounty
+    @PostMapping("/link")
+    public BaseResponse link(@RequestParam Long bountyId, @RequestParam String address,
+        @RequestParam String streamId) {
+        bountyService.link(bountyId, address, streamId);
+        return BaseResponse.successWithData(null);
+    }
 
 
 

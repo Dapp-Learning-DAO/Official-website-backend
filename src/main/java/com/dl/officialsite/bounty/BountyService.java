@@ -10,6 +10,7 @@ import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.util.LinkedList;
@@ -189,5 +190,16 @@ public class BountyService {
     public Integer isApply(Long bountyId, String address) {
         return bountyMemberMapRepository.findByBountyIdAndMemberAddress(
             bountyId, address).map(BountyMemberMap::getStatus).orElse(null);
+    }
+
+    public void link(Long bountyId, String address, String streamId) {
+        Bounty bounty = bountyRepository.findById(bountyId).orElseThrow(
+            () -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
+        String loginUser = UserSecurityUtils.getUserLogin().getAddress();
+        if (!bounty.getCreator().equals(loginUser)) {
+            throw new BizException("2003", "not link bounty by creator");
+        }
+        bounty.setStreamId(streamId);
+        bountyRepository.save(bounty);
     }
 }

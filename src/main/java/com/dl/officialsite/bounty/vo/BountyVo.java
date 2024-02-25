@@ -2,7 +2,6 @@ package com.dl.officialsite.bounty.vo;
 
 import com.dl.officialsite.bounty.BountyMemberMap;
 import com.dl.officialsite.member.Member;
-import com.dl.officialsite.member.MemberVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +48,9 @@ public class BountyVo {
 
     // 创建人公司
     private String company;
+
+    //流支付ID
+    private String streamId;
 
     //申请人列表
     private List<BountyMemberMap> bountyMemberMaps;
