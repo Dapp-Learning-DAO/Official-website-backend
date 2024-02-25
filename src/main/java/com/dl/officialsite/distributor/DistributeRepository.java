@@ -1,5 +1,6 @@
 package com.dl.officialsite.distributor;
 
+import com.dl.officialsite.redpacket.RedPacket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ public interface DistributeRepository
 
         @Query(value = "select * from distribute_info where  id in :distributeIds  order by create_time desc", nativeQuery = true)
         List<DistributeInfo> findByIds(@Param("distributeIds") Set<Long> distributeIds);
+
+        @Query(value = "select * from distribute_info where   (status IN (0,2)   or status is null)   and chain_id = ?1  order by create_time desc", nativeQuery = true)
+        List<DistributeInfo> findUnfinishedDistributeByChainId(@Param("chainId") String chainId);
 }

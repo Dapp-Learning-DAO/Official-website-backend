@@ -3,8 +3,10 @@ package com.dl.officialsite.distributor;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.enums.DistributeStatusEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.hiring.application.Application;
 import com.dl.officialsite.redpacket.RedPacket;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.Predicate;
 
 @Service
 @Slf4j
@@ -30,9 +34,8 @@ public class DistributeManager {
     }
 
     List<DistributeInfo> findUnfinishedDistributeByChainId(String chainId) {
-        List<Integer> unFinishStatus = Arrays.asList(DistributeStatusEnums.UN_COMPLETED.getData(),
-                DistributeStatusEnums.COMPLETED.getData());
-        return this.distributeRepository.findByChainIdAndStatus(chainId, unFinishStatus);
+        //TODO DistributeStatusEnums
+        return this.distributeRepository.findUnfinishedDistributeByChainId(chainId);
     }
 
 }

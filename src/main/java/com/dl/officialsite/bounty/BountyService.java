@@ -10,10 +10,10 @@ import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -70,6 +70,10 @@ public class BountyService {
                 predicates.add(criteriaBuilder.like(root.get("title"),
                     "%" + bountySearchVo.getTitle() + "%"));
             }
+            if (bountySearchVo.getStatus() != null) {
+                predicates.add(
+                    criteriaBuilder.equal(root.get("status"), bountySearchVo.getStatus()));
+            }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable).map(bounty -> {
             BountyVo bountyVo = new BountyVo();
@@ -77,6 +81,8 @@ public class BountyService {
             List<BountyMemberMap> bountyMember = findBountyMemberMapByBountyId(
                 bounty.getId());
             bountyVo.setBountyMemberMaps(bountyMember);
+            Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+            bountyVo.setCreator(creatorInfo);
             return bountyVo;
         });
     }
@@ -97,6 +103,8 @@ public class BountyService {
         BeanUtils.copyProperties(bounty, bountyVo);
         List<BountyMemberMap> bountyMemberMas = findBountyMemberMapByBountyId(id);
         bountyVo.setBountyMemberMaps(bountyMemberMas);
+        Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+        bountyVo.setCreator(creatorInfo);
         return bountyVo;
     }
 

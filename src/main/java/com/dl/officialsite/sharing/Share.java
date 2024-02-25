@@ -82,6 +82,11 @@ public class Share {
     private String sharingDoc;
 
     /**
+     * sharing status
+     */
+    private Integer status;
+
+    /**
      * 标签类别
      */
     @Column(name = "label")

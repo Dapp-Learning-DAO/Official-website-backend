@@ -22,11 +22,11 @@ public class DistributeClaimerController {
     private DistributeClaimerManager distributeClaimerManager;
 
 
-    @PostMapping("/add")
-    public BaseResponse addDistributeClaimer( @RequestBody AddDistributeClaimerReqVo param) {
-        distributeClaimerService.saveClaimer(param);
-        return BaseResponse.success();
-    }
+//    @PostMapping("/add")
+//    public BaseResponse addDistributeClaimer( @RequestBody AddDistributeClaimerReqVo param) {
+//        distributeClaimerService.saveClaimer(param);
+//        return BaseResponse.success();
+//    }
 
     @GetMapping(value = "/detail/{id}")
     BaseResponse getDistributeClaimerById(@PathVariable("id") Long id) {
@@ -34,11 +34,11 @@ public class DistributeClaimerController {
         return BaseResponse.successWithData(distributeClaimerInfoVo);
     }
 
-    @DeleteMapping("/{id}")
-    public BaseResponse deletDistributeClaimer(@PathVariable("id") Long id) {
-        distributeClaimerService.deleteDistributeClaimer(id);
-        return BaseResponse.success();
-    }
+//    @DeleteMapping("/{id}")
+//    public BaseResponse deletDistributeClaimer(@PathVariable("id") Long id) {
+//        distributeClaimerService.deleteDistributeClaimer(id);
+//        return BaseResponse.success();
+//    }
 
     @GetMapping(value = "/page")
     BaseResponse getDistributeByPage(@ModelAttribute GetDistributeClaimerByPageReqVo param) {
