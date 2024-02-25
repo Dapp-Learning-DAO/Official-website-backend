@@ -14,7 +14,6 @@ import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -104,6 +103,8 @@ public class BountyService {
         BeanUtils.copyProperties(bounty, bountyVo);
         List<BountyMemberMap> bountyMemberMas = findBountyMemberMapByBountyId(id);
         bountyVo.setBountyMemberMaps(bountyMemberMas);
+        Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+        bountyVo.setCreator(creatorInfo);
         return bountyVo;
     }
 
