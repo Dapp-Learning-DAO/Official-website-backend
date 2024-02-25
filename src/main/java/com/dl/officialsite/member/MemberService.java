@@ -1,5 +1,7 @@
 package com.dl.officialsite.member;
 
+import com.dl.officialsite.bot.constant.BotEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -14,17 +16,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
-import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
 
 @Service
 public class MemberService {
@@ -43,7 +44,7 @@ public class MemberService {
     private MemberManager memberManager;
 
     @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationContext applicationContext;
 
 
 
@@ -75,7 +76,8 @@ public class MemberService {
         memberRepository.save(member);
         MemberVo memberVo = new MemberVo();
         BeanUtils.copyProperties(member, memberVo);
-        applicationEventPublisher.publishEvent(new EventNotify(member,  "Welcome "+ member.getNickName() +" join Dapp-Learning, introduce yourself breifly\n" ));
+        applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM, ChannelEnum.GENERAL,
+            "Welcome "+ member.getNickName() +" join " + "Dapp-Learning, introduce yourself briefly\n" ));
         return memberVo;
 
     }

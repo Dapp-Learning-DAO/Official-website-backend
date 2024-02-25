@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -42,5 +43,10 @@ public class DiscordBotConfig {
             .filter(entry -> StringUtils.containsIgnoreCase(entry.getKey().toLowerCase(), channelNameLowerCase))
             .map(Map.Entry::getValue)
             .findFirst().orElse(null);
+    }
+
+    @Bean
+    public DiscordBotService discordBotService(){
+        return new DiscordBotService(this);
     }
 }
