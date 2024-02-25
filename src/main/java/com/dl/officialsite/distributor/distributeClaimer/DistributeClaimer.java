@@ -37,7 +37,7 @@ public class DistributeClaimer {
     @NotNull
     private String chainId;
     @NotNull
-    @Column(length = 40)
+    @Column(length = 42)
     private String claimer;
     @Column(precision = 36, scale = 18)
     private BigDecimal distributeAmount;
