@@ -110,6 +110,7 @@ public class DistributeService {
         HttpEntity entity = getHttpEntityFromChain(chainId);
         if (entity != null) {
             String jsonResponse = EntityUtils.toString(entity);
+            log.info("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
 
             if (jsonResponse.contains("errors")) {
                 log.info("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
@@ -219,17 +220,17 @@ public class DistributeService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP: // op
-                request = new HttpPost("https://api.studio.thegraph.com/query/64403/optimism/version/latest⁠");
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/optimism/version/latest");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: // sepolia
                 request = new HttpPost(
-                        "https://api.studio.thegraph.com/query/64403/sepolia/version/latest⁠");
+                        "https://api.studio.thegraph.com/query/64403/sepolia/version/latest");
                 break;
             case Constants.CHAIN_ID_SCROLL: // scroll
                 request = new HttpPost("https://api.studio.thegraph.com/query/64403/scroll/version/latest/graphql");
                 break;
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
-                request = new HttpPost("https://api.studio.thegraph.com/query/64403/arbitrum/version/latest⁠");
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/arbitrum/version/latest");
                 break;
 
         }
