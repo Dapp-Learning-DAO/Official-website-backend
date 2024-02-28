@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,7 +93,7 @@ public class SharingController {
     public BaseResponse searchSharing(@RequestBody ShareSearchVo searchVo, @RequestParam(value =
         "pageNo",defaultValue = "1") int pageNumber,
                                       @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<Share> page = sharingService.searchSharing(searchVo, pageable);
         return BaseResponse.successWithData(page);
     }

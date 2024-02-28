@@ -204,7 +204,8 @@ public class SharingService {
                 if (searchVo.getDate() != null) {
                     predicates.add(criteriaBuilder.greaterThan(root.get("date"), searchVo.getDate()));
                 }
-                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+                query.orderBy(criteriaBuilder.desc(root.get("createTime")));
+                return null;
             }, pageable);
         return page;
     }
