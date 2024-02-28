@@ -16,7 +16,6 @@ public class OfficialSiteApplication {
 
 	public static void main(String[] args) {
 
-
 		SpringApplication.run(OfficialSiteApplication.class, args);
 	}
 	
