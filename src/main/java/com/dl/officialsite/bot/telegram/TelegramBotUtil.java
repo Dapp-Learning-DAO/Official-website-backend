@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
 
 import java.util.Optional;
 
+import static com.dl.officialsite.bot.telegram.TelegramMarkdownV2Escaper.escapeText;
+
 
 @Slf4j
 public class TelegramBotUtil {
@@ -28,7 +30,7 @@ public class TelegramBotUtil {
                                                            Integer messageThreadId) {
         Assert.notNull(tgBot, "Telegram bot is not initialized.");
 
-        SendMessage request = new SendMessage(chatId, text).parseMode(parseMode).replyMarkup(new ForceReply());
+        SendMessage request = new SendMessage(chatId, escapeText(text)).parseMode(parseMode).replyMarkup(new ForceReply());
         if (messageThreadId != null && messageThreadId != 0) {
             request.messageThreadId(messageThreadId);
         }
