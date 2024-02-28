@@ -42,12 +42,16 @@ public class NotifyEventListener implements ApplicationListener<EventNotify> {
 
     private void sendMessage(BotEnum botEnum, ChannelEnum channelEnum, String message) {
         switch (botEnum) {
-            case DISCORD ->
+            case DISCORD :
                 Optional.ofNullable(discordBotService).ifPresent(service ->
                     discordBotService.sendMessageToChannel(message,  channelEnum.getChannelName()));
-            case TELEGRAM ->
+                break;
+            case TELEGRAM :
                 Optional.ofNullable(telegramBotService).ifPresent(service ->
                     telegramBotService.sendMarkdownV2MessageToTopic(message, channelEnum.getChannelName()));
+                break;
+            default:
+                break;
         }
     }
 }
