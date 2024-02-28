@@ -6,6 +6,10 @@ import com.dl.officialsite.sharing.constant.SharingStatus;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -81,6 +85,18 @@ public class SharingController {
     public BaseResponse loadSharing(@RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
                                     @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         return BaseResponse.successWithData(this.sharingService.findAll(pageNo,pageSize));
+    }
+
+    /**
+     * 条件搜索
+     */
+    @PostMapping("search")
+    public BaseResponse searchSharing(@RequestBody ShareSearchVo searchVo, @RequestParam(value =
+        "pageNo",defaultValue = "1") int pageNumber,
+                                      @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Page<Share> page = sharingService.searchSharing(searchVo, pageable);
+        return BaseResponse.successWithData(page);
     }
 
     /**
