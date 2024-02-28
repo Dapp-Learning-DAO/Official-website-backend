@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -34,7 +33,7 @@ public class NotifyEventListener implements ApplicationListener<EventNotify> {
 
         if (sourceName.contains("member")) {
             Optional.of(event.getBotEnum())
-                .map(botEnum -> event.getBotEnum() == BotEnum.ALL ? Arrays.asList(BotEnum.values()) : List.of(botEnum))
+                .map(botEnum -> event.getBotEnum() == BotEnum.ALL ? Arrays.asList(BotEnum.values()) : Arrays.asList(botEnum))
                 .ifPresent(
                     botList -> botList.forEach(bot -> sendMessage(bot, event.getChannelEnum(), event.getMsg() + "\n" + socialMedia)));
         }
