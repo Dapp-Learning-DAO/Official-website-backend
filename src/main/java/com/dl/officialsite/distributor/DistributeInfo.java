@@ -54,6 +54,7 @@ public class DistributeInfo {
     @NotNull
     private Long tokenId;
     @NotNull
+    @Column(precision = 36, scale = 18)
     private BigDecimal totalAmount;
     private Integer number;
     @NotNull

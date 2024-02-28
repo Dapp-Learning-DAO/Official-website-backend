@@ -454,6 +454,7 @@ public class DistributeService {
         // copy attribute
         DistributeInfoVo distributeInfoVo = new DistributeInfoVo();
         BeanUtils.copyProperties(distribute, distributeInfoVo);
+        distributeInfoVo.setTotalAmount(distribute.getTotalAmount().stripTrailingZeros());
 
         // // query member
         // Optional<Member> memberOptional =
