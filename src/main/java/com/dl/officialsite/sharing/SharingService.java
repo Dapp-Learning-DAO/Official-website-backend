@@ -11,9 +11,11 @@ import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.constant.SharingStatus;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.team.TeamService;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -168,11 +171,42 @@ public class SharingService {
     private void sendMailBySharingStatus(Share share, Member member) {
         if (share.getStatus().equals(SharingStatus.SHARING)) {
             emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Approved",
-                "Congratulations🎉！ Your sharing👉👉👉" + share.getTheme() +"👈👈👈has been approved, "
+                "Congratulations🎉！ Your sharing👉👉👉" + share.getTheme()
+                    + "👈👈👈has been approved, "
                     + "please check it in the sharing list\n https://dapplearning.org/");
         } else if (share.getStatus().equals(SharingStatus.PENDING_REWARD)) {
             emailService.sendMail(member.getEmail(), "DappLearning Sharing has been Finish",
                 "Congratulations🎉! Please claim your reward\n https://dapplearning.org/");
         }
+    }
+
+    public Page<Share> searchSharing(ShareSearchVo searchVo, Pageable pageable) {
+        Page<Share> page = sharingRepository.findAll(
+            (Specification<Share>) (root, query, criteriaBuilder) -> {
+                List<Predicate> predicates = new LinkedList<>();
+                if (searchVo.getTheme() != null) {
+                    predicates.add(
+                        criteriaBuilder.like(root.get("theme"), "%" + searchVo.getTheme() + "%"));
+                }
+                if (searchVo.getLanguage() != null) {
+                    predicates.add(
+                        criteriaBuilder.equal(root.get("language"), searchVo.getLanguage()));
+                }
+                if (searchVo.getPresenter() != null) {
+                    predicates.add(
+                        criteriaBuilder.like(root.get("presenter"),
+                            "%" + searchVo.getPresenter() + "%"));
+                }
+                if (searchVo.getLabel() != null) {
+                    predicates.add(
+                        criteriaBuilder.like(root.get("label"), "%" + searchVo.getLabel() + "%"));
+                }
+                if (searchVo.getDate() != null) {
+                    predicates.add(criteriaBuilder.greaterThan(root.get("date"), searchVo.getDate()));
+                }
+                query.orderBy(criteriaBuilder.desc(root.get("createTime")));
+                return null;
+            }, pageable);
+        return page;
     }
 }

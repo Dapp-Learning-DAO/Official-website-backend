@@ -1,6 +1,8 @@
 package com.dl.officialsite.sharing.model.req;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Date;
 import lombok.Data;
 
 @Data
@@ -21,13 +23,15 @@ public class UpdateSharingReq {
      * 分享日期
      */
     @ApiModelProperty("分享日期")
-    private String date;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date date;
 
     /**
      * 分享时间（UTC+8）
      */
     @ApiModelProperty("分享时间")
-    private String time;
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
+    private Date time;
 
     /**
      * 分享语言
