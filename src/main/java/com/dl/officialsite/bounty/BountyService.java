@@ -77,6 +77,7 @@ public class BountyService {
                 predicates.add(
                     criteriaBuilder.equal(root.get("status"), bountySearchVo.getStatus()));
             }
+            predicates.add(criteriaBuilder.notEqual(root.get("status"), 5));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable).map(bounty -> {
             BountyVo bountyVo = new BountyVo();

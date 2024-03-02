@@ -47,7 +47,7 @@ public class Share {
      */
     @Column(name = "time", nullable = false)
     @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
-    private Date time;
+    private String time;
 
     /**
      * 分享语言
