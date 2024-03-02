@@ -21,4 +21,5 @@ public class BountySearchVo {
 
     //状态
     private Integer status;
+
 }

@@ -31,7 +31,7 @@ public class UpdateSharingReq {
      */
     @ApiModelProperty("分享时间")
     @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
-    private Date time;
+    private String time;
 
     /**
      * 分享语言
