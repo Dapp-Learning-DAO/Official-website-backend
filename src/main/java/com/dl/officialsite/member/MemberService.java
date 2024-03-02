@@ -1,8 +1,5 @@
 package com.dl.officialsite.member;
 
-import com.dl.officialsite.bot.constant.BotEnum;
-import com.dl.officialsite.bot.constant.ChannelEnum;
-import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
@@ -16,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -42,10 +38,6 @@ public class MemberService {
     private ApplicationRepository applicationRepository;
     @Autowired
     private MemberManager memberManager;
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
 
 
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
@@ -76,8 +68,6 @@ public class MemberService {
         memberRepository.save(member);
         MemberVo memberVo = new MemberVo();
         BeanUtils.copyProperties(member, memberVo);
-        applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM, ChannelEnum.GENERAL,
-            "Welcome "+ member.getNickName() +" join " + "Dapp-Learning, introduce yourself briefly\n" ));
         return memberVo;
 
     }
