@@ -46,7 +46,7 @@ public class BountyService {
     public BountyVo add(BountyVo bountyVo, String address) {
         Bounty bounty = new Bounty();
         BeanUtils.copyProperties(bountyVo, bounty);
-        bounty.setCreator(bountyVo.getCreator().getAddress());
+        bounty.setCreator(address);
         bountyRepository.save(bounty);
         bountyVo.setId(bounty.getId());
         Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
@@ -192,14 +192,16 @@ public class BountyService {
             bountyId, address).map(BountyMemberMap::getStatus).orElse(null);
     }
 
-    public void link(Long bountyId, String address, String streamId) {
-        Bounty bounty = bountyRepository.findById(bountyId).orElseThrow(
+    public void link(BountyVo bountyVo, String address) {
+        Bounty bounty = bountyRepository.findById(bountyVo.getId()).orElseThrow(
             () -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
         //String loginUser = UserSecurityUtils.getUserLogin().getAddress();
         if (!bounty.getCreator().equals(address)) {
             throw new BizException("2003", "not link bounty by creator");
         }
-        bounty.setStreamId(streamId);
+        bounty.setStreamId(bountyVo.getStreamId());
+        bounty.setStreamEnd(bountyVo.getStreamStart());
+        bounty.setStreamEnd(bountyVo.getStreamEnd());
         bountyRepository.save(bounty);
     }
 }
