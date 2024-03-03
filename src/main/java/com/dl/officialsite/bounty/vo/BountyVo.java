@@ -53,11 +53,9 @@ public class BountyVo {
     //流支付ID
     private String streamId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime streamStart;
+    private Long streamStart;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime streamEnd;
+    private Long streamEnd;
 
     private String streamChainId;
 
