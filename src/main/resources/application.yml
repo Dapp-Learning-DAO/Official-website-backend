@@ -6,7 +6,7 @@ server:
     session:
       timeout: 60m
       cookie:
-        max-age: 3600
+        max-age: 7200
 spring:
   datasource:
     url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
@@ -49,7 +49,7 @@ spring:
 
 logging:
   level:
-    org.springframework.security: debug
+    org.springframework.security: info
 
 web3j:
   client-address: "https://polygon-rpc.com"

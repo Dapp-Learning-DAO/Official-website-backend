@@ -27,7 +27,7 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
 
     // @Query(value = "SELECT * FROM share by STR_TO_DATE(date,'%Y/%m/%d') desc,time
     // desc,id desc", countQuery = "SELECT count(*) FROM share", nativeQuery = true)
-    @Query(value = "SELECT * FROM share order by STR_TO_DATE(date,'%Y/%m/%d') desc,time desc,id desc", countQuery = "SELECT count(*) FROM share", nativeQuery = true)
+    @Query(value = "SELECT * FROM share order by date desc,time desc, id desc", countQuery = "SELECT count(*) FROM share", nativeQuery = true)
     Page<Share> findAllByPage(Pageable pageable);
 
     @Query(value = "SELECT presenter, COUNT(*) AS shareCount FROM share GROUP BY presenter ORDER"
