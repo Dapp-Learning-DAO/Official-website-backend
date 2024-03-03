@@ -2,7 +2,6 @@ package com.dl.officialsite.bounty;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Column;
@@ -67,9 +66,9 @@ public class Bounty {
     //流支付ID
     private String streamId;
 
-    private Instant streamStart;
+    private Long streamStart;
 
-    private Instant streamEnd;
+    private Long streamEnd;
 
     private String streamChainId;
 

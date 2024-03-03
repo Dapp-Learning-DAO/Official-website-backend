@@ -54,9 +54,9 @@ public class BountyVo {
     //流支付ID
     private String streamId;
 
-    private Instant streamStart;
+    private Long streamStart;
 
-    private Instant streamEnd;
+    private Long streamEnd;
 
     private String streamChainId;
 
