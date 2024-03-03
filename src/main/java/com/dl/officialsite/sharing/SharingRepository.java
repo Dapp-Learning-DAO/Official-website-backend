@@ -1,13 +1,12 @@
 package com.dl.officialsite.sharing;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecificationExecutor<Share> {
 
@@ -30,4 +29,8 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
     // desc,id desc", countQuery = "SELECT count(*) FROM share", nativeQuery = true)
     @Query(value = "SELECT * FROM share order by STR_TO_DATE(date,'%Y/%m/%d') desc,time desc,id desc", countQuery = "SELECT count(*) FROM share", nativeQuery = true)
     Page<Share> findAllByPage(Pageable pageable);
+
+    @Query(value = "SELECT presenter, COUNT(*) AS shareCount FROM share GROUP BY presenter ORDER"
+        + " BY shareCount DESC LIMIT :rankNumber" ,nativeQuery = true)
+    List<Object[]> findTopGroups(@Param("rankNumber") Integer rankNumber);
 }

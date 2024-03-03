@@ -139,4 +139,7 @@ public class Share {
     @LastModifiedDate
     @Column(updatable = false, nullable = false)
     private Long updateTime;
+
+    @Transient
+    private String shareCount;
 }
