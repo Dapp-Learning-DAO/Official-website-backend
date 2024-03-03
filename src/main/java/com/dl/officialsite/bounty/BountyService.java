@@ -3,6 +3,9 @@ package com.dl.officialsite.bounty;
 import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
 
+import com.dl.officialsite.bot.constant.BotEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.bounty.vo.ApplyBountyVo;
 import com.dl.officialsite.bounty.vo.BountyMemberVo;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
@@ -17,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,11 +41,15 @@ public class BountyService {
 
     private final MemberRepository memberRepository;
 
+    private final ApplicationContext applicationContext;
+
     public BountyService(BountyRepository bountyRepository,
-        BountyMemberMapRepository bountyMemberMapRepository, MemberRepository memberRepository) {
+        BountyMemberMapRepository bountyMemberMapRepository, MemberRepository memberRepository,
+        ApplicationContext applicationContext) {
         this.bountyRepository = bountyRepository;
         this.bountyMemberMapRepository = bountyMemberMapRepository;
         this.memberRepository = memberRepository;
+        this.applicationContext = applicationContext;
     }
 
     public BountyVo add(BountyVo bountyVo, String address) {
@@ -52,6 +60,9 @@ public class BountyService {
         bountyVo.setId(bounty.getId());
         Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
         bountyVo.setCreator(creatorInfo);
+        applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
+            ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
+            "👏Create New Bounty👏\nCreator:  " + creatorInfo.getNickName() + "\n" + "Bounty Name:    " + bounty.getTitle() + "\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
         return bountyVo;
     }
 
