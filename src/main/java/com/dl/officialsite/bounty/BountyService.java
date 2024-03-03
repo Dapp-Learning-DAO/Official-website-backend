@@ -77,6 +77,10 @@ public class BountyService {
                 predicates.add(
                     criteriaBuilder.equal(root.get("status"), bountySearchVo.getStatus()));
             }
+            if (bountySearchVo.getDeadLine() != null) {
+                predicates.add(
+                    criteriaBuilder.lessThan(root.get("deadLine"), bountySearchVo.getDeadLine()));
+            }
             predicates.add(criteriaBuilder.notEqual(root.get("status"), 5));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable).map(bounty -> {
