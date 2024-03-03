@@ -202,6 +202,7 @@ public class BountyService {
         bounty.setStreamId(bountyVo.getStreamId());
         bounty.setStreamEnd(bountyVo.getStreamStart());
         bounty.setStreamEnd(bountyVo.getStreamEnd());
+        bounty.setStreamChainId(bountyVo.getStreamChainId());
         bountyRepository.save(bounty);
     }
 }
