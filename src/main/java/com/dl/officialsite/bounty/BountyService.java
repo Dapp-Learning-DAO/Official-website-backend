@@ -12,6 +12,7 @@ import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.criteria.Predicate;
@@ -63,36 +64,49 @@ public class BountyService {
     }
 
     public Page<BountyVo> search(BountySearchVo bountySearchVo, Pageable pageable) {
-        return bountyRepository.findAll((Specification<Bounty>) (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new LinkedList<>();
-            if (bountySearchVo.getCreator() != null) {
-                predicates.add(
-                    criteriaBuilder.equal(root.get("creator"), bountySearchVo.getCreator()));
-            }
-            if (bountySearchVo.getTitle() != null) {
-                predicates.add(criteriaBuilder.like(root.get("title"),
-                    "%" + bountySearchVo.getTitle() + "%"));
-            }
-            if (bountySearchVo.getStatus() != null) {
-                predicates.add(
-                    criteriaBuilder.equal(root.get("status"), bountySearchVo.getStatus()));
-            }
-            if (bountySearchVo.getDeadLine() != null) {
-                predicates.add(
-                    criteriaBuilder.lessThan(root.get("deadLine"), bountySearchVo.getDeadLine()));
-            }
-            predicates.add(criteriaBuilder.notEqual(root.get("status"), 5));
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        }, pageable).map(bounty -> {
-            BountyVo bountyVo = new BountyVo();
-            BeanUtils.copyProperties(bounty, bountyVo);
-            List<BountyMemberMap> bountyMember = findBountyMemberMapByBountyId(
-                bounty.getId());
-            bountyVo.setBountyMemberMaps(bountyMember);
-            Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
-            bountyVo.setCreator(creatorInfo);
-            return bountyVo;
-        });
+        Specification<Bounty> spec = Specification.where(hasCreator(bountySearchVo.getCreator()))
+            .and(hasTitle(bountySearchVo.getTitle()))
+            .and(hasStatus(bountySearchVo.getStatus()))
+            .and(hasDeadLineBefore(bountySearchVo.getDeadLine()))
+            .and(isNotStatus(5));
+
+        Page<Bounty> bountyPage = bountyRepository.findAll(spec, pageable);
+        return bountyPage.map(this::mapToBountyVo);
+    }
+
+    private Specification<Bounty> hasCreator(String creator) {
+        return (root, query, criteriaBuilder) -> creator != null ?
+            criteriaBuilder.equal(root.get("creator"), creator) : null;
+    }
+
+    private Specification<Bounty> hasTitle(String title) {
+        return (root, query, criteriaBuilder) -> title != null ?
+            criteriaBuilder.like(root.get("title"), "%" + title + "%") : null;
+    }
+
+    private Specification<Bounty> hasStatus(Integer status) {
+        return (root, query, criteriaBuilder) -> status != null ?
+            criteriaBuilder.equal(root.get("status"), status) : null;
+    }
+
+    private Specification<Bounty> hasDeadLineBefore(LocalDateTime deadline) {
+        return (root, query, criteriaBuilder) -> deadline != null ?
+            criteriaBuilder.lessThan(root.get("deadLine"), deadline) : null;
+    }
+
+    private Specification<Bounty> isNotStatus(Integer status) {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.notEqual(root.get("status"), status);
+    }
+
+    private BountyVo mapToBountyVo(Bounty bounty) {
+        BountyVo bountyVo = new BountyVo();
+        BeanUtils.copyProperties(bounty, bountyVo);
+        List<BountyMemberMap> bountyMember = findBountyMemberMapByBountyId(bounty.getId());
+        bountyVo.setBountyMemberMaps(bountyMember);
+        Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
+        bountyVo.setCreator(creatorInfo);
+        return bountyVo;
     }
 
     public void delete(Long id, String address) {
@@ -103,17 +117,11 @@ public class BountyService {
         bountyRepository.save(bounty);
     }
 
-    public BountyVo findById(Long id) {
+    public BountyVo findByIdInternal(Long id) {
         Bounty bounty = bountyRepository.findById(id)
             .orElseThrow(
                 () -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
-        BountyVo bountyVo = new BountyVo();
-        BeanUtils.copyProperties(bounty, bountyVo);
-        List<BountyMemberMap> bountyMemberMas = findBountyMemberMapByBountyId(id);
-        bountyVo.setBountyMemberMaps(bountyMemberMas);
-        Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
-        bountyVo.setCreator(creatorInfo);
-        return bountyVo;
+        return mapToBountyVo(bounty);
     }
 
     public void apply(Long bountyId, String address) {

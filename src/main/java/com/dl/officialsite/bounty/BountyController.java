@@ -75,7 +75,7 @@ public class BountyController {
         @RequestParam String address,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
-        BountyVo bountyVo = bountyService.findById(id);
+        BountyVo bountyVo = bountyService.findByIdInternal(id);
         return BaseResponse.successWithData(bountyVo);
     }
 
