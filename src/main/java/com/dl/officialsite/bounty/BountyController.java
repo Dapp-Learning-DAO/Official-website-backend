@@ -75,7 +75,7 @@ public class BountyController {
         @RequestParam String address,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
-        BountyVo bountyVo = bountyService.findById(id);
+        BountyVo bountyVo = bountyService.findByIdInternal(id);
         return BaseResponse.successWithData(bountyVo);
     }
 
@@ -133,9 +133,8 @@ public class BountyController {
 
     //关联流支付与bounty
     @PostMapping("/link")
-    public BaseResponse link(@RequestParam Long bountyId, @RequestParam String address,
-        @RequestParam String streamId) {
-        bountyService.link(bountyId, address, streamId);
+    public BaseResponse link(@RequestParam String address,@RequestBody BountyVo bountyVo) {
+        bountyService.link(bountyVo, address);
         return BaseResponse.successWithData(null);
     }
 

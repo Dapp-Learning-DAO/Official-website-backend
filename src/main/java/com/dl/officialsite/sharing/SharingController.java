@@ -3,7 +3,9 @@ package com.dl.officialsite.sharing;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.sharing.constant.SharingStatus;
+import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -115,5 +117,14 @@ public class SharingController {
                                                              @RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
                                                              @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
         return BaseResponse.successWithData(this.sharingService.loadSharingByUser(memberAddress, pageNo, pageSize));
+    }
+
+    /**
+     * 分享排行榜
+     */
+    @GetMapping("/rank")
+    public BaseResponse rank(@RequestParam("rankNumber") Integer rankNumber) {
+        List<RankDto> rankList = sharingService.rank(rankNumber);
+        return BaseResponse.successWithData(rankList);
     }
 }

@@ -9,8 +9,11 @@ import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.constant.SharingStatus;
+import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.team.TeamService;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -208,5 +211,17 @@ public class SharingService {
                 return null;
             }, pageable);
         return page;
+    }
+
+    public List<RankDto> rank(Integer rankNumber) {
+        List<Object[]> resultList = sharingRepository.findTopGroups(rankNumber);
+        List<RankDto> rankDtoList = new ArrayList<>();
+        for (Object[] row : resultList) {
+            RankDto rankDto = new RankDto();
+            rankDto.setPresenter((String) row[0]);
+            rankDto.setShareCount((BigInteger) row[1]);
+            rankDtoList.add(rankDto);
+        }
+        return rankDtoList;
     }
 }
