@@ -1,5 +1,9 @@
 package com.dl.officialsite.sharing;
 
+import cn.hutool.core.lang.Assert;
+import com.dl.officialsite.bot.constant.BotEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.base.PagedList;
 import com.dl.officialsite.common.base.Pagination;
 import com.dl.officialsite.common.enums.CodeEnums;
@@ -13,6 +17,7 @@ import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.team.TeamService;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +27,7 @@ import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,11 +54,15 @@ public class SharingService {
 
     private final EmailService emailService;
 
-    public SharingService(EmailService emailService) {
+    private final ApplicationContext applicationContext;
+
+    public SharingService(EmailService emailService, ApplicationContext applicationContext) {
         this.emailService = emailService;
+        this.applicationContext = applicationContext;
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     public Share createSharing(Share share, String address) {
         /**
          * 登陆用户转member
@@ -62,7 +72,15 @@ public class SharingService {
 //        Optional<Member> memberOpt = this.memberRepository.findByAddress(userInfo.getAddress());
 //        Member member = memberOpt.get();
 //        if(member.getId() != req.)
-        return this.sharingRepository.save(share);
+        share = sharingRepository.save(share);
+        Member creatorInfo = memberRepository.findByAddress(address).orElse(null);
+        Assert.isNull(creatorInfo, "not found member by address");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String formatDate = format.format(share.getDate());
+        applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
+            ChannelEnum.SHARING, "➖➖➖➖➖➖➖➖➖➖➖\n" +
+            "👏Create New Share👏\nCreator:   " + creatorInfo.getNickName() + "\n" + "Share Name: " + share.getTheme() + "\n" + "Share Date:  " + formatDate +"\n➖➖➖➖➖➖➖➖➖➖➖"));
+        return share;
     }
 
 
@@ -93,6 +111,13 @@ public class SharingService {
             sharing.setLabel(req.getLabel());
 
             this.sharingRepository.save(sharing);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            String formatDate = format.format(req.getDate());
+            applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
+                ChannelEnum.SHARING, "➖➖➖➖➖➖➖➖➖➖➖\n" +
+                "‼️‼️Edit Share Info‼️‼️\nCreator:   " + member.getNickName() + "\n" + "Share "
+                + "Name: " + req.getTheme() + "\n" + "Share Date:  " + formatDate +"\n"
+                + "➖➖➖➖➖➖➖➖➖➖➖"));
         } else {
             throw new BizException(CodeEnums.SHARING_NOT_OWNER_OR_ADMIN);
         }

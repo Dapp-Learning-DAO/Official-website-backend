@@ -16,7 +16,7 @@ import org.web3j.tx.gas.StaticGasProvider;
  * @ClassName Compent
  * @Author jackchen
  * @Date 2023/11/5 14:30
- * @Description TODO
+ * @Description Constant
  **/
 @Component
 public class Constant {
