@@ -1,18 +1,26 @@
 package com.dl.officialsite.member;
 
 
+import com.dl.officialsite.bot.constant.BotEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.base.BaseResponse;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,9 +37,11 @@ import java.util.Optional;
 @RequestMapping("/member")
 public class MemberController {
 
-
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     private MemberService memberService;
@@ -39,7 +49,7 @@ public class MemberController {
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    BaseResponse getMemberByAddress(@RequestParam String address)  {
+    BaseResponse getMemberByAddress(@RequestParam String address) {
 
         MemberWithTeam member = memberService.getMemberWithTeamInfoByAddress(address);
         if (member == null) {
@@ -50,10 +60,10 @@ public class MemberController {
 
 
     @RequestMapping(value = "/query/privacy", method = RequestMethod.GET)
-    BaseResponse getMemberDetailInfoByAddress(@RequestParam String address)  {
-       MemberVo memberVo =  memberService.getMemberPrivacyInfo(address);
-        if(memberVo ==null ) {
-                return BaseResponse.failWithReason("1001", "no user found");
+    BaseResponse getMemberDetailInfoByAddress(@RequestParam String address) {
+        MemberVo memberVo = memberService.getMemberPrivacyInfo(address);
+        if (memberVo == null) {
+            return BaseResponse.failWithReason("1001", "no user found");
         }
         return BaseResponse.successWithData(memberVo);
     }
@@ -72,7 +82,7 @@ public class MemberController {
                                         @RequestParam(defaultValue = "1") Integer pageNumber,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,Sort.by(Sort.Direction.ASC, "createTime"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.ASC, "createTime"));
         Specification<Member> queryParam = new Specification<Member>() {
             @Override
             public Predicate toPredicate(Root<Member> root, CriteriaQuery<?> criteriaQuery,
@@ -117,11 +127,15 @@ public class MemberController {
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
 
 
-        if(member.getGithubId() != null && member.getGithubId().equals("")) {
+        if (member.getGithubId() != null && member.getGithubId().equals("")) {
             member.setGithubId(null);
         }
-            MemberVo _member = memberService.save(member);
-            return BaseResponse.successWithData(_member);
+        MemberVo _member = memberService.save(member);
+
+        //todo 看这里
+        applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM, ChannelEnum.GENERAL,
+            "Welcome " + member.getNickName() + " join " + "Dapp-Learning, introduce yourself briefly.\n"));
+        return BaseResponse.successWithData(_member);
     }
 
 
@@ -131,43 +145,43 @@ public class MemberController {
 
         if (memberData.isPresent()) {
             Member _member = memberData.get();
-            if(member.getGithubId()!=null) {
+            if (member.getGithubId() != null) {
                 _member.setGithubId(member.getGithubId());
             }
-            if(member.getTweetId()!=null) {
+            if (member.getTweetId() != null) {
                 _member.setTweetId(member.getTweetId());
             }
-            if(member.getWechatId()!=null) {
+            if (member.getWechatId() != null) {
                 _member.setWechatId(member.getWechatId());
             }
-            if(member.getTelegramId()!=null) {
+            if (member.getTelegramId() != null) {
                 _member.setTelegramId(member.getTelegramId());
             }
-            if(member.getNickName()!=null) {
+            if (member.getNickName() != null) {
                 _member.setNickName(member.getNickName());
             }
-            if(member.getTechStack()!= null) {
+            if (member.getTechStack() != null) {
                 _member.setTechStack(member.getTechStack());
             }
-            if (member.getPrograming()!=null) {
+            if (member.getPrograming() != null) {
                 _member.setPrograming(member.getPrograming());
             }
-            if (member.getEmail()!=null) {
+            if (member.getEmail() != null) {
                 _member.setEmail(member.getEmail());
             }
-            if (member.getCity()!=null) {
+            if (member.getCity() != null) {
                 _member.setCity(member.getCity());
             }
-            if (member.getInterests()!= null) {
+            if (member.getInterests() != null) {
                 _member.setInterests(member.getInterests());
             }
-            if (member.getAvatar()!= null) {
+            if (member.getAvatar() != null) {
                 _member.setAvatar(member.getAvatar());
             }
-            if (member.getResume()!= null) {
+            if (member.getResume() != null) {
                 _member.setResume(member.getResume());
             }
-            if (member.getWorkStatus()!= null) {
+            if (member.getWorkStatus() != null) {
                 _member.setWorkStatus(member.getWorkStatus());
             }
             if (member.getGithubStatus() != null) {
@@ -178,7 +192,7 @@ public class MemberController {
             }
             return BaseResponse.successWithData(memberService.save(_member));
         } else {
-            return BaseResponse.failWithReason("1001","no user found");
+            return BaseResponse.failWithReason("1001", "no user found");
         }
     }
 
@@ -189,8 +203,6 @@ public class MemberController {
         return BaseResponse.success();
     }
 
-
-//todo query
 
     // findByNickName
     private Long getMemberId(HttpSession session) {

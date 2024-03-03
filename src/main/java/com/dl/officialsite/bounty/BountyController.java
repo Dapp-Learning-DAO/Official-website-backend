@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class BountyController {
 
-    //todo 是否可以批量新增bounty
-    //todo 是否可以批量申请bounty，一个人最多申请几个？
     private final BountyService bountyService;
 
     public BountyController(BountyService bountyService) {
@@ -75,7 +73,7 @@ public class BountyController {
         @RequestParam String address,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
-        BountyVo bountyVo = bountyService.findById(id);
+        BountyVo bountyVo = bountyService.findByIdInternal(id);
         return BaseResponse.successWithData(bountyVo);
     }
 
@@ -131,6 +129,12 @@ public class BountyController {
         return BaseResponse.successWithData(bountyService.isApply(bountyId, address));
     }
 
+    //关联流支付与bounty
+    @PostMapping("/link")
+    public BaseResponse link(@RequestParam String address,@RequestBody BountyVo bountyVo) {
+        bountyService.link(bountyVo, address);
+        return BaseResponse.successWithData(null);
+    }
 
 
 

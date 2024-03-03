@@ -1,5 +1,8 @@
 package com.dl.officialsite.team;
 
+import com.dl.officialsite.bot.constant.BotEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -28,6 +31,7 @@ import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -60,12 +64,19 @@ public class TeamService {
     @Autowired
     private MemberManager memberManager;
 
+    private final ApplicationContext applicationContext;
+
+    public TeamService(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
     @Transactional
     public Team add(Team team) {
         // check address
         Member member = this.memberManager.getMemberByAddress(team.getAdministrator());
         if (member == null) {
-            throw new BizException(CodeEnums.NOT_FOUND_MEMBER.getCode(), CodeEnums.NOT_FOUND_MEMBER.getMsg());
+            throw new BizException(CodeEnums.NOT_FOUND_MEMBER.getCode(),
+                CodeEnums.NOT_FOUND_MEMBER.getMsg());
         }
         teamRepository.save(team);
         TeamMember teamMember = new TeamMember();
@@ -78,21 +89,22 @@ public class TeamService {
 
     }
 
-    public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(String teamName, int status) {
+    public List<TeamsWithMembers> getTeamWithMembersByTeamNameAndStatus(String teamName,
+        int status) {
         // find team
         Specification<Team> queryParam = new Specification<Team>() {
             @Override
             public javax.persistence.criteria.Predicate toPredicate(
-                    Root<Team> root,
-                    CriteriaQuery<?> criteriaQuery,
-                    CriteriaBuilder criteriaBuilder) {
+                Root<Team> root,
+                CriteriaQuery<?> criteriaQuery,
+                CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (teamName != null) {
                     predicates.add(criteriaBuilder.like(root.get("teamName"),
-                            "%" + teamName + "%"));
+                        "%" + teamName + "%"));
                 }
                 return criteriaBuilder.and(predicates.toArray(
-                        new javax.persistence.criteria.Predicate[predicates.size()]));
+                    new javax.persistence.criteria.Predicate[predicates.size()]));
             }
         };
 
@@ -104,7 +116,8 @@ public class TeamService {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             BeanUtils.copyProperties(team, teamsMembersVo);
 
-            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(), status);
+            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(),
+                status);
             List<Member> members = memberRepository.findByIdIn(memberIds);
             teamsMembersVo.setMembers(members);
             teamsWithMembers.add(teamsMembersVo);
@@ -121,8 +134,9 @@ public class TeamService {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             BeanUtils.copyProperties(team, teamsMembersVo);
 
-            List<Long> memberIds = teamMemberRepository.findAll().stream().map(x -> x.getMemberId())
-                    .collect(Collectors.toList());
+            List<Long> memberIds = teamMemberRepository.findAll().stream()
+                .map(x -> x.getMemberId())
+                .collect(Collectors.toList());
             List<Member> members = memberRepository.findByIdIn(memberIds);
             teamsMembersVo.setMembers(members);
             teamsWithMembers.add(teamsMembersVo);
@@ -134,7 +148,7 @@ public class TeamService {
     @Transactional(rollbackOn = Exception.class)
     public void join(TeamMemberJoinVO teamMember) {
         Optional<TeamMember> teamMemberOptional = teamMemberRepository.findByTeamAndMember(
-                teamMember.getTeamId(), teamMember.getMemberId());
+            teamMember.getTeamId(), teamMember.getMemberId());
 
         // refactor
         if (teamMemberOptional.isPresent()) {
@@ -142,11 +156,11 @@ public class TeamService {
             // already apply
             if (teamMember2.getStatus() == Constants.REQUEST_TEAM) {
                 throw new BizException(CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getCode(),
-                        CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
+                    CodeEnums.MEMBER_ALREADY_REQUEST_TEAM.getMsg());
             }
             if (teamMember2.getStatus() == Constants.IN_TEAM) {
                 throw new BizException(CodeEnums.MEMBER_ALREADY_IN_TEAM.getCode(),
-                        CodeEnums.MEMBER_ALREADY_IN_TEAM.getMsg());
+                    CodeEnums.MEMBER_ALREADY_IN_TEAM.getMsg());
             }
 
             // removed or rejected before
@@ -161,23 +175,29 @@ public class TeamService {
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = "新成员加入通知： team:"+team.getTeamName() + "有新成员"+ member.getNickName()+"加入申请！";
-                    String content = "新成员加入通知: 点击此链接去处理" + "https://dapplearning.org/team/admin";
+                    String subject = "新成员加入通知： team:" + team.getTeamName() + "有新成员"
+                        + member.getNickName() + "加入申请！";
+                    String content =
+                        "新成员加入通知: 点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
                     emailService.memberJoinTeam(mailAddress, subject, content);
+                    applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
+                        ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
+                        "👏New Member Join Team👏\nMemberName:  " + member.getNickName() +
+                        "\n" + "Team Name:    " + team.getTeamName() + "\n" + "Please team admin"
+                        + " to approve\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                            CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
                 }
 
             } else {
                 throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
             }
         } else {
-            //todo
             TeamMember teamMember1 = new TeamMember();
             BeanUtils.copyProperties(teamMember, teamMember1);
             teamMember1.setStatus(Constants.REQUEST_TEAM);
@@ -191,20 +211,27 @@ public class TeamService {
                 if (admin.isPresent()) {
                     Member member1 = admin.get();
                     String email = member1.getEmail();
-                    String subject = "新成员加入通知： team:"+team.getTeamName() + "有新成员"+ member.getNickName()+"加入申请！";
-                    String content = "新成员加入通知: 点击此链接去处理" + "https://dapplearning.org/team/admin";
+                    String subject = "新成员加入通知： team:" + team.getTeamName() + "有新成员"
+                        + member.getNickName() + "加入申请！";
+                    String content =
+                        "新成员加入通知: 点击此链接去处理" + "https://dapplearning.org/team/admin";
                     List<String> mailAddress = new ArrayList<>();
                     mailAddress.add(email);
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
                     emailService.memberJoinTeam(mailAddress, subject, content);
+                    applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
+                        ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
+                        "👏New Member Join Team👏\nMemberName:  " + member.getNickName() +
+                        "\n" + "Team Name:    " + team.getTeamName() + "\n" + "Please team admin"
+                        + " to approve\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                            CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
                 }
 
             } else {
                 throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
             }
         }
 
@@ -217,14 +244,14 @@ public class TeamService {
         List<TeamMember> teamMembers = new ArrayList<>();
         memberIds.stream().forEach(memberId -> {
             Optional<TeamMember> optional = teamMemberRepository.findByTeamAndMember(
-                    teamMemberApproveVO.getTeamId(), memberId);
+                teamMemberApproveVO.getTeamId(), memberId);
             if (optional.isPresent()) {
                 TeamMember teamMember = optional.get();
                 teamMember.setStatus(teamMemberApproveVO.getStatus());
                 teamMembers.add(teamMember);
             } else {
                 throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
-                        CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
+                    CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
             }
         });
         teamMemberRepository.saveAll(teamMembers);
@@ -238,19 +265,23 @@ public class TeamService {
             // only self or admin
             if (checkMemberIsAdmin(address) || member.get().getAddress().equals(address)) {
                 teamMemberRepository.findByTeamAndMember(teamMember.getTeamId(),
-                        teamMember.getMemberId()).ifPresent(teamMember1 -> {
-                            teamMember1.setStatus(Constants.EXIT_TEAM);
-                            teamMemberRepository.save(teamMember1);
-                        });
+                    teamMember.getMemberId()).ifPresent(teamMember1 -> {
+                    teamMember1.setStatus(Constants.EXIT_TEAM);
+                    teamMemberRepository.save(teamMember1);
+                });
 
                 Team team = teamRepository.findById(teamMember.getTeamId()).get();
                 Member member1 = memberRepository.findById(teamMember.getMemberId()).get();
                 String subject = team.getTeamName() + "团队成员退出";
                 String text = member1.getNickName() + "成员退出";
                 emailService.sendMail(member.get().getEmail(), subject, text);
+                applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
+                    ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
+                    "🥀🥀Member Exit Team🥀🥀\nMemberName:  " + member1.getNickName() +
+                    "\n" + "Team Name:    " + team.getTeamName() + "\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
             } else {
                 throw new BizException(CodeEnums.NOT_AUTHORITY_FOR_EXIT.getCode(),
-                        CodeEnums.NOT_AUTHORITY_FOR_EXIT.getMsg());
+                    CodeEnums.NOT_AUTHORITY_FOR_EXIT.getMsg());
             }
 
         }
@@ -258,7 +289,7 @@ public class TeamService {
 
     public List<Member> getNeedApproveMembers(Long teamId) {
         List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(teamId,
-                Constants.REQUEST_TEAM);
+            Constants.REQUEST_TEAM);
         List<Member> members = memberRepository.findByIdIn(memberIds);
         return members;
     }
@@ -302,7 +333,8 @@ public class TeamService {
             return false;
         }
         // id 0
-        Team team = teamRepository.findById(1L).orElseThrow(() -> new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
+        Team team = teamRepository.findById(1L)
+            .orElseThrow(() -> new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
                 CodeEnums.TEAM_NOT_EXIST.getMsg()));
         String admin = team.getAdministrator();
         if (admin.equals(address)) {
@@ -317,7 +349,8 @@ public class TeamService {
             TeamsWithMembers teamsMembersVo = new TeamsWithMembers();
             Team team = optional.get();
             List<Member> members = new ArrayList<>();
-            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(), Constants.IN_TEAM);
+            List<Long> memberIds = teamMemberRepository.findByTeamIdAndStatus(team.getId(),
+                Constants.IN_TEAM);
             memberIds.stream().forEach(memberId -> {
                 Member member = memberRepository.findById(memberId).get();
                 members.add(member);
@@ -327,7 +360,7 @@ public class TeamService {
             return teamsMembersVo;
         } else {
             throw new BizException(CodeEnums.TEAM_NOT_EXIST.getCode(),
-                    CodeEnums.TEAM_NOT_EXIST.getMsg());
+                CodeEnums.TEAM_NOT_EXIST.getMsg());
         }
     }
 
@@ -337,9 +370,9 @@ public class TeamService {
 
         // 批量查询已存在的TeamMember
         Map<Long, TeamMember> existingMembersMap = teamMemberRepository
-                .findByTeamAndMembers(teamMembers.getTeamId(), memberIds)
-                .stream()
-                .collect(Collectors.toMap(TeamMember::getMemberId, Function.identity()));
+            .findByTeamAndMembers(teamMembers.getTeamId(), memberIds)
+            .stream()
+            .collect(Collectors.toMap(TeamMember::getMemberId, Function.identity()));
         for (Long memberId : memberIds) {
             TeamMember teamMember = existingMembersMap.getOrDefault(memberId, new TeamMember());
             teamMember.setMemberId(memberId);
@@ -354,7 +387,7 @@ public class TeamService {
         if (team.getAdministrator() != null) {
             if (!checkMemberIsSupperAdmin(address)) {
                 throw new BizException(CodeEnums.NOT_THE_SUPER_ADMIN.getCode(),
-                        CodeEnums.NOT_THE_SUPER_ADMIN.getMsg());
+                    CodeEnums.NOT_THE_SUPER_ADMIN.getMsg());
             }
             Team teamdb = teamRepository.findById(team.getId()).get();
             teamdb.setAdministrator(team.getAdministrator());
@@ -367,7 +400,7 @@ public class TeamService {
             if (team.getTeamProfile() != null) {
                 teamdb.setTeamProfile(team.getTeamProfile());
             }
-            if(team.getLink()!=null) {
+            if (team.getLink() != null) {
                 teamdb.setLink(team.getLink());
             }
             teamRepository.save(teamdb);

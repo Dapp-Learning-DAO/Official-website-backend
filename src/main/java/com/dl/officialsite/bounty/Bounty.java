@@ -2,6 +2,7 @@ package com.dl.officialsite.bounty;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -61,6 +62,18 @@ public class Bounty {
 
     // 创建人公司
     private String company;
+
+    //流支付ID
+    private String streamId;
+
+    private Long streamStart;
+
+    private Long streamEnd;
+
+    private String streamChainId;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime deadLine;
 
 
     @CreationTimestamp

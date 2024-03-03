@@ -91,3 +91,18 @@ jobs:
             docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$RUN_ENV-latest
             echo "Exec docker-compose down && docker-compose up -d in $(pwd) on $(date +'%Y-%m-%d %H:%M:%S')" > deploy.txt
 #            docker-compose down && docker-compose up -d
+
+
+      # Add your build steps here
+      - name: Telegram Notification on Failure
+        if: failure() # This step runs only if previous steps failed
+        uses: appleboy/telegram-action@master
+        with:
+          to:  ${{ vars.DAPP_DEV_TELEGRAM_CHAT_GROUP}}# Replace with your chat ID
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Build failed 😢
+            Repository: ${{ github.repository }}
+            Workflow: ${{ github.workflow }}
+            Run: ${{ github.run_id }}
+            URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}

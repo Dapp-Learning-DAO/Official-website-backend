@@ -2,6 +2,8 @@ package com.dl.officialsite.sharing;
 
 import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.constant.SharingMeetingType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -37,12 +39,14 @@ public class Share {
      * 分享日期,2020-12-02
      */
     @Column(name = "date", nullable = false)
-    private String date;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date date;
 
     /**
      * 分享时间 20:00（UTC+8）
      */
     @Column(name = "time", nullable = false)
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
     private String time;
 
     /**
@@ -80,6 +84,11 @@ public class Share {
      */
     @Column(name = "sharing_doc", columnDefinition = "TEXT")
     private String sharingDoc;
+
+    /**
+     * sharing status
+     */
+    private Integer status;
 
     /**
      * 标签类别
@@ -130,4 +139,7 @@ public class Share {
     @LastModifiedDate
     @Column(updatable = false, nullable = false)
     private Long updateTime;
+
+    @Transient
+    private String shareCount;
 }

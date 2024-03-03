@@ -1,7 +1,10 @@
 package com.dl.officialsite.bounty.vo;
 
 import com.dl.officialsite.bounty.BountyMemberMap;
+import com.dl.officialsite.member.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
@@ -18,9 +21,9 @@ public class BountyVo {
     private Long id;
 
     /**
-     * 创建岗位人地址
+     * 创建人信息
      */
-    private String creator;
+    private Member creator;
 
     // 标题
     private String title;
@@ -47,6 +50,18 @@ public class BountyVo {
 
     // 创建人公司
     private String company;
+
+    //流支付ID
+    private String streamId;
+
+    private Long streamStart;
+
+    private Long streamEnd;
+
+    private String streamChainId;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime deadLine;
 
     //申请人列表
     private List<BountyMemberMap> bountyMemberMaps;

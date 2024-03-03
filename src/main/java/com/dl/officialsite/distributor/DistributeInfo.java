@@ -22,17 +22,20 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @DynamicUpdate
-@Table(name = "distribute_info", schema = "dl", uniqueConstraints = {
+@Table(name = "distribute_info", schema = "dl", indexes = {
+        @Index(name = "idx_status", columnList = "status")
+}, uniqueConstraints = {
         @UniqueConstraint(name = "uin_chain_user_message", columnNames = { "chainId", "creator", "message" }),
         @UniqueConstraint(name = "uin_chain_key", columnNames = { "chainId", "contractKey" }),
         @UniqueConstraint(name = "uin_chain_address", columnNames = { "chainId", "contractAddress" }),
-        @UniqueConstraint(name = "idx_status", columnNames = { "status" })
+
 })
 public class DistributeInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
+    @Column(length = 42)
     private String creator;
     @NotNull
     @Column(length = 66)
@@ -43,6 +46,7 @@ public class DistributeInfo {
     @Column(length = 66)
     @NotNull
     private String contractKey;
+    @Column(length = 42)
     private String contractAddress;
     private String merkleRoot;
     @NotNull
@@ -50,6 +54,7 @@ public class DistributeInfo {
     @NotNull
     private Long tokenId;
     @NotNull
+    @Column(precision = 36, scale = 18)
     private BigDecimal totalAmount;
     private Integer number;
     @NotNull
@@ -63,7 +68,5 @@ public class DistributeInfo {
     @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Long expireTime;
 }

@@ -36,6 +36,8 @@ gradle.properties
 application-local.yml
 README-Local.md
 
+mysql_volume/
+
 
 .idea
 *.iml
@@ -58,3 +60,4 @@ node/*
 ./docker-compose.yaml
 ./mysql_volume
 
+/src/main/resources/application-wusiq.yml

@@ -1,6 +1,5 @@
 package com.dl.officialsite.member;
 
-import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
@@ -17,13 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
-import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
 
 @Service
 public class MemberService {
@@ -40,6 +38,7 @@ public class MemberService {
     private ApplicationRepository applicationRepository;
     @Autowired
     private MemberManager memberManager;
+
 
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
@@ -69,8 +68,6 @@ public class MemberService {
         memberRepository.save(member);
         MemberVo memberVo = new MemberVo();
         BeanUtils.copyProperties(member, memberVo);
-        //todo
-        //add asy event to nofigy in telegram and discord
         return memberVo;
 
     }

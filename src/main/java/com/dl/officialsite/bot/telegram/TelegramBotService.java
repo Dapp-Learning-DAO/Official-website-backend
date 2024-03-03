@@ -1,16 +1,14 @@
 package com.dl.officialsite.bot.telegram;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 
-@Component
-@EnableConfigurationProperties(TelegramBotConfig.class)
 public class TelegramBotService {
-    @Autowired
     private TelegramBotConfig telegramBotConfig;
+
+    public TelegramBotService(TelegramBotConfig telegramBotConfig) {
+        this.telegramBotConfig = telegramBotConfig;
+    }
 
     public Pair<Boolean, String> sendMarkdownV2MessageToGeneral(String text) {
         return this.sendMarkdownV2MessageToTopic(text, null);

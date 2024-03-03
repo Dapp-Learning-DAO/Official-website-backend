@@ -1,5 +1,7 @@
 package com.dl.officialsite.bounty.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -18,4 +20,11 @@ public class BountySearchVo {
 
     // 标题
     private String title;
+
+    //状态
+    private Integer status;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime deadLine;
+
 }

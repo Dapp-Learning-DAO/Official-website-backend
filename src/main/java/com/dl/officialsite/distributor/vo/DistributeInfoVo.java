@@ -2,6 +2,7 @@ package com.dl.officialsite.distributor.vo;
 
 import com.dl.officialsite.common.converter.StringListConverter;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,10 +19,10 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@EntityListeners(AuditingEntityListener.class)
-//@Entity
+// @EntityListeners(AuditingEntityListener.class)
+// @Entity
 public class DistributeInfoVo extends DistributeInfo {
-    //usdc or dai
+    // usdc or dai
     @NotNull
     private String token;
     @NotNull
@@ -32,11 +33,16 @@ public class DistributeInfoVo extends DistributeInfo {
     private String tokenName;
 
     @Convert(converter = StringListConverter.class)
-    private List<String> claimedAddress;
+    private List<ClaimerInfo> claimerList;
 
-    @Convert(converter = StringListConverter.class)
-    private List<BigDecimal> claimedValues;
-
-    @Convert(converter = StringListConverter.class)
-    private List<Integer> claimedStatus;
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class ClaimerInfo {
+        private String address;
+        private BigDecimal value;
+        private Integer status;
+    }
 }

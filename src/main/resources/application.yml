@@ -19,7 +19,7 @@ spring:
     hibernate:
      ddl-auto: update
     generate-ddl: true
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.MySQL5Dialect
   mail:
     host: ${SMTP_SERVER:smtp.gmail.com}
@@ -58,7 +58,7 @@ jobs:
   redpacket:
     corn: ${CRON_REDPACKET:0/5 * * * * ?}
   distribute:
-    corn: ${CRON_DIS:0/30 * * * * ?}
+    corn: ${CRON_DIS:0/5 * * * * ?}
 oauth:
   registrations:
     github:
