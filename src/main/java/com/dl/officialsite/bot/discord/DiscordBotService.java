@@ -1,6 +1,7 @@
 package com.dl.officialsite.bot.discord;
 
-import org.apache.commons.lang3.StringUtils;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
 import org.apache.commons.lang3.tuple.Pair;
 
 
@@ -11,11 +12,8 @@ public class DiscordBotService {
         this.discordBotConfig = discordBotConfig;
     }
 
-    public Pair<Boolean, String> sendMessageToChannel(String text, String channelName) {
-        String channelId = this.discordBotConfig.getChannelIdByName(channelName);
-        if (StringUtils.isBlank(channelId)){
-            return Pair.of(false, String.format("Cannot find any channel by name:[%s]", channelName));
-        }
-        return DiscordBotUtil.sendMessageToChannel(discordBotConfig.getJdaBot(), channelId, text);
+    public Pair<Boolean, String> sendMessageToChannel(GroupNameEnum groupNameEnum, ChannelEnum channelEnum, String text) {
+        Pair<String, String> channelIdByName = this.discordBotConfig.getGroupIdAndChannelIdByName(groupNameEnum, channelEnum);
+        return DiscordBotUtil.sendMessageToChannel(discordBotConfig.getBot(), channelIdByName.getValue(), text);
     }
 }

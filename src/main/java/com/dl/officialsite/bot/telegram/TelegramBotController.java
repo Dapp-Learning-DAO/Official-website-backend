@@ -2,6 +2,7 @@ package com.dl.officialsite.bot.telegram;
 
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
 import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.member.Member;
@@ -32,7 +33,8 @@ public class TelegramBotController {
         if (this.telegramBotService == null) {
             return BaseResponse.failWithReason("999999", "Telegram is not configured.");
         }
-        return BaseResponse.successWithData(this.telegramBotService.sendMarkdownV2MessageToTopic(message, topicName));
+        return BaseResponse.successWithData(this.telegramBotService.sendMarkdownV2MessageToTopic(GroupNameEnum.DAPP_LEARNING,
+            ChannelEnum.of(topicName), message));
     }
 
     @GetMapping("/send-event")

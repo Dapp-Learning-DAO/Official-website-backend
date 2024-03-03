@@ -2,6 +2,7 @@ package com.dl.officialsite.bot.event;
 
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
 import com.dl.officialsite.bot.discord.DiscordBotService;
 import com.dl.officialsite.bot.telegram.TelegramBotService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,13 +42,13 @@ public class NotifyEventListener implements ApplicationListener<EventNotify> {
 
     private void sendMessage(BotEnum botEnum, ChannelEnum channelEnum, String message) {
         switch (botEnum) {
-            case DISCORD :
+            case DISCORD:
                 Optional.ofNullable(discordBotService).ifPresent(service ->
-                    discordBotService.sendMessageToChannel(message,  channelEnum.getChannelName()));
+                    discordBotService.sendMessageToChannel(GroupNameEnum.DAPP_LEARNING, channelEnum, message));
                 break;
-            case TELEGRAM :
+            case TELEGRAM:
                 Optional.ofNullable(telegramBotService).ifPresent(service ->
-                    telegramBotService.sendMarkdownV2MessageToTopic(message, channelEnum.getChannelName()));
+                    telegramBotService.sendMarkdownV2MessageToTopic(GroupNameEnum.DAPP_LEARNING, channelEnum, message));
                 break;
             default:
                 break;

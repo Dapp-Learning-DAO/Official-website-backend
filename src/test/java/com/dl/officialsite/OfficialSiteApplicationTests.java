@@ -1,5 +1,7 @@
 package com.dl.officialsite;
 
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
 import com.dl.officialsite.bot.telegram.TelegramBotService;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.MemberController;
@@ -44,11 +46,12 @@ class OfficialSiteApplicationTests {
     @Test
     public void telegramBotTest() {
         Pair<Boolean, String> result = null;
-        result = telegramBotService.sendMarkdownV2MessageToGeneral("Unit Test: send message to General topic");
+        result = telegramBotService.sendMarkdownV2MessageToTopic(GroupNameEnum.DAPP_LEARNING,
+            ChannelEnum.of("general"), "Unit Test: send message to Hiring topic");
         assertTrue(result.getKey());
-        result = telegramBotService.sendMarkdownV2MessageToTopic("Unit Test: send message to Hiring topic", "hiring");
-        assertTrue(result.getKey());
-        result = telegramBotService.sendMarkdownV2MessageToTopic("Unit Test: send message to Sharing topic", "Sharing");
+        result = telegramBotService.sendMarkdownV2MessageToTopic(GroupNameEnum.DAPP_LEARNING,
+            ChannelEnum.of("Sharing"), "Unit Test: send message to Hiring topic");
+
         assertTrue(result.getKey());
     }
 

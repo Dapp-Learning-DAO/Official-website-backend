@@ -1,31 +1,37 @@
 package com.dl.officialsite.bot.constant;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Getter
 public enum ChannelEnum {
-    GENERAL("general"),
-    HIRING("hiring"),
-    SHARING("sharing"),
+    GENERAL("general-chat"),
+    HIRING("hiring", "job", "hiring-and-applying", "applying"),
+    SHARING("sharing", "sharing_team"),
+    BUILDER("builder"),
+    TRANSLATION("translation"),
+    GIT_HUB("github"),
+    COLLABLAND_JOIN("collabland-join"),
+    WELCOME("welcome"),
+    SELF_INTRO("self-intro"),
+    NEWS("news"),
     ;
 
-    ChannelEnum(String channelName) {
-        this.channelName = channelName;
+    ChannelEnum(String... channelNameKeyWords) {
+        this.channelNameKeyWordsSet = Arrays.stream(channelNameKeyWords).collect(Collectors.toSet());
     }
 
     public static ChannelEnum of(String channelNameOrTopicName) {
-        if (StringUtils.isNotBlank(channelNameOrTopicName)) {
-            for (ChannelEnum value : ChannelEnum.values()) {
-                if (StringUtils.containsIgnoreCase(value.channelName, channelNameOrTopicName)) {
-                    return value;
-                }
-            }
-        }
-        return ChannelEnum.GENERAL;
+        return Arrays.stream(ChannelEnum.values())
+            .filter(channelEnum -> channelEnum.channelNameKeyWordsSet.stream()
+                .anyMatch(value -> StringUtils.containsIgnoreCase(channelNameOrTopicName, value)))
+            .findFirst().orElse(null);
     }
 
-    private String channelName;
+    private Set<String> channelNameKeyWordsSet;
 
-    public String getChannelName() {
-        return channelName;
-    }
 }

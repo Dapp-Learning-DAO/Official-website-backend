@@ -15,7 +15,7 @@ public class DiscordBotUtil {
             return Pair.of(false, "Discord bot is not initialized.");
         }
         if (StringUtils.isBlank(channelId)) {
-            return Pair.of(false, "Channel id should ");
+            return Pair.of(false, "Channel id should not be empty.");
         }
 
         TextChannel textChannel = jda.getTextChannelById(channelId);

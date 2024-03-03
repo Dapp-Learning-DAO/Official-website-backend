@@ -2,6 +2,7 @@ package com.dl.officialsite.bot.discord;
 
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
 import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.member.Member;
@@ -21,18 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"dev", "local"})
 public class DiscordBotController {
 
-    @Autowired(required = false) private ApplicationContext applicationContext;
-    @Autowired(required = false) private DiscordBotService discordBotService;
+    @Autowired(required = false)
+    private ApplicationContext applicationContext;
+    @Autowired(required = false)
+    private DiscordBotService discordBotService;
 
 
     @GetMapping("/send")
     public BaseResponse send(
         @RequestParam String message,
         @RequestParam(defaultValue = "", required = false) String channelName) {
-        if(this.discordBotService == null){
+        if (this.discordBotService == null) {
             return BaseResponse.failWithReason("999999", "Discord is not configured.");
         }
-        return BaseResponse.successWithData(this.discordBotService.sendMessageToChannel(message, channelName));
+        return BaseResponse.successWithData(this.discordBotService.sendMessageToChannel(GroupNameEnum.DAPP_LEARNING,
+            ChannelEnum.of(channelName), message));
     }
 
     @GetMapping("/send-event")
