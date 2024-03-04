@@ -132,6 +132,7 @@ public class MemberController {
         }
         MemberVo _member = memberService.save(member);
 
+        //todo 看这里
         applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM, ChannelEnum.GENERAL,
             "Welcome " + member.getNickName() + " join " + "Dapp-Learning, introduce yourself briefly.\n"));
         return BaseResponse.successWithData(_member);

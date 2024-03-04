@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class BountyController {
 
-    //todo 是否可以批量新增bounty
-    //todo 是否可以批量申请bounty，一个人最多申请几个？
     private final BountyService bountyService;
 
     public BountyController(BountyService bountyService) {
