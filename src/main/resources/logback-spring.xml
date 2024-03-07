@@ -56,7 +56,7 @@
 
     <appender name="AaveAppender"
       class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/red-packet-task.log</file>
+        <file>${LOGS}/aave-monitor-task.log</file>
         <encoder
           class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
