@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DeFiController {
 
-    private final AaveService aaveService;
+    private final AaveTokenAPYService aaveService;
 
-    public DeFiController(AaveService aaveService) {
+    public DeFiController(AaveTokenAPYService aaveService) {
         this.aaveService = aaveService;
     }
 
@@ -31,6 +31,10 @@ public class DeFiController {
     /**
      * 条件查询所有币种年华，按照最大年华排序
      */
+    @GetMapping("/tokenApy")
+    public BaseResponse tokenApy() {
+        return BaseResponse.successWithData(aaveService.queryTokenApy());
+    }
 
     /**
      * get healthInfo by wallet address

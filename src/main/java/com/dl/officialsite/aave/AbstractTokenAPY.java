@@ -1,5 +1,7 @@
 package com.dl.officialsite.aave;
 
+import java.util.List;
+
 /**
  * @ClassName AbstractTokenApy
  * @Author jackchen
@@ -11,7 +13,9 @@ public abstract class AbstractTokenAPY {
     /**
      * get token apy group by defi provider
      */
-    public abstract TokenAPYInfo queryTokenApy(TokenAPYInfo tokenAPYInfo);
+    public abstract List<TokenAPYInfo> queryTokenApy();
+
+    public abstract HealthInfo getHealthInfo(String address);
 
 
 }
