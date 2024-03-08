@@ -232,6 +232,9 @@ public class DistributeService {
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
                 request = new HttpPost("https://api.studio.thegraph.com/query/64403/arbitrum/version/latest");
                 break;
+            case Constants.CHAIN_ID_ZKSYNC: // zksync
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/zksync/version/latest");
+                break;
 
         }
 
