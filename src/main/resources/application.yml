@@ -54,6 +54,22 @@ logging:
 web3j:
   client-address: "https://polygon-rpc.com"
 
+
+network:
+  configs:
+    - id: "137"
+      name: "polygon"
+      rpc: "https://polygon-rpc.com"
+    - id: "10"
+      name: "optimism"
+      rpc: "https://optimism.llamarpc.com"
+    - id: "534352"
+      name: "scroll"
+      rpc: "https://rpc.scroll.io"
+    - id: "42161"
+      name: "arbitrum"
+      rpc: "https://arbitrum.llamarpc.com"
+
 jobs:
   redpacket:
     corn: ${CRON_REDPACKET:0/5 * * * * ?}
