@@ -18,6 +18,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.ipc.UnixIpcService;
 import org.web3j.protocol.ipc.WindowsIpcService;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -35,16 +36,16 @@ public class Web3jAutoConfiguration {
 
     public static final ConcurrentHashMap<String, Web3j> web3jMap = new ConcurrentHashMap<String, Web3j>();
 
-    // @Bean
-    @ConditionalOnMissingBean
-    public void web3j() {
+    @PostConstruct
+    public void init() {
         for (int i = 0; i < networkProperties.getConfigs().length; i++) {
             NetworkProperties.NetworkDetailProperties detail = networkProperties.getConfigs()[i];
             Web3jService web3jService = buildService(detail.getRpc());
             web3jMap.put(detail.getId(), Web3j.build(web3jService));
             log.info("initWeb3jMap.current chain:" + detail.getName() + " rpc:" + detail.getRpc());
         }
-
+        // 执行初始化操作
+        System.out.println("Configuration initialized. Executing init method.");
     }
 
     @Bean
