@@ -29,6 +29,14 @@ public class DeFiController {
      */
 
     /**
+     * get all chainName
+     */
+    @GetMapping("/chainList")
+    public BaseResponse chainList() {
+        return BaseResponse.successWithData(aaveService.queryChainList());
+    }
+
+    /**
      * 条件查询所有币种年华，按照最大年华排序
      */
     @GetMapping("/tokenApy")

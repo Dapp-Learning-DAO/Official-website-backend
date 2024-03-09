@@ -117,4 +117,8 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
             throw new RuntimeException("get health Info error");
         }
     }
+
+    public List<String> queryChainList() {
+        return new ArrayList<>(chainWithToken.keySet());
+    }
 }
