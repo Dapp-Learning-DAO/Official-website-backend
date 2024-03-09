@@ -26,7 +26,7 @@ public class AaveService {
     BigInteger e23 = new BigInteger("100000000000000000000000");
 
 
-   @Autowired
+//   @Autowired
    Web3j web3j;
 
    @Autowired
