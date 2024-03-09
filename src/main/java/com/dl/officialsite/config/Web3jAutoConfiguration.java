@@ -5,7 +5,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,32 +18,41 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.ipc.UnixIpcService;
 import org.web3j.protocol.ipc.WindowsIpcService;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ConditionalOnClass(Web3j.class)
-@EnableConfigurationProperties(Web3jProperties.class)
+@EnableConfigurationProperties({ Web3jProperties.class, NetworkProperties.class })
 public class Web3jAutoConfiguration {
 
     private static Log log = LogFactory.getLog(Web3jAutoConfiguration.class);
 
     @Autowired
     private Web3jProperties properties;
+    @Autowired
+    private NetworkProperties networkProperties;
 
-    @Bean
+    public static final ConcurrentHashMap<String, Web3j> web3jMap = new ConcurrentHashMap<String, Web3j>();
+
+    // @Bean
     @ConditionalOnMissingBean
-    public Web3j web3j() {
-        Web3jService web3jService = buildService(properties.getClientAddress());
-        log.info("Building service for endpoint: " + properties.getClientAddress());
-        return Web3j.build(web3jService);
+    public void web3j() {
+        for (int i = 0; i < networkProperties.getConfigs().length; i++) {
+            NetworkProperties.NetworkDetailProperties detail = networkProperties.getConfigs()[i];
+            Web3jService web3jService = buildService(detail.getRpc());
+            web3jMap.put(detail.getId(), Web3j.build(web3jService));
+            log.info("initWeb3jMap.current chain:" + detail.getName() + " rpc:" + detail.getRpc());
+        }
+
     }
 
     @Bean
-    @ConditionalOnProperty(
-            prefix = Web3jProperties.WEB3J_PREFIX, name = "admin-client", havingValue = "true")
+    @ConditionalOnProperty(prefix = Web3jProperties.WEB3J_PREFIX, name = "admin-client", havingValue = "true")
     public Admin admin() {
         Web3jService web3jService = buildService(properties.getClientAddress());
-        log.info("Building admin service for endpoint: " + properties.getClientAddress());
+        log.info("Building admin service for endpoint: " +
+                properties.getClientAddress());
         return Admin.build(web3jService);
     }
 
@@ -75,7 +83,7 @@ public class Web3jAutoConfiguration {
         Long tos = properties.getHttpTimeoutSeconds();
         if (tos != null) {
             builder.connectTimeout(tos, TimeUnit.SECONDS);
-            builder.readTimeout(tos, TimeUnit.SECONDS);  // Sets the socket timeout too
+            builder.readTimeout(tos, TimeUnit.SECONDS); // Sets the socket timeout too
             builder.writeTimeout(tos, TimeUnit.SECONDS);
         }
     }
@@ -87,7 +95,5 @@ public class Web3jAutoConfiguration {
             builder.addInterceptor(logging);
         }
     }
-
-
 
 }

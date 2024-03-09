@@ -13,6 +13,8 @@ public class DeFiTokenYield {
 
     private String tokeName;
 
+    private String protocol;
+
     private String tokenAddress;
 
     private String tokenApy;
