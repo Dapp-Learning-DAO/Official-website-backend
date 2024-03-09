@@ -26,7 +26,7 @@ public class AaveService {
     BigInteger e23 = new BigInteger("100000000000000000000000");
 
 
-   @Autowired
+//   @Autowired
    Web3j web3j;
 
    @Autowired
@@ -39,23 +39,28 @@ public class AaveService {
 
 
 
-    public HealthInfo getHealthInfo(String address) throws Exception {
-        String poolAddress = poolAddressesProvider.getPool().send();
-        log.info("poolAddress is : " + poolAddress);
-        IPool pool = IPool.load(poolAddress, web3j, credentials, GAS_PROVIDER);
-        Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> info = pool.getUserAccountData(
-            address).send();
-        BigInteger totalCollateralBase = info.component1();
-        BigInteger totalDebtBase = info.component2();
-        BigInteger ltv = info.component5();
-        BigInteger healthFactor = info.component6();
-        HealthInfo healthInfo = HealthInfo.builder()
-            .healthFactor(healthFactor)
-            .totalBorrows(totalDebtBase.toString())
-            .totalCollateralETH(totalCollateralBase.toString())
-            .totalLiquidity(ltv.toString())
-            .build();
-        return healthInfo;
+    public HealthInfo getHealthInfo(String address) {
+        try {
+            String poolAddress = poolAddressesProvider.getPool().send();
+            log.info("poolAddress is : " + poolAddress);
+            IPool pool = IPool.load(poolAddress, web3j, credentials, GAS_PROVIDER);
+            Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> info = pool.getUserAccountData(
+                address).send();
+            BigInteger totalCollateralBase = info.component1();
+            BigInteger totalDebtBase = info.component2();
+            BigInteger ltv = info.component5();
+            BigInteger healthFactor = info.component6();
+            HealthInfo healthInfo = HealthInfo.builder()
+                .healthFactor(healthFactor)
+                .totalBorrows(totalDebtBase.toString())
+                .totalCollateralETH(totalCollateralBase.toString())
+                .totalLiquidity(ltv.toString())
+                .build();
+            return healthInfo;
+        } catch (Exception e) {
+            log.error("getHealthInfo error: " + e.getMessage());
+            throw new RuntimeException("get health Info error");
+        }
     }
 
     public TokenInfoList getVar() throws Exception {

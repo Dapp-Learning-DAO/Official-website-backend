@@ -23,7 +23,7 @@ public class Constant {
 
     public static ContractGasProvider GAS_PROVIDER = new StaticGasProvider(GAS_PRICE, GAS_LIMIT);
 
-    @Autowired
+//    @Autowired
     Web3j web3j;
 
     @Autowired
