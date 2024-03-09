@@ -47,15 +47,15 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
     }
 
 
-    private final Web3j web3j;
+    private  Web3j web3j;
 
     private final Credentials credentials;
 
     private final IPoolAddressesProvider poolAddressesProvider;
 
-    public AaveTokenAPYService(Web3j web3j, Credentials credentials,
+    public AaveTokenAPYService(Credentials credentials,
         IPoolAddressesProvider poolAddressesProvider) {
-        this.web3j = web3j;
+//        this.web3j = web3j;
         this.credentials = credentials;
         this.poolAddressesProvider = poolAddressesProvider;
     }
