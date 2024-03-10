@@ -186,7 +186,7 @@ public class TeamService {
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
                     emailService.memberJoinTeam(mailAddress, subject, content);
                     applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                        ChannelEnum.GENERAL,
+                        ChannelEnum.BUILDER,
                         NotifyMessageFactory.joinTeamMessage(member1.getNickName(), team.getTeamName())));
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
@@ -220,7 +220,7 @@ public class TeamService {
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
                     emailService.memberJoinTeam(mailAddress, subject, content);
                     applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                        ChannelEnum.GENERAL,
+                        ChannelEnum.BUILDER,
                         NotifyMessageFactory.joinTeamMessage(member1.getNickName(), team.getTeamName())));
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
@@ -274,7 +274,7 @@ public class TeamService {
                 String text = member1.getNickName() + "成员退出";
                 emailService.sendMail(member.get().getEmail(), subject, text);
                 applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                    ChannelEnum.GENERAL,
+                    ChannelEnum.BUILDER,
                     NotifyMessageFactory.exitTeamMessage(member1.getNickName(), team.getTeamName())));
             } else {
                 throw new BizException(CodeEnums.NOT_AUTHORITY_FOR_EXIT.getCode(),
