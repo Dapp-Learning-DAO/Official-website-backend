@@ -129,6 +129,9 @@ public class MemberController {
 
     @PostMapping("/create")
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address, HttpServletRequest request) {
+        member.setGithubId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME));
+        member.setTweetId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME));
+
         this.setOAuthUserName(request.getSession(), member);
 
         MemberVo _member = memberService.save(member);
@@ -146,7 +149,10 @@ public class MemberController {
         if (memberData.isPresent()) {
             Member _member = memberData.get();
 
-            this.setOAuthUserName(request.getSession(), _member);
+            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME))
+                .ifPresent(githubUserName -> _member.setGithubId(githubUserName));
+            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME))
+                .ifPresent(twitterUserName -> _member.setTweetId(twitterUserName));
 
             if (member.getWechatId() != null) {
                 _member.setWechatId(member.getWechatId());
@@ -209,10 +215,6 @@ public class MemberController {
     }
 
     private void setOAuthUserName(HttpSession session, Member member) {
-        Optional.ofNullable(HttpSessionUtils.getOAuthUserName(session, OAuthSessionKey.GITHUB_USER_NAME))
-            .ifPresent(githubUserName -> member.setGithubId(githubUserName));
-        Optional.ofNullable(HttpSessionUtils.getOAuthUserName(session, OAuthSessionKey.TWITTER_USER_NAME))
-            .ifPresent(twitterUserName -> member.setTweetId(twitterUserName));
     }
 
 }
