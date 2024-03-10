@@ -1,5 +1,6 @@
 package com.dl.officialsite.aave;
 
+import com.dl.officialsite.config.ChainInfo;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public abstract class AbstractTokenAPY {
      */
     public abstract List<TokenAPYInfo> queryTokenApy();
 
-    public abstract HealthInfo getHealthInfo(String address);
+    public abstract HealthInfo getHealthInfo(ChainInfo chainInfo, String address);
 
 
 }

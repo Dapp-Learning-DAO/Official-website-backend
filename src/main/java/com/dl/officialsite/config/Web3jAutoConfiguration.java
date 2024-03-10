@@ -1,12 +1,14 @@
 package com.dl.officialsite.config;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +19,6 @@ import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.ipc.UnixIpcService;
 import org.web3j.protocol.ipc.WindowsIpcService;
-
-import javax.annotation.PostConstruct;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ConditionalOnClass(Web3j.class)
@@ -34,14 +32,16 @@ public class Web3jAutoConfiguration {
     @Autowired
     private NetworkProperties networkProperties;
 
-    public static final ConcurrentHashMap<String, Web3j> web3jMap = new ConcurrentHashMap<String, Web3j>();
+    public static final ConcurrentHashMap<ChainInfo, Web3j> web3jMap = new ConcurrentHashMap<ChainInfo, Web3j>();
 
     @PostConstruct
     public void init() {
         for (int i = 0; i < networkProperties.getConfigs().length; i++) {
             NetworkProperties.NetworkDetailProperties detail = networkProperties.getConfigs()[i];
             Web3jService web3jService = buildService(detail.getRpc());
-            web3jMap.put(detail.getId(), Web3j.build(web3jService));
+            //todo 这里添加ChainInfo
+            ChainInfo chainInfo = new ChainInfo();
+            web3jMap.put(chainInfo, Web3j.build(web3jService));
             log.info("initWeb3jMap.current chain:" + detail.getName() + " rpc:" + detail.getRpc());
         }
         // 执行初始化操作

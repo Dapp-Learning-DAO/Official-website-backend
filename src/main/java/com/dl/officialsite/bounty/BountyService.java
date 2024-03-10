@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
@@ -81,7 +82,11 @@ public class BountyService {
             .and(hasStatus(bountySearchVo.getStatus()))
             .and(hasDeadLineBefore(bountySearchVo.getDeadLine()))
             .and(isNotStatus(5));
-
+        if (!ObjectUtils.isEmpty(bountySearchVo.getLinkStream())) {
+            if (bountySearchVo.getLinkStream().equals(2)) {
+                spec = spec.and(notLinkStream());
+            }
+        }
         Page<Bounty> bountyPage = bountyRepository.findAll(spec, pageable);
         return bountyPage.map(this::mapToBountyVo);
     }
@@ -104,6 +109,11 @@ public class BountyService {
     private Specification<Bounty> hasDeadLineBefore(LocalDateTime deadline) {
         return (root, query, criteriaBuilder) -> deadline != null ?
             criteriaBuilder.lessThan(root.get("deadLine"), deadline) : null;
+    }
+
+    private Specification<Bounty> notLinkStream() {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.isNull(root.get("streamId"));
     }
 
     private Specification<Bounty> isNotStatus(Integer status) {
@@ -222,6 +232,9 @@ public class BountyService {
         //String loginUser = UserSecurityUtils.getUserLogin().getAddress();
         if (!bounty.getCreator().equals(address)) {
             throw new BizException("2003", "not link bounty by creator");
+        }
+        if (!ObjectUtils.isEmpty(bounty.getStreamStart())) {
+            throw new BizException("2005", "bounty not apply");
         }
         bounty.setStreamId(bountyVo.getStreamId());
         bounty.setStreamEnd(bountyVo.getStreamStart());

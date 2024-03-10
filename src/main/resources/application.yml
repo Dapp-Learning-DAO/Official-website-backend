@@ -75,6 +75,8 @@ jobs:
     corn: ${CRON_REDPACKET:0/5 * * * * ?}
   distribute:
     corn: ${CRON_DIS:0/5 * * * * ?}
+  defi:
+    corn: ${CRON_DEFI:0 30 * * * ?}
 oauth:
   registrations:
     github:
