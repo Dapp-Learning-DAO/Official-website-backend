@@ -4,9 +4,9 @@ package com.dl.officialsite.oauth2.controller;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
-import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
-import com.dl.officialsite.oauth2.handler.bind.IOAuthBindHandler;
+import com.dl.officialsite.oauth2.config.OAuthSessionKey;
+import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import com.dl.officialsite.oauth2.handler.bind.OAuthBindHandlers;
 import com.dl.officialsite.oauth2.handler.userinfo.IUserInfoRetrieveHandler;
 import com.dl.officialsite.oauth2.handler.userinfo.UserInfoRetrieveHandlers;
@@ -14,19 +14,21 @@ import com.dl.officialsite.oauth2.manager.OAuthUsernameManager;
 import com.dl.officialsite.oauth2.model.bo.AccessTokenResponse;
 import com.dl.officialsite.oauth2.model.bo.user.IUserInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.manager.util.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -136,6 +138,7 @@ public class OAuthProcessController {
             @PathVariable String registrationId,
             @RequestParam("code") String code,
             @RequestParam("state") String state,
+            HttpServletRequest request,
             HttpServletResponse response,
             HttpSession httpSession
             ) throws Exception{
@@ -164,15 +167,15 @@ public class OAuthProcessController {
         }
         String accessToken = accessTokenResponse.getAccessToken();
         log.info("access token received: {}", accessToken);
-        return BaseResponse.successWithData(accessToken);
         /**
          * 3. Get user info via access_token
          */
-//        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
-//        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
-//        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
-//        log.info("user info {}", userInfo.getUsername());
-//        Assert.notNull(userInfo, "failed to find userInfo");
+        IUserInfoRetrieveHandler retrieveHandler = this.userInfoRetrieveHandlers.get(registrationId);
+        Assert.notNull(retrieveHandler, "retrieveHandler not found:"+registrationId);
+        IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
+        log.info("user info {}", userInfo.getUsername());
+        Assert.notNull(userInfo, "failed to find userInfo");
+        HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME, userInfo.getUsername());
         /**
          * 4. Bind userInfo
          */
@@ -184,6 +187,7 @@ public class OAuthProcessController {
 //
 //        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
 //        return BaseResponse.successWithData(userInfo.getUsername());
+        return BaseResponse.successWithData(accessToken);
     }
 
     @GetMapping("username/{registrationId}")

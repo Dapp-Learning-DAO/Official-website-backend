@@ -2,8 +2,10 @@ package com.dl.officialsite.oauth2.controller;
 
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
+import com.dl.officialsite.oauth2.config.OAuthSessionKey;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -74,9 +77,11 @@ public class TwitterController {
     public BaseResponse getTwitter(
         @RequestParam("oauth_token") String oauthToken,
         @RequestParam("oauth_verifier") String oauthVerifier,
-        @RequestParam(value = "secret", required = false) String secret
+        @RequestParam(value = "secret", required = false) String secret,
+        HttpServletRequest request
     ) {
         String twitterUserName = fetchProfile(oauthToken, oauthVerifier, secret);
+        HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME, twitterUserName);
         return BaseResponse.successWithData(twitterUserName);
     }
 
