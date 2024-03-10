@@ -1,8 +1,11 @@
 package com.dl.officialsite.aave;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.config.ChainInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +27,6 @@ public class DeFiController {
         this.aaveService = aaveService;
     }
 
-    /**
-     * 查询币种列表
-     */
 
     /**
      * get all chainName
@@ -47,9 +47,9 @@ public class DeFiController {
     /**
      * get healthInfo by wallet address
      */
-    @GetMapping("/healthInfo")
-    public BaseResponse detail(@RequestParam String address) {
-        HealthInfo healthInfo = aaveService.getHealthInfo(address);
+    @PostMapping("/healthInfo")
+    public BaseResponse detail(@RequestParam String address, @RequestBody ChainInfo chainInfo) {
+        HealthInfo healthInfo = aaveService.getHealthInfo(chainInfo, address);
         return BaseResponse.successWithData(healthInfo);
     }
 }

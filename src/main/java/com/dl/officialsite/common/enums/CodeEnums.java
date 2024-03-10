@@ -40,7 +40,7 @@ public enum CodeEnums {
 
     APPLY_REPEAT("1024", "apply repeat"),
 
-    NOT_FOUND_BOUNTY("2001", "not found bounty"),
+    NOT_FOUND_BOUNTY("1025", "not found bounty"),
 
     // distribute
     ID_NEED_EMPTY("6000", "Id need empty"),

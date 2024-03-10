@@ -24,6 +24,9 @@ public class BountySearchVo {
     //状态
     private Integer status;
 
+    //0: is linked 2:not linked
+    private Integer linkStream;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime deadLine;
 
