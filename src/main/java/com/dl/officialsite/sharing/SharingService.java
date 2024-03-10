@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
+import com.dl.officialsite.bot.event.NotifyMessageFactory;
 import com.dl.officialsite.common.base.PagedList;
 import com.dl.officialsite.common.base.Pagination;
 import com.dl.officialsite.common.enums.CodeEnums;
@@ -16,15 +17,6 @@ import com.dl.officialsite.sharing.constant.SharingStatus;
 import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.team.TeamService;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -35,6 +27,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -78,8 +80,9 @@ public class SharingService {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String formatDate = format.format(share.getDate());
         applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-            ChannelEnum.SHARING, "➖➖➖➖➖➖➖➖➖➖➖\n" +
-            "👏Create New Share👏\nCreator:   " + creatorInfo.getNickName() + "\n" + "Share Name: " + share.getTheme() + "\n" + "Share Date:  " + formatDate +"\n➖➖➖➖➖➖➖➖➖➖➖"));
+            ChannelEnum.SHARING,
+            NotifyMessageFactory.sharingMessage("👏Create New Share👏", creatorInfo.getNickName(), share.getTheme(),
+                formatDate)));
         return share;
     }
 
@@ -114,10 +117,9 @@ public class SharingService {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String formatDate = format.format(req.getDate());
             applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                ChannelEnum.SHARING, "➖➖➖➖➖➖➖➖➖➖➖\n" +
-                "‼️‼️Edit Share Info‼️‼️\nCreator:   " + member.getNickName() + "\n" + "Share "
-                + "Name: " + req.getTheme() + "\n" + "Share Date:  " + formatDate +"\n"
-                + "➖➖➖➖➖➖➖➖➖➖➖"));
+                ChannelEnum.SHARING,
+                NotifyMessageFactory.sharingMessage("‼️‼️Edit Share Info‼️‼️", member.getNickName(), req.getTheme(),
+                    formatDate)));
         } else {
             throw new BizException(CodeEnums.SHARING_NOT_OWNER_OR_ADMIN);
         }

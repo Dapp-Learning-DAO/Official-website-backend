@@ -27,15 +27,10 @@ services:
       - CHAIN_IDS=
       # Telegram
       - TG_BOT_TOKEN=
-      - TG_GROUP_ID=
-      - TG_GENERAL_CHAT_ID=
-      - TG_SHARING_TEAM_ID=
-      - TG_HIRING_AND_JOB_TEAM_ID=
+      - TG_DAPP_LEARNING_GROUP_ID=
       # Discord
       - DISCORD_BOT_TOKEN=
-      - DISCORD_GENERAL_CHAT_CHANNEL_ID=
-      - DISCORD_SHARING_TEAM_CHANNEL_ID=
-      - DISCORD_HIRING_AND_APPLYING_CHANNEL_ID=
+      - GUILD_DAPP_LEARNING_ID=
       # CRON
       - CRON_REDPACKET=
       - CRON_DIS=
