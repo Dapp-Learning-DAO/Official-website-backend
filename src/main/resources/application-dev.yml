@@ -1,3 +1,5 @@
 jobs:
   redpacket:
     corn: "0/5 * * * * ?"
+  defi:
+    corn: ${CRON_DEFI:0 30  * * * ?}
