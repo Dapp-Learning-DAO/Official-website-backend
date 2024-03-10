@@ -1,11 +1,9 @@
 package com.dl.officialsite.bounty;
 
-import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
-import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
-
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
+import com.dl.officialsite.bot.event.NotifyMessageFactory;
 import com.dl.officialsite.bounty.vo.ApplyBountyVo;
 import com.dl.officialsite.bounty.vo.BountyMemberVo;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
@@ -15,16 +13,20 @@ import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import javax.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.Predicate;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
+import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
 
 /**
  * @ClassName BountyService
@@ -44,8 +46,8 @@ public class BountyService {
     private final ApplicationContext applicationContext;
 
     public BountyService(BountyRepository bountyRepository,
-        BountyMemberMapRepository bountyMemberMapRepository, MemberRepository memberRepository,
-        ApplicationContext applicationContext) {
+                         BountyMemberMapRepository bountyMemberMapRepository, MemberRepository memberRepository,
+                         ApplicationContext applicationContext) {
         this.bountyRepository = bountyRepository;
         this.bountyMemberMapRepository = bountyMemberMapRepository;
         this.memberRepository = memberRepository;
@@ -61,8 +63,7 @@ public class BountyService {
         Member creatorInfo = memberRepository.findByAddress(bounty.getCreator()).orElse(null);
         bountyVo.setCreator(creatorInfo);
         applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-            ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
-            "👏Create New Bounty👏\nCreator:  " + creatorInfo.getNickName() + "\n" + "Bounty Name:    " + bounty.getTitle() + "\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
+            ChannelEnum.HIRING, NotifyMessageFactory.bountyMessage(creatorInfo.getNickName(), bounty.getTitle())));
         return bountyVo;
     }
 

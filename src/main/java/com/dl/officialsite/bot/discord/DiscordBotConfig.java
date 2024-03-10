@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 import java.util.Objects;
@@ -60,10 +59,5 @@ public class DiscordBotConfig extends BaseBotConfig<JDA, String, String> {
         sb.append(", groupList=").append(groupList);
         sb.append('}');
         return sb.toString();
-    }
-
-    @Bean
-    public DiscordBotService discordBotService() {
-        return new DiscordBotService(this);
     }
 }

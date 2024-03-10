@@ -3,17 +3,9 @@ jobs:
     corn: "0/5 * * * * ?"
 
 bot:
-  discord:
-    botToken: ${DISCORD_BOT_TOKEN}
-    groupList:
-      - groupId: 1204158287021481998
-        groupName: DAPP_LEARNING
-
   telegram:
-    botToken: ${TG_BOT_TOKEN}
-    timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
     groupList:
-      - groupId: -1002053666506
+      - groupId: ${TG_DAPP_LEARNING_GROUP_ID}
         groupName: DAPP_LEARNING
         topicOrChannelList:
           - name: general
@@ -22,3 +14,5 @@ bot:
             threadOrTopicId: 3
           - name: hiring
             threadOrTopicId: 2
+          - name: builder
+            threadOrTopicId: 116

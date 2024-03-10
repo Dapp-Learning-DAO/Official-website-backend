@@ -4,6 +4,7 @@ package com.dl.officialsite.member;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
+import com.dl.officialsite.bot.event.NotifyMessageFactory;
 import com.dl.officialsite.common.base.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,9 +133,8 @@ public class MemberController {
         }
         MemberVo _member = memberService.save(member);
 
-        //todo 看这里
         applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM, ChannelEnum.GENERAL,
-            "Welcome " + member.getNickName() + " join " + "Dapp-Learning, introduce yourself briefly.\n"));
+            NotifyMessageFactory.welcomeUserMessage(member.getNickName())));
         return BaseResponse.successWithData(_member);
     }
 

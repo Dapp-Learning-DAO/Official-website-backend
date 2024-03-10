@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,11 +28,6 @@ public class TelegramBotConfig extends BaseBotConfig<TelegramBot, Long, Integer>
         sb.append(", groupList=").append(groupList);
         sb.append('}');
         return sb.toString();
-    }
-
-    @Bean
-    public TelegramBotService telegramBotService() {
-        return new TelegramBotService(this);
     }
 
     @Override
