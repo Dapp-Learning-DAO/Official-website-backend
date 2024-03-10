@@ -3,6 +3,7 @@ package com.dl.officialsite.team;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
+import com.dl.officialsite.bot.event.NotifyMessageFactory;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -17,17 +18,6 @@ import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +28,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName TeamService
@@ -184,10 +186,8 @@ public class TeamService {
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
                     emailService.memberJoinTeam(mailAddress, subject, content);
                     applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                        ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
-                        "👏New Member Join Team👏\nMemberName:  " + member.getNickName() +
-                        "\n" + "Team Name:    " + team.getTeamName() + "\n" + "Please team admin"
-                        + " to approve\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
+                        ChannelEnum.BUILDER,
+                        NotifyMessageFactory.joinTeamMessage(member1.getNickName(), team.getTeamName())));
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                         CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
@@ -220,10 +220,8 @@ public class TeamService {
                     log.info("发送邮件给管理员:{},接收地址{}", email, mailAddress);
                     emailService.memberJoinTeam(mailAddress, subject, content);
                     applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                        ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
-                        "👏New Member Join Team👏\nMemberName:  " + member.getNickName() +
-                        "\n" + "Team Name:    " + team.getTeamName() + "\n" + "Please team admin"
-                        + " to approve\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
+                        ChannelEnum.BUILDER,
+                        NotifyMessageFactory.joinTeamMessage(member1.getNickName(), team.getTeamName())));
                 } else {
                     throw new BizException(CodeEnums.TEAM_ADMIN_NOT_EXIST.getCode(),
                         CodeEnums.TEAM_ADMIN_NOT_EXIST.getMsg());
@@ -276,9 +274,8 @@ public class TeamService {
                 String text = member1.getNickName() + "成员退出";
                 emailService.sendMail(member.get().getEmail(), subject, text);
                 applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                    ChannelEnum.GENERAL, "➖➖➖➖➖➖➖➖➖➖➖\n" +
-                    "🥀🥀Member Exit Team🥀🥀\nMemberName:  " + member1.getNickName() +
-                    "\n" + "Team Name:    " + team.getTeamName() + "\n" + "➖➖➖➖➖➖➖➖➖➖➖"));
+                    ChannelEnum.BUILDER,
+                    NotifyMessageFactory.exitTeamMessage(member1.getNickName(), team.getTeamName())));
             } else {
                 throw new BizException(CodeEnums.NOT_AUTHORITY_FOR_EXIT.getCode(),
                     CodeEnums.NOT_AUTHORITY_FOR_EXIT.getMsg());

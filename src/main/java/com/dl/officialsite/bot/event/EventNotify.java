@@ -2,47 +2,32 @@ package com.dl.officialsite.bot.event;
 
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
+import com.dl.officialsite.bot.model.Message;
+import lombok.Data;
 import org.springframework.context.ApplicationEvent;
 
+@Data
 public class EventNotify extends ApplicationEvent {
     private BotEnum botEnum;
+    private GroupNameEnum groupEnum;
 
     private ChannelEnum channelEnum;
 
-    private String msg ;
+    private Message msg;
 
-    public EventNotify(Object source, BotEnum botEnum, ChannelEnum channelEnum, String msg) {
+    public EventNotify(Object source, BotEnum botEnum, GroupNameEnum groupEnum, ChannelEnum channelEnum, Message msg) {
         super(source);
         this.botEnum = botEnum;
+        this.groupEnum = groupEnum;
         this.channelEnum = channelEnum;
         this.msg = msg;
     }
 
-    public ChannelEnum getChannelEnum() {
-        return channelEnum;
+    public EventNotify(Object source, BotEnum botEnum, ChannelEnum channelEnum, Message msg) {
+        this(source, botEnum, GroupNameEnum.DAPP_LEARNING, channelEnum, msg);
     }
 
-    public EventNotify setChannelEnum(ChannelEnum channelEnum) {
-        this.channelEnum = channelEnum;
-        return this;
-    }
-
-    public BotEnum getBotEnum() {
-        return botEnum;
-    }
-
-    public EventNotify setBotEnum(BotEnum botEnum) {
-        this.botEnum = botEnum;
-        return this;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
 
     @Override
     public String toString() {

@@ -53,6 +53,8 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/share/create");
         add("/share/update");
         add("/share/delete");
+        add("/share/all");
+        add("/share/rank");
     }} ;
 
     private Set<String> noAddrCheckApis = new HashSet(){{

@@ -1,3 +1,20 @@
 jobs:
   redpacket:
     corn: "0/5 * * * * ?"
+  defi:
+    corn: ${CRON_DEFI:0 30  * * * ?}
+
+bot:
+  telegram:
+    groupList:
+      - groupId: ${TG_DAPP_LEARNING_GROUP_ID}
+        groupName: DAPP_LEARNING
+        topicOrChannelList:
+          - name: general
+            threadOrTopicId: 1
+          - name: sharing
+            threadOrTopicId: 3
+          - name: hiring
+            threadOrTopicId: 2
+          - name: builder
+            threadOrTopicId: 116

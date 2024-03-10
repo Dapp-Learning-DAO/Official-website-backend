@@ -17,7 +17,7 @@ spring:
 
   jpa:
     hibernate:
-     ddl-auto: update
+      ddl-auto: update
     generate-ddl: true
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL5Dialect
@@ -54,11 +54,29 @@ logging:
 web3j:
   client-address: "https://polygon-rpc.com"
 
+
+network:
+  configs:
+    - id: "137"
+      name: "polygon"
+      rpc: "https://polygon-rpc.com"
+    - id: "10"
+      name: "optimism"
+      rpc: "https://optimism.llamarpc.com"
+    - id: "534352"
+      name: "scroll"
+      rpc: "https://rpc.scroll.io"
+    - id: "42161"
+      name: "arbitrum"
+      rpc: "https://arbitrum.llamarpc.com"
+
 jobs:
   redpacket:
     corn: ${CRON_REDPACKET:0/5 * * * * ?}
   distribute:
     corn: ${CRON_DIS:0/5 * * * * ?}
+  defi:
+    corn: ${CRON_DEFI:0 30 * * * ?}
 oauth:
   registrations:
     github:
@@ -68,8 +86,8 @@ oauth:
       userAuthorizationUri: https://github.com/login/oauth/authorize
       userInfoUri: https://api.github.com/user
     twitter:
-      clientId:  "${TWITTER_CLIENT_KEY}"
-      clientSecret:  "${TWITTER_CLIENT_SECRET}"
+      clientId: "${TWITTER_CLIENT_KEY}"
+      clientSecret: "${TWITTER_CLIENT_SECRET}"
       callbackUrl: "${TWITTER_CALLBACK_URL}"
 
 qcloud:
@@ -82,7 +100,7 @@ qcloud:
   regionName: ${REGION_NAME}
 
 chain:
-  ids: ["11155111","10", "534352", "42161"]
+  ids: ["11155111","10", "534352", "42161", "324"]
 
 login:
   filter: ${LOGIN_FILTER:true}
@@ -90,16 +108,26 @@ login:
 bot:
   discord:
     botToken: ${DISCORD_BOT_TOKEN}
-    channelNameIdMap:
-      general_chat: ${DISCORD_GENERAL_CHAT_CHANNEL_ID}
-      sharing_team: ${DISCORD_SHARING_TEAM_CHANNEL_ID}
-      hiring_and_applying: ${DISCORD_HIRING_AND_APPLYING_CHANNEL_ID}
+    groupList:
+      - groupId: ${GUILD_DAPP_LEARNING_ID}
+        groupName: DAPP_LEARNING
+
   telegram:
     botToken: ${TG_BOT_TOKEN}
-    groupId: ${TG_GROUP_ID}
     timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
-    topicNameToMessageThreadIdMap:
-      general_chat: ${TG_GENERAL_CHAT_ID}
-      sharing_team: ${TG_SHARING_TEAM_ID}
-      hiring_and_job_team: ${TG_HIRING_AND_JOB_TEAM_ID}
-
+    groupList:
+      - groupId: ${TG_DAPP_LEARNING_GROUP_ID}
+        groupName: DAPP_LEARNING
+        topicOrChannelList:
+          - name: general-chat
+            threadOrTopicId: 1
+          - name: sharing
+            threadOrTopicId: 414
+          - name: hiring
+            threadOrTopicId: 423
+          - name: github
+            threadOrTopicId: 415
+          - name: builder
+            threadOrTopicId: 422
+          - name: translation
+            threadOrTopicId: 416

@@ -4,7 +4,10 @@ package com.dl.officialsite.member;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
+import com.dl.officialsite.bot.event.NotifyMessageFactory;
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.utils.HttpSessionUtils;
+import com.dl.officialsite.oauth2.config.OAuthSessionKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -124,33 +128,32 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address) {
+    public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address, HttpServletRequest request) {
+        member.setGithubId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME));
+        member.setTweetId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME));
 
+        this.setOAuthUserName(request.getSession(), member);
 
-        if (member.getGithubId() != null && member.getGithubId().equals("")) {
-            member.setGithubId(null);
-        }
         MemberVo _member = memberService.save(member);
 
-        //todo 看这里
         applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM, ChannelEnum.GENERAL,
-            "Welcome " + member.getNickName() + " join " + "Dapp-Learning, introduce yourself briefly.\n"));
+            NotifyMessageFactory.welcomeUserMessage(member.getNickName())));
         return BaseResponse.successWithData(_member);
     }
 
 
     @PutMapping("/update")
-    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member) {
+    public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member, HttpServletRequest request) {
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
         if (memberData.isPresent()) {
             Member _member = memberData.get();
-            if (member.getGithubId() != null) {
-                _member.setGithubId(member.getGithubId());
-            }
-            if (member.getTweetId() != null) {
-                _member.setTweetId(member.getTweetId());
-            }
+
+            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME))
+                .ifPresent(githubUserName -> _member.setGithubId(githubUserName));
+            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME))
+                .ifPresent(twitterUserName -> _member.setTweetId(twitterUserName));
+
             if (member.getWechatId() != null) {
                 _member.setWechatId(member.getWechatId());
             }
@@ -209,6 +212,9 @@ public class MemberController {
         Long memberId = (Long) session
             .getAttribute("memberId");
         return memberId;
+    }
+
+    private void setOAuthUserName(HttpSession session, Member member) {
     }
 
 }
