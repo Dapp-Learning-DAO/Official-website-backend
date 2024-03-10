@@ -1,10 +1,12 @@
 package com.dl.officialsite.common.utils;
 
 import com.dl.officialsite.login.model.SessionUserInfo;
+import com.dl.officialsite.oauth2.config.OAuthSessionKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Slf4j
 public abstract class HttpSessionUtils {
@@ -58,5 +60,13 @@ public abstract class HttpSessionUtils {
         session.removeAttribute(MEMBER_ATTRIBUTE_KEY);
     }
 
+    public static void setOAuthUserName(HttpSession session, OAuthSessionKey sessionKey, String githubName) {
+        session.setAttribute(sessionKey.toString(), githubName);
+    }
 
+    public static String getOAuthUserName(HttpSession session, OAuthSessionKey sessionKey) {
+        return Optional.ofNullable(session.getAttribute(sessionKey.toString()))
+            .map(Object::toString)
+            .orElse(null);
+    }
 }
