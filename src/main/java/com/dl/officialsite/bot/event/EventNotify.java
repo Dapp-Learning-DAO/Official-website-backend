@@ -5,9 +5,11 @@ import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.constant.GroupNameEnum;
 import com.dl.officialsite.bot.model.Message;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.context.ApplicationEvent;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class EventNotify extends ApplicationEvent {
     private BotEnum botEnum;
     private GroupNameEnum groupEnum;

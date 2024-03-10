@@ -1,5 +1,6 @@
 package com.dl.officialsite.config;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  * @Description TokenConfig
  **/
 @Data
+@Builder
 public class TokenConfig {
 
     private String name;
