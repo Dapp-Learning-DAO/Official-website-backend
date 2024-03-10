@@ -2,6 +2,7 @@ package com.dl.officialsite.config;
 
 import java.util.List;
 import lombok.Data;
+import org.web3j.protocol.Web3j;
 
 /**
  * @ClassName ChainInfo
@@ -11,7 +12,6 @@ import lombok.Data;
  **/
 @Data
 public class ChainInfo {
-
     private String name;
 
     private String id;
