@@ -1,14 +1,8 @@
 package com.dl.officialsite.aave;
 
-import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
-import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;
-
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.TokenConfig;
 import com.dl.officialsite.contract.ipooladdressesprovider.IPoolAddressesProvider;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -16,6 +10,14 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
+
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
+import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;
 
 /**
  * @ClassName Compent
