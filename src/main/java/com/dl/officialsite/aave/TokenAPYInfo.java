@@ -31,6 +31,8 @@ public class TokenAPYInfo {
 
     String chainName;
 
+    String chainId;
+
     Double tokenApy;
 
     String current;

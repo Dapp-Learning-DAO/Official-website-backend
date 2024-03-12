@@ -153,6 +153,7 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
                         tokenAPYInfo.setTokenAddress(token.getAddress());
                         tokenAPYInfo.setChainName(chain.getName());
                         tokenAPYInfo.setTokenApy((double) tokenApy);
+                        tokenAPYInfo.setChainId(chain.getId());
                         tokenAPYInfo.setProtocol("Aave");
                         tokenAPYInfoList.add(tokenAPYInfo);
                     } catch (Exception e) {
