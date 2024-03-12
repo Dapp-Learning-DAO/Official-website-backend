@@ -11,6 +11,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,10 +69,10 @@ public class Constant {
 
 
     public static ConcurrentHashMap<String,String> aaveLendingPoolProviderV3AddressMap = new ConcurrentHashMap<String, String>() {{
-                put( Constants.CHAIN_ID_POLYGON, "0x794a61358D6845594F94dc1DB02A252b5b4814aD");
-                put( Constants.CHAIN_ID_OP, "0x794a61358D6845594F94dc1DB02A252b5b4814aD");
-                put( Constants.CHAIN_ID_SCROLL, "0x11fCfe756c05AD438e312a7fd934381537D3cFfe");
-                put( Constants.CHAIN_ID_ARBITRUM, "0x794a61358D6845594F94dc1DB02A252b5b4814aD");
+                put( Constants.CHAIN_ID_POLYGON, "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb");
+                put( Constants.CHAIN_ID_OP, "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb");
+                put( Constants.CHAIN_ID_SCROLL, "0x69850D0B276776781C063771b161bd8894BCdD04");
+                put( Constants.CHAIN_ID_ARBITRUM, "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb");
             }};
 
 

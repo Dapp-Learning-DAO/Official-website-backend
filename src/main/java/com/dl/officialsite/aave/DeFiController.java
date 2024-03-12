@@ -39,9 +39,9 @@ public class DeFiController {
     /**
      * 条件查询所有币种年华，按照最大年华排序
      */
-    @GetMapping("/tokenApy")
-    public BaseResponse tokenApy() {
-        return BaseResponse.successWithData(aaveService.queryTokenApy());
+    @PostMapping("/tokenApy")
+    public BaseResponse tokenApy(@RequestBody TokenAPYInfoQuery query) {
+        return BaseResponse.successWithData(aaveService.queryTokenApy(query));
     }
 
     /**

@@ -14,7 +14,7 @@ public abstract class AbstractTokenAPY {
     /**
      * get token apy group by defi provider
      */
-    public abstract List<TokenAPYInfo> queryTokenApy();
+    public abstract List<TokenAPYInfo> queryTokenApy(TokenAPYInfoQuery query);
 
     public abstract HealthInfo getHealthInfo(ChainInfo chainInfo, String address);
 
