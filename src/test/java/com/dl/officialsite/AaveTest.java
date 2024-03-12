@@ -1,25 +1,22 @@
 package com.dl.officialsite;
 
-import com.dl.officialsite.aave.AaveService;
+import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
+import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;
+
 import com.dl.officialsite.contract.ilendingpool.ILendingPool;
 import com.dl.officialsite.contract.ilendingpooladdressesprovider.ILendingPoolAddressesProvider;
 import com.dl.officialsite.contract.ipool.IPool;
 import com.dl.officialsite.contract.ipooladdressesprovider.IPoolAddressesProvider;
+import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tuples.Tuple;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
-
-import java.math.BigInteger;
-
-import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
-import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;
 
 public class AaveTest {
 
@@ -44,7 +41,7 @@ public class AaveTest {
     public  void getHFV3() throws Exception {
 
         // polygonv3
-        String lendingPoolAddressProviderV3 = "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb";
+        String lendingPoolAddressProviderV3 = "0x794a61358D6845594F94dc1DB02A252b5b4814aD";
         IPoolAddressesProvider addrProV3 = IPoolAddressesProvider.load(lendingPoolAddressProviderV3, web3j, getCredentials(), GAS_PROVIDER);
         String s = addrProV3.getPool().send();
         logger.info("v3 pool: " + s);

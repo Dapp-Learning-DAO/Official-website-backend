@@ -3,15 +3,12 @@ package com.dl.officialsite.bot.model;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.constant.GroupNameEnum;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -31,7 +28,7 @@ public abstract class BaseBotConfig<B, G, T> {
 
     public abstract B initBot() throws InterruptedException;
 
-    @PostConstruct
+/*    @PostConstruct
     public void init() throws InterruptedException {
         log.info("Start to init bot:[{}] ...", botEnum);
 
@@ -41,7 +38,7 @@ public abstract class BaseBotConfig<B, G, T> {
             bot = initBot();
         }
         log.info("The {} Bot is initialized and ready with detail:[{}]!!!", botEnum, this.toString());
-    }
+    }*/
 
     public Pair<G, T> getGroupIdAndChannelIdByName(GroupNameEnum groupNameEnum, ChannelEnum channelEnum) {
         final GroupNameEnum groupName = groupNameEnum == null ? GroupNameEnum.DAPP_LEARNING : groupNameEnum;

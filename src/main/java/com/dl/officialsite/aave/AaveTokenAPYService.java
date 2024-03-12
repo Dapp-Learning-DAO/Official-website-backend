@@ -11,10 +11,13 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
@@ -49,8 +52,18 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
     }
 
     @Override
-    public List<TokenAPYInfo> queryTokenApy() {
-        return tokenAPYInfoRepository.findAll();
+    public List<TokenAPYInfo> queryTokenApy(TokenAPYInfoQuery query) {
+
+        return tokenAPYInfoRepository.findAll(
+            (Specification<TokenAPYInfo>) (r, q, c) -> {
+                List<Predicate> predicates = new LinkedList<>();
+                if (query.getChainName() != null) {
+                    predicates.add(c.equal(r.get("chainName"), query.getChainName()));
+                }
+                q.orderBy(c.desc(r.get("tokenApy")));
+                return null;
+            }
+        );
     }
 
     @Override
@@ -134,12 +147,12 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
                     try {
                         IPool.ReserveData reserveData = pool.getReserveData(token.getAddress()).send();
                         log.info("{} variable deposit interest: {}", token.getName(), reserveData.currentVariableBorrowRate.divide(E23).floatValue() / 100);
-                        String tokenApy = reserveData.currentLiquidityRate.divide(E23).floatValue() / 100 + "%";
+                        float tokenApy = reserveData.currentLiquidityRate.divide(E23).floatValue() / 100;
                         TokenAPYInfo tokenAPYInfo = new TokenAPYInfo();
                         tokenAPYInfo.setTokenName(token.getName());
                         tokenAPYInfo.setTokenAddress(token.getAddress());
                         tokenAPYInfo.setChainName(chain.getName());
-                        tokenAPYInfo.setTokenApy(tokenApy);
+                        tokenAPYInfo.setTokenApy((double) tokenApy);
                         tokenAPYInfo.setProtocol("Aave");
                         tokenAPYInfoList.add(tokenAPYInfo);
                     } catch (Exception e) {
