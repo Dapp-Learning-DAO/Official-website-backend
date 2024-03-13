@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.constant;
 
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.TokenConfig;
