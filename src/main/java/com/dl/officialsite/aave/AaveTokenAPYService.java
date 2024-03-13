@@ -61,7 +61,7 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
                     predicates.add(c.equal(r.get("chainName"), query.getChainName()));
                 }
                 q.orderBy(c.desc(r.get("tokenApy")));
-                return null;
+                return c.and(predicates.toArray(new Predicate[0]));
             }
         );
     }
