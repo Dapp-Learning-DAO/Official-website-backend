@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.vo;
 
 import java.math.BigInteger;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.Data;
  **/
 @Data
 @Builder
-public class HealthInfo {
+public class HealthInfoVo {
 
     //健康系数
     private BigInteger healthFactor;

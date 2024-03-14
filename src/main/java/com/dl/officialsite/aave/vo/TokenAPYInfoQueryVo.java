@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.vo;
 
 import lombok.Data;
 
@@ -9,8 +9,7 @@ import lombok.Data;
  * @Description TokenAPYInfoQuery
  **/
 @Data
-public class TokenAPYInfoQuery {
-
+public class TokenAPYInfoQueryVo {
 
     String chainName;
 }

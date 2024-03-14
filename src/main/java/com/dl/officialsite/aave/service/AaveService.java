@@ -1,8 +1,11 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.service;
 
 import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
 import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;
 
+import com.dl.officialsite.aave.TokenInfo;
+import com.dl.officialsite.aave.TokenInfoList;
+import com.dl.officialsite.aave.vo.HealthInfoVo;
 import com.dl.officialsite.contract.iaaveoracle.IAaveOracle;
 import com.dl.officialsite.contract.ipool.IPool;
 import com.dl.officialsite.contract.ipooladdressesprovider.IPoolAddressesProvider;
@@ -36,10 +39,7 @@ public class AaveService {
    IPoolAddressesProvider poolAddressesProvider;
 
 
-
-
-
-    public HealthInfo getHealthInfo(String address) {
+    public HealthInfoVo getHealthInfo(String address) {
         try {
             String poolAddress = poolAddressesProvider.getPool().send();
             log.info("poolAddress is : " + poolAddress);
@@ -50,7 +50,7 @@ public class AaveService {
             BigInteger totalDebtBase = info.component2();
             BigInteger ltv = info.component5();
             BigInteger healthFactor = info.component6();
-            HealthInfo healthInfo = HealthInfo.builder()
+            HealthInfoVo healthInfo = HealthInfoVo.builder()
                 .healthFactor(healthFactor)
                 .totalBorrows(totalDebtBase.toString())
                 .totalCollateralETH(totalCollateralBase.toString())
