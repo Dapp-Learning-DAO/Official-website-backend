@@ -135,8 +135,8 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("update token info task begin --------------------- ");
         log.info("now date {}", LocalDateTime.now().format(formatter));
-        tokenAPYInfoRepository.deleteAll();
         List<TokenAPYInfo> tokenAPYInfoList = queryTokenApyOnChain();
+        tokenAPYInfoRepository.deleteAll();
         tokenAPYInfoRepository.saveAll(tokenAPYInfoList);
     }
 
