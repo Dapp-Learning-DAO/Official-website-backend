@@ -59,6 +59,8 @@ public class Constants {
     public static final String CHAIN_ID_SCROLL = "534352";
     public static final String CHAIN_ID_ARBITRUM = "42161";
     public static final String CHAIN_ID_ZKSYNC = "324";
+    public static final String CHAIN_ID_POLYGON = "137";
+
 
     /**
      * 0:jd 招聘中 1: 已匹配 2:jd 已完成结算 3:jd 已过期 4：jd 已退款 5: 已删除

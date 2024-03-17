@@ -4,6 +4,7 @@ import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.model.BaseBotConfig;
 import com.pengrad.telegrambot.TelegramBot;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ConfigurationProperties(prefix = "bot.telegram", ignoreInvalidFields = true)
 public class TelegramBotConfig extends BaseBotConfig<TelegramBot, Long, Integer> {
 

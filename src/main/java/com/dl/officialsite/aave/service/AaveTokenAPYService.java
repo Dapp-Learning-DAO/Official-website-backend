@@ -1,8 +1,13 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.service;
 
 import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
 import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;
 
+import com.dl.officialsite.aave.TokenAPYInfo;
+import com.dl.officialsite.aave.TokenAPYInfoRepository;
+import com.dl.officialsite.aave.vo.ChainAndAPYVo;
+import com.dl.officialsite.aave.vo.HealthInfoVo;
+import com.dl.officialsite.aave.vo.TokenAPYInfoAllVo;
 import com.dl.officialsite.config.ChainInfo;
 import com.dl.officialsite.config.Web3jAutoConfiguration;
 import com.dl.officialsite.contract.ipool.IPool;
@@ -12,8 +17,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -49,14 +56,36 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
     }
 
     @Override
-    public List<TokenAPYInfo> queryTokenApy() {
-        return tokenAPYInfoRepository.findAll();
+    public List<TokenAPYInfoAllVo> queryTokenApy() {
+        Map<String, List<TokenAPYInfo>> tokenAPYInfoMap = tokenAPYInfoRepository.findAll()
+            .stream()
+            .collect(Collectors.groupingBy(TokenAPYInfo::getTokenName));
+
+        return tokenAPYInfoMap.entrySet().stream()
+            .map(entry -> {
+                TokenAPYInfoAllVo tokenAPYInfoAllVo = new TokenAPYInfoAllVo();
+                tokenAPYInfoAllVo.setTokenName(entry.getKey());
+                List<ChainAndAPYVo> chainAndAPYVos = entry.getValue().stream()
+                    .map(tokenAPYInfo -> {
+                        ChainAndAPYVo chainAndAPYVo = new ChainAndAPYVo();
+                        chainAndAPYVo.setChainName(tokenAPYInfo.getChainName());
+                        chainAndAPYVo.setSupply(tokenAPYInfo.getSupply());
+                        chainAndAPYVo.setBorrow(tokenAPYInfo.getBorrow());
+                        chainAndAPYVo.setTokenAddress(tokenAPYInfo.getTokenAddress());
+                        return chainAndAPYVo;
+                    })
+                    .collect(Collectors.toList());
+                tokenAPYInfoAllVo.setChainAllAPY(chainAndAPYVos);
+                return tokenAPYInfoAllVo;
+            })
+            .collect(Collectors.toList());
     }
 
+
     @Override
-    public HealthInfo getHealthInfo(ChainInfo chainInfo, String address) {
+    public HealthInfoVo getHealthInfo(ChainInfo chainInfo, String address) {
         try {
-            AtomicReference<HealthInfo> healthInfo = new AtomicReference<>();
+            AtomicReference<HealthInfoVo> healthInfo = new AtomicReference<>();
             chainWithWeb3j.forEach((chain, web3j) -> {
                 if (chain.getId().equals(chainInfo.getId())) {
                     log.info("chain: {}", chain.getName());
@@ -79,7 +108,7 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
                         BigInteger totalDebtBase = info.component2();
                         BigInteger ltv = info.component5();
                         BigInteger healthFactor = info.component6();
-                        healthInfo.set(HealthInfo.builder()
+                        healthInfo.set(HealthInfoVo.builder()
                             .healthFactor(healthFactor)
                             .totalBorrows(totalDebtBase.toString())
                             .totalCollateralETH(totalCollateralBase.toString())
@@ -106,8 +135,8 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("update token info task begin --------------------- ");
         log.info("now date {}", LocalDateTime.now().format(formatter));
-        tokenAPYInfoRepository.deleteAll();
         List<TokenAPYInfo> tokenAPYInfoList = queryTokenApyOnChain();
+        tokenAPYInfoRepository.deleteAll();
         tokenAPYInfoRepository.saveAll(tokenAPYInfoList);
     }
 
@@ -133,13 +162,18 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
                     log.info("tokenName: {} tokenAddress: {}", token.getName(), token.getAddress());
                     try {
                         IPool.ReserveData reserveData = pool.getReserveData(token.getAddress()).send();
-                        log.info("{} variable deposit interest: {}", token.getName(), reserveData.currentVariableBorrowRate.divide(E23).floatValue() / 100);
-                        String tokenApy = reserveData.currentLiquidityRate.divide(E23).floatValue() / 100 + "%";
+                        log.info("{} variable deposit interest: {}", token.getName(), reserveData.currentLiquidityRate.divide(E23).floatValue() / 100);
+                        Double deposit = (double) (reserveData.currentLiquidityRate.divide(E23).floatValue() / 100);
+                        log.info( "{}  variable borrow interest: {}" ,token.getName(), reserveData.currentVariableBorrowRate.divide(E23).floatValue()/100) ;
+                        Double borrow =
+                            (double) (reserveData.currentVariableBorrowRate.divide(E23).floatValue() / 100);
                         TokenAPYInfo tokenAPYInfo = new TokenAPYInfo();
                         tokenAPYInfo.setTokenName(token.getName());
                         tokenAPYInfo.setTokenAddress(token.getAddress());
                         tokenAPYInfo.setChainName(chain.getName());
-                        tokenAPYInfo.setTokenApy(tokenApy);
+                        tokenAPYInfo.setSupply(deposit);
+                        tokenAPYInfo.setBorrow(borrow);
+                        tokenAPYInfo.setChainId(chain.getId());
                         tokenAPYInfo.setProtocol("Aave");
                         tokenAPYInfoList.add(tokenAPYInfo);
                     } catch (Exception e) {

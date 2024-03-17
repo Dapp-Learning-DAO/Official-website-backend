@@ -1,5 +1,7 @@
 package com.dl.officialsite.aave;
 
+import com.dl.officialsite.aave.service.AaveService;
+import com.dl.officialsite.aave.vo.HealthInfoVo;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.TeamService;
@@ -47,7 +49,7 @@ public class Schedule {
             for (TeamsWithMembers teamAndMember : teamAndMembers) {
                 for (Member member : teamAndMember.getMembers()) {
                     String email = member.getEmail();
-                    HealthInfo healthInfo = aaveService.getHealthInfo(member.getAddress());
+                    HealthInfoVo healthInfo = aaveService.getHealthInfo(member.getAddress());
                     TokenInfoList tokenInfoList = aaveService.getVar();
                     emailService.sendMail(email, "Dapp Defi Monitor", tokenInfoList.toString() + "\n" + healthInfo.toString());
                 }
@@ -70,7 +72,7 @@ public class Schedule {
                 for (TeamsWithMembers teamAndMember : teamAndMembers) {
                     for (Member member : teamAndMember.getMembers()) {
                         String email = member.getEmail();
-                        HealthInfo healthInfo = aaveService.getHealthInfo(member.getAddress());
+                        HealthInfoVo healthInfo = aaveService.getHealthInfo(member.getAddress());
                         float health = healthInfo.getHealthFactor().divide(e16).floatValue() / 100;
                         log.info("health is : " + health);
                         if (health < 1.2) {

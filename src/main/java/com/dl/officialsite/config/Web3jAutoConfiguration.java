@@ -3,6 +3,8 @@ package com.dl.officialsite.config;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
+
+import com.dl.officialsite.aave.constants.Constant;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.logging.Log;
@@ -32,16 +34,21 @@ public class Web3jAutoConfiguration {
     @Autowired
     private NetworkProperties networkProperties;
 
-    public static final ConcurrentHashMap<ChainInfo, Web3j> web3jMap = new ConcurrentHashMap<ChainInfo, Web3j>();
+    public static final ConcurrentHashMap<ChainInfo, Web3j> web3jMap = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init() {
         for (int i = 0; i < networkProperties.getConfigs().length; i++) {
             NetworkProperties.NetworkDetailProperties detail = networkProperties.getConfigs()[i];
             Web3jService web3jService = buildService(detail.getRpc());
-            //todo 这里添加ChainInfo
             ChainInfo chainInfo = new ChainInfo();
-            web3jMap.put(chainInfo, Web3j.build(web3jService));
+//            chainInfo.setWeb3j(Web3j.build(web3jService));
+            chainInfo.setId(detail.getId());
+            chainInfo.setName(detail.getName());
+            chainInfo.setTokens(Constant.tokenConfigListMap.get(detail.getId()));
+            chainInfo.setLendingPoolAddressProviderV3Address(Constant.aaveLendingPoolProviderV3AddressMap.get(detail.getId()));
+
+            web3jMap.put(chainInfo,Web3j.build(web3jService) );
             log.info("initWeb3jMap.current chain:" + detail.getName() + " rpc:" + detail.getRpc());
         }
         // 执行初始化操作
