@@ -4,18 +4,27 @@ package com.dl.officialsite.member;
 import com.dl.officialsite.common.privacy.PrivacyEncrypt;
 import com.dl.officialsite.common.privacy.PrivacyTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-
-import static com.dl.officialsite.common.privacy.PrivacyTypeEnum.CUSTOMER;
 
 @Getter
 @Setter
@@ -52,6 +61,9 @@ public class Member  implements Serializable
     private String githubId;
     @Column(length = 20)
     private String tweetId;
+
+    @Column(unique=true,length = 64)
+    private String tweetScreenName;
     @Column(length = 20)
     private String telegramId;
     @Column(length = 20)

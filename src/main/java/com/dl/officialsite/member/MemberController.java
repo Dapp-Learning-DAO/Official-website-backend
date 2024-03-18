@@ -131,6 +131,7 @@ public class MemberController {
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address, HttpServletRequest request) {
         member.setGithubId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME));
         member.setTweetId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME));
+        member.setTweetScreenName(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME));
 
         this.setOAuthUserName(request.getSession(), member);
 
@@ -153,6 +154,8 @@ public class MemberController {
                 .ifPresent(githubUserName -> _member.setGithubId(githubUserName));
             Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME))
                 .ifPresent(twitterUserName -> _member.setTweetId(twitterUserName));
+            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME))
+                .ifPresent(twitterScreenName -> _member.setTweetScreenName(twitterScreenName));
 
             if (member.getWechatId() != null) {
                 _member.setWechatId(member.getWechatId());
