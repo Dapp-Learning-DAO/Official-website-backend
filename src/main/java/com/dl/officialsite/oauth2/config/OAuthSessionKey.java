@@ -14,7 +14,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum OAuthSessionKey {
     GITHUB_USER_NAME("GITHUB_USER_NAME"),
-    TWITTER_USER_NAME("TWITTER_USER_NAME")
+    TWITTER_USER_NAME("TWITTER_USER_NAME"),
+    TWITTER_SCREEN_NAME("TWITTER_SCREEN_NAME")
     ;
 
     private String sessionKey;
