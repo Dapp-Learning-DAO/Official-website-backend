@@ -1,5 +1,7 @@
 package com.dl.officialsite.member;
 
+import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
+
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
@@ -9,19 +11,16 @@ import com.dl.officialsite.team.TeamRepository;
 import com.dl.officialsite.team.TeamService;
 import com.dl.officialsite.team.teammember.TeamMember;
 import com.dl.officialsite.team.teammember.TeamMemberRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
 
 @Service
 public class MemberService {

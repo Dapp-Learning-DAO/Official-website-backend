@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +21,7 @@ public class MemberVo {
     private int role; // 开发者0 ， 投资 1  产品2   运营3  市场4  UI/UX 5
     private String githubId;
     private String tweetId;
+    private String tweetScreenName;
     private String telegramId;
     private String wechatId;
     private String avatar;

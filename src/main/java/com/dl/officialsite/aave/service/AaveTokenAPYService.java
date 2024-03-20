@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
@@ -131,6 +132,7 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
     }
 
     @Scheduled(cron =  "${jobs.defi.corn: 0 30 * * * * ?}")
+    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateTokenAPYInfo()  {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("update token info task begin --------------------- ");
