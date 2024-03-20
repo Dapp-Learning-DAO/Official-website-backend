@@ -6,6 +6,9 @@ import com.dl.officialsite.config.ChainConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,12 +18,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @ClassName TeamService
@@ -42,6 +43,7 @@ public class RedPacketService {
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
    @Scheduled(cron =  "${jobs.redpacket.corn:0/10 * * * * ?}")
+   @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
    public void updateRedpacketStatus()  {
         log.info("schedule task begin --------------------- ");
         for (String chainId : chainConfig.getIds()) {

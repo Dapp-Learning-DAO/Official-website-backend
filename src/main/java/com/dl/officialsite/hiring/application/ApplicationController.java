@@ -1,15 +1,20 @@
 package com.dl.officialsite.hiring.application;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.enums.CodeEnums;
+import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.hiring.HireService;
 import com.dl.officialsite.hiring.vo.ApplySearchVo;
 import com.dl.officialsite.hiring.vo.ApplyVo;
 import com.dl.officialsite.hiring.vo.HiringVO;
+import com.dl.officialsite.team.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +35,16 @@ public class ApplicationController {
 
     @Autowired
      private  ApplicationService applicationService;
+
+    private final TeamService teamService;
+
+    private final HireService hireService;
+
+    public ApplicationController(TeamService teamService, HireService hireService) {
+        this.teamService = teamService;
+        this.hireService = hireService;
+    }
+
     /**
      * 创建申请
      */
@@ -70,10 +85,40 @@ public class ApplicationController {
         if (pageNumber > 0) {
             pageNumber = pageNumber - 1;
         }
+        if (!teamService.checkMemberIsAdmin(address)) {
+            throw new BizException(CodeEnums.NOT_THE_ADMIN);
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
         Page<Application> page = applicationService.applySearch(applySearchVo, pageable);
         return BaseResponse.successWithData(page);
     }
+
+    /**
+     * admin get apply detail
+     */
+    @GetMapping("/apply/hiring/detail")
+    public BaseResponse applyHiringDetail(@RequestParam Long hireId,@RequestParam String address) {
+        if (!teamService.checkMemberIsAdmin(address)) {
+            throw new BizException(CodeEnums.NOT_THE_ADMIN);
+        }
+        ApplicationHiringDetailVo applicationHiringDetailVo = applicationService.getInfo(hireId);
+        return BaseResponse.successWithData(applicationHiringDetailVo);
+    }
+
+    /**
+     * creator get apply detail
+     */
+    @GetMapping("/apply/hiring/detail/creator")
+    public BaseResponse applyHiringDetailCreator(@RequestParam Long hireId,@RequestParam String address) {
+        hireService.findById(hireId).ifPresent(hiringVO -> {
+            if (!hiringVO.getAddress().equals(address) || ObjectUtils.isEmpty(hiringVO)) {
+                throw new BizException(CodeEnums.FAIL);
+            }
+        });
+        ApplicationHiringDetailVo applicationHiringDetailVo = applicationService.getInfo(hireId);
+        return BaseResponse.successWithData(applicationHiringDetailVo);
+    }
+
 
 
 }

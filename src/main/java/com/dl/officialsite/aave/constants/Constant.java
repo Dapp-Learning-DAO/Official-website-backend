@@ -53,7 +53,7 @@ public class Constant {
     public static final TokenConfig SCROLL_USDT =TokenConfig.builder().name("USDT").address("0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df").build();
     public static final TokenConfig SCROLL_WETH =TokenConfig.builder().name("WETH").address("0x5300000000000000000000000000000000000004").build();
 //    public static final TokenConfig SCROLL_WBTC =TokenConfig.builder().name("WBTC").address("123").build();
-    public static final List<TokenConfig> SCROLL_TOKEN_LIST =Arrays.asList(SCROLL_USDC,SCROLL_USDT,SCROLL_WETH);
+    public static final List<TokenConfig> SCROLL_TOKEN_LIST =Arrays.asList(SCROLL_USDC,SCROLL_WETH);
 
 
     public static final TokenConfig ARB_DAI =TokenConfig.builder().name("DAI").address("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1").build();
