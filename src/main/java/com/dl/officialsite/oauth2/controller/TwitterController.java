@@ -79,7 +79,7 @@ public class TwitterController {
         HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME, twitterUserNameAndScreenName.getLeft());
         HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME,
             twitterUserNameAndScreenName.getRight());
-        return BaseResponse.successWithData(twitterUserNameAndScreenName.getLeft());
+        return BaseResponse.successWithData(twitterUserNameAndScreenName);
     }
 
     private Pair<String, String> fetchProfile(String oAuthToken, String verifier, String secret) {
