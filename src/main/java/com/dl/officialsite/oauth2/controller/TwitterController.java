@@ -7,7 +7,14 @@ import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.config.OAuthSessionKey;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
+import com.dl.officialsite.oauth2.model.bo.TwitterVerifyResponse;
 import com.nimbusds.jose.util.Pair;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Optional;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
@@ -21,13 +28,6 @@ import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -79,7 +79,10 @@ public class TwitterController {
         HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME, twitterUserNameAndScreenName.getLeft());
         HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME,
             twitterUserNameAndScreenName.getRight());
-        return BaseResponse.successWithData(twitterUserNameAndScreenName);
+        TwitterVerifyResponse response = new TwitterVerifyResponse();
+        response.setNickName(twitterUserNameAndScreenName.getLeft());
+        response.setId(twitterUserNameAndScreenName.getRight());
+        return BaseResponse.successWithData(response);
     }
 
     private Pair<String, String> fetchProfile(String oAuthToken, String verifier, String secret) {
