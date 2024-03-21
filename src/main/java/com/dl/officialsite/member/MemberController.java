@@ -152,11 +152,17 @@ public class MemberController {
 
             Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME))
                 .ifPresent(githubUserName -> _member.setGithubId(githubUserName));
-            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME))
+/*            Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME))
                 .ifPresent(twitterUserName -> _member.setTweetId(twitterUserName));
             Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME))
-                .ifPresent(twitterScreenName -> _member.setTweetScreenName(twitterScreenName));
+                .ifPresent(twitterScreenName -> _member.setTweetScreenName(twitterScreenName));*/
 
+            if (member.getTweetId() != null) {
+                _member.setTweetId(member.getTweetId());
+            }
+            if (member.getTweetScreenName() != null) {
+                _member.setTweetScreenName(member.getTweetScreenName());
+            }
             if (member.getWechatId() != null) {
                 _member.setWechatId(member.getWechatId());
             }
