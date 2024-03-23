@@ -1,5 +1,8 @@
 package com.dl.officialsite.bounty;
 
+import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
+import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
+
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
@@ -13,6 +16,10 @@ import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+import javax.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
@@ -20,14 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-
-import javax.persistence.criteria.Predicate;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-
-import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
-import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
+import org.springframework.util.StringUtils;
 
 /**
  * @ClassName BountyService
@@ -92,12 +92,12 @@ public class BountyService {
     }
 
     private Specification<Bounty> hasCreator(String creator) {
-        return (root, query, criteriaBuilder) -> creator != null ?
+        return (root, query, criteriaBuilder) -> StringUtils.hasText(creator) ?
             criteriaBuilder.equal(root.get("creator"), creator) : null;
     }
 
     private Specification<Bounty> hasTitle(String title) {
-        return (root, query, criteriaBuilder) -> title != null ?
+        return (root, query, criteriaBuilder) -> StringUtils.hasText(title) ?
             criteriaBuilder.like(root.get("title"), "%" + title + "%") : null;
     }
 
