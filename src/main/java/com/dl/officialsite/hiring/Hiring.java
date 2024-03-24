@@ -71,6 +71,6 @@ public class Hiring {
      * 2:jd 过期
      * 设置默认值,默认值为招聘中
      */
-    private int status = 1;
+    private int status = 0;
 
 }
