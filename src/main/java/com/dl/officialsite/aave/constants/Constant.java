@@ -43,8 +43,10 @@ public class Constant {
     public static final TokenConfig OP_WBTC =TokenConfig.builder().name("WBTC").address("0x68f180fcce6836688e9084f035309e29bf0a2095").build();
 
     public static final TokenConfig OP_USDC_E =TokenConfig.builder().name("USDC.e").address("0x7f5c764cbc14f9669b88837ca1490cca17c31607").build();
+    public static final TokenConfig OP_USDC_LUSD =TokenConfig.builder().name("LUSD").address(
+        "0xc40F949F8a4e094D1b49a23ea9241D289B7b2819").build();
     public static final List<TokenConfig> OP_TOKEN_LIST =Arrays.asList(OP_DAI,OP_USDC,OP_USDT,
-        OP_WETH,OP_WBTC,OP_USDC_E);
+        OP_WETH,OP_WBTC,OP_USDC_E,OP_USDC_LUSD);
 
 
 
@@ -62,8 +64,11 @@ public class Constant {
     public static final TokenConfig ARB_WETH =TokenConfig.builder().name("WETH").address("0x82af49447d8a07e3bd95bd0d56f35241523fbab1").build();
     public static final TokenConfig ARB_WBTC =TokenConfig.builder().name("WBTC").address("0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f").build();
     public static final TokenConfig ARB_USDC_E =TokenConfig.builder().name("USDC.e").address("0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8").build();
+
+    public static final TokenConfig ARB_USDC_LUSD =TokenConfig.builder().name("LUSD").address(
+        "0x93b346b6BC2548dA6A1E7d98E9a421B42541425b").build();
     public static final List<TokenConfig> ARB_TOKEN_LIST =Arrays.asList(ARB_DAI,ARB_USDC,
-        ARB_USDT,ARB_WETH,ARB_WBTC,ARB_USDC_E);
+        ARB_USDT,ARB_WETH,ARB_WBTC,ARB_USDC_E,ARB_USDC_LUSD);
 
 
     public static ConcurrentHashMap<String,List<TokenConfig>> tokenConfigListMap = new ConcurrentHashMap<String, List<TokenConfig>>() {{
