@@ -285,8 +285,8 @@ public class HireService {
         return hireRepository.findById(hireId);
     }
 
-    public Object getAllHire(HireSearchParams hireSearchParams) {
-        return hireRepository.findAll(((root, query, criteriaBuilder) -> {
+    public Page<HiringVO> getAllHire(HireSearchParams hireSearchParams, Pageable pageable) {
+        Page<Hiring> hiringPage = hireRepository.findAll(((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (StringUtils.hasText(hireSearchParams.getCreator())) {
                 predicates.add(
@@ -301,8 +301,13 @@ public class HireService {
                     "%" + hireSearchParams.getTitle() + "%"));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        }));
-    }
+        }), pageable);
+        return hiringPage.map(hiring -> {
+            Map<Long, List<HiringSkillVO>> skillsMap = fetchSkillsMapByHiringIds(
+                Collections.singletonList(hiring.getId()));
+            return mapHiringToHiringVO(hiring, skillsMap);
+        });
+    };
 
     public void deleteHire(Long hireId) {
         Hiring hiring = hireRepository.findById(hireId)
