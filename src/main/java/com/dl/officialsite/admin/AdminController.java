@@ -42,7 +42,8 @@ public class AdminController {
 
     private final BountyService bountyService;
 
-    public AdminController(MemberService memberService, TeamService teamService, HireService hireService,
+    public AdminController(MemberService memberService, TeamService teamService,
+        HireService hireService,
         BountyService bountyService) {
         this.memberService = memberService;
         this.teamService = teamService;
@@ -51,13 +52,12 @@ public class AdminController {
     }
 
     /**
-     * freeze member
-     * //todo 查询member list把禁用的member filter out/ member不可登录
+     * freeze member //todo 查询member list把禁用的member filter out/ member不可登录
      */
     @PutMapping("/member/freeze")
     public BaseResponse freezeMember(@RequestParam String adminAddress,
         @RequestParam String address) {
-        if (!teamService.checkMemberIsSuperAdmin(adminAddress)) {
+        if (!teamService.checkMemberIsAdmin(adminAddress)) {
             throw new BizException(CodeEnums.NOT_THE_ADMIN);
         }
         memberService.freeze(address);
@@ -66,16 +66,20 @@ public class AdminController {
 
     @PostMapping("/hire/all")
     public BaseResponse allHire(@RequestParam String adminAddress,
+        @RequestParam(defaultValue = "1") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize,
         @RequestBody HireSearchParams hireSearchParams) {
-        if (!teamService.checkMemberIsSuperAdmin(adminAddress)) {
+        if (!teamService.checkMemberIsAdmin(adminAddress)) {
             throw new BizException(CodeEnums.NOT_THE_ADMIN);
         }
-        return BaseResponse.successWithData(hireService.getAllHire(hireSearchParams));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,
+            Sort.by(Sort.Direction.DESC, "createTime"));
+        return BaseResponse.successWithData(hireService.getAllHire(hireSearchParams,pageable));
     }
 
     @DeleteMapping("/hire/delete")
     public BaseResponse deleteHire(@RequestParam String adminAddress, @RequestParam Long hireId) {
-        if (!teamService.checkMemberIsSuperAdmin(adminAddress)) {
+        if (!teamService.checkMemberIsAdmin(adminAddress)) {
             throw new BizException(CodeEnums.NOT_THE_ADMIN);
         }
         hireService.deleteHire(hireId);
@@ -87,10 +91,11 @@ public class AdminController {
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize,
         @RequestBody BountySearchVo bountySearchParams) {
-        if (!teamService.checkMemberIsSuperAdmin(adminAddress)) {
+        if (!teamService.checkMemberIsAdmin(adminAddress)) {
             throw new BizException(CodeEnums.NOT_THE_ADMIN);
         }
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,
+            Sort.by(Sort.Direction.DESC, "createTime"));
         Page<BountyVo> page = bountyService.search(bountySearchParams, pageable);
         return BaseResponse.successWithData(page);
     }
