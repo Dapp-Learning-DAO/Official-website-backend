@@ -3,6 +3,7 @@ package com.dl.officialsite.hiring;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_JD;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 
+import com.dl.officialsite.admin.vo.HireSearchParams;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.file.cos.FileService;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * @ClassName HireService
@@ -58,31 +60,34 @@ public class HireService {
 
     @Autowired
     private MemberService memberService;
+
     /**
      * 新增岗位
-     * @param hiringVO
-     * @return
      */
     public HiringVO add(HiringVO hiringVO, String address) {
 
         //check in hiring team or in sharing team
 
-        MemberWithTeam memberWithTeam =  memberService.getMemberWithTeamInfoByAddress(address);
+        MemberWithTeam memberWithTeam = memberService.getMemberWithTeamInfoByAddress(address);
         ArrayList<Team> teams = memberWithTeam.getTeams();
         List teamNames = teams.stream().map(Team::getTeamName).collect(Collectors.toList());
-        if(!teamNames.contains("Dapp-Learning DAO co-founders") && !teamNames.contains("Dapp-Learning DAO sharing group") && !teamNames.contains("Hiring Team")) {
+        if (!teamNames.contains("Dapp-Learning DAO co-founders") && !teamNames.contains(
+            "Dapp-Learning DAO sharing group") && !teamNames.contains("Hiring Team")) {
             throw new BizException("1001", "no permission");
         }
-            //do nothing
-
+        //do nothing
 
         Hiring hiring = new Hiring();
         BeanUtils.copyProperties(hiringVO, hiring);
         hireRepository.save(hiring);
 
         List<HiringSkill> hiringSkillList = new ArrayList<>();
-        hiringVO.getMainSkills().forEach(skill -> createHiringSkill(Constants.HIRING_MAIN_SKILL, skill, hiring, hiringSkillList));
-        hiringVO.getOtherSkills().forEach(skill -> createHiringSkill(Constants.HIRING_OTHER_SKILL, skill, hiring, hiringSkillList));
+        hiringVO.getMainSkills().forEach(
+            skill -> createHiringSkill(Constants.HIRING_MAIN_SKILL, skill, hiring,
+                hiringSkillList));
+        hiringVO.getOtherSkills().forEach(
+            skill -> createHiringSkill(Constants.HIRING_OTHER_SKILL, skill, hiring,
+                hiringSkillList));
 
         hiringSkillRepository.saveAll(hiringSkillList);
         hiringVO.setId(hiring.getId());
@@ -91,17 +96,17 @@ public class HireService {
         return hiringVO;
     }
 
-    private void createHiringSkill(int skillType, HiringSkillVO skillVO, Hiring hiring, List<HiringSkill> hiringSkillList) {
+    private void createHiringSkill(int skillType, HiringSkillVO skillVO, Hiring hiring,
+        List<HiringSkill> hiringSkillList) {
         HiringSkill hiringSkill = new HiringSkill();
         BeanUtils.copyProperties(skillVO, hiringSkill);
         hiringSkill.setType(skillType);
         hiringSkill.setHiringId(hiring.getId());
         hiringSkillList.add(hiringSkill);
     }
+
     /**
      * 查询所有岗位
-     * @param pageable
-     * @return
      */
     public Page<HiringVO> all(Pageable pageable) {
         Page<Hiring> hiringPage = hireRepository.findAll(pageable);
@@ -120,9 +125,6 @@ public class HireService {
 
     /**
      * 根据岗位ID,查询岗位详情
-     * @param pageable
-     * @param hiringIds
-     * @return
      */
     public Page<HiringVO> all(Pageable pageable, List<Long> hiringIds) {
         Map<Long, List<HiringSkillVO>> skillsMap = fetchSkillsMapByHiringIds(hiringIds);
@@ -149,8 +151,6 @@ public class HireService {
 
     /**
      * 根据岗位ID集合查询岗位标签
-     * @param hiringIds
-     * @return
      */
     private Map<Long, List<HiringSkillVO>> fetchSkillsMapByHiringIds(List<Long> hiringIds) {
         List<HiringSkillVO> allSkills = hiringSkillRepository.findByHiringId(hiringIds).stream()
@@ -167,20 +167,19 @@ public class HireService {
 
     /**
      * 将Hiring转换为HiringVO
-     * @param hiring
-     * @param skillsMap
-     * @return
      */
     private HiringVO mapHiringToHiringVO(Hiring hiring, Map<Long, List<HiringSkillVO>> skillsMap) {
         HiringVO hiringVO = new HiringVO();
         BeanUtils.copyProperties(hiring, hiringVO);
 
-        List<HiringSkillVO> mainSkillList = skillsMap.getOrDefault(hiring.getId(), Collections.emptyList())
+        List<HiringSkillVO> mainSkillList = skillsMap.getOrDefault(hiring.getId(),
+                Collections.emptyList())
             .stream()
             .filter(skill -> skill.getType() == Constants.HIRING_MAIN_SKILL)
             .collect(Collectors.toList());
 
-        List<HiringSkillVO> otherSkillList = skillsMap.getOrDefault(hiring.getId(), Collections.emptyList())
+        List<HiringSkillVO> otherSkillList = skillsMap.getOrDefault(hiring.getId(),
+                Collections.emptyList())
             .stream()
             .filter(skill -> skill.getType() == Constants.HIRING_OTHER_SKILL)
             .collect(Collectors.toList());
@@ -202,8 +201,6 @@ public class HireService {
 
     /**
      * 根据技能筛选岗位
-     * @param skills
-     * @return
      */
     public List<HiringVO> selectBySkills(List<String> skills) {
         List<HiringSkill> hiringSkills = hiringSkillRepository.findBySkill(skills);
@@ -215,7 +212,8 @@ public class HireService {
             })
             .collect(Collectors.groupingBy(HiringSkillVO::getHiringId));
 
-        List<Long> hiringIds = hiringSkills.stream().map(HiringSkill::getHiringId).distinct().collect(Collectors.toList());
+        List<Long> hiringIds = hiringSkills.stream().map(HiringSkill::getHiringId).distinct()
+            .collect(Collectors.toList());
 
         return hireRepository.findAllById(hiringIds).stream()
             .map(hiring -> this.mapHiringToHiringVO(hiring, skillsMap))
@@ -224,7 +222,6 @@ public class HireService {
 
     /**
      * 修改简历
-     * @param hiringVO
      */
     public void update(HiringVO hiringVO) {
         Hiring hiring = hireRepository.findById(hiringVO.getId())
@@ -252,10 +249,12 @@ public class HireService {
     }
 
     public Page<HiringVO> selectByAddress(String address, Pageable pageable) {
-        Specification<Hiring> spec = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("address"), address);
+        Specification<Hiring> spec = (root, query, criteriaBuilder) -> criteriaBuilder.equal(
+            root.get("address"), address);
         Page<Hiring> page = hireRepository.findAll(spec, pageable);
 
-        List<Long> hiringIds = page.getContent().stream().map(Hiring::getId).collect(Collectors.toList());
+        List<Long> hiringIds = page.getContent().stream().map(Hiring::getId)
+            .collect(Collectors.toList());
         Map<Long, List<HiringSkillVO>> skillsMap = this.fetchSkillsMapByHiringIds(hiringIds);
 
         List<HiringVO> hiringVOList = page.getContent().stream()
@@ -274,7 +273,8 @@ public class HireService {
         Member member = memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
             NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         try {
-            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ fileKey );
+            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "
+                + "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/" + fileKey);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -283,5 +283,36 @@ public class HireService {
 
     public <T> Optional<Hiring> findById(Long hireId) {
         return hireRepository.findById(hireId);
+    }
+
+    public Page<HiringVO> getAllHire(HireSearchParams hireSearchParams, Pageable pageable) {
+        Page<Hiring> hiringPage = hireRepository.findAll(((root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (StringUtils.hasText(hireSearchParams.getCreator())) {
+                predicates.add(
+                    criteriaBuilder.equal(root.get("address"), hireSearchParams.getCreator()));
+            }
+            if (StringUtils.hasText(hireSearchParams.getStatus())) {
+                predicates.add(
+                    criteriaBuilder.equal(root.get("status"), hireSearchParams.getStatus()));
+            }
+            if (StringUtils.hasText(hireSearchParams.getTitle())) {
+                predicates.add(criteriaBuilder.like(root.get("position"),
+                    "%" + hireSearchParams.getTitle() + "%"));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }), pageable);
+        return hiringPage.map(hiring -> {
+            Map<Long, List<HiringSkillVO>> skillsMap = fetchSkillsMapByHiringIds(
+                Collections.singletonList(hiring.getId()));
+            return mapHiringToHiringVO(hiring, skillsMap);
+        });
+    };
+
+    public void deleteHire(Long hireId) {
+        Hiring hiring = hireRepository.findById(hireId)
+            .orElseThrow(() -> new BizException(NOT_FOUND_JD.getCode(), NOT_FOUND_JD.getMsg()));
+        hiring.setStatus(1);
+        hireRepository.save(hiring);
     }
 }
