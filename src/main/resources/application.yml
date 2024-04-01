@@ -53,6 +53,7 @@ logging:
 
 web3j:
   client-address: "https://polygon-rpc.com"
+  httpTimeoutSeconds: ${WEB3J_HTTP_TIMEOUT_SECOND:300}
 
 
 network:
