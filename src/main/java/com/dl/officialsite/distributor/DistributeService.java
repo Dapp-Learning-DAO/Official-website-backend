@@ -235,7 +235,12 @@ public class DistributeService {
             case Constants.CHAIN_ID_ZKSYNC: // zksync
                 request = new HttpPost("https://api.studio.thegraph.com/query/64403/zksync/version/latest");
                 break;
-
+            case Constants.CHAIN_ID_POLYGON_ZKEVM: // polygon zkevm
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/polygonzkevm/version/latest");
+                break;
+            case Constants.CHAIN_ID_LINEA: //linea
+                request = new HttpPost("https://api.studio.thegraph.com/query/64403/linea/version/latest");
+                break;
         }
 
         if (request == null)

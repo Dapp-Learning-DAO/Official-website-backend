@@ -54,7 +54,6 @@ logging:
 web3j:
   client-address: "https://polygon-rpc.com"
 
-
 network:
   configs:
     - id: "137"
@@ -100,7 +99,7 @@ qcloud:
   regionName: ${REGION_NAME}
 
 chain:
-  ids: ["11155111","10", "534352", "42161", "324"]
+  ids: ["11155111", "10", "534352", "42161", "324", "1101", "59144"]
 
 login:
   filter: ${LOGIN_FILTER:true}
