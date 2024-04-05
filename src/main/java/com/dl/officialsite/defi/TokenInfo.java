@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.defi;
 
 import lombok.Builder;
 import lombok.Data;
