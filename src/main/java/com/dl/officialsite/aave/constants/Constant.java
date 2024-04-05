@@ -71,11 +71,34 @@ public class Constant {
         ARB_USDT,ARB_WETH,ARB_WBTC,ARB_USDC_E,ARB_USDC_LUSD);
 
 
+
+
+
+    // public static final TokenConfig BASE_DAI =TokenConfig.builder().name("DAI").address("").build();
+    public static final TokenConfig BASE_USDC =TokenConfig.builder().name("USDC").address("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913").build();
+    // public static final TokenConfig BASE_USDT =TokenConfig.builder().name("USDT").address("").build();
+    public static final TokenConfig BASE_WETH =TokenConfig.builder().name("WETH").address("0x4200000000000000000000000000000000000006").build();
+    // public static final TokenConfig BASE_WBTC =TokenConfig.builder().name("WBTC").address("").build();
+    public static final List<TokenConfig> BASE_TOKEN_LIST =Arrays.asList(BASE_USDC,BASE_WETH);
+
+
+
+
+    public static final TokenConfig GNOSIS_DAI =TokenConfig.builder().name("DAI").address("0x44fA8E6f47987339850636F88629646662444217").build();
+    public static final TokenConfig GNOSIS_USDC =TokenConfig.builder().name("USDC").address("0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83").build();
+    public static final TokenConfig GNOSIS_USDT =TokenConfig.builder().name("USDT").address("0x4ECaBa5870353805a9F068101A40E0f32ed605C6").build();
+    public static final TokenConfig GNOSIS_WETH =TokenConfig.builder().name("WETH").address("0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1").build();
+    // public static final TokenConfig GNOSIS_WBTC =TokenConfig.builder().name("WBTC").address("").build();
+    public static final List<TokenConfig> GNOSIS_TOKEN_LIST =Arrays.asList(GNOSIS_DAI,GNOSIS_USDC,GNOSIS_USDT,GNOSIS_WETH);
+
+
     public static ConcurrentHashMap<String,List<TokenConfig>> tokenConfigListMap = new ConcurrentHashMap<String, List<TokenConfig>>() {{
         put( Constants.CHAIN_ID_POLYGON, POLYGON_TOKEN_LIST);
         put( Constants.CHAIN_ID_OP, OP_TOKEN_LIST);
         put( Constants.CHAIN_ID_SCROLL, SCROLL_TOKEN_LIST);
         put( Constants.CHAIN_ID_ARBITRUM, ARB_TOKEN_LIST);
+        put( Constants.CHAIN_ID_BASE, BASE_TOKEN_LIST);
+        put( Constants.CHAIN_ID_GNOSIS, GNOSIS_TOKEN_LIST);
     }};
 
 
@@ -84,6 +107,8 @@ public class Constant {
                 put( Constants.CHAIN_ID_OP, "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb");
                 put( Constants.CHAIN_ID_SCROLL, "0x69850D0B276776781C063771b161bd8894BCdD04");
                 put( Constants.CHAIN_ID_ARBITRUM, "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb");
+                put( Constants.CHAIN_ID_BASE, "0xe20fCBdBfFC4Dd138cE8b2E6FBb6CB49777ad64D");
+                put( Constants.CHAIN_ID_GNOSIS, "0x36616cf17557639614c1cdDb356b1B83fc0B2132");
             }};
 
 
