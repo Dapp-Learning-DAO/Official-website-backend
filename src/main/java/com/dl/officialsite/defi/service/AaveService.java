@@ -51,7 +51,7 @@ public class AaveService {
             BigInteger ltv = info.component5();
             BigInteger healthFactor = info.component6();
             HealthInfoVo healthInfo = HealthInfoVo.builder()
-                .healthFactor(healthFactor)
+                .healthFactor(healthFactor.toString())
                 .totalBorrows(totalDebtBase.toString())
                 .totalCollateralETH(totalCollateralBase.toString())
                 .totalLiquidity(ltv.toString())

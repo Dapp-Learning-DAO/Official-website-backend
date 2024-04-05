@@ -110,7 +110,7 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
                         BigInteger ltv = info.component5();
                         BigInteger healthFactor = info.component6();
                         healthInfo.set(HealthInfoVo.builder()
-                            .healthFactor(healthFactor)
+                            .healthFactor(healthFactor.toString())
                             .totalBorrows(totalDebtBase.toString())
                             .totalCollateralETH(totalCollateralBase.toString())
                             .totalLiquidity(ltv.toString())

@@ -1,6 +1,5 @@
 package com.dl.officialsite.defi.vo;
 
-import java.math.BigInteger;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,7 +14,7 @@ import lombok.Data;
 public class HealthInfoVo {
 
     //健康系数
-    private BigInteger healthFactor;
+    private String healthFactor;
 
     //总借款
     private String totalBorrows;
