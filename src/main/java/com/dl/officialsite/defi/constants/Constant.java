@@ -84,12 +84,12 @@ public class Constant {
 
 
 
-    public static final TokenConfig GNOSIS_DAI =TokenConfig.builder().name("DAI").address("0x44fA8E6f47987339850636F88629646662444217").build();
+    /*public static final TokenConfig GNOSIS_DAI =TokenConfig.builder().name("DAI").address("0x44fA8E6f47987339850636F88629646662444217").build();*/
     public static final TokenConfig GNOSIS_USDC =TokenConfig.builder().name("USDC").address("0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83").build();
-    public static final TokenConfig GNOSIS_USDT =TokenConfig.builder().name("USDT").address("0x4ECaBa5870353805a9F068101A40E0f32ed605C6").build();
+    /*public static final TokenConfig GNOSIS_USDT =TokenConfig.builder().name("USDT").address("0x4ECaBa5870353805a9F068101A40E0f32ed605C6").build();*/
     public static final TokenConfig GNOSIS_WETH =TokenConfig.builder().name("WETH").address("0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1").build();
     // public static final TokenConfig GNOSIS_WBTC =TokenConfig.builder().name("WBTC").address("").build();
-    public static final List<TokenConfig> GNOSIS_TOKEN_LIST =Arrays.asList(GNOSIS_DAI,GNOSIS_USDC,GNOSIS_USDT,GNOSIS_WETH);
+    public static final List<TokenConfig> GNOSIS_TOKEN_LIST =Arrays.asList(GNOSIS_USDC,GNOSIS_WETH);
 
 
     public static ConcurrentHashMap<String,List<TokenConfig>> tokenConfigListMap = new ConcurrentHashMap<String, List<TokenConfig>>() {{
