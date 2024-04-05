@@ -87,6 +87,12 @@ public class DeFiController {
         return BaseResponse.success();
     }
 
+    @GetMapping("/hook/token/apy")
+    public BaseResponse HookTokenApy() {
+        aaveService.updateTokenAPYInfo();
+        return BaseResponse.success();
+    }
+
     @PostMapping("/query/whale")
     public BaseResponse queryWhale(
         @RequestParam(defaultValue = "1") Integer pageNumber,
