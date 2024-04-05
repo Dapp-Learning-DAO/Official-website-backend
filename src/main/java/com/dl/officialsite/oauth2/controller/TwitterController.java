@@ -7,6 +7,14 @@ import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.config.OAuthSessionKey;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
+import com.dl.officialsite.oauth2.model.bo.TwitterVerifyResponse;
+import com.nimbusds.jose.util.Pair;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Optional;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
@@ -20,13 +28,6 @@ import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -50,10 +51,8 @@ public class TwitterController {
     }
 
     @GetMapping("/oauth2/authorize/normal/twitter")
-    public void twitterOauthLogin(
-        @RequestParam(name = "test", defaultValue = "false") boolean test,
-        HttpServletResponse response
-    ) throws IOException {
+    public void twitterOauthLogin(@RequestParam(name = "test", defaultValue = "false") boolean test, HttpServletResponse response)
+        throws IOException {
         String authorizeUrl = this.generateAuthorizeUrl(test);
         response.sendRedirect(authorizeUrl);
     }
@@ -63,9 +62,9 @@ public class TwitterController {
         OAuthToken requestToken = oauthOperations.fetchRequestToken(twitterConfig.getCallbackUrl(), null);
 
         OAuth1Parameters oAuth1Parameters = new OAuth1Parameters(new HashMap<>());
-        if (test){
+        if (test) {
             oAuth1Parameters.add("secret", requestToken.getSecret());
-        }else{
+        } else {
             // Save user's oauth_token_secret for exchanging the profile
             UserSecurityUtils.getUserLogin().setTwitterOauthTokenSecret(requestToken.getSecret());
         }
@@ -74,34 +73,33 @@ public class TwitterController {
     }
 
     @GetMapping("/oauth2/callback/twitter")
-    public BaseResponse getTwitter(
-        @RequestParam("oauth_token") String oauthToken,
-        @RequestParam("oauth_verifier") String oauthVerifier,
-        @RequestParam(value = "secret", required = false) String secret,
-        HttpServletRequest request
-    ) {
-        String twitterUserName = fetchProfile(oauthToken, oauthVerifier, secret);
-        HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME, twitterUserName);
-        return BaseResponse.successWithData(twitterUserName);
+    public BaseResponse getTwitter(@RequestParam("oauth_token") String oauthToken, @RequestParam("oauth_verifier") String oauthVerifier,
+                                   @RequestParam(value = "secret", required = false) String secret, HttpServletRequest request) {
+        Pair<String, String> twitterUserNameAndScreenName = fetchProfile(oauthToken, oauthVerifier, secret);
+        HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME, twitterUserNameAndScreenName.getLeft());
+        HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME,
+            twitterUserNameAndScreenName.getRight());
+        TwitterVerifyResponse response = new TwitterVerifyResponse();
+        response.setNickName(twitterUserNameAndScreenName.getLeft());
+        response.setId(twitterUserNameAndScreenName.getRight());
+        return BaseResponse.successWithData(response);
     }
 
-    private String fetchProfile(String oAuthToken, String verifier, String secret) {
+    private Pair<String, String> fetchProfile(String oAuthToken, String verifier, String secret) {
         OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
 
 
         String twitterOauthTokenSecret =
             Optional.ofNullable(secret).orElseGet(() -> UserSecurityUtils.getUserLogin().getTwitterOauthTokenSecret());
 
-        OAuthToken accessToken = oauthOperations.exchangeForAccessToken(new AuthorizedRequestToken(
-            new OAuthToken(oAuthToken, twitterOauthTokenSecret), verifier), OAuth1Parameters.NONE);
+        OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
+            new AuthorizedRequestToken(new OAuthToken(oAuthToken, twitterOauthTokenSecret), verifier), OAuth1Parameters.NONE);
 
-        Twitter twitter = new TwitterTemplate(twitterConfig.getClientId(),
-            twitterConfig.getClientSecret(),
-            accessToken.getValue(),
+        Twitter twitter = new TwitterTemplate(twitterConfig.getClientId(), twitterConfig.getClientSecret(), accessToken.getValue(),
             accessToken.getSecret());
         TwitterProfile profile = twitter.userOperations().getUserProfile();
-        log.info("User's name:[{}]", profile.getName());
-        return profile.getName();
+        log.info("User's name:[{} : {}]", profile.getName(), profile.getScreenName());
+        return Pair.of(profile.getName(), profile.getScreenName());
     }
 
 //    public static void main(String[] args) {

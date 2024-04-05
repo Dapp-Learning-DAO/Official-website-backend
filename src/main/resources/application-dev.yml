@@ -18,3 +18,5 @@ bot:
             threadOrTopicId: 2
           - name: builder
             threadOrTopicId: 116
+scheduler:
+  enabled: true

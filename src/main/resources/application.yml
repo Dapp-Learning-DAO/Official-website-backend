@@ -53,6 +53,7 @@ logging:
 
 web3j:
   client-address: "https://polygon-rpc.com"
+  httpTimeoutSeconds: ${WEB3J_HTTP_TIMEOUT_SECOND:300}
 
 network:
   configs:
@@ -75,7 +76,7 @@ jobs:
   distribute:
     corn: ${CRON_DIS:0/5 * * * * ?}
   defi:
-    corn: ${CRON_DEFI:0 30 * * * ?}
+    corn: ${CRON_DEFI:0 10 * * * ?}
 oauth:
   registrations:
     github:

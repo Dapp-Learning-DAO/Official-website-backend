@@ -1,5 +1,7 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.controller;
 
+import com.dl.officialsite.aave.service.AaveTokenAPYService;
+import com.dl.officialsite.aave.vo.HealthInfoVo;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.config.ChainInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +39,7 @@ public class DeFiController {
     }
 
     /**
-     * 条件查询所有币种年华，按照最大年华排序
+     * get all token apy
      */
     @GetMapping("/tokenApy")
     public BaseResponse tokenApy() {
@@ -49,7 +51,7 @@ public class DeFiController {
      */
     @PostMapping("/healthInfo")
     public BaseResponse detail(@RequestParam String address, @RequestBody ChainInfo chainInfo) {
-        HealthInfo healthInfo = aaveService.getHealthInfo(chainInfo, address);
+        HealthInfoVo healthInfo = aaveService.getHealthInfo(chainInfo, address);
         return BaseResponse.successWithData(healthInfo);
     }
 }

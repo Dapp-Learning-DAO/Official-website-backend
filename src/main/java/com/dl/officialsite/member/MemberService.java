@@ -1,5 +1,7 @@
 package com.dl.officialsite.member;
 
+import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
+
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
@@ -9,21 +11,18 @@ import com.dl.officialsite.team.TeamRepository;
 import com.dl.officialsite.team.TeamService;
 import com.dl.officialsite.team.teammember.TeamMember;
 import com.dl.officialsite.team.teammember.TeamMemberRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
+import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class MemberService {
 
     @Autowired
@@ -38,9 +37,6 @@ public class MemberService {
     private ApplicationRepository applicationRepository;
     @Autowired
     private MemberManager memberManager;
-
-
-    public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     public MemberWithTeam getMemberWithTeamInfoByAddress(String address) {
         Optional<Member> member = memberRepository.findByAddress(address);
@@ -83,17 +79,6 @@ public class MemberService {
         return memberVo;
 
     }
-    // } catch (DataIntegrityViolationException e) {
-    //
-    // String mostSpecificCauseMessage = e.getMostSpecificCause().getMessage();
-    // if (e.getCause() instanceof ConstraintViolationException) {
-    // String name = ((ConstraintViolationException)
-    // e.getCause()).getConstraintName();
-    // logger.info("Encountered ConstraintViolationException, details: " +
-    // mostSpecificCauseMessage + "constraintName: "+ name);
-    // }
-    // return BaseResponse.failWithReason("1000", mostSpecificCauseMessage);
-    // }
 
     @Transactional(rollbackOn = Exception.class)
     public void deleteMember(String memberAddress) {
@@ -116,4 +101,13 @@ public class MemberService {
         memberRepository.deleteById(member.getId());
     }
 
+    public void freeze(String memberAddress) {
+        Member member = this.memberManager.getMemberByAddress(memberAddress);
+        if (Objects.isNull(member)) {
+            return;
+        }
+        log.info("freeze member: {}", memberAddress);
+        member.setStatus(1);
+        memberRepository.save(member);
+    }
 }

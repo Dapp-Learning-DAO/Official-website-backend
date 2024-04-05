@@ -1,5 +1,7 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.aave.service;
 
+import com.dl.officialsite.aave.vo.HealthInfoVo;
+import com.dl.officialsite.aave.vo.TokenAPYInfoAllVo;
 import com.dl.officialsite.config.ChainInfo;
 import java.util.List;
 
@@ -14,9 +16,9 @@ public abstract class AbstractTokenAPY {
     /**
      * get token apy group by defi provider
      */
-    public abstract List<TokenAPYInfo> queryTokenApy();
+    public abstract List<TokenAPYInfoAllVo> queryTokenApy();
 
-    public abstract HealthInfo getHealthInfo(ChainInfo chainInfo, String address);
+    public abstract HealthInfoVo getHealthInfo(ChainInfo chainInfo, String address);
 
 
 }

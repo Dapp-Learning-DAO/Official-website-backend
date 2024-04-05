@@ -5,6 +5,7 @@ import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.model.BaseBotConfig;
 import com.dl.officialsite.bot.model.BotTopic;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ConfigurationProperties(prefix = "bot.discord", ignoreInvalidFields = true)
 public class DiscordBotConfig extends BaseBotConfig<JDA, String, String> {
     public DiscordBotConfig() {

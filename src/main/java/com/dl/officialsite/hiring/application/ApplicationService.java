@@ -58,13 +58,14 @@ public class ApplicationService {
 
         Member createJDMember =
             memberRepository.findByAddress(hiring.getAddress()).orElseThrow(() -> new BizException(
-            NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
+                NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
         applicationRepository.findByMemberIdAndHiringId(member.getId(), hiring.getId())
             .ifPresent(application -> {
                 throw new BizException(APPLY_REPEAT.getCode(), APPLY_REPEAT.getMsg());
             });
         try {
-            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "+ "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/"+ applyVo.getFile() );
+            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "
+                + "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/" + applyVo.getFile());
             //添加应聘记录
             Application application = new Application();
             application.setHiringId(hiring.getId());
@@ -80,8 +81,8 @@ public class ApplicationService {
 
     /**
      * 查看应聘者应聘了那些岗位
-     * @param memberId  memberId
-     * @return
+     *
+     * @param memberId memberId
      */
     public Page<HiringVO> applyList(Long memberId, Pageable pageable) {
         List<Application> applicationList = applicationRepository.findAll(
@@ -107,20 +108,48 @@ public class ApplicationService {
         return applicationRepository.findAll(specification, pageable);
     }
 
-    public static Specification<Application> hasDescriptionAndNickName(ApplySearchVo applySearchVo) {
+    public static Specification<Application> hasDescriptionAndNickName(
+        ApplySearchVo applySearchVo) {
         return (root, query, builder) -> {
             List<Predicate> predicates = new LinkedList<>();
             // Adding conditions for the query
+            if (!ObjectUtils.isEmpty(applySearchVo.getApplyName())) {
+                predicates.add(
+                    builder.like(root.get("applyName"), "%" + applySearchVo.getApplyName() + "%"));
+            }
             if (!ObjectUtils.isEmpty(applySearchVo.getCreatorName())) {
-                predicates.add(builder.like(root.get("creatorName"), "%" + applySearchVo.getCreatorName() + "%"));
+                predicates.add(builder.like(root.get("creatorName"),
+                    "%" + applySearchVo.getCreatorName() + "%"));
             }
             if (!ObjectUtils.isEmpty(applySearchVo.getMemberName())) {
-                predicates.add(builder.like(root.get("memberName"), "%" + applySearchVo.getMemberName() + "%"));
+                predicates.add(builder.like(root.get("memberName"),
+                    "%" + applySearchVo.getMemberName() + "%"));
             }
             if (!ObjectUtils.isEmpty(applySearchVo.getApplyTime())) {
-                predicates.add(builder.greaterThan(root.get("createTime"), "%" + applySearchVo.getApplyTime() + "%"));
+                predicates.add(builder.greaterThan(root.get("createTime"),
+                    "%" + applySearchVo.getApplyTime() + "%"));
             }
             return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };
+    }
+
+    public ApplicationHiringDetailVo getInfo(Long hireId) {
+        ApplicationHiringDetailVo info = new ApplicationHiringDetailVo();
+        long count = applicationRepository.count(
+            (root, query, builder) -> {
+                List<Predicate> predicates = new LinkedList<>();
+                predicates.add(builder.equal(root.get("hiringId"), hireId));
+                return query.where(predicates.toArray(new Predicate[0])).getRestriction();
+            });
+        info.setApplyPersonNum(count);
+        List<Long> memberIds = applicationRepository.findAll(
+            (root, query, builder) -> {
+                List<Predicate> predicates = new LinkedList<>();
+                predicates.add(builder.equal(root.get("hiringId"), hireId));
+                return query.where(predicates.toArray(new Predicate[0])).getRestriction();
+            }).stream().map(Application::getMemberId).collect(Collectors.toList());
+        List<Member> member = memberRepository.findByIdIn(memberIds);
+        info.setApplyPersonAddress(member);
+        return info;
     }
 }

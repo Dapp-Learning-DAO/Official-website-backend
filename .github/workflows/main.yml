@@ -98,7 +98,7 @@ jobs:
         if: failure() # This step runs only if previous steps failed
         uses: appleboy/telegram-action@master
         with:
-          to:  ${{ vars.DAPP_DEV_TELEGRAM_CHAT_GROUP}}# Replace with your chat ID
+          to:  ${{ vars.DAPP_DEV_TELEGRAM_CHAT_GROUP}}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             Build failed 😢
