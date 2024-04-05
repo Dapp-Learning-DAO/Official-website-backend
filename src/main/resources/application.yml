@@ -9,7 +9,7 @@ server:
         max-age: 7200
 spring:
   datasource:
-    url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
     #type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: ${SPRING_DATASOURCE_PASSWORD}
@@ -21,6 +21,13 @@ spring:
     generate-ddl: true
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL5Dialect
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
   mail:
     host: ${SMTP_SERVER:smtp.gmail.com}
     port: ${SMTP_SERVER_PORT:587}
