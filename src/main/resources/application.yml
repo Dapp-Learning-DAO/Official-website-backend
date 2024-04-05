@@ -69,6 +69,14 @@ network:
     - id: "42161"
       name: "arbitrum"
       rpc: "https://arbitrum.llamarpc.com"
+    - id: "8453"
+      name: "base"
+      rpc: "https://base.llamarpc.com"
+    - id: "100"
+      name: "gnosis"
+      rpc: "https://gnosis.drpc.org"
+
+
 
 jobs:
   redpacket:

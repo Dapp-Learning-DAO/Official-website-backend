@@ -98,7 +98,6 @@ public class Constant {
         put( Constants.CHAIN_ID_SCROLL, SCROLL_TOKEN_LIST);
         put( Constants.CHAIN_ID_ARBITRUM, ARB_TOKEN_LIST);
         put( Constants.CHAIN_ID_BASE, BASE_TOKEN_LIST);
-        put( Constants.CHAIN_ID_BASE, BASE_TOKEN_LIST);
         put( Constants.CHAIN_ID_GNOSIS, GNOSIS_TOKEN_LIST);
     }};
 
