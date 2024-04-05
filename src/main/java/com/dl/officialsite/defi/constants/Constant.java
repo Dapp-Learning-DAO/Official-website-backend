@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave.constants;
+package com.dl.officialsite.defi.constants;
 
 import static org.web3j.tx.gas.DefaultGasProvider.GAS_LIMIT;
 import static org.web3j.tx.gas.DefaultGasProvider.GAS_PRICE;

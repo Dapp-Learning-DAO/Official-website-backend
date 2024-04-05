@@ -1,7 +1,7 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.defi;
 
-import com.dl.officialsite.aave.service.AaveService;
-import com.dl.officialsite.aave.vo.HealthInfoVo;
+import com.dl.officialsite.defi.service.AaveService;
+import com.dl.officialsite.defi.vo.HealthInfoVo;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.TeamService;
