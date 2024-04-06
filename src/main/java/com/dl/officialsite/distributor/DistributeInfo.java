@@ -48,6 +48,7 @@ public class DistributeInfo {
     private String contractKey;
     @Column(length = 42)
     private String contractAddress;
+
     private String merkleRoot;
     @NotNull
     private String chainId;
