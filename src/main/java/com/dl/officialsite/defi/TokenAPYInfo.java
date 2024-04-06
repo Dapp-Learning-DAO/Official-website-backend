@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.defi;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;

@@ -1,7 +1,7 @@
-package com.dl.officialsite.aave.service;
+package com.dl.officialsite.defi.service;
 
-import com.dl.officialsite.aave.vo.HealthInfoVo;
-import com.dl.officialsite.aave.vo.TokenAPYInfoAllVo;
+import com.dl.officialsite.defi.vo.HealthInfoVo;
+import com.dl.officialsite.defi.vo.TokenAPYInfoAllVo;
 import com.dl.officialsite.config.ChainInfo;
 import java.util.List;
 

@@ -60,6 +60,10 @@ public class Constants {
     public static final String CHAIN_ID_ARBITRUM = "42161";
     public static final String CHAIN_ID_ZKSYNC = "324";
     public static final String CHAIN_ID_POLYGON = "137";
+    public static final String CHAIN_ID_POLYGON_ZKEVM = "1101";
+    public static final String CHAIN_ID_LINEA = "59144";
+    public static final String CHAIN_ID_BASE = "8453";
+    public static final String CHAIN_ID_GNOSIS = "100";
 
 
     /**
