@@ -161,7 +161,7 @@ public class RedPacketService {
                request = new HttpPost("https://api.studio.thegraph.com/query/64274/polygonzkevm/version/latest");
                break;
             case Constants.CHAIN_ID_LINEA: //linea
-               request = new HttpPost("⁠https://api.studio.thegraph.com/query/64274/linea/version/latest");
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/linea/version/latest");
                break;
 
        }
