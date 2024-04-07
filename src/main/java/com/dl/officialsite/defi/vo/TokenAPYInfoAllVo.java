@@ -1,4 +1,4 @@
-package com.dl.officialsite.aave.vo;
+package com.dl.officialsite.defi.vo;
 
 import java.util.List;
 import lombok.Data;

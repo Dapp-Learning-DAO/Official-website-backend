@@ -9,7 +9,7 @@ server:
         max-age: 7200
 spring:
   datasource:
-    url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
     #type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: ${SPRING_DATASOURCE_PASSWORD}
@@ -21,6 +21,13 @@ spring:
     generate-ddl: true
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL5Dialect
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
   mail:
     host: ${SMTP_SERVER:smtp.gmail.com}
     port: ${SMTP_SERVER_PORT:587}
@@ -53,7 +60,7 @@ logging:
 
 web3j:
   client-address: "https://polygon-rpc.com"
-
+  httpTimeoutSeconds: ${WEB3J_HTTP_TIMEOUT_SECOND:300}
 
 network:
   configs:
@@ -69,6 +76,14 @@ network:
     - id: "42161"
       name: "arbitrum"
       rpc: "https://arbitrum.llamarpc.com"
+    - id: "8453"
+      name: "base"
+      rpc: "https://base.llamarpc.com"
+    - id: "100"
+      name: "gnosis"
+      rpc: "https://gnosis.drpc.org"
+
+
 
 jobs:
   redpacket:
@@ -100,7 +115,7 @@ qcloud:
   regionName: ${REGION_NAME}
 
 chain:
-  ids: ["11155111","10", "534352", "42161", "324"]
+  ids: ["11155111", "10", "534352", "42161", "324", "1101", "59144"]
 
 login:
   filter: ${LOGIN_FILTER:true}

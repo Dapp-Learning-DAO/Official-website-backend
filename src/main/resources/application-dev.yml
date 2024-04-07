@@ -20,3 +20,5 @@ bot:
             threadOrTopicId: 116
 scheduler:
   enabled: true
+hook:
+  open: true

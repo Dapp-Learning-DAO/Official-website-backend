@@ -157,6 +157,12 @@ public class RedPacketService {
            case Constants.CHAIN_ID_ZKSYNC: //zksync
                request = new HttpPost("https://api.studio.thegraph.com/query/64274/zksync/version/latest");
                break;
+            case Constants.CHAIN_ID_POLYGON_ZKEVM: //polygon zkevm
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/polygonzkevm/version/latest");
+               break;
+            case Constants.CHAIN_ID_LINEA: //linea
+               request = new HttpPost("https://api.studio.thegraph.com/query/64274/linea/version/latest");
+               break;
 
        }
         request.setHeader("Content-Type", "application/json");

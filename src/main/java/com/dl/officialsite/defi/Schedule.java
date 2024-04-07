@@ -1,13 +1,13 @@
-package com.dl.officialsite.aave;
+package com.dl.officialsite.defi;
 
-import com.dl.officialsite.aave.service.AaveService;
-import com.dl.officialsite.aave.vo.HealthInfoVo;
+import com.dl.officialsite.defi.service.AaveService;
+import com.dl.officialsite.defi.vo.HealthInfoVo;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.team.TeamService;
 import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class Schedule {
     @Autowired
     private TeamService teamService;
 
-    BigInteger e16 = new BigInteger("10000000000000000");
+    BigDecimal e16 = new BigDecimal("10000000000000000");
 
     /**
      * 监控价格一天发送一次
@@ -73,7 +73,8 @@ public class Schedule {
                     for (Member member : teamAndMember.getMembers()) {
                         String email = member.getEmail();
                         HealthInfoVo healthInfo = aaveService.getHealthInfo(member.getAddress());
-                        float health = healthInfo.getHealthFactor().divide(e16).floatValue() / 100;
+                        BigDecimal healthFactor = new BigDecimal(healthInfo.getHealthFactor());
+                        float health =healthFactor.divide(e16).floatValue() / 100;
                         log.info("health is : " + health);
                         if (health < 1.2) {
                             emailService.sendMail(email, "Dapp Defi Monitor", healthInfo.toString());
