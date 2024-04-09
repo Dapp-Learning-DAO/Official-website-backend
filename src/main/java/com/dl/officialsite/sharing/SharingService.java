@@ -112,6 +112,8 @@ public class SharingService {
             sharing.setTwitter(req.getTwitter());
             sharing.setSharingDoc(req.getSharingDoc());
             sharing.setLabel(req.getLabel());
+            sharing.setBilibiliLink(req.getBilibiliLink());
+            sharing.setYoutubeLink(req.getYoutubeLink());
 
             this.sharingRepository.save(sharing);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
