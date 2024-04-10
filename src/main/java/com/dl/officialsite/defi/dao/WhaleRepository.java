@@ -19,4 +19,7 @@ public interface WhaleRepository extends JpaRepository<Whale, Long>, JpaSpecific
 
     @Query(value = "select * from whale order by id DESC limit 1", nativeQuery = true)
     Whale findByAgoWhale();
+
+    @Query(value = "select * from whale order by id DESC limit 1", nativeQuery = true)
+    Whale findLastWhale();
 }
