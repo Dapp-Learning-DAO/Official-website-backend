@@ -156,6 +156,8 @@ public class WhaleService {
     private List<WhaleTxRow> convertToWhaleTxRow(JSONObject tx, Whale whale) {
         List<WhaleTxRow> whaleTxRowList = new ArrayList<>();
         JSONArray borrows = tx.getJSONArray("borrows");
+        JSONObject asset = tx.getJSONObject("asset");
+        String decimals = asset.getStr("decimals");
         for (int i = 0; i < borrows.size(); i++) {
             JSONObject borrow = (JSONObject) borrows.get(i);
             WhaleTxRow whaleTxRow = new WhaleTxRow();
@@ -169,8 +171,7 @@ public class WhaleService {
             whaleTxRow.setDebtTokenAddress(debtTokenAddress);
             whaleTxRow.setDebtTokenSymbol(debtTokenSymbol);
             whaleTxRow.setCreateTime(Long.parseLong(timestamp));
-            BigDecimal debtAmountBigDecimal = new BigDecimal(debtAmount);
-            whaleTxRow.setDebtAmount(debtAmountBigDecimal);
+            calculateWhaleTxRowAmount(borrow, decimals, whaleTxRow);
             BigDecimal debtAmountUsdBigDecimal = new BigDecimal(debtAmountUsd);
             whaleTxRow.setDebtAmountUsd(debtAmountUsdBigDecimal);
             whaleTxRow.setProtocol("aave");
@@ -195,10 +196,20 @@ public class WhaleService {
         JSONObject asset = tx.getJSONObject("asset");
         String decimals = asset.getStr("decimals");
         String principal = tx.getStr("balance");
-        BigDecimal principalBigDecimal = new BigDecimal(principal);
-        BigDecimal decimalsBigDecimal = new BigDecimal("1E" + decimals);
-        BigDecimal amount = principalBigDecimal.divide(decimalsBigDecimal, 2, RoundingMode.HALF_UP);
-        whale.setAmountUsd(amount.toString());
+        BigDecimal amountUsd = convertUnit(principal, decimals);
+        whale.setAmountUsd(amountUsd);
+    }
+
+    private void calculateWhaleTxRowAmount(JSONObject tx, String decimals, WhaleTxRow whaleTxRow) {
+        String amount = tx.getStr("amount");
+        BigDecimal afterAmount = convertUnit(amount, decimals);
+        whaleTxRow.setDebtAmount(afterAmount);
+    }
+
+    private BigDecimal convertUnit(String value, String unit) {
+        BigDecimal beforeValue = new BigDecimal(value);
+        BigDecimal decimals = new BigDecimal("1E" + unit);
+        return beforeValue.divide(decimals, 2, RoundingMode.HALF_UP);
     }
 
     public void init() {
@@ -288,18 +299,31 @@ public class WhaleService {
         return jsonStr;
     }
 
-    public Page<WhaleTxRow> queryWhale(Pageable pageable, QueryWhaleParams query) {
-        Specification<WhaleTxRow> queryParam = new Specification<WhaleTxRow>() {
+    public Page<Whale> queryWhale(Pageable pageable, QueryWhaleParams query) {
+        Specification<Whale> queryParam = new Specification<Whale>() {
             @Override
-            public Predicate toPredicate(Root<WhaleTxRow> root, CriteriaQuery<?> criteriaQuery,
+            public Predicate toPredicate(Root<Whale> root, CriteriaQuery<?> criteriaQuery,
                 CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (StringUtils.hasText(query.getWhaleAddress())) {
                     predicates.add(criteriaBuilder.equal(root.get("whaleAddress"), query.getWhaleAddress()));
                 }
-                if (!ObjectUtils.isEmpty(query.getWhaleTxUSD())) {
-                    predicates.add(criteriaBuilder.greaterThan(root.get("debtAmountUsd"), query.getWhaleTxUSD()));
+                if (!ObjectUtils.isEmpty(query.getWhaleUSD())) {
+                    predicates.add(criteriaBuilder.greaterThan(root.get("amountUsd"), query.getWhaleUSD()));
                 }
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        return whaleRepository.findAll(queryParam, pageable);
+    }
+
+    public Page<WhaleTxRow> queryWhaleTx(Pageable pageable, String address) {
+        Specification<WhaleTxRow> queryParam = new Specification<WhaleTxRow>() {
+            @Override
+            public Predicate toPredicate(Root<WhaleTxRow> root, CriteriaQuery<?> criteriaQuery,
+                CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+                predicates.add(criteriaBuilder.equal(root.get("whaleAddress"), address));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
