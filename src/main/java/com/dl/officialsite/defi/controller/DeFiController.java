@@ -76,7 +76,7 @@ public class DeFiController {
 
     @GetMapping("/init")
     public BaseResponse init(@RequestParam String address) {
-        teamService.checkMemberIsSuperAdmin(address);
+        //teamService.checkMemberIsSuperAdmin(address);
         whaleService.init();
         return BaseResponse.success();
     }
