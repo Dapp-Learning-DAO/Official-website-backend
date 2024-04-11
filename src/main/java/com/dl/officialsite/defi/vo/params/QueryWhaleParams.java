@@ -14,7 +14,7 @@ public class QueryWhaleParams {
 
     private String whaleAddress;
 
-    private BigDecimal whaleTxUSD;
+    private BigDecimal whaleUSD;
 
     /**
      * 1: desc, 2: asc
