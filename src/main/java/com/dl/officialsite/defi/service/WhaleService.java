@@ -153,42 +153,46 @@ public class WhaleService {
         return oneYearAgo.getEpochSecond();
     }
 
-    private List<WhaleTxRow> convertToWhaleTxRow(JSONObject tx, Whale whale) {
+    private List<WhaleTxRow> convertToWhaleTxRow(JSONObject account, Whale whale) {
+        JSONArray positions = account.getJSONArray("positions");
         List<WhaleTxRow> whaleTxRowList = new ArrayList<>();
-        JSONArray borrows = tx.getJSONArray("borrows");
-        JSONObject asset = tx.getJSONObject("asset");
-        String decimals = asset.getStr("decimals");
-        for (int i = 0; i < borrows.size(); i++) {
-            JSONObject borrow = (JSONObject) borrows.get(i);
-            WhaleTxRow whaleTxRow = new WhaleTxRow();
-            String txhash = borrow.getStr("hash");
-            String timestamp = borrow.getStr("timestamp");
-            String debtAmount = borrow.getStr("amount");
-            String debtAmountUsd = borrow.getStr("amountUSD");
-            String debtTokenAddress = tx.getJSONObject("asset").getStr("id");
-            String debtTokenSymbol = tx.getJSONObject("asset").getStr("symbol");
-            whaleTxRow.setTxhash(txhash);
-            whaleTxRow.setDebtTokenAddress(debtTokenAddress);
-            whaleTxRow.setDebtTokenSymbol(debtTokenSymbol);
-            whaleTxRow.setCreateTime(Long.parseLong(timestamp));
-            calculateWhaleTxRowAmount(borrow, decimals, whaleTxRow);
-            BigDecimal debtAmountUsdBigDecimal = new BigDecimal(debtAmountUsd);
-            whaleTxRow.setDebtAmountUsd(debtAmountUsdBigDecimal);
-            whaleTxRow.setProtocol("aave");
-            whaleTxRow.setChainId("1");
-            whaleTxRow.setWhaleAddress(whale.getAddress());
-            whaleTxRowList.add(whaleTxRow);
+        //处理borrows
+        for (int i = 0; i < positions.size(); i++) {
+            //todo 处理positions为空的情况
+            JSONObject position = (JSONObject) positions.get(i);
+            JSONArray borrows = position.getJSONArray("borrows");
+            JSONObject asset = position.getJSONObject("asset");
+            String id = asset.getStr("id");
+            String symbol = asset.getStr("symbol");
+            String decimals = asset.getStr("decimals");
+            for (int j = 0; j < borrows.size(); j++) {
+                JSONObject borrow = (JSONObject) borrows.get(i);
+                WhaleTxRow whaleTxRow = new WhaleTxRow();
+                String txhash = borrow.getStr("hash");
+                String timestamp = borrow.getStr("timestamp");
+                String debtAmount = borrow.getStr("amount");
+                String debtAmountUsd = borrow.getStr("amountUSD");
+                whaleTxRow.setTxhash(txhash);
+                whaleTxRow.setDebtTokenAddress(id);
+                whaleTxRow.setDebtTokenSymbol(symbol);
+                whaleTxRow.setCreateTime(Long.parseLong(timestamp));
+                calculateWhaleTxRowAmount(borrow, decimals, whaleTxRow);
+                BigDecimal debtAmountUsdBigDecimal = new BigDecimal(debtAmountUsd);
+                whaleTxRow.setDebtAmountUsd(debtAmountUsdBigDecimal);
+                whaleTxRow.setProtocol("aave");
+                whaleTxRow.setChainId("1");
+                whaleTxRow.setWhaleAddress(whale.getAddress());
+                whaleTxRowList.add(whaleTxRow);
+            }
         }
         return whaleTxRowList;
     }
 
-    private Whale convertToWhale(JSONObject tx) {
+
+    private Whale convertToWhale(JSONObject account) {
         Whale whale = new Whale();
-        String address = tx.getJSONObject("account").getStr("id");
-        Long createTime = tx.getLong("timestamp");
+        String address = account.getStr("id");
         whale.setAddress(address);
-        whale.setCreateTime(createTime);
-        calculateWhaleAmount(tx, whale);
         return whale;
     }
 
@@ -227,14 +231,14 @@ public class WhaleService {
                 break;
             }
             JSONObject data = jsonObject.getJSONObject("data");
-            JSONArray positions = data.getJSONArray("positions");
-            if (positions.isEmpty()) {
+            JSONArray accounts = data.getJSONArray("accounts");
+            if (accounts.isEmpty()) {
                 break;
             }
             //获取最后的whale数据
             Whale lastWhale = whaleRepository.findLastWhale();
-            for (int i = 0; i < positions.size(); i++) {
-                Whale whale = convertToWhale((JSONObject) positions.get(i));
+            for (int i = 0; i < accounts.size(); i++) {
+                Whale whale = convertToWhale((JSONObject) accounts.get(i));
                 if (ObjectUtils.isEmpty(lastWhale)) {
                     whale.setId((long) i + 1);
                 } else {
@@ -244,7 +248,7 @@ public class WhaleService {
                     insertWhaleList.add(whale);
                     addressSet.add(whale.getAddress());
                 }
-                List<WhaleTxRow> whaleTxRows = convertToWhaleTxRow((JSONObject) positions.get(i)
+                List<WhaleTxRow> whaleTxRows = convertToWhaleTxRow((JSONObject) accounts.get(i)
                     , whale);
                 for (WhaleTxRow whaleTxRow : whaleTxRows) {
                     if (whaleTxRow.getCreateTime() > oneYearBefore) {
@@ -274,7 +278,9 @@ public class WhaleService {
     private String requestAaveGraph(Integer first, Integer skip) {
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
-        String requestBody = "{\"query\":\"{\\n  positions(\\n    first: " + first +"\\n    skip: "+ skip +"\\n    where: {side: BORROWER, timestampClosed: null, asset_in: [\\\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\\", \\\"0xdac17f958d2ee523a2206206994597c13d831ec7\\\", \\\"0x6b175474e89094c44da98b954eedeac495271d0f\\\", \\\"0x5f98805A4E8be255a32880FDeC7F6728C6568bA0\\\"], borrows_: {amountUSD_gt: 10000}, timestampOpened_gt: 1680855974, timestampOpened_lt: 1712478374}\\n    orderBy: timestampOpened\\n    orderDirection: desc\\n  ) {\\n    id\\n    timestampOpened\\n    timestampClosed\\n    account {\\n      id\\n      positionCount\\n      openPositionCount\\n    }\\n    principal\\n    balance\\n    borrows {\\n      hash\\n      amount\\n      amountUSD\\n      timestamp\\n    }\\n    asset {\\n      id\\n      symbol\\n      name\\n      decimals\\n    }\\n  }\\n}\",\"extensions\":{}}";
+        String a =
+            "{\"query\":\"{\\n  positions(\\n    first: " + first +"\\n    skip: "+ skip +"\\n    where: {side: BORROWER, timestampClosed: null, asset_in: [\\\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\\", \\\"0xdac17f958d2ee523a2206206994597c13d831ec7\\\", \\\"0x6b175474e89094c44da98b954eedeac495271d0f\\\", \\\"0x5f98805A4E8be255a32880FDeC7F6728C6568bA0\\\"], borrows_: {amountUSD_gt: 10000}, timestampOpened_gt: 1680855974, timestampOpened_lt: 1712478374}\\n    orderBy: timestampOpened\\n    orderDirection: desc\\n  ) {\\n    id\\n    timestampOpened\\n    timestampClosed\\n    account {\\n      id\\n      positionCount\\n      openPositionCount\\n    }\\n    principal\\n    balance\\n    borrows {\\n      hash\\n      amount\\n      amountUSD\\n      timestamp\\n    }\\n    asset {\\n      id\\n      symbol\\n      name\\n      decimals\\n    }\\n  }\\n}\",\"extensions\":{}}";
+        String requestBody = "{\"query\":\"{\\n  accounts(\\n    where: {positions_: {side: BORROWER, timestampClosed: null, asset_in: [\\\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\\", \\\"0xdac17f958d2ee523a2206206994597c13d831ec7\\\", \\\"0x6b175474e89094c44da98b954eedeac495271d0f\\\", \\\"0x3Fe6a295459FAe07DF8A0ceCC36F37160FE86AA9\\\"], timestampOpened_gt: 1680942374, timestampOpened_lt: 1712478374}, borrows_: {amountUSD_gt: 20000}}\\n    skip: "+ skip +"\\n    first: " + first +"\\n  ) {\\n    id\\n    positionCount\\n    openPositionCount\\n    positions(where: {timestampClosed: null}) {\\n      id\\n      timestampOpened\\n      timestampClosed\\n      side\\n      isCollateral\\n      type\\n      principal\\n      balance\\n      depositCount\\n      withdrawCount\\n      borrowCount\\n      repayCount\\n      borrows {\\n        hash\\n        amount\\n        amountUSD\\n        timestamp\\n      }\\n      deposits {\\n        hash\\n        amount\\n        amountUSD\\n        timestamp\\n      }\\n      repays {\\n        hash\\n        amount\\n        amountUSD\\n        timestamp\\n      }\\n      asset {\\n        id\\n        symbol\\n        name\\n        decimals\\n      }\\n    }\\n  }\\n}\",\"extensions\":{}}";
         RequestBody body = RequestBody.create(mediaType, requestBody);
         Request request = new Request.Builder()
             .url("https://api.thegraph.com/subgraphs/name/messari/aave-v3-ethereum")

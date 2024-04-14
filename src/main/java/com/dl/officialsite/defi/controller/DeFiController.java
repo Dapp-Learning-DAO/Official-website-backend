@@ -5,6 +5,7 @@ import com.dl.officialsite.config.ChainInfo;
 import com.dl.officialsite.defi.entity.Whale;
 import com.dl.officialsite.defi.entity.WhaleTxRow;
 import com.dl.officialsite.defi.service.AaveTokenAPYService;
+import com.dl.officialsite.defi.service.WhaleProtocolService;
 import com.dl.officialsite.defi.service.WhaleService;
 import com.dl.officialsite.defi.vo.HealthInfoVo;
 import com.dl.officialsite.defi.vo.params.QueryWhaleParams;
@@ -37,14 +38,18 @@ public class DeFiController {
 
     private final WhaleService whaleService;
 
+    private final WhaleProtocolService whaleProtocolService;
+
     private final MemberService memberService;
 
     private final TeamService teamService;
 
     public DeFiController(AaveTokenAPYService aaveService, WhaleService whaleService,
+        WhaleProtocolService whaleProtocolService,
         MemberService memberService, TeamService teamService) {
         this.aaveService = aaveService;
         this.whaleService = whaleService;
+        this.whaleProtocolService = whaleProtocolService;
         this.memberService = memberService;
         this.teamService = teamService;
     }
@@ -79,6 +84,12 @@ public class DeFiController {
     public BaseResponse init(@RequestParam String address) {
         //teamService.checkMemberIsSuperAdmin(address);
         whaleService.init();
+        return BaseResponse.success();
+    }
+
+    @GetMapping("/init/whale/protocol")
+    public BaseResponse initWhaleProtocol() {
+        whaleProtocolService.initWhaleProtocol();
         return BaseResponse.success();
     }
 
