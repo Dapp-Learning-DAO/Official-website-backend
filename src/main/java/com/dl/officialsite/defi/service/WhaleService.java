@@ -22,11 +22,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,9 @@ import org.springframework.util.StringUtils;
 @Service
 @Slf4j
 public class WhaleService {
+
+    @Value("${debank.key:111}")
+    private String key;
 
     private final WhaleRepository whaleRepository;
 
@@ -305,6 +310,35 @@ public class WhaleService {
         return jsonStr;
     }
 
+    //getUserTotalBalance
+    public void getUserTotalBalance(Whale whale) {
+        String baseUrl = "https://pro-openapi.debank.com/v1/user/total_balance";
+        OkHttpClient client = new OkHttpClient();
+        // 构建URL
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
+        urlBuilder.addQueryParameter("id", whale.getAddress()); // 添加参数
+        String url = urlBuilder.build().toString();
+        Request request = new Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("AccessKey", key)
+            .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            log.error("请求aave的graph失败");
+            throw new RuntimeException(e);
+        };
+        String jsonStr = null;
+        try {
+            jsonStr = response.body().string();
+        } catch (IOException e) {
+            log.error("解析aave的graph返回失败");
+            throw new RuntimeException(e);
+        }
+    }
+
     public Page<Whale> queryWhale(Pageable pageable, QueryWhaleParams query) {
         Specification<Whale> queryParam = new Specification<Whale>() {
             @Override
@@ -336,3 +370,4 @@ public class WhaleService {
         return whaleTxRowRepository.findAll(queryParam, pageable);
     }
 }
+

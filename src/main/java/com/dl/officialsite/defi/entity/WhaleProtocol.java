@@ -33,5 +33,7 @@ public class WhaleProtocol {
 
     private Integer chainId;
 
+    private Long createTime;
+
 
 }

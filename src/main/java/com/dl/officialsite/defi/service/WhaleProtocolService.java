@@ -12,14 +12,22 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @ClassName WhaleProtocolService
@@ -198,4 +206,20 @@ public class WhaleProtocolService {
         whale.setAddress(address);
         return whale;
     }
+
+    public Page<WhaleProtocol> queryWhaleProtocol(String address, Pageable pageable) {
+        Specification<WhaleProtocol> queryParam = new Specification<WhaleProtocol>() {
+            @Override
+            public Predicate toPredicate(Root<WhaleProtocol> root, CriteriaQuery<?> criteriaQuery,
+                CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (StringUtils.hasText(address)) {
+                    predicates.add(criteriaBuilder.equal(root.get("whaleAddress"), address));
+                }
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        return whaleProtocolRepository.findAll(queryParam, pageable);
+    }
 }
+
