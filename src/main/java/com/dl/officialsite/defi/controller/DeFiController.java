@@ -137,6 +137,17 @@ public class DeFiController {
         return BaseResponse.successWithData(whaleProtocolService.queryWhaleProtocol(address, pageable));
     }
 
+    @GetMapping("/query/whale/chain/token")
+    public BaseResponse queryWhaleChainToken(@RequestParam String whaleAddress,
+        @RequestParam Integer update) {
+        return BaseResponse.successWithData(whaleService.getUserTotalBalance(whaleAddress, update));
+    }
+
+    @GetMapping("/query/whale/chain/value")
+    public BaseResponse queryWhaleChainValue(@RequestParam String whaleAddress,@RequestParam Integer update) {
+        return BaseResponse.successWithData(whaleService.getUserTokenList(whaleAddress,update));
+    }
+
 
 }
 
