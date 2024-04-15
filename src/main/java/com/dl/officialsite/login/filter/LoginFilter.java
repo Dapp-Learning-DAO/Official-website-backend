@@ -59,6 +59,7 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/defi/chainList");
         add("/defi/tokenApy");
         add("/defi/healthInfo");
+        add("/bounty/list");
     }} ;
 
     private Set<String> noAddrCheckApis = new HashSet(){{

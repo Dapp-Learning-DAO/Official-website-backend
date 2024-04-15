@@ -69,4 +69,8 @@ public class UpdateSharingReq {
      */
     @ApiModelProperty("分享标签")
     private String label;
+
+    private String youtubeLink;
+
+    private String bilibiliLink;
 }

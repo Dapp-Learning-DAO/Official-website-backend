@@ -1,5 +1,6 @@
 package com.dl.officialsite.defi.entity;
 
+import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
@@ -28,7 +29,7 @@ public class Whale {
 
     private String tag;
 
-    private String amountUsd;
+    private BigDecimal amountUsd;
 
     private Long createTime;
 
