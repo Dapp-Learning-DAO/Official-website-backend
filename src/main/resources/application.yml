@@ -155,3 +155,4 @@ debank:
   protocolList: https://pro-openapi.debank.com/v1/user/all_simple_protocol_list
   userTokenList: https://pro-openapi.debank.com/v1/user/all_token_list
   totalBalance: https://pro-openapi.debank.com/v1/user/total_balance
+  key:

@@ -8,32 +8,31 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
- * @ClassName WhaleProtocol
+ * @ClassName WhaleChainToken
  * @Author jackchen
- * @Date 2024/4/14 17:32
- * @Description
+ * @Date 2024/4/15 22:46
+ * @Description WhaleChainToken
  **/
 @Data
 @Entity
-@Table(name = "whale_protocol")
+@Table(name = "whale_chain_token")
 @EntityListeners(AuditingEntityListener.class)
-public class WhaleProtocol {
-
+public class WhaleChainToken {
 
     @Id
     private Long id;
 
     private String whaleAddress;
 
-    private String protocolName;
+    private String chainName;
 
-    private String totalSupply;
+    private String tokenAddress;
 
-    private String totalDebt;
+    private String tokenSymbol;
 
-    private Integer chainId;
+    private String amount;
 
-    private Long createTime;
+    private String price;
 
-
+    private Integer decimals;
 }

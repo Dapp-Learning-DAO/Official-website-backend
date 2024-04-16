@@ -2,38 +2,35 @@ package com.dl.officialsite.defi.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
- * @ClassName WhaleProtocol
+ * @ClassName WhaleChainValue
  * @Author jackchen
- * @Date 2024/4/14 17:32
- * @Description
+ * @Date 2024/4/15 22:16
+ * @Description WhaleChainValue
  **/
 @Data
 @Entity
-@Table(name = "whale_protocol")
+@Table(name = "whale_chain_value")
 @EntityListeners(AuditingEntityListener.class)
-public class WhaleProtocol {
-
+public class WhaleChainValue {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String whaleAddress;
 
-    private String protocolName;
+    private String chainId;
 
-    private String totalSupply;
+    private String chainName;
 
-    private String totalDebt;
-
-    private Integer chainId;
-
-    private Long createTime;
-
+    private String value;
 
 }
