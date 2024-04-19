@@ -104,6 +104,12 @@ oauth:
       clientId: "${TWITTER_CLIENT_KEY}"
       clientSecret: "${TWITTER_CLIENT_SECRET}"
       callbackUrl: "${TWITTER_CALLBACK_URL}"
+    telegram:
+      clientSecret: "${TG_BOT_TOKEN}"
+    discord:
+      clientId: "${DISCORD_CHANNEL_MANAGEMENT_CLIENT_ID}"
+      clientSecret: "${DISCORD_CHANNEL_MANAGEMENT_CLIENT_SECRET}"
+      callbackUrl: "${DISCORD_CHANNEL_MANAGEMENT_CALLBACK_URL}"
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看
@@ -115,7 +121,7 @@ qcloud:
   regionName: ${REGION_NAME}
 
 chain:
-  ids: ["11155111", "10", "534352", "42161", "324", "1101", "59144"]
+  ids: [ "11155111", "10", "534352", "42161", "324", "1101", "59144" ]
 
 login:
   filter: ${LOGIN_FILTER:true}
@@ -155,3 +161,25 @@ debank:
   protocolList: https://pro-openapi.debank.com/v1/user/all_simple_protocol_list
   userTokenList: https://pro-openapi.debank.com/v1/user/all_token_list
   totalBalance: https://pro-openapi.debank.com/v1/user/total_balance
+
+activity:
+  name: THIRD_ANNIVERSARY_EVENT
+  taskMap:
+    GitHub:
+      - name: Star the official GitHub Repository
+        target: Dapp-Learning-DAO/dapp-learning
+        targetUrl: https://github.com/Dapp-Learning-DAO/Official-website-backend
+      - name: b
+        target: bb
+        targetUrl: bbb
+    Telegram:
+      - name: Join official Telegram channel
+        target: ${TG_DAPP_LEARNING_GROUP_ID}
+        targetUrl: https://t.me/+o_eHDx8JoL80YzEx
+    Discord:
+      - name: Join official Discord channel
+        target: ${GUILD_DAPP_LEARNING_ID}
+        targetUrl: https://discord.gg/5K3K4ND7
+      - name: c
+        target: cc
+        targetUrl: ccc
