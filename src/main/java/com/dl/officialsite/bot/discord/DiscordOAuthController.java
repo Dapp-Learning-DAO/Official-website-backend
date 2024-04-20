@@ -2,24 +2,26 @@ package com.dl.officialsite.bot.discord;
 
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.utils.GsonUtil;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
+import com.dl.officialsite.common.utils.HttpUtil;
 import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +32,9 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,7 +42,7 @@ import java.util.Optional;
 @Slf4j
 public class DiscordOAuthController {
     private static final String O_AUTH_URL = "https://discord.com/api/oauth2/authorize?client_id={clientId}&redirect_uri={callbackUrl}" +
-        "&response_type=code&scope=identify%20guilds";
+        "&response_type=code&scope=guilds.members.read";
     private static final String DISCORD_TOKEN_URL = "https://discord.com/api/v9/oauth2/token";
     private static final String DISCORD_USER_INFO_URL = "https://discord.com/api/v9/users/@me";
 
@@ -56,13 +60,12 @@ public class DiscordOAuthController {
     public void setUpTwitter() {
         discordConfig = oAuthConfig.getRegistrations().get("discord");
         if (discordConfig == null) {
-            //TODO
             throw new RuntimeException("Invalid registrationId");
         }
         log.info("Successfully set up Discord....");
     }
 
-    @GetMapping("/oauth2/authorize/normal/discord")
+    @GetMapping("oauth2/authorization/discord")
     public void twitterOauthLogin(@RequestParam(name = "test", defaultValue = "false") boolean test, HttpServletResponse response)
         throws IOException {
         Map<String, String> uriVariables = new HashMap<>();
@@ -73,81 +76,76 @@ public class DiscordOAuthController {
     }
 
     @GetMapping("/oauth2/callback/discord")
-    public BaseResponse getTwitter(@RequestParam("code") String code, HttpSession session) {
-        String accessToken = fetchAccessToken(code);
-        if (StringUtils.isBlank(accessToken)) {
-            return BaseResponse.failWithReason("1101", "Login Discord failed.");
-        }
-
-        String discordUserId = fetchUserId(accessToken);
-        if (StringUtils.isBlank(discordUserId)) {
-            return BaseResponse.failWithReason("1101", "Fetch Discord user id failed.");
-        }
-
+    public BaseResponse getTwitter(@RequestParam("code") String code, @RequestParam(required = false) String addressForTesting,
+                                   HttpSession session) {
+        // 检查用户是否注册
         SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
-        String address = sessionUserInfo.getAddress();
+        final String address = sessionUserInfo != null ? sessionUserInfo.getAddress() : addressForTesting;
         Optional<Member> member = this.memberRepository.findByAddress(address);
         if (!member.isPresent()) {
             return BaseResponse.failWithReason("1001", "no user found"); // 用户需要注册
         }
+
+        // 获取  access token
+        String accessToken = fetchAccessToken(code);
+        if (StringUtils.isBlank(accessToken)) {
+            return BaseResponse.failWithReason("1101", "Fetch Discord access token failed.");
+        }
+
+        String discordUserId = fetchUserId(accessToken);
+        if (StringUtils.isBlank(discordUserId)) {
+            return BaseResponse.failWithReason("1102", "Fetch Discord user id failed.");
+        }
+
         member.get().setDiscordId(discordUserId);
         memberRepository.save(member.get());
         return BaseResponse.success();
     }
 
     private String fetchAccessToken(String code) {
-        // Set request headers
-        HttpHeaders headers = new HttpHeaders();
-
-        // Build request body with form data
-        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("client_id", discordConfig.getClientId());
-        requestBody.add("client_secret", discordConfig.getClientSecret());
-        requestBody.add("grant_type", "authorization_code");
-        requestBody.add("code", code);
-        requestBody.add("redirect_uri", discordConfig.getCallbackUrl());
-        requestBody.add("scope", "identify guilds");
-
-        // Build the HTTP request entity
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        // Send POST request to Discord API
-        ResponseEntity<DiscordTokenResponse> responseEntity = restTemplate.exchange(
-            DISCORD_TOKEN_URL,
-            HttpMethod.POST,
-            requestEntity,
-            DiscordTokenResponse.class
-        );
-
-        // Handle the response
-        HttpStatus statusCode = responseEntity.getStatusCode();
-        DiscordTokenResponse responseBody = responseEntity.getBody();
-
-        if (statusCode == HttpStatus.OK && responseBody != null) {
-            // Successfully retrieved access_token and expires_in
-            return responseBody.getAccessToken();
+        List<BasicNameValuePair> paramList = getParams(code);
+        HttpPost httpPost = new HttpPost(DISCORD_TOKEN_URL);
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(paramList));
+            HttpResponse response = HttpUtil.client().execute(httpPost);
+            // Handle response
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                String responseBody = EntityUtils.toString(entity);
+                return GsonUtil.fromJson(responseBody, DiscordTokenResponse.class).getAccess_token();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-    private String fetchUserId(String accessToken){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
+    private List<BasicNameValuePair> getParams(String code) {
+        List<BasicNameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("client_id", discordConfig.getClientId()));
+        params.add(new BasicNameValuePair("client_secret", discordConfig.getClientSecret()));
+        params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+        params.add(new BasicNameValuePair("code", code));
+        params.add(new BasicNameValuePair("redirect_uri", discordConfig.getCallbackUrl()));
+        params.add(new BasicNameValuePair("scope", "guilds.members.read"));
+        return params;
+    }
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<DiscordUserInfo> responseEntity = restTemplate.exchange(
-            DISCORD_USER_INFO_URL,
-            HttpMethod.GET,
-            requestEntity,
-            DiscordUserInfo.class
-        );
+    private String fetchUserId(String accessToken) {
+        HttpGet httpGet = new HttpGet(DISCORD_USER_INFO_URL);
+        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
-        // 处理响应
-        HttpStatus statusCode = responseEntity.getStatusCode();
-        DiscordUserInfo responseBody = responseEntity.getBody();
+        try {
+            HttpResponse response = HttpUtil.client().execute(httpGet);
 
-        if (statusCode == HttpStatus.OK && responseBody != null) {
-            return responseBody.getId();
+            // Handle response
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                String responseBody = EntityUtils.toString(entity);
+                return GsonUtil.fromJson(responseBody, DiscordUserInfo.class).getId();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -173,19 +171,10 @@ public class DiscordOAuthController {
 
     @Data
     public static class DiscordTokenResponse {
-        @JsonProperty("token_type")
-        private String tokenType;
-
-        @JsonProperty("access_token")
-        private String accessToken;
-
-        @JsonProperty("expires_in")
-        private int expiresIn;
-
-        @JsonProperty("refresh_token")
-        private String refreshToken;
-
-        @JsonProperty("scope")
+        private String token_type;
+        private String access_token;
+        private int expires_in;
+        private String refresh_token;
         private String scope;
     }
 }

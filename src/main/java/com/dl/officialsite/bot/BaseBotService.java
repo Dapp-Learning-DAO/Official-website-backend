@@ -15,4 +15,6 @@ public abstract class BaseBotService<T extends BaseBotConfig> {
 
     public abstract Pair<Boolean, String> sendMessage(GroupNameEnum groupNameEnum, ChannelEnum channelEnum, Message text);
 
+    public abstract boolean isUserInChannel(String channelId, String userId);
+
 }

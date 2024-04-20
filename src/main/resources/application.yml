@@ -167,11 +167,8 @@ activity:
   taskMap:
     GitHub:
       - name: Star the official GitHub Repository
-        target: Dapp-Learning-DAO/dapp-learning
-        targetUrl: https://github.com/Dapp-Learning-DAO/Official-website-backend
-      - name: b
-        target: bb
-        targetUrl: bbb
+        target: yuanmomo/ore-cli-docker
+        targetUrl: https://github.com/yuanmomo/ore-cli-docker
     Telegram:
       - name: Join official Telegram channel
         target: ${TG_DAPP_LEARNING_GROUP_ID}
@@ -180,6 +177,3 @@ activity:
       - name: Join official Discord channel
         target: ${GUILD_DAPP_LEARNING_ID}
         targetUrl: https://discord.gg/5K3K4ND7
-      - name: c
-        target: cc
-        targetUrl: ccc
