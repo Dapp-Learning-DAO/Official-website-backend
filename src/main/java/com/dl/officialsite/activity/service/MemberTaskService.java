@@ -32,7 +32,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class MemberTaskService {
-    private static final String TOKEN = "xxxxxxxxxxxxx"; // 替换成你的 GitHub Token
     private static final String API_URL = "https://api.github.com/user/starred/%s";
 
     @Autowired

@@ -28,7 +28,6 @@ public class DiscordBotService extends BaseBotService<DiscordBotConfig> {
 
     @Override
     public boolean isUserInChannel(String channelId, String userId) {
-
         HttpGet httpGet = new HttpGet(String.format(IS_USER_IN_CHANNEL_API, channelId, userId));
         httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bot " + this.getBotConfig().getBotToken());
 
