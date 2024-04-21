@@ -168,8 +168,8 @@ activity:
   taskMap:
     GitHub:
       - name: Star the official GitHub Repository
-        target: yuanmomo/ore-cli-docker
-        targetUrl: https://github.com/yuanmomo/ore-cli-docker
+        target: Dapp-Learning-DAO/dapp-learning
+        targetUrl: https://github.com/Dapp-Learning-DAO/dapp-learning
     Telegram:
       - name: Join official Telegram channel
         target: ${TG_DAPP_LEARNING_GROUP_ID}
