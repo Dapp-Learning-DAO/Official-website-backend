@@ -4,9 +4,13 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.dl.officialsite.defi.dao.BatchRepository;
+import com.dl.officialsite.defi.dao.WhaleChainTokenRepository;
+import com.dl.officialsite.defi.dao.WhaleChainValueRepository;
 import com.dl.officialsite.defi.dao.WhaleRepository;
 import com.dl.officialsite.defi.dao.WhaleTxRowRepository;
 import com.dl.officialsite.defi.entity.Whale;
+import com.dl.officialsite.defi.entity.WhaleChainToken;
+import com.dl.officialsite.defi.entity.WhaleChainValue;
 import com.dl.officialsite.defi.entity.WhaleTxRow;
 import com.dl.officialsite.defi.vo.params.QueryWhaleParams;
 import java.io.IOException;
@@ -17,16 +21,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,11 +54,18 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class WhaleService {
 
+    @Value("${debank.key:111}")
+    private String key;
+
     private final WhaleRepository whaleRepository;
 
     private final WhaleTxRowRepository whaleTxRowRepository;
 
     private final BatchRepository batchRepository;
+
+    private final WhaleChainValueRepository whaleChainValueRepository;
+
+    private final WhaleChainTokenRepository whaleChainTokenRepository;
 
     private static String aaveUrl = "https://api.thegraph.com/subgraphs/name/messari/aave-v3"
         + "-ethereum";
@@ -62,10 +77,13 @@ public class WhaleService {
     private static  Set<String> addressSet = new HashSet<>();
 
     public WhaleService(WhaleRepository whaleRepository, WhaleTxRowRepository whaleTxRowRepository,
-        BatchRepository batchRepository) {
+        BatchRepository batchRepository, WhaleChainValueRepository whaleChainValueRepository,
+        WhaleChainTokenRepository whaleChainTokenRepository) {
         this.whaleRepository = whaleRepository;
         this.whaleTxRowRepository = whaleTxRowRepository;
         this.batchRepository = batchRepository;
+        this.whaleChainValueRepository = whaleChainValueRepository;
+        this.whaleChainTokenRepository = whaleChainTokenRepository;
     }
 
     @Scheduled(cron =  "${jobs.defi.corn: 0 30 * * * * ?}")
@@ -153,42 +171,46 @@ public class WhaleService {
         return oneYearAgo.getEpochSecond();
     }
 
-    private List<WhaleTxRow> convertToWhaleTxRow(JSONObject tx, Whale whale) {
+    private List<WhaleTxRow> convertToWhaleTxRow(JSONObject account, Whale whale) {
+        JSONArray positions = account.getJSONArray("positions");
         List<WhaleTxRow> whaleTxRowList = new ArrayList<>();
-        JSONArray borrows = tx.getJSONArray("borrows");
-        JSONObject asset = tx.getJSONObject("asset");
-        String decimals = asset.getStr("decimals");
-        for (int i = 0; i < borrows.size(); i++) {
-            JSONObject borrow = (JSONObject) borrows.get(i);
-            WhaleTxRow whaleTxRow = new WhaleTxRow();
-            String txhash = borrow.getStr("hash");
-            String timestamp = borrow.getStr("timestamp");
-            String debtAmount = borrow.getStr("amount");
-            String debtAmountUsd = borrow.getStr("amountUSD");
-            String debtTokenAddress = tx.getJSONObject("asset").getStr("id");
-            String debtTokenSymbol = tx.getJSONObject("asset").getStr("symbol");
-            whaleTxRow.setTxhash(txhash);
-            whaleTxRow.setDebtTokenAddress(debtTokenAddress);
-            whaleTxRow.setDebtTokenSymbol(debtTokenSymbol);
-            whaleTxRow.setCreateTime(Long.parseLong(timestamp));
-            calculateWhaleTxRowAmount(borrow, decimals, whaleTxRow);
-            BigDecimal debtAmountUsdBigDecimal = new BigDecimal(debtAmountUsd);
-            whaleTxRow.setDebtAmountUsd(debtAmountUsdBigDecimal);
-            whaleTxRow.setProtocol("aave");
-            whaleTxRow.setChainId("1");
-            whaleTxRow.setWhaleAddress(whale.getAddress());
-            whaleTxRowList.add(whaleTxRow);
+        //处理borrows
+        for (int i = 0; i < positions.size(); i++) {
+            //todo 处理positions为空的情况
+            JSONObject position = (JSONObject) positions.get(i);
+            JSONArray borrows = position.getJSONArray("borrows");
+            JSONObject asset = position.getJSONObject("asset");
+            String id = asset.getStr("id");
+            String symbol = asset.getStr("symbol");
+            String decimals = asset.getStr("decimals");
+            for (int j = 0; j < borrows.size(); j++) {
+                JSONObject borrow = (JSONObject) borrows.get(i);
+                WhaleTxRow whaleTxRow = new WhaleTxRow();
+                String txhash = borrow.getStr("hash");
+                String timestamp = borrow.getStr("timestamp");
+                String debtAmount = borrow.getStr("amount");
+                String debtAmountUsd = borrow.getStr("amountUSD");
+                whaleTxRow.setTxhash(txhash);
+                whaleTxRow.setDebtTokenAddress(id);
+                whaleTxRow.setDebtTokenSymbol(symbol);
+                whaleTxRow.setCreateTime(Long.parseLong(timestamp));
+                calculateWhaleTxRowAmount(borrow, decimals, whaleTxRow);
+                BigDecimal debtAmountUsdBigDecimal = new BigDecimal(debtAmountUsd);
+                whaleTxRow.setDebtAmountUsd(debtAmountUsdBigDecimal);
+                whaleTxRow.setProtocol("aave");
+                whaleTxRow.setChainId("1");
+                whaleTxRow.setWhaleAddress(whale.getAddress());
+                whaleTxRowList.add(whaleTxRow);
+            }
         }
         return whaleTxRowList;
     }
 
-    private Whale convertToWhale(JSONObject tx) {
+
+    private Whale convertToWhale(JSONObject account) {
         Whale whale = new Whale();
-        String address = tx.getJSONObject("account").getStr("id");
-        Long createTime = tx.getLong("timestamp");
+        String address = account.getStr("id");
         whale.setAddress(address);
-        whale.setCreateTime(createTime);
-        calculateWhaleAmount(tx, whale);
         return whale;
     }
 
@@ -227,14 +249,14 @@ public class WhaleService {
                 break;
             }
             JSONObject data = jsonObject.getJSONObject("data");
-            JSONArray positions = data.getJSONArray("positions");
-            if (positions.isEmpty()) {
+            JSONArray accounts = data.getJSONArray("accounts");
+            if (accounts.isEmpty()) {
                 break;
             }
             //获取最后的whale数据
             Whale lastWhale = whaleRepository.findLastWhale();
-            for (int i = 0; i < positions.size(); i++) {
-                Whale whale = convertToWhale((JSONObject) positions.get(i));
+            for (int i = 0; i < accounts.size(); i++) {
+                Whale whale = convertToWhale((JSONObject) accounts.get(i));
                 if (ObjectUtils.isEmpty(lastWhale)) {
                     whale.setId((long) i + 1);
                 } else {
@@ -244,7 +266,7 @@ public class WhaleService {
                     insertWhaleList.add(whale);
                     addressSet.add(whale.getAddress());
                 }
-                List<WhaleTxRow> whaleTxRows = convertToWhaleTxRow((JSONObject) positions.get(i)
+                List<WhaleTxRow> whaleTxRows = convertToWhaleTxRow((JSONObject) accounts.get(i)
                     , whale);
                 for (WhaleTxRow whaleTxRow : whaleTxRows) {
                     if (whaleTxRow.getCreateTime() > oneYearBefore) {
@@ -274,7 +296,9 @@ public class WhaleService {
     private String requestAaveGraph(Integer first, Integer skip) {
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
-        String requestBody = "{\"query\":\"{\\n  positions(\\n    first: " + first +"\\n    skip: "+ skip +"\\n    where: {side: BORROWER, timestampClosed: null, asset_in: [\\\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\\", \\\"0xdac17f958d2ee523a2206206994597c13d831ec7\\\", \\\"0x6b175474e89094c44da98b954eedeac495271d0f\\\", \\\"0x5f98805A4E8be255a32880FDeC7F6728C6568bA0\\\"], borrows_: {amountUSD_gt: 10000}, timestampOpened_gt: 1680855974, timestampOpened_lt: 1712478374}\\n    orderBy: timestampOpened\\n    orderDirection: desc\\n  ) {\\n    id\\n    timestampOpened\\n    timestampClosed\\n    account {\\n      id\\n      positionCount\\n      openPositionCount\\n    }\\n    principal\\n    balance\\n    borrows {\\n      hash\\n      amount\\n      amountUSD\\n      timestamp\\n    }\\n    asset {\\n      id\\n      symbol\\n      name\\n      decimals\\n    }\\n  }\\n}\",\"extensions\":{}}";
+        String a =
+            "{\"query\":\"{\\n  positions(\\n    first: " + first +"\\n    skip: "+ skip +"\\n    where: {side: BORROWER, timestampClosed: null, asset_in: [\\\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\\", \\\"0xdac17f958d2ee523a2206206994597c13d831ec7\\\", \\\"0x6b175474e89094c44da98b954eedeac495271d0f\\\", \\\"0x5f98805A4E8be255a32880FDeC7F6728C6568bA0\\\"], borrows_: {amountUSD_gt: 10000}, timestampOpened_gt: 1680855974, timestampOpened_lt: 1712478374}\\n    orderBy: timestampOpened\\n    orderDirection: desc\\n  ) {\\n    id\\n    timestampOpened\\n    timestampClosed\\n    account {\\n      id\\n      positionCount\\n      openPositionCount\\n    }\\n    principal\\n    balance\\n    borrows {\\n      hash\\n      amount\\n      amountUSD\\n      timestamp\\n    }\\n    asset {\\n      id\\n      symbol\\n      name\\n      decimals\\n    }\\n  }\\n}\",\"extensions\":{}}";
+        String requestBody = "{\"query\":\"{\\n  accounts(\\n    where: {positions_: {side: BORROWER, timestampClosed: null, asset_in: [\\\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\\", \\\"0xdac17f958d2ee523a2206206994597c13d831ec7\\\", \\\"0x6b175474e89094c44da98b954eedeac495271d0f\\\", \\\"0x3Fe6a295459FAe07DF8A0ceCC36F37160FE86AA9\\\"], timestampOpened_gt: 1680942374, timestampOpened_lt: 1712478374}, borrows_: {amountUSD_gt: 20000}}\\n    skip: "+ skip +"\\n    first: " + first +"\\n  ) {\\n    id\\n    positionCount\\n    openPositionCount\\n    positions(where: {timestampClosed: null}) {\\n      id\\n      timestampOpened\\n      timestampClosed\\n      side\\n      isCollateral\\n      type\\n      principal\\n      balance\\n      depositCount\\n      withdrawCount\\n      borrowCount\\n      repayCount\\n      borrows {\\n        hash\\n        amount\\n        amountUSD\\n        timestamp\\n      }\\n      deposits {\\n        hash\\n        amount\\n        amountUSD\\n        timestamp\\n      }\\n      repays {\\n        hash\\n        amount\\n        amountUSD\\n        timestamp\\n      }\\n      asset {\\n        id\\n        symbol\\n        name\\n        decimals\\n      }\\n    }\\n  }\\n}\",\"extensions\":{}}";
         RequestBody body = RequestBody.create(mediaType, requestBody);
         Request request = new Request.Builder()
             .url("https://api.thegraph.com/subgraphs/name/messari/aave-v3-ethereum")
@@ -297,6 +321,143 @@ public class WhaleService {
             throw new RuntimeException(e);
         }
         return jsonStr;
+    }
+
+    //getUserTotalBalance
+    public List<WhaleChainValue> getUserTotalBalance(String whaleAddress,Integer update) {
+        if (update == 0) {
+            Whale whale = whaleRepository.findByAddress(whaleAddress);
+            if (!ObjectUtils.isEmpty(whale)) {
+                List<WhaleChainValue> chainValues = whaleChainValueRepository.findByWhaleAddress(whaleAddress);
+                return chainValues;
+            }
+        }
+        List<String> chainIds = Stream.of("1", "56", "137", "250", "43114", "43113")
+            .collect(Collectors.toList());
+        String baseUrl = "https://pro-openapi.debank.com/v1/user/total_balance";
+        OkHttpClient client = new OkHttpClient();
+        // 构建URL
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
+        urlBuilder.addQueryParameter("id", whaleAddress); // 添加参数
+        String url = urlBuilder.build().toString();
+        Request request = new Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("AccessKey", key)
+            .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            log.error("请求debank失败");
+            throw new RuntimeException(e);
+        };
+        //.code 200
+        String jsonStr = null;
+        try {
+            jsonStr = response.body().string();
+        } catch (IOException e) {
+            log.error("解析debank返回失败");
+            throw new RuntimeException(e);
+        }
+        Whale whale = whaleRepository.findByAddress(whaleAddress);
+        JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
+        String totalUsdValue = jsonObject.getStr("total_usd_value");
+        BigDecimal amountUsd = new BigDecimal(totalUsdValue);
+        whale.setAmountUsd(amountUsd);
+        whaleRepository.save(whale);
+        JSONArray chainList = jsonObject.getJSONArray("chain_list");
+        List<WhaleChainValue> chainValues = new ArrayList<>();
+        for (int i = 0; i < chainList.size(); i++) {
+            JSONObject chainInfo = (JSONObject) chainList.get(i);
+            String chainId = chainInfo.getStr("community_id");
+            String chainName = chainInfo.getStr("name");
+            String usdValue = chainInfo.getStr("usd_value");
+            if (chainIds.contains(chainId)) {
+                WhaleChainValue whaleChainValue = new WhaleChainValue();
+                whaleChainValue.setWhaleAddress(whaleAddress);
+                whaleChainValue.setChainId(chainId);
+                whaleChainValue.setChainName(chainName);
+                whaleChainValue.setValue(usdValue);
+                chainValues.add(whaleChainValue);
+
+            }
+        }
+        whaleChainValueRepository.saveAll(chainValues);
+        return chainValues;
+    }
+
+    //getUserTokenList
+    public List<WhaleChainToken> getUserTokenList(String whaleAddress,Integer update) {
+        List<String> chainNames = Stream.of("eth", "base", "op", "arb", "matic")
+            .collect(Collectors.toList());
+        if (update == 0) {
+            Whale whale = whaleRepository.findByAddress(whaleAddress);
+            if (!ObjectUtils.isEmpty(whale)) {
+                List<WhaleChainToken> chainTokens = whaleChainTokenRepository.findByWhaleAddress(whaleAddress);
+                return chainTokens;
+            }
+        }
+        String baseUrl = "https://pro-openapi.debank.com/v1/user/all_token_list";
+        OkHttpClient client = new OkHttpClient();
+        // 构建URL
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
+        urlBuilder.addQueryParameter("id", whaleAddress); // 添加参数
+        String url = urlBuilder.build().toString();
+        Request request = new Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("AccessKey", key)
+            .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            log.error("请求debank失败");
+            throw new RuntimeException(e);
+        };
+        //.code 200
+        String jsonStr = null;
+        try {
+            jsonStr = response.body().string();
+        } catch (IOException e) {
+            log.error("解析debank返回失败");
+            throw new RuntimeException(e);
+        }
+        JSONArray data = JSONUtil.parseArray(jsonStr);
+        List<WhaleChainToken> chainTokens = new ArrayList<>();
+        for (int i = 0; i < data.size(); i++) {
+            JSONObject tokenInfo = (JSONObject) data.get(i);
+            String chainName = tokenInfo.getStr("chain");
+            String tokenAddress = tokenInfo.getStr("id");
+            String tokenSymbol = tokenInfo.getStr("symbol");
+            String amount = tokenInfo.getStr("amount");
+            String price = tokenInfo.getStr("price");
+            String decimals = tokenInfo.getStr("decimals");
+            if (chainNames.contains(chainName)) {
+                WhaleChainToken whaleChainToken = new WhaleChainToken();
+                whaleChainToken.setWhaleAddress(whaleAddress);
+                whaleChainToken.setChainName(chainName);
+                whaleChainToken.setTokenAddress(tokenAddress);
+                whaleChainToken.setTokenSymbol(tokenSymbol);
+                whaleChainToken.setAmount(amount);
+                whaleChainToken.setPrice(price);
+                whaleChainToken.setDecimals(Integer.parseInt(decimals));
+                chainTokens.add(whaleChainToken);
+            }
+    }
+        WhaleChainToken agoWhaleChainToken = whaleChainTokenRepository.findAgoWhaleChainToken();
+        for (int i = 0; i < chainTokens.size(); i++) {
+            WhaleChainToken whaleChainToken = chainTokens.get(i);
+            if (ObjectUtils.isEmpty(agoWhaleChainToken)) {
+                whaleChainToken.setId((long) i + 1);
+            } else {
+                whaleChainToken.setId((long) i + agoWhaleChainToken.getId() + 1);
+            }
+        }
+        batchRepository.batchInsert(chainTokens);
+        //whaleChainTokenRepository.saveAll(chainTokens);
+        return chainTokens;
     }
 
     public Page<Whale> queryWhale(Pageable pageable, QueryWhaleParams query) {
@@ -330,3 +491,4 @@ public class WhaleService {
         return whaleTxRowRepository.findAll(queryParam, pageable);
     }
 }
+
