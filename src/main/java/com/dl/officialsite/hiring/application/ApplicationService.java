@@ -142,14 +142,21 @@ public class ApplicationService {
                 return query.where(predicates.toArray(new Predicate[0])).getRestriction();
             });
         info.setApplyPersonNum(count);
+
+        List<ApplyPersonInfo> applyPersonInfoList  = new ArrayList<>();
         List<Long> memberIds = applicationRepository.findAll(
             (root, query, builder) -> {
                 List<Predicate> predicates = new LinkedList<>();
                 predicates.add(builder.equal(root.get("hiringId"), hireId));
                 return query.where(predicates.toArray(new Predicate[0])).getRestriction();
-            }).stream().map(Application::getMemberId).collect(Collectors.toList());
+            }).stream().map(row ->{
+            ApplyPersonInfo applyPersonInfo = new ApplyPersonInfo(row.getMemberId,getMemberId.getCreateTime);
+            applyPersonInfoList.add(applyPersonInfo);
+            return Application::getMemberId
+        }).collect(Collectors.toList());
         List<Member> member = memberRepository.findByIdIn(memberIds);
         info.setApplyPersonAddress(member);
+        info.setApplyPersonInfoList(applyPersonInfoList);
         return info;
     }
 }

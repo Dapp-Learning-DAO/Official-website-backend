@@ -16,5 +16,17 @@ public class ApplicationHiringDetailVo {
     private long applyPersonNum;
 
     private List<Member> applyPersonAddress;
+    private List<ApplyPersonInfo> applyPersonList;
 
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class ApplyPersonInfo {
+        private String address;
+        private Date applyTime;
+    }
 }
+

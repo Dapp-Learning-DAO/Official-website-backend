@@ -92,6 +92,8 @@ jobs:
     corn: ${CRON_DIS:0/5 * * * * ?}
   defi:
     corn: ${CRON_DEFI:0 10 * * * ?}
+  bounty:
+    corn: ${CRON_BOUNTY:0 */1 * * *}
 oauth:
   registrations:
     github:
