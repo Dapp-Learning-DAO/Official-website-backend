@@ -62,7 +62,9 @@ public class TelegramOAuthController {
             }
 
             String telegramUserId = params.get("id");
+            String telegramUserName = params.get("username");
             member.get().setTelegramUserId(telegramUserId);
+            member.get().setTelegramId(telegramUserName);
             memberRepository.save(member.get());
             return BaseResponse.success();
         }
