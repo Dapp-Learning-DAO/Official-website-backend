@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,7 +44,7 @@ public class TelegramOAuthController {
         log.info("Successfully set up Telegram login validator");
     }
 
-    @GetMapping("/oauth2/callback/telegram")
+    @PostMapping("/oauth2/callback/telegram")
     public BaseResponse verifyTelegram(@RequestParam Map<String, String> params, @RequestParam(required = false) String addressForTesting,
                                        HttpSession session) {
         SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);

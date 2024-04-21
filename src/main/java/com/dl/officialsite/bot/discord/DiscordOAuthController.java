@@ -23,6 +23,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -75,7 +76,7 @@ public class DiscordOAuthController {
             .toUriString());
     }
 
-    @GetMapping("/oauth2/callback/discord")
+    @PostMapping("/oauth2/callback/discord")
     public BaseResponse getTwitter(@RequestParam("code") String code, @RequestParam(required = false) String addressForTesting,
                                    HttpSession session) {
         // 检查用户是否注册
