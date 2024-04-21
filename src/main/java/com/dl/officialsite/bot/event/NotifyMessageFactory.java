@@ -14,7 +14,7 @@ public class NotifyMessageFactory {
     }
 
     public static Message welcomeUserMessage(String nickName) {
-        return Message.build(String.format("Welcome %s join Dapp-Learning, introduce yourself briefly.\n%s", nickName, SOCIAL_MEDIA));
+        return Message.build(String.format("Welcome %s join Dapp-Learning, introduce yourself briefly.", nickName));
     }
 
     public static Message bountyMessage(String nickName, String title) {
