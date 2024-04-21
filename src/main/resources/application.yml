@@ -173,8 +173,8 @@ activity:
     Telegram:
       - name: Join official Telegram channel
         target: ${TG_DAPP_LEARNING_GROUP_ID}
-        targetUrl: https://t.me/+o_eHDx8JoL80YzEx
+        targetUrl: ${TELEGRAM_INVITE_URL}
     Discord:
       - name: Join official Discord channel
         target: ${GUILD_DAPP_LEARNING_ID}
-        targetUrl: https://discord.gg/5K3K4ND7
+        targetUrl: ${DISCORD_INVITE_URL}
