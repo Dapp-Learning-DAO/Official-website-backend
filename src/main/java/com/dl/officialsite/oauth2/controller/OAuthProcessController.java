@@ -4,6 +4,7 @@ package com.dl.officialsite.oauth2.controller;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
+import com.dl.officialsite.oauth2.AccessTokenCacheService;
 import com.dl.officialsite.oauth2.config.OAuthConfig;
 import com.dl.officialsite.oauth2.config.OAuthSessionKey;
 import com.dl.officialsite.oauth2.config.RegistrationConfig;
@@ -29,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -175,6 +177,8 @@ public class OAuthProcessController {
         IUserInfo userInfo = retrieveHandler.retrieve(registration.getUserInfoUri(), accessToken);
         log.info("user info {}", userInfo.getUsername());
         Assert.notNull(userInfo, "failed to find userInfo");
+        // add access token to cache
+        AccessTokenCacheService.addGitHubAccessToken(userInfo.getUsername(), accessToken);
         HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME, userInfo.getUsername());
         /**
          * 4. Bind userInfo
@@ -185,9 +189,9 @@ public class OAuthProcessController {
 //
 //        bindHandler.bind(UserSecurityUtils.getUserLogin().getAddress(), userInfo);
 //
-//        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
-//        return BaseResponse.successWithData(userInfo.getUsername());
-        return BaseResponse.successWithData(accessToken);
+        response.addCookie(new Cookie("oauth_"+registrationId, userInfo.getUsername()));
+        return BaseResponse.successWithData(userInfo.getUsername());
+//        return BaseResponse.successWithData(accessToken);
     }
 
     @GetMapping("username/{registrationId}")

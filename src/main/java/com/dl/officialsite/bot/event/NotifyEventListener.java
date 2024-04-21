@@ -12,7 +12,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Slf4j
@@ -22,6 +24,13 @@ public class NotifyEventListener implements ApplicationListener<EventNotify> {
     private TelegramBotService telegramBotService;
     @Autowired
     private DiscordBotService discordBotService;
+
+    public static Set<ChannelEnum> ENABLE_CHANNELS = new HashSet<>();
+
+    static {
+        ENABLE_CHANNELS.add(ChannelEnum.WELCOME);
+        ENABLE_CHANNELS.add(ChannelEnum.SHARING);
+    }
 
     @Override
     public void onApplicationEvent(EventNotify event) {
@@ -35,6 +44,10 @@ public class NotifyEventListener implements ApplicationListener<EventNotify> {
     }
 
     private void sendMessage(BotEnum botEnum, GroupNameEnum group, ChannelEnum channelEnum, Message message) {
+        if (!ENABLE_CHANNELS.contains(channelEnum)) {
+            return;
+        }
+
         switch (botEnum) {
             case DISCORD:
                 Optional.ofNullable(discordBotService.getBotConfig().getBot()).ifPresent(service ->
