@@ -1,8 +1,11 @@
 package com.dl.officialsite.hiring.application;
 
 import com.dl.officialsite.member.Member;
+
+import java.util.Date;
 import java.util.List;
-import lombok.Data;
+
+import lombok.*;
 
 /**
  * @ClassName ApplicationHiringDetailVo
@@ -25,7 +28,7 @@ public class ApplicationHiringDetailVo {
     @AllArgsConstructor
     @Data
     public static class ApplyPersonInfo {
-        private String address;
+        private Long memberId;
         private Date applyTime;
     }
 }

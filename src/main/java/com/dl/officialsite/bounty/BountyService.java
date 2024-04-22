@@ -23,11 +23,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -39,6 +43,7 @@ import org.springframework.util.StringUtils;
  * @Description BountyService
  **/
 @Service
+@Slf4j
 public class BountyService {
 
     private final BountyRepository bountyRepository;
@@ -66,16 +71,6 @@ public class BountyService {
         log.info("schedule task begin --------------------- ");
         //update status
         long currentSeconds = System.currentTimeMillis() / 1000;
-
-        Pageable pageable = PageRequest.of(0, 100);
-        Specification<Bounty> spec = Specification.where(hasStreamEndBefore(currentSeconds));
-        Page<Bounty> bountyPage = bountyRepository.findAll(spec, pageable);
-        bountyPage.
-
-        BeanUtils.copyProperties(bountyVo, bounty);
-        bountyRepository.save(bounty);
-
-
         List<Bounty> bountyList = bountyRepository.findAll(
                 (root, criteriaQuery, criteriaBuilder) -> {
                     List<Predicate> predicates = new ArrayList<>();
