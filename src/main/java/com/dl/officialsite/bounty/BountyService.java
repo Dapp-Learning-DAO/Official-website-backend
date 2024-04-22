@@ -14,17 +14,24 @@ import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.hiring.application.Application;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -36,6 +43,7 @@ import org.springframework.util.StringUtils;
  * @Description BountyService
  **/
 @Service
+@Slf4j
 public class BountyService {
 
     private final BountyRepository bountyRepository;
@@ -54,6 +62,29 @@ public class BountyService {
         this.memberRepository = memberRepository;
         this.applicationContext = applicationContext;
     }
+
+
+
+    @Scheduled(cron = "${jobs.bounty.corn:0 */1 * * *}")
+    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
+    public void updateBountyData() {
+        log.info("schedule task begin --------------------- ");
+        //update status
+        long currentSeconds = System.currentTimeMillis() / 1000;
+        List<Bounty> bountyList = bountyRepository.findAll(
+                (root, criteriaQuery, criteriaBuilder) -> {
+                    List<Predicate> predicates = new ArrayList<>();
+                    predicates.add(criteriaBuilder.lessThan(root.get("streamEnd"), currentSeconds));
+                    return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
+                            .getRestriction();
+                });
+        if(bountyList.isEmpty())return;
+         bountyList.stream().forEach(row -> {
+             row.setStatus(BountyStatusEnum.TIME_OUT.getData());
+             bountyRepository.save(row);
+         });
+    }
+
 
     public BountyVo add(BountyVo bountyVo, String address) {
         Bounty bounty = new Bounty();
