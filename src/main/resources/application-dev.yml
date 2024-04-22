@@ -4,7 +4,7 @@ jobs:
   defi:
     corn: ${CRON_DEFI:0 30  * * * ?}
   bounty:
-    corn: ${CRON_BOUNTY:0 */1 * * *}
+    corn: ${CRON_BOUNTY:0 0 * * * *}
 bot:
   telegram:
     groupList:

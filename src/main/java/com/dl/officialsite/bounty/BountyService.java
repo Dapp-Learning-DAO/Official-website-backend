@@ -65,7 +65,7 @@ public class BountyService {
 
 
 
-    @Scheduled(cron = "${jobs.bounty.corn:0 */1 * * *}")
+    @Scheduled(cron = "${jobs.bounty.corn:0 0 * * * *}")
     @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateBountyData() {
         log.info("schedule task begin --------------------- ");
