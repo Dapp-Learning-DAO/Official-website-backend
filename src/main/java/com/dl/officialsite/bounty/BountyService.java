@@ -68,12 +68,13 @@ public class BountyService {
     @Scheduled(cron = "${jobs.bounty.corn:0 0 * * * *}")
     @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateBountyData() {
-        log.info("schedule task begin --------------------- ");
+        log.info("updateBountyData_schedule task begin --------------------- ");
         //update status
         long currentSeconds = System.currentTimeMillis() / 1000;
         List<Bounty> bountyList = bountyRepository.findAll(
                 (root, criteriaQuery, criteriaBuilder) -> {
                     List<Predicate> predicates = new ArrayList<>();
+                    predicates.add(criteriaBuilder.equal(root.get("status"), BountyStatusEnum.IN_RECRUITMENT.getData()));
                     predicates.add(criteriaBuilder.lessThan(root.get("streamEnd"), currentSeconds));
                     return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
                             .getRestriction();
