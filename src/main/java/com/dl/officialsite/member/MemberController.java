@@ -196,6 +196,9 @@ public class MemberController {
             if (member.getTwitterStatus() != null) {
                 _member.setTwitterStatus(member.getTwitterStatus());
             }
+            if (member.getRole() != _member.getRole()) {
+                _member.setRole(member.getRole());
+            }
             return BaseResponse.successWithData(memberService.save(_member));
         } else {
             return BaseResponse.failWithReason("1001", "no user found");
