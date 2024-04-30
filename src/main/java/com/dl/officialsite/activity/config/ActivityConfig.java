@@ -2,15 +2,19 @@ package com.dl.officialsite.activity.config;
 
 import com.dl.officialsite.activity.constant.TaskTypeEnum;
 import com.dl.officialsite.activity.model.MemberTaskStatus;
+import com.dl.officialsite.config.bean.Configurable;
+import com.dl.officialsite.config.constant.ConfigEnum;
+import com.dl.officialsite.config.service.ServerConfigCacheService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,28 +22,34 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-@Configuration
-@ConfigurationProperties(prefix = "activity", ignoreInvalidFields = true)
-public class ActivityConfig {
-    private String name;
-    private Map<TaskTypeEnum, List<Task>> taskMap;
-
+@Service
+@Slf4j
+public class ActivityConfig implements Configurable {
     private static long taskCount;
+    private AnnualActivityConfig annualActivityConfig;
 
-    @PostConstruct
+    @Autowired
+    private ServerConfigCacheService serverConfigCacheService;
+
+    @EventListener(ApplicationReadyEvent.class)
     public void init() {
-        taskCount = Optional.of(taskMap).orElse(Collections.emptyMap()).values().stream().
-            map(Collection::size).mapToInt(Integer::intValue).sum();
+        annualActivityConfig = this.serverConfigCacheService.get(ConfigEnum.ANNUAL_ACTIVITY_3ND, AnnualActivityConfig.class);
+
+        taskCount = Optional.ofNullable(annualActivityConfig)
+            .map(AnnualActivityConfig::getTaskMap).orElse(Collections.emptyMap())
+            .values().stream()
+            .map(Collection::size).mapToInt(Integer::intValue).sum();
 
         log.info("Init ActivityConfig:[{}], taskCount:[{}]", this, taskCount);
     }
 
     public Optional<Task> findTask(TaskTypeEnum taskType, String target) {
-        return Optional.ofNullable(taskMap.get(taskType))
+        return Optional.ofNullable(annualActivityConfig)
+            .map(AnnualActivityConfig::getTaskMap)
+            .map(map -> map.get(taskType))
             .flatMap(list -> list.stream().filter(task -> StringUtils.equalsIgnoreCase(task.getTarget(), target))
                 .reduce((a, b) -> {
                     throw new IllegalStateException("Shouldn't be multiple records");
@@ -47,10 +57,22 @@ public class ActivityConfig {
     }
 
     public List<MemberTaskStatus> fetchMemberTaskStatusList() {
-        return taskMap.entrySet().stream().flatMap(entry ->
+        Map<TaskTypeEnum, List<Task>> taskTypeEnumListMap =
+            Optional.ofNullable(annualActivityConfig).map(AnnualActivityConfig::getTaskMap).orElse(Collections.emptyMap());
+
+        return taskTypeEnumListMap.entrySet().stream().flatMap(entry ->
             entry.getValue().stream().map(task -> new MemberTaskStatus(entry.getKey(), task.getName(), task.getTarget(),
                 task.getTargetUrl()))
         ).collect(Collectors.toList());
     }
 
+    public String getName() {
+        return Optional.ofNullable(annualActivityConfig).map(AnnualActivityConfig::getName).orElse("");
+    }
+}
+
+@Data
+class AnnualActivityConfig implements Configurable {
+    private String name;
+    private Map<TaskTypeEnum, List<Task>> taskMap;
 }

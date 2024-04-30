@@ -164,19 +164,3 @@ debank:
   userTokenList: https://pro-openapi.debank.com/v1/user/all_token_list
   totalBalance: https://pro-openapi.debank.com/v1/user/total_balance
   key:
-
-activity:
-  name: THIRD_ANNIVERSARY_EVENT
-  taskMap:
-    GitHub:
-      - name: Star the official GitHub Repository
-        target: Dapp-Learning-DAO/dapp-learning
-        targetUrl: https://github.com/Dapp-Learning-DAO/dapp-learning
-    Telegram:
-      - name: Join official Telegram channel
-        target: ${TG_DAPP_LEARNING_GROUP_ID}
-        targetUrl: ${TELEGRAM_INVITE_URL}
-    Discord:
-      - name: Join official Discord channel
-        target: ${GUILD_DAPP_LEARNING_ID}
-        targetUrl: ${DISCORD_INVITE_URL}
