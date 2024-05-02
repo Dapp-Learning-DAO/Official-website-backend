@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum ChannelEnum {
-    GENERAL("general-chat"),
+    GENERAL("general-chat", "general"),
     HIRING("hiring", "job", "hiring-and-applying", "applying"),
     SHARING("sharing", "sharing_team"),
     BUILDER("builder"),
@@ -32,6 +32,5 @@ public enum ChannelEnum {
             .findFirst().orElse(null);
     }
 
-    private Set<String> channelNameKeyWordsSet;
-
+    private final Set<String> channelNameKeyWordsSet;
 }

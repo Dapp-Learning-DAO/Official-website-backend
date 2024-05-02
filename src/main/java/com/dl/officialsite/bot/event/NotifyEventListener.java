@@ -50,12 +50,14 @@ public class NotifyEventListener implements ApplicationListener<EventNotify> {
 
         switch (botEnum) {
             case DISCORD:
-                Optional.ofNullable(discordBotService.getBotConfig().getBot()).ifPresent(service ->
-                    discordBotService.sendMessage(group, channelEnum, message));
+                if (discordBotService.isBotInitialized()) {
+                    discordBotService.sendMessage(group, channelEnum, message);
+                }
                 break;
             case TELEGRAM:
-                Optional.ofNullable(telegramBotService.getBotConfig().getBot()).ifPresent(service ->
-                    telegramBotService.sendMessage(group, channelEnum, message));
+                if (telegramBotService.isBotInitialized()) {
+                    telegramBotService.sendMessage(group, channelEnum, message);
+                }
                 break;
             default:
                 break;

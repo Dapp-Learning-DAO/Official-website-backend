@@ -128,32 +128,6 @@ chain:
 login:
   filter: ${LOGIN_FILTER:true}
 
-bot:
-  discord:
-    botToken: ${DISCORD_BOT_TOKEN}
-    groupList:
-      - groupId: ${GUILD_DAPP_LEARNING_ID}
-        groupName: DAPP_LEARNING
-
-  telegram:
-    botToken: ${TG_BOT_TOKEN}
-    timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
-    groupList:
-      - groupId: ${TG_DAPP_LEARNING_GROUP_ID}
-        groupName: DAPP_LEARNING
-        topicOrChannelList:
-          - name: general-chat
-            threadOrTopicId: 1
-          - name: sharing
-            threadOrTopicId: 414
-          - name: hiring
-            threadOrTopicId: 423
-          - name: github
-            threadOrTopicId: 415
-          - name: builder
-            threadOrTopicId: 422
-          - name: translation
-            threadOrTopicId: 416
 
 hook:
   open: false

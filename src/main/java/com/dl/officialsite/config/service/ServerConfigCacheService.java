@@ -1,6 +1,8 @@
 package com.dl.officialsite.config.service;
 
 import com.dl.officialsite.activity.constant.TaskTypeEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.constant.GroupNameEnum;
 import com.dl.officialsite.config.bean.Configurable;
 import com.dl.officialsite.config.bean.ServerConfig;
 import com.dl.officialsite.config.bean.ServerConfigRepository;
@@ -28,8 +30,11 @@ public class ServerConfigCacheService {
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(TaskTypeEnum.class,
-            (JsonDeserializer<TaskTypeEnum>) (jsonElement, type, jsonDeserializationContext) -> TaskTypeEnum.fromValue(
-                jsonElement.getAsString()));
+            (JsonDeserializer<TaskTypeEnum>) (jsonElement, type, jsonDeserializationContext) -> TaskTypeEnum.fromValue(jsonElement.getAsString()));
+        gsonBuilder.registerTypeAdapter(GroupNameEnum.class,
+            (JsonDeserializer<GroupNameEnum>) (jsonElement, type, jsonDeserializationContext) -> GroupNameEnum.valueOf(jsonElement.getAsString()));
+        gsonBuilder.registerTypeAdapter(ChannelEnum.class,
+            (JsonDeserializer<ChannelEnum>) (jsonElement, type, jsonDeserializationContext) -> ChannelEnum.of(jsonElement.getAsString()));
         gson = gsonBuilder.create();
     }
 

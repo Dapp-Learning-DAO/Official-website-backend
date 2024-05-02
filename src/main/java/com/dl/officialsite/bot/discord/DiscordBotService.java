@@ -10,6 +10,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,27 @@ import java.io.IOException;
 
 
 @Service
-public class DiscordBotService extends BaseBotService<DiscordBotConfig> {
+public class DiscordBotService implements BaseBotService {
     private static final String IS_USER_IN_CHANNEL_API = "https://discord.com/api/v9/guilds/%s/members/%s";
+
+    @Autowired
+    private DiscordBot discordBot;
+
+    @Override
+    public boolean isBotInitialized() {
+        return discordBot.getBot() != null;
+    }
 
     @Override
     public Pair<Boolean, String> sendMessage(GroupNameEnum groupNameEnum, ChannelEnum channelEnum, Message msg) {
-        Pair<String, String> channelIdByName = this.getBotConfig().getGroupIdAndChannelIdByName(groupNameEnum, channelEnum);
-        return DiscordBotUtil.sendMessageToChannel(this.getBotConfig().getBot(), channelIdByName.getValue(), msg);
+        Pair<String, String> channelIdByName = this.discordBot.getGroupIdAndChannelIdByName(groupNameEnum, channelEnum);
+        return DiscordBotUtil.sendMessageToChannel(this.discordBot.getBot(), channelIdByName.getValue(), msg);
     }
 
     @Override
     public boolean isUserInChannel(String channelId, String userId) {
         HttpGet httpGet = new HttpGet(String.format(IS_USER_IN_CHANNEL_API, channelId, userId));
-        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bot " + this.getBotConfig().getBotToken());
+        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bot " + this.discordBot.getBotServerConfig().getBotToken());
 
         try {
             HttpResponse response = HttpUtil.client().execute(httpGet);
