@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @ToString
 @Service
 @Slf4j
-public class ActivityConfig implements Configurable {
+public class ActivityConfig{
     private static long taskCount;
     private AnnualActivityConfig annualActivityConfig;
 

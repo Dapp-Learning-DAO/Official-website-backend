@@ -1,14 +1,14 @@
-package com.dl.officialsite.bot.model;
+package com.dl.officialsite.bot.config;
 
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import lombok.Data;
 
 @Data
-public class BotTopic<T> {
+public class BotTopic {
     private ChannelEnum name;
-    private T threadOrTopicId;
+    private String threadOrTopicId;
 
-    public static <T> BotTopic<T> build(ChannelEnum channelEnum, T threadOrTopicId){
+    public static BotTopic build(ChannelEnum channelEnum, String threadOrTopicId) {
         BotTopic botTopic = new BotTopic();
         botTopic.setName(channelEnum);
         botTopic.setThreadOrTopicId(threadOrTopicId);
