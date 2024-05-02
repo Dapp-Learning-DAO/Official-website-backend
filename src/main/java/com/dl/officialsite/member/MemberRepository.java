@@ -15,5 +15,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
     @Query(value = "select * from member where address = :address", nativeQuery = true)
     Optional<Member> findByAddress(@Param("address") String address);
 
+    @Query(value = "select * from member where nick_name = :nickName", nativeQuery = true)
+    Optional<Member> findByNickName(@Param("nickName") String nickName);
+
     List<Member> findByIdIn(List<Long> ids);
 }
