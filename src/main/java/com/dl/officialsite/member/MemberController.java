@@ -129,6 +129,8 @@ public class MemberController {
 
     @PostMapping("/create")
     public BaseResponse createMember(@Valid @RequestBody Member member, @RequestParam String address, HttpServletRequest request) {
+        this.memberService.nickNameExists(member.getNickName());
+
         member.setGithubId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME));
         member.setTweetId(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME));
         member.setTweetScreenName(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME));
@@ -142,9 +144,10 @@ public class MemberController {
         return BaseResponse.successWithData(_member);
     }
 
-
     @PutMapping("/update")
     public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member, HttpServletRequest request) {
+        this.memberService.nickNameExists(member.getNickName());
+
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
         if (memberData.isPresent()) {
