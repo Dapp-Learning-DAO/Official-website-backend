@@ -5,6 +5,14 @@
 
 package com.dl.officialsite.config.constant;
 
+import com.dl.officialsite.activity.config.ActivityConfig;
+import com.dl.officialsite.bot.discord.DiscordBot;
+import com.dl.officialsite.bot.telegram.TelegramBot;
+import com.dl.officialsite.config.bean.Refreshable;
+import com.dl.officialsite.oauth2.config.DiscordOAuthConfig;
+import com.dl.officialsite.oauth2.config.GitHubOAuthConfig;
+import com.dl.officialsite.oauth2.config.TelegramOAuthConfig;
+import com.dl.officialsite.oauth2.config.TwitterOAuthConfig;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,10 +21,17 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum ConfigEnum {
-    ANNUAL_ACTIVITY_3ND("ANNUAL_ACTIVITY_3ND"),
-    TELEGRAM_BOT_CONFIG("TELEGRAM_BOT_CONFIG"),
-    DISCORD_BOT_CONFIG("DISCORD_BOT_CONFIG");
+    ANNUAL_ACTIVITY_3ND("ANNUAL_ACTIVITY_3ND", ActivityConfig.class),
+
+    TELEGRAM_BOT_CONFIG("TELEGRAM_BOT_CONFIG", TelegramBot.class),
+    DISCORD_BOT_CONFIG("DISCORD_BOT_CONFIG", DiscordBot.class),
+
+    GITHUB_OAUTH_CONFIG("GITHUB_OAUTH_CONFIG", GitHubOAuthConfig.class),
+    TWITTER_OAUTH_CONFIG("TWITTER_OAUTH_CONFIG", TwitterOAuthConfig.class),
+    TELEGRAM_OAUTH_CONFIG("TELEGRAM_OAUTH_CONFIG", TelegramOAuthConfig.class),
+    DISCORD_OAUTH_CONFIG("DISCORD_OAUTH_CONFIG", DiscordOAuthConfig.class);
 
     private String configName;
+    private Class<? extends Refreshable> refreshClass;
 
 }

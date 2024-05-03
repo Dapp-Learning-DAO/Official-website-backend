@@ -1,19 +1,14 @@
 package com.dl.officialsite.oauth2.config;
 
+import com.dl.officialsite.config.bean.Configurable;
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Data
-@Component
-@ConfigurationProperties("oauth")
-@ConfigurationPropertiesBinding()
-public class OAuthConfig {
-
-    @NestedConfigurationProperty
-    private Map<String, RegistrationConfig> registrations;
+public class OAuthConfig implements Configurable {
+	private String clientId;
+	private String userAuthorizationUri;
+	private String userInfoUri;
+	private String clientSecret;
+	private String accessTokenUri;
+	private String callbackUrl;
 }

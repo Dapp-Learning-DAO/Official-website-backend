@@ -1,4 +1,4 @@
-package com.dl.officialsite.oauth2.model.bo.user;
+package com.dl.officialsite.oauth2.model.bo;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +8,7 @@ import lombok.Data;
  * See https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
  */
 @Data
-public class GithubUserInfo implements IUserInfo {
+public class GithubUserInfo{
 
     private String login;
     private int id;
@@ -109,9 +109,4 @@ public class GithubUserInfo implements IUserInfo {
     @JsonProperty("two_factor_authentication")
     private boolean twoFactorAuthentication;
     private Object plan;
-
-    @Override
-    public String getUsername() {
-        return login;
-    }
 }

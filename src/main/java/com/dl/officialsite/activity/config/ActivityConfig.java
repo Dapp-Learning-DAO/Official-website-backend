@@ -3,6 +3,7 @@ package com.dl.officialsite.activity.config;
 import com.dl.officialsite.activity.constant.TaskTypeEnum;
 import com.dl.officialsite.activity.model.MemberTaskStatus;
 import com.dl.officialsite.config.bean.Configurable;
+import com.dl.officialsite.config.bean.Refreshable;
 import com.dl.officialsite.config.constant.ConfigEnum;
 import com.dl.officialsite.config.service.ServerConfigCacheService;
 import lombok.Data;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @ToString
 @Service
 @Slf4j
-public class ActivityConfig{
+public class ActivityConfig implements Refreshable {
     private static long taskCount;
     private AnnualActivityConfig annualActivityConfig;
 
@@ -35,7 +36,7 @@ public class ActivityConfig{
     private ServerConfigCacheService serverConfigCacheService;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void init() {
+    public void startUpOrRefresh() {
         annualActivityConfig = this.serverConfigCacheService.get(ConfigEnum.ANNUAL_ACTIVITY_3ND, AnnualActivityConfig.class);
 
         taskCount = Optional.ofNullable(annualActivityConfig)
