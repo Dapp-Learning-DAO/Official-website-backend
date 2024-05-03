@@ -3,6 +3,7 @@ package com.dl.officialsite.bot.telegram;
 import com.dl.officialsite.bot.config.BotServerConfig;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.model.BaseBot;
+import com.dl.officialsite.config.bean.Refreshable;
 import com.dl.officialsite.config.constant.ConfigEnum;
 import com.dl.officialsite.config.service.ServerConfigCacheService;
 import lombok.Data;
@@ -23,12 +24,12 @@ import java.util.concurrent.TimeUnit;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Service
-public class TelegramBot extends BaseBot<com.pengrad.telegrambot.TelegramBot> {
+public class TelegramBot extends BaseBot<com.pengrad.telegrambot.TelegramBot> implements Refreshable {
     @Autowired
     private ServerConfigCacheService serverConfigCacheService;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void startUp() {
+    public void startUpOrRefresh() {
         this.botEnum = BotEnum.TELEGRAM;
         this.botServerConfig = serverConfigCacheService.get(ConfigEnum.TELEGRAM_BOT_CONFIG, BotServerConfig.class);
         Optional.ofNullable(this.botServerConfig).ifPresent(config ->{

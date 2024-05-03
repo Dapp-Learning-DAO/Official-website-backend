@@ -5,6 +5,7 @@ import com.dl.officialsite.bot.config.BotTopic;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.model.BaseBot;
+import com.dl.officialsite.config.bean.Refreshable;
 import com.dl.officialsite.config.constant.ConfigEnum;
 import com.dl.officialsite.config.service.ServerConfigCacheService;
 import lombok.Data;
@@ -30,12 +31,12 @@ import java.util.stream.Collectors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Service
-public class DiscordBot extends BaseBot<JDA> {
+public class DiscordBot extends BaseBot<JDA> implements Refreshable {
     @Autowired
     private ServerConfigCacheService serverConfigCacheService;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void startUp() {
+    public void startUpOrRefresh() {
         this.botEnum = BotEnum.DISCORD;
         this.botServerConfig = serverConfigCacheService.get(ConfigEnum.DISCORD_BOT_CONFIG, BotServerConfig.class);
         Optional.ofNullable(this.botServerConfig).ifPresent(config -> {

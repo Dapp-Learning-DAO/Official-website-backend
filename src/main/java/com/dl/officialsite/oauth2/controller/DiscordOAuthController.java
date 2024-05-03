@@ -1,4 +1,4 @@
-package com.dl.officialsite.bot.discord;
+package com.dl.officialsite.oauth2.controller;
 
 
 import com.dl.officialsite.common.base.BaseResponse;
@@ -8,8 +8,7 @@ import com.dl.officialsite.common.utils.HttpUtil;
 import com.dl.officialsite.login.model.SessionUserInfo;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
-import com.dl.officialsite.oauth2.config.OAuthConfig;
-import com.dl.officialsite.oauth2.config.RegistrationConfig;
+import com.dl.officialsite.oauth2.config.DiscordOAuthConfig;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -48,30 +46,18 @@ public class DiscordOAuthController {
     private static final String DISCORD_USER_INFO_URL = "https://discord.com/api/v9/users/@me";
 
     @Autowired
-    private OAuthConfig oAuthConfig;
+    private DiscordOAuthConfig discordOAuthConfig;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private RestTemplate restTemplate;
 
-    RegistrationConfig discordConfig = null;
-
-
-    @PostConstruct
-    public void setUpTwitter() {
-        discordConfig = oAuthConfig.getRegistrations().get("discord");
-        if (discordConfig == null) {
-            throw new RuntimeException("Invalid registrationId");
-        }
-        log.info("Successfully set up Discord....");
-    }
-
     @GetMapping("oauth2/authorization/discord")
     public void twitterOauthLogin(@RequestParam(name = "test", defaultValue = "false") boolean test, HttpServletResponse response)
         throws IOException {
         Map<String, String> uriVariables = new HashMap<>();
-        uriVariables.put("clientId", discordConfig.getClientId());
-        uriVariables.put("callbackUrl", discordConfig.getCallbackUrl());
+        uriVariables.put("clientId", this.discordOAuthConfig.getOAuthConfig().getClientId());
+        uriVariables.put("callbackUrl", this.discordOAuthConfig.getOAuthConfig().getCallbackUrl());
         response.sendRedirect(UriComponentsBuilder.fromUriString(O_AUTH_URL).buildAndExpand(uriVariables)
             .toUriString());
     }
@@ -123,11 +109,11 @@ public class DiscordOAuthController {
 
     private List<BasicNameValuePair> getParams(String code) {
         List<BasicNameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("client_id", discordConfig.getClientId()));
-        params.add(new BasicNameValuePair("client_secret", discordConfig.getClientSecret()));
+        params.add(new BasicNameValuePair("client_id", this.discordOAuthConfig.getOAuthConfig().getClientId()));
+        params.add(new BasicNameValuePair("client_secret", this.discordOAuthConfig.getOAuthConfig().getClientSecret()));
         params.add(new BasicNameValuePair("grant_type", "authorization_code"));
         params.add(new BasicNameValuePair("code", code));
-        params.add(new BasicNameValuePair("redirect_uri", discordConfig.getCallbackUrl()));
+        params.add(new BasicNameValuePair("redirect_uri", this.discordOAuthConfig.getOAuthConfig().getCallbackUrl()));
         params.add(new BasicNameValuePair("scope", "guilds.members.read"));
         return params;
     }

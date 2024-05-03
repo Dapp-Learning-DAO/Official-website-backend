@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -26,6 +27,7 @@ public class ServerConfigCacheService {
 
     @Autowired
     private ServerConfigRepository serverConfigRepository;
+    private ApplicationContext applicationContext;
 
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -40,7 +42,7 @@ public class ServerConfigCacheService {
 
     private static final Cache<ConfigEnum, ServerConfig> SERVER_CONFIG_CACHE = Caffeine.newBuilder()
         .maximumSize(512)
-        .expireAfterWrite(Duration.ofHours(4))
+        .expireAfterWrite(Duration.ofHours(1))
         .build();
 
     public <T extends Configurable> T get(ConfigEnum configEnum, Class<T> clazz) {
@@ -48,6 +50,14 @@ public class ServerConfigCacheService {
             this.serverConfigRepository.findOneByConfigName(config.getConfigName()).orElse(null)
         );
         return Optional.ofNullable(serverConfig).map(config -> gson.fromJson(config.getConfigValue(), clazz)).orElse(null);
+    }
+
+    public void refresh(ConfigEnum configEnum) {
+        // remove the cache
+        SERVER_CONFIG_CACHE.invalidate(configEnum);
+        // refresh
+        log.info("Refresh config {}", configEnum.getConfigName());
+        applicationContext.getBean(configEnum.getRefreshClass()).startUpOrRefresh();
     }
 
     public void remove(ConfigEnum configEnum) {
