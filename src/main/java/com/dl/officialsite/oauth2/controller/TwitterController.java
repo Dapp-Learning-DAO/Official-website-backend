@@ -34,7 +34,7 @@ public class TwitterController {
     @Autowired
     private TwitterOAuthConfig twitterOAuthConfig;
 
-    @GetMapping("/oauth2/authorize/normal/twitter")
+    @GetMapping("oauth2/authorize/normal/twitter")
     public void twitterOauthLogin(@RequestParam(name = "test", defaultValue = "false") boolean test, HttpServletResponse response)
         throws IOException {
         String authorizeUrl = this.generateAuthorizeUrl(test);
@@ -56,7 +56,7 @@ public class TwitterController {
         return oauthOperations.buildAuthorizeUrl(requestToken.getValue(), oAuth1Parameters);
     }
 
-    @GetMapping("/oauth2/callback/twitter")
+    @GetMapping("oauth2/callback/twitter")
     public BaseResponse getTwitter(@RequestParam("oauth_token") String oauthToken, @RequestParam("oauth_verifier") String oauthVerifier,
                                    @RequestParam(value = "secret", required = false) String secret, HttpServletRequest request) {
         Pair<String, String> twitterUserNameAndScreenName = fetchProfile(oauthToken, oauthVerifier, secret);

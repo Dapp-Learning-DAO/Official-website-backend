@@ -30,7 +30,7 @@ public class TelegramOAuthController {
 
     private TwitterConnectionFactory connectionFactory = null;
 
-    @PostMapping("/oauth2/callback/telegram")
+    @PostMapping("oauth2/callback/telegram")
     public BaseResponse verifyTelegram(@RequestParam Map<String, String> params, @RequestParam(required = false) String addressForTesting,
                                        HttpSession session) {
         SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
