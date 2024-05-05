@@ -62,8 +62,8 @@ public class DiscordOAuthController {
             .toUriString());
     }
 
-    @PostMapping("/oauth2/callback/discord")
-    public BaseResponse getTwitter(@RequestParam("code") String code, @RequestParam(required = false) String addressForTesting,
+    @PostMapping("oauth2/callback/discord")
+    public BaseResponse discordCallback(@RequestParam("code") String code, @RequestParam(required = false) String addressForTesting,
                                    HttpSession session) {
         // 检查用户是否注册
         SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
