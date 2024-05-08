@@ -99,6 +99,7 @@ public class DiscordOAuthController {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 String responseBody = EntityUtils.toString(entity);
+                log.info("Discord fetch user access token response:{}", responseBody);
                 return GsonUtil.fromJson(responseBody, DiscordTokenResponse.class).getAccess_token();
             }
         } catch (Exception e) {
