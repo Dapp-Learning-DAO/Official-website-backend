@@ -41,7 +41,7 @@ import java.util.Optional;
 @Slf4j
 public class DiscordOAuthController {
     private static final String O_AUTH_URL = "https://discord.com/api/oauth2/authorize?client_id={clientId}&redirect_uri={callbackUrl}" +
-        "&response_type=code&scope=guilds.members.read";
+        "&response_type=code&scope=guilds+identify+guilds.members.read+connections+rpc.notifications.read+rpc.video.read+rpc.screenshare.write+applications.builds.read+webhook.incoming+applications.entitlements+relationships.read+dm_channels.read+presences.write+applications.commands.permissions.update+dm_channels.messages.read+role_connections.write+relationships.write+activities.read+applications.commands+messages.read+rpc.activities.write+rpc.video.write+rpc.voice.read+gdm.join+openid+email+guilds.join+rpc+rpc.voice.write+bot+rpc.screenshare.read+applications.builds.upload+applications.store.update+activities.write+voice+presences.read+dm_channels.messages.write";
     private static final String DISCORD_TOKEN_URL = "https://discord.com/api/v9/oauth2/token";
     private static final String DISCORD_USER_INFO_URL = "https://discord.com/api/v9/users/@me";
 
