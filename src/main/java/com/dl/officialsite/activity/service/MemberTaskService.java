@@ -107,6 +107,7 @@ public class MemberTaskService {
             Optional<MemberTaskRecord> finishRecord = filter(memberTaskRecordList, status.getTaskType(), status.getTarget());
             if (finishRecord.isPresent() && finishRecord.get().isFinished()) {
                 status.setFinished(true);
+                status.setRequiredAuthorization(false);
             } else if (member.isPresent()) { // 用户注册了，可以检查任务完成情况
                 switch (status.getTaskType()) {
                     case DISCORD:
