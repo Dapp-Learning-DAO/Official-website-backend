@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,7 +51,8 @@ public class MemberTaskService {
 
     public BaseResponse checkStatus(Member member, String address, TaskTypeEnum taskType, Task task) {
         List<MemberTaskRecord> finishRecord =
-            memberTaskRecordRepository.findByAddressAndActivityNameAndTaskTypeAndTarget(address, activityConfig.getName(), taskType.getValue(),
+            memberTaskRecordRepository.findByAddressAndActivityNameAndTaskTypeAndTarget(address, activityConfig.getName(),
+                taskType.getValue(),
                 task.getTarget());
         if (CollectionUtils.size(finishRecord) == 1 && finishRecord.get(0).isFinished()) {
             return BaseResponse.successWithData(true);
@@ -97,6 +99,14 @@ public class MemberTaskService {
         return BaseResponse.successWithData(result);
     }
 
+    public List<MemberTaskStatus> userUnfinishedTasks(String address) {
+        Optional<Member> memberOptional = memberRepository.findByAddress(address);
+
+        return this.getMemberTasksStatusByAddress(address, memberOptional)
+            .stream().filter(memberTaskStatus -> !memberTaskStatus.isFinished())
+            .collect(Collectors.toList());
+    }
+
     public List<MemberTaskStatus> getMemberTasksStatusByAddress(String address, Optional<Member> member) {
         List<MemberTaskRecord> memberTaskRecordList =
             memberTaskRecordRepository.findActivityRecordsByAddress(activityConfig.getName(), address);
@@ -107,6 +117,7 @@ public class MemberTaskService {
             Optional<MemberTaskRecord> finishRecord = filter(memberTaskRecordList, status.getTaskType(), status.getTarget());
             if (finishRecord.isPresent() && finishRecord.get().isFinished()) {
                 status.setFinished(true);
+                status.setRequiredAuthorization(false);
             } else if (member.isPresent()) { // 用户注册了，可以检查任务完成情况
                 switch (status.getTaskType()) {
                     case DISCORD:

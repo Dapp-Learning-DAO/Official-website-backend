@@ -14,28 +14,11 @@ services:
       - REGION_NAME=
       - SECRET_ID=
       - SECRET_KEY=
-      # GitHub and Twitter
-      - GITHUB_CLIENT_ID=
-      - GITHUB_CLIENT_SECRET=
-      - TWITTER_CLIENT_KEY=
-      - TWITTER_CLIENT_SECRET=
-      - TWITTER_CALLBACK_URL=
       # GMAIL
       - MAIL_ADDRESS=
       - MAIL_PASSWORD=
       # Chain ids
       - CHAIN_IDS=
-      # Telegram
-      - TG_BOT_TOKEN=
-      - TG_DAPP_LEARNING_GROUP_ID=
-      - TELEGRAM_INVITE_URL=
-      # Discord
-      - DISCORD_BOT_TOKEN=
-      - GUILD_DAPP_LEARNING_ID=
-      - DISCORD_CHANNEL_MANAGEMENT_CLIENT_ID=
-      - DISCORD_CHANNEL_MANAGEMENT_CLIENT_SECRET=
-      - DISCORD_CHANNEL_MANAGEMENT_CALLBACK_URL=
-      - DISCORD_INVITE_URL=
       # CRON
       - CRON_REDPACKET=
       - CRON_DIS=

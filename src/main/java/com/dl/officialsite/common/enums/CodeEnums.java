@@ -10,6 +10,9 @@ public enum CodeEnums {
 
     SUCCESSFUL("200", "成功"),
     FAIL("500", "失败"),
+
+    PARAM_ERROR("600", "参数错误"),
+
     FAIL_DOWNLOAD_FAIL("1001", "文件下载失败"),
     FAIL_UPLOAD_FAIL("1002", "文件上传失败"),
     TELEGRAM_WECHAT_NOT_BIND("1003", "Please bind telegram or wechat"),

@@ -67,6 +67,7 @@ public class LoginFilter extends OncePerRequestFilter {
         add("oauth2/callback/twitter");
         add("oauth2/callback/discord");
         add("oauth2/callback/telegram");
+        add("nft/WarCraft");
     }};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

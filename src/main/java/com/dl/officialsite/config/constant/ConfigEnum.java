@@ -6,6 +6,8 @@
 package com.dl.officialsite.config.constant;
 
 import com.dl.officialsite.activity.config.ActivityConfig;
+import com.dl.officialsite.nft.config.EcdsaKeyConfigService;
+import com.dl.officialsite.nft.config.FileLoadConfig;
 import com.dl.officialsite.bot.discord.DiscordBot;
 import com.dl.officialsite.bot.telegram.TelegramBot;
 import com.dl.officialsite.config.bean.Refreshable;
@@ -29,7 +31,13 @@ public enum ConfigEnum {
     GITHUB_OAUTH_CONFIG("GITHUB_OAUTH_CONFIG", GitHubOAuthConfig.class),
     TWITTER_OAUTH_CONFIG("TWITTER_OAUTH_CONFIG", TwitterOAuthConfig.class),
     TELEGRAM_OAUTH_CONFIG("TELEGRAM_OAUTH_CONFIG", TelegramOAuthConfig.class),
-    DISCORD_OAUTH_CONFIG("DISCORD_OAUTH_CONFIG", DiscordOAuthConfig.class);
+    DISCORD_OAUTH_CONFIG("DISCORD_OAUTH_CONFIG", DiscordOAuthConfig.class),
+
+    FILE_PATH_CONFIG("FILE_PATH_CONFIG", FileLoadConfig.class),
+
+    ECDSA_PRIVATE_KEY("ECDSA_PRIVATE_KEY", EcdsaKeyConfigService.class),
+
+    CONTRACT_ADDRESS("CONTRACT_ADDRESS", EcdsaKeyConfigService.class);
 
     private String configName;
     private Class<? extends Refreshable> refreshClass;
