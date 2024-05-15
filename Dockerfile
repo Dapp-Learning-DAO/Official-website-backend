@@ -26,6 +26,8 @@ RUN apk --no-cache add bash curl wget
 
 EXPOSE 8080
 
+COPY NFT-DL-WARCRAFT.json /config/NFT-DL-WARCRAFT.json
+
 ENV DEBUG_OPTS="-agentlib:jdwp=transport=dt_socket,address=9093,server=y,suspend=n"
 ENV JAVA_OPTS="-Dfile.encoding=UTF-8 -Xmx256m -Xms256m -Xmn128m -Xss512k -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs/heap_error.log"
 
