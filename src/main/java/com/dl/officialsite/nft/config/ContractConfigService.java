@@ -32,14 +32,25 @@ public class ContractConfigService implements Refreshable {
     }
 
     public String getContractAddressByName(ContractNameEnum contractName, String chainId) {
+        return findByContractNameAndChainId(contractName, chainId)
+            .map(ContractAddressItem::getAddress)
+            .orElse("");
+    }
+
+    public String getRpcAddressByName(ContractNameEnum contractName, String chainId) {
+        return findByContractNameAndChainId(contractName, chainId)
+            .map(ContractAddressItem::getRpcAddress)
+            .orElse("");
+    }
+
+    private Optional<ContractAddressItem> findByContractNameAndChainId(ContractNameEnum contractName, String chainId){
         return Optional.ofNullable(contractAddressConfig)
             .map(ContractAddressConfig::getContractAddressItemList)
             .flatMap(list -> list.stream()
                 .filter(item -> StringUtils.equalsIgnoreCase(item.getContractName(), contractName.getContractName()))
                 .filter(item -> StringUtils.equalsIgnoreCase(item.getChainId(), chainId))
-                .map(ContractAddressItem::getAddress)
                 .findFirst()
-            ).orElse("");
+            );
     }
 }
 
@@ -54,4 +65,5 @@ class ContractAddressItem {
     private String chainId;
     private String chainName;
     private String address;
+    private String rpcAddress;
 }

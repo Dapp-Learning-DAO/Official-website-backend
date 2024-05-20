@@ -1,6 +1,6 @@
 package com.dl.officialsite.nft.config;
 
-import com.dl.officialsite.common.utils.SignatureGeneration;
+import com.dl.officialsite.common.utils.ECSignatureUtil;
 import com.dl.officialsite.config.bean.Configurable;
 import com.dl.officialsite.config.bean.Refreshable;
 import com.dl.officialsite.config.constant.ConfigEnum;
@@ -48,7 +48,7 @@ public class EcdsaKeyConfigService implements Refreshable {
             return null;
         }
 
-        BigInteger seed = SignatureGeneration.randomSeed();
+        BigInteger seed = ECSignatureUtil.randomSeed();
         long signedAt = Instant.now().getEpochSecond();
 
         return Optional.ofNullable(ecdsaPrivateKeyConfig)
@@ -59,7 +59,7 @@ public class EcdsaKeyConfigService implements Refreshable {
                 .map(privateKey ->
                     new SignatureDto(receiverAddress,
                         signedAt,
-                        SignatureGeneration.sign(Credentials.create(privateKey), receiverAddress, seed, BigInteger.valueOf(signedAt),
+                        ECSignatureUtil.sign(Credentials.create(privateKey), receiverAddress, seed, BigInteger.valueOf(signedAt),
                             BigInteger.valueOf(Long.parseLong(chainId)), contractAddress),
                         Numeric.toHexStringWithPrefix(seed),
                         chainId,

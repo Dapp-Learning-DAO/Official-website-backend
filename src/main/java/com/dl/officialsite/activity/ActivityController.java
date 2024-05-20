@@ -16,6 +16,7 @@ import com.dl.officialsite.nft.config.EcdsaKeyConfigService;
 import com.dl.officialsite.nft.constant.ContractNameEnum;
 import com.dl.officialsite.nft.constant.EcdsaKeyTypeEnum;
 import com.dl.officialsite.nft.dto.SignatureDto;
+import com.dl.officialsite.nft.service.WarCraftContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +52,8 @@ public class ActivityController {
     private ChainConfig chainConfig;
     @Autowired
     private EcdsaKeyConfigService ecdsaKeyConfigService;
+    @Autowired
+    private WarCraftContractService warCraftContractService;
 
     /**
      * 获取活动中用户的状态
@@ -118,4 +121,21 @@ public class ActivityController {
         return BaseResponse.failWithReason("1204", "Generate signature failed.");
     }
 
+    /**
+     * 检查用户是否完成所有任务，如果完成，则生成 NFT mint 签名
+     */
+    @GetMapping("/claim/result")
+    public BaseResponse claimResult(@NotNull @RequestParam("chainId") String chainIdParam,
+                                    @RequestParam(required = false) String addressForTesting,
+                                    @RequestParam(required = false, defaultValue = "WarCraft") String contractName,
+                                    HttpSession session) {
+        String chainId = Arrays.stream(chainConfig.getIds()).filter(id -> StringUtils.equalsIgnoreCase(chainIdParam, id))
+            .findFirst()
+            .orElseThrow(() -> new BizException(PARAM_ERROR.getCode(), String.format("Chain id %s not exists", chainIdParam)));
+
+        SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
+        final String address = sessionUserInfo != null ? sessionUserInfo.getAddress() : addressForTesting;
+
+        return this.warCraftContractService.rank(address, ContractNameEnum.fromValue(contractName), chainId);
+    }
 }
