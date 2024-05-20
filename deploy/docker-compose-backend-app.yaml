@@ -24,6 +24,7 @@ services:
       - CRON_DIS=
     ports:
       - '8080:8080'
+      - '127.0.0.1:9093:9093'
     volumes:
       - ./logs:/logs
     restart: always
