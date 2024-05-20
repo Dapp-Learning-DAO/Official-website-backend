@@ -146,7 +146,7 @@ public class MemberController {
 
     @PutMapping("/update")
     public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member, HttpServletRequest request) {
-        this.memberService.nickNameExists(member.getNickName());
+        // this.memberService.nickNameExists(member.getNickName());
 
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
