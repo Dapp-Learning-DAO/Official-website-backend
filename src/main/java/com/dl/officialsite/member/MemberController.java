@@ -146,7 +146,7 @@ public class MemberController {
 
     @PutMapping("/update")
     public BaseResponse updateMemberByAddress(@RequestParam String address, @RequestBody MemberVo member, HttpServletRequest request) {
-        // this.memberService.nickNameExists(member.getNickName());
+         this.memberService.nickNameExists(member.getNickName());
 
         Optional<Member> memberData = memberRepository.findByAddress(address);
 
@@ -154,11 +154,11 @@ public class MemberController {
             Member _member = memberData.get();
 
             Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME))
-                .ifPresent(githubUserName -> _member.setGithubId(githubUserName));
+                .ifPresent(_member::setGithubId);
             Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_USER_NAME))
-                .ifPresent(twitterUserName -> _member.setTweetId(twitterUserName));
+                .ifPresent(_member::setTweetId);
             Optional.ofNullable(HttpSessionUtils.getOAuthUserName(request.getSession(), OAuthSessionKey.TWITTER_SCREEN_NAME))
-                .ifPresent(twitterScreenName -> _member.setTweetScreenName(twitterScreenName));
+                .ifPresent(_member::setTweetScreenName);
 
             if (member.getWechatId() != null) {
                 _member.setWechatId(member.getWechatId());

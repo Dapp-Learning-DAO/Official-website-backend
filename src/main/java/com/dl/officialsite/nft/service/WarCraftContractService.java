@@ -4,6 +4,7 @@ import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.nft.config.ContractConfigService;
 import com.dl.officialsite.nft.constant.ContractNameEnum;
 import com.dl.officialsite.nft.contract.WarCraftContract;
+import com.dl.officialsite.nft.util.RankExtractorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,12 @@ public class WarCraftContractService {
                 log.error("No rank info found for address:[{}] and tokenId:[{}].", address, tokenId.intValue());
                 return BaseResponse.failWithReason("1206", "No rank info found.");
             }
-            return BaseResponse.successWithData(rank);
+            int rankValue = RankExtractorUtil.extractParameterValueFromUrl(rank, "rank");
+            if (rankValue < 0){
+                log.error("Invalid rank value:[{}] found in url:[{}].", rankValue, rank);
+                return BaseResponse.failWithReason("1206", "No rank info found.");
+            }
+            return BaseResponse.successWithData(rankValue);
         } catch (Exception e) {
             log.error("Call contract method:[claimedTokenIdBy] remote error.", e);
             return BaseResponse.failWithReason("1205", "Fetch rank failed, please try again later.");
