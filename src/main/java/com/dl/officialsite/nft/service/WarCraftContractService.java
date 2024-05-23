@@ -6,7 +6,6 @@ import com.dl.officialsite.nft.bean.MemberNFTMintRecordRepository;
 import com.dl.officialsite.nft.config.ContractConfigService;
 import com.dl.officialsite.nft.constant.ContractNameEnum;
 import com.dl.officialsite.nft.contract.WarCraftContract;
-import com.dl.officialsite.nft.util.RankExtractorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,27 +58,22 @@ public class WarCraftContractService {
             BigInteger tokenId = contract.claimedTokenIdBy(address).sendAsync().get(TIMEOUT, TimeUnit.SECONDS);
             if (tokenId == null || tokenId.intValue() == 0) {
                 log.error("No claim(tokenId) info found for address:[{}].", address);
-                return BaseResponse.failWithReason("1206", "No claim info found.");
+                return BaseResponse.failWithReason("200", "No claim info found.");
             }
 
-            String rank = contract.tokenURI(tokenId).sendAsync().get(TIMEOUT, TimeUnit.SECONDS);
+            String rank = contract.tokenURIs(tokenId).sendAsync().get(TIMEOUT, TimeUnit.SECONDS);
             if (StringUtils.isBlank(rank)) {
                 log.error("No rank info found for address:[{}] and tokenId:[{}].", address, tokenId.intValue());
-                return BaseResponse.failWithReason("1206", "No rank info found.");
-            }
-            int rankValue = RankExtractorUtil.extractParameterValueFromUrl(rank, "rank");
-            if (rankValue < 0) {
-                log.error("Invalid rank value:[{}] found in url:[{}].", rankValue, rank);
-                return BaseResponse.failWithReason("1206", "No rank info found.");
+                return BaseResponse.failWithReason("200", "No rank info found.");
             }
 
             MemberNFTMintRecord memberNFTMintRecord = new MemberNFTMintRecord();
             memberNFTMintRecord.setAddress(address);
             memberNFTMintRecord.setContractName(contractName);
             memberNFTMintRecord.setChainId(chainId);
-            memberNFTMintRecord.setRankValue(rankValue);
+            memberNFTMintRecord.setRankValue(Integer.parseInt(rank));
             this.memberNFTMintRecordRepository.save(memberNFTMintRecord);
-            return BaseResponse.successWithData(rankValue);
+            return BaseResponse.successWithData(rank);
         } catch (Exception e) {
             log.error("Call contract method:[claimedTokenIdBy] remote error.", e);
             return BaseResponse.failWithReason("1205", "Fetch rank failed, please try again later.");
