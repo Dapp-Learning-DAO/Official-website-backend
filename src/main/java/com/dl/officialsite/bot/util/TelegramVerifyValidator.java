@@ -29,8 +29,9 @@ public class TelegramVerifyValidator {
         try {
             long authDate = Long.parseLong(params.get("auth_date"));
             long now = Instant.now().getEpochSecond();
-            if (authDate >= now || (now - authDate) > AUTH_DATE_RANGE_MINUTE * 60) {
-                log.error("The auth date of telegram request is before {} minutes ago.", AUTH_DATE_RANGE_MINUTE);
+            if (Math.abs(now - authDate) > AUTH_DATE_RANGE_MINUTE * 60) {
+                log.error("The auth date {} of telegram request is before {} minutes ago compare to now {}.", authDate,
+                    AUTH_DATE_RANGE_MINUTE, now);
                 return false;
             }
             SecretKeySpec sk = new SecretKeySpec(
