@@ -52,7 +52,7 @@ public class TelegramOAuthController {
             member.get().setTelegramUserId(telegramUserId);
             member.get().setTelegramId(telegramUserName);
             memberRepository.save(member.get());
-            return BaseResponse.success();
+            return BaseResponse.successWithData(telegramUserName);
         }
         return BaseResponse.failWithReason("1103", "Telegram request verify failed.");
     }

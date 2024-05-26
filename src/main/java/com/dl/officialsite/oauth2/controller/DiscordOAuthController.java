@@ -12,6 +12,7 @@ import com.dl.officialsite.oauth2.config.DiscordOAuthConfig;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -78,15 +79,15 @@ public class DiscordOAuthController {
         if (StringUtils.isBlank(accessToken)) {
             return BaseResponse.failWithReason("1101", "Fetch Discord access token failed.");
         }
-
-        String discordUserId = fetchUserId(accessToken);
-        if (StringUtils.isBlank(discordUserId)) {
+        Pair<String, String> discordUserId = fetchUserId(accessToken);
+        if (discordUserId == null || StringUtils.isBlank(discordUserId.getKey()) || StringUtils.isBlank(discordUserId.getValue())){
             return BaseResponse.failWithReason("1102", "Fetch Discord user id failed.");
         }
 
-        member.get().setDiscordId(discordUserId);
+        member.get().setDiscordId(discordUserId.getKey());
+        // TODO.
         memberRepository.save(member.get());
-        return BaseResponse.success();
+        return BaseResponse.successWithData(member.get().getNickName());
     }
 
     private String fetchAccessToken(String code) {
@@ -119,7 +120,7 @@ public class DiscordOAuthController {
         return params;
     }
 
-    private String fetchUserId(String accessToken) {
+    private Pair<String,String> fetchUserId(String accessToken) {
         HttpGet httpGet = new HttpGet(DISCORD_USER_INFO_URL);
         httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
@@ -131,7 +132,8 @@ public class DiscordOAuthController {
             if (entity != null) {
                 String responseBody = EntityUtils.toString(entity);
                 log.info("Discord fetch user id response:{}", responseBody);
-                return GsonUtil.fromJson(responseBody, DiscordUserInfo.class).getId();
+                DiscordUserInfo discordUserInfo = GsonUtil.fromJson(responseBody, DiscordUserInfo.class);
+                return Pair.of(discordUserInfo.getId(), discordUserInfo.getUsername());
             }
         } catch (IOException e) {
             e.printStackTrace();
