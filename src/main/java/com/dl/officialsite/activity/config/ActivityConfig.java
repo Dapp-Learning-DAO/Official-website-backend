@@ -63,7 +63,7 @@ public class ActivityConfig implements Refreshable {
 
         return taskTypeEnumListMap.entrySet().stream().flatMap(entry ->
             entry.getValue().stream().map(task -> new MemberTaskStatus(entry.getKey(), task.getName(), task.getTarget(),
-                task.getTargetUrl()))
+                task.getTargetUrl(), task.getDescription()))
         ).collect(Collectors.toList());
     }
 

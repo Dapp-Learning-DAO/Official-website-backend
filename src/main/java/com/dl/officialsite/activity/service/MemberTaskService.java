@@ -137,6 +137,11 @@ public class MemberTaskService {
         return memberTaskStatuses;
     }
 
+    public void clean(String address) {
+        int removedCount = this.memberTaskRecordRepository.deleteByAddressAndActivityName(address, activityConfig.getName()).orElse(0);
+        log.info("Remove {} task records for address {}", removedCount, address);
+    }
+
     private Optional<MemberTaskRecord> filter(List<MemberTaskRecord> memberTaskRecordList, TaskTypeEnum taskTypeEnum, String target) {
         return memberTaskRecordList.stream()
             .filter(record -> taskTypeEnum.equals(record.getTaskType()))

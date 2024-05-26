@@ -70,6 +70,11 @@ public class MemberService {
 
     }
 
+    public void cleanGitHubTgAndDiscordId(String address) {
+        memberRepository.removeGitHubTgAndDiscordId(address);
+        log.info("Remove GitHub id, Telegram user id and Discord id to user: {}", address);
+    }
+
     public MemberVo getMemberPrivacyInfo(String address) {
         Optional<Member> member = memberRepository.findByAddress(address);
         if (!member.isPresent()) {
