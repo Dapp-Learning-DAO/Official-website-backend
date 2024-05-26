@@ -70,6 +70,6 @@ public class ActivityTestController {
 
         this.memberService.cleanGitHubTgAndDiscordId(address);
 
-        return BaseResponse.success();
+        return BaseResponse.successWithData("GitHub, Telegram, Discord data are removed.");
     }
 }
