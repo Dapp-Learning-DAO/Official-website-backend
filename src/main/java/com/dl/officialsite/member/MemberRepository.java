@@ -23,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
 
     @Modifying
     @javax.transaction.Transactional
-    @Query(value = "update member set github_id=NULL, discord_id=NULL, telegram_user_id=NULL where address = :address", nativeQuery =
-        true)
+    @Query(value = "update member set github_id=NULL, github_status=0, discord_id=NULL, telegram_user_id=NULL where address = :address",
+        nativeQuery = true)
     void removeGitHubTgAndDiscordId(@Param("address") String address);
 }

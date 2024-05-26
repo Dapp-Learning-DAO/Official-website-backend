@@ -3,6 +3,9 @@ package com.dl.officialsite.oauth2.controller;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.common.utils.HttpSessionUtils;
+import com.dl.officialsite.login.model.SessionUserInfo;
+import com.dl.officialsite.member.Member;
+import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.oauth2.AccessTokenCacheService;
 import com.dl.officialsite.oauth2.config.GitHubOAuthConfig;
 import com.dl.officialsite.oauth2.config.OAuthSessionKey;
@@ -26,7 +29,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Base64;
+import java.util.Optional;
 
 /**
  * Process oauth requests.
@@ -46,6 +51,8 @@ public class GitHubController {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private MemberRepository memberRepository;
 
     /**
      * Accept oauth authorization request like:
@@ -56,7 +63,7 @@ public class GitHubController {
      * the browser then jump to github page to allow user to authenticate himself.
      */
     @RequestMapping("authorization/github")
-    public void handleAuthorization(HttpServletResponse response ) throws Exception {
+    public void handleAuthorization(HttpServletResponse response) throws Exception {
 
         /**
          * 1. Create auth url parameters, forming:
@@ -95,7 +102,8 @@ public class GitHubController {
         @RequestParam("code") String code,
         @RequestParam("state") String state,
         HttpServletRequest request,
-        HttpServletResponse response
+        HttpServletResponse response,
+        HttpSession session
     ) throws Exception {
         /**
          * 1. Combine access_token request and get access token
@@ -124,6 +132,17 @@ public class GitHubController {
         // add access token to cache
         AccessTokenCacheService.addGitHubAccessToken(username, accessToken);
         HttpSessionUtils.setOAuthUserName(request.getSession(), OAuthSessionKey.GITHUB_USER_NAME, username);
+
+        SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
+        if (sessionUserInfo != null) {
+            // update user GitHub info if user exists
+            Optional<Member> member = this.memberRepository.findByAddress(sessionUserInfo.getAddress());
+            member.ifPresent(m -> {
+                m.setGithubId(username);
+                m.setGithubStatus(1);
+                memberRepository.save(m);
+            });
+        }
         /**
          * 3. Bind userInfo
          */
@@ -134,16 +153,17 @@ public class GitHubController {
     /**
      * Refer:
      * https://docs.github.com/en/free-pro-team@latest/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
+     *
      * @param userInfoUri
      * @param accessToken
      * @return
      */
     private GithubUserInfo retrieve(String userInfoUri, String accessToken) {
         RequestEntity requestEntity = RequestEntity.get(userInfoUri).
-            header("Authorization","Bearer "+accessToken)
+            header("Authorization", "Bearer " + accessToken)
             .build();
 
-        ResponseEntity<GithubUserInfo> responseEntity = restTemplate.exchange(requestEntity,GithubUserInfo.class);
+        ResponseEntity<GithubUserInfo> responseEntity = restTemplate.exchange(requestEntity, GithubUserInfo.class);
 
         System.out.println(responseEntity.getStatusCode());
         System.out.println(responseEntity.getBody());
