@@ -1514,33 +1514,6 @@
   {
     "name": "DLWarcraft3",
     "description": "For the Horde!",
-    "image": "ipfs://QmPQ4q9JjPpEQFu5X1W4JxThnBtcXbYxDKL8qvJJY4c7ty",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": ""
-      },
-      {
-        "trait_type": "element",
-        "value": ""
-      },
-      {
-        "trait_type": "name",
-        "value": "Mammoth"
-      },
-      {
-        "trait_type": "race",
-        "value": ""
-      },
-      {
-        "trait_type": "type",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
     "image": "ipfs://QmPQQrfHF32TcayB5v97ZVx3hbzoBzaSdvwuAuvCmtiJ8P",
     "attributes": [
       {
@@ -1774,33 +1747,6 @@
       {
         "trait_type": "race",
         "value": ""
-      },
-      {
-        "trait_type": "type",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmPXDZ9Wszg5KQGemgvNE36Beib58552abceQDEkVmnAPH",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Shield"
-      },
-      {
-        "trait_type": "element",
-        "value": "Adef Aldd"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Defend"
       },
       {
         "trait_type": "type",
@@ -2588,33 +2534,6 @@
       {
         "trait_type": "type",
         "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmQ1Sn57ZyLaC45e2sf6QTFCsMETUi8T94DELqx7v87TPz",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Tower"
-      },
-      {
-        "trait_type": "element",
-        "value": "nft1"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Flame Tower"
-      },
-      {
-        "trait_type": "type",
-        "value": "Fire"
       }
     ]
   },
@@ -5207,33 +5126,6 @@
       {
         "trait_type": "type",
         "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmRiRKKjesjrZcZuDtXe3t6H1iuQjKfCR4fGQqoimibmjv",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Trap"
-      },
-      {
-        "trait_type": "element",
-        "value": "Bmlt"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Aerial Shackles"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
       }
     ]
   },
@@ -9722,33 +9614,6 @@
   {
     "name": "DLWarcraft3",
     "description": "For the Horde!",
-    "image": "ipfs://QmVB3hVWVqtPtn35EGodyE4EPFvgn5aygv6N6B1j5TbRPQ",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Alarm"
-      },
-      {
-        "trait_type": "element",
-        "value": "Amic Amil"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Back to Work -Peasant"
-      },
-      {
-        "trait_type": "type",
-        "value": "Earth"
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
     "image": "ipfs://QmVBVWAj2A5v21tEmEjDswvS22X2ncsDHwGhgXsDdyHWZ9",
     "attributes": [
       {
@@ -10775,33 +10640,6 @@
   {
     "name": "DLWarcraft3",
     "description": "For the Horde!",
-    "image": "ipfs://QmVzkzPLdhQ9sGpyxsLt7t6B1D2is4gk6jUPCjR1RuZ37p",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Trap"
-      },
-      {
-        "trait_type": "element",
-        "value": "Bmlt"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Aerial Shackles"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
     "image": "ipfs://QmW21XpjzQyUDnT9f4q4xaKLherGSWiiBWamqMaTG3nVcB",
     "attributes": [
       {
@@ -11660,33 +11498,6 @@
       {
         "trait_type": "type",
         "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmWjCK4ECSnm9qXVuGJ78PaU9zLG8NrtrmPvLUhcy9BN7T",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Spell"
-      },
-      {
-        "trait_type": "element",
-        "value": "AHbn"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Banish"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
       }
     ]
   },
@@ -12686,33 +12497,6 @@
       {
         "trait_type": "type",
         "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmXX4F2oNjhgWbLBtXG5mo5Jt4iLYaHVmVc3K6ozRppn3K",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Trap"
-      },
-      {
-        "trait_type": "element",
-        "value": "Bmlt"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Aerial Shackles"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
       }
     ]
   },
@@ -13874,33 +13658,6 @@
       {
         "trait_type": "type",
         "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmYNXt5gTfxQMLrhYZcoTzyyn1eZNnMAHW1AT6EG1hAXCj",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Trap"
-      },
-      {
-        "trait_type": "element",
-        "value": "Bmlt"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Aerial Shackles"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
       }
     ]
   },
@@ -15089,33 +14846,6 @@
       {
         "trait_type": "type",
         "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://QmZBB35Td72U1gj1Qjku6QbP9fw2VPC2ENaLySmGqvFyPk",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Trap"
-      },
-      {
-        "trait_type": "element",
-        "value": "Bmlt"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Aerial Shackles"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
       }
     ]
   },
@@ -16651,33 +16381,6 @@
       {
         "trait_type": "race",
         "value": ""
-      },
-      {
-        "trait_type": "type",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://Qma9wFrjfrGyjbF1LvXDApx6uo6atRePt45yDFo2nVMaCU",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Shield"
-      },
-      {
-        "trait_type": "element",
-        "value": ""
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Defend"
       },
       {
         "trait_type": "type",
@@ -21359,33 +21062,6 @@
   {
     "name": "DLWarcraft3",
     "description": "For the Horde!",
-    "image": "ipfs://Qmd9HsfPsEAwxEmhNVeGSRz6jo8GWixdQf9BbwoQdLBn17",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Trap"
-      },
-      {
-        "trait_type": "element",
-        "value": "Bmlt"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Aerial Shackles"
-      },
-      {
-        "trait_type": "type",
-        "value": "Magic"
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
     "image": "ipfs://QmdAQfBXwNERhJHoHwpRus7iCf7XrTimrURdcyaMJFRRp8",
     "attributes": [
       {
@@ -22682,33 +22358,6 @@
   {
     "name": "DLWarcraft3",
     "description": "For the Horde!",
-    "image": "ipfs://Qme7J75Wx7L1FpJJTnmeUreQEdwYqGdvoVHcrXd9o1aS6j",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": ""
-      },
-      {
-        "trait_type": "element",
-        "value": ""
-      },
-      {
-        "trait_type": "name",
-        "value": "Barracks"
-      },
-      {
-        "trait_type": "race",
-        "value": ""
-      },
-      {
-        "trait_type": "type",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
     "image": "ipfs://Qme7LJRqs1SguMoNvUxEzqGeNMwqJpKAmMue4QeLQ7BeBk",
     "attributes": [
       {
@@ -22730,33 +22379,6 @@
       {
         "trait_type": "type",
         "value": "Altar"
-      }
-    ]
-  },
-  {
-    "name": "DLWarcraft3",
-    "description": "For the Horde!",
-    "image": "ipfs://Qme82ZK4AL9LhcZaQRQ1sN3h6ibXMsu5sQNXz6z8f8XzDk",
-    "attributes": [
-      {
-        "trait_type": "classification",
-        "value": "Alarm"
-      },
-      {
-        "trait_type": "element",
-        "value": "Amic Amil"
-      },
-      {
-        "trait_type": "name",
-        "value": "Human"
-      },
-      {
-        "trait_type": "race",
-        "value": "Call to Arms -TownHall"
-      },
-      {
-        "trait_type": "type",
-        "value": "Air"
       }
     ]
   },
