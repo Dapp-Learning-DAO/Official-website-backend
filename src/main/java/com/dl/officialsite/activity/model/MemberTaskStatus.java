@@ -11,6 +11,7 @@ public class MemberTaskStatus {
     private String targetUrl;
     private String description;
     private String viewExplorer;
+    private boolean clickTask = false;
 
     private boolean requiredAuthorization = true;
     private boolean finished = false;
@@ -26,5 +27,6 @@ public class MemberTaskStatus {
         this.targetUrl = targetUrl;
         this.description = description;
         this.viewExplorer = viewExplorer;
+        this.clickTask = taskType.isClickTask();
     }
 }

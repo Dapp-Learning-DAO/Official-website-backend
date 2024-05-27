@@ -12,15 +12,15 @@ public enum TaskTypeEnum {
     TWITTER("Twitter", true);
 
     private String value;
-    private boolean isClickTask = false;
+    private boolean clickTask = false;
 
     private TaskTypeEnum(String value) {
         this.value = value;
     }
 
-    TaskTypeEnum(String value, boolean isClickTask) {
+    TaskTypeEnum(String value, boolean clickTask) {
         this.value = value;
-        this.isClickTask = isClickTask;
+        this.clickTask = clickTask;
     }
 
     public static TaskTypeEnum fromValue(String value) {
