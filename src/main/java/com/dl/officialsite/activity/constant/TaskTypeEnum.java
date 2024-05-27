@@ -7,12 +7,20 @@ import org.apache.commons.lang3.StringUtils;
 public enum TaskTypeEnum {
     GIT_HUB("GitHub"),
     TELEGRAM("Telegram"),
-    DISCORD("Discord");
+    DISCORD("Discord"),
+    YOUTUBE("YouTube", true),
+    TWITTER("Twitter", true);
 
     private String value;
+    private boolean isClickTask = false;
 
     private TaskTypeEnum(String value) {
         this.value = value;
+    }
+
+    TaskTypeEnum(String value, boolean isClickTask) {
+        this.value = value;
+        this.isClickTask = isClickTask;
     }
 
     public static TaskTypeEnum fromValue(String value) {

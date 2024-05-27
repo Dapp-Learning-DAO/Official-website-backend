@@ -8,4 +8,5 @@ public class Task {
     private String target;
     private String targetUrl;
     private String description;
+    private String viewExplorer ;
 }

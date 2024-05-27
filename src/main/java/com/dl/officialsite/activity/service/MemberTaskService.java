@@ -83,6 +83,10 @@ public class MemberTaskService {
                 }
                 result = this.telegramBotService.isUserInChannel(task.getTarget(), member.getTelegramUserId());
                 break;
+            case YOUTUBE:
+            case TWITTER:
+                result = true;
+                break;
             default:
                 throw new RuntimeException("Unknown task type: " + taskType);
         }
@@ -120,6 +124,10 @@ public class MemberTaskService {
                 status.setRequiredAuthorization(false);
             } else if (member.isPresent()) { // 用户注册了，可以检查任务完成情况
                 switch (status.getTaskType()) {
+                    case YOUTUBE:
+                    case TWITTER:
+                        status.setRequiredAuthorization(false);
+                        break;
                     case DISCORD:
                         status.setRequiredAuthorization(StringUtils.isBlank(member.get().getDiscordId()));
                         break;

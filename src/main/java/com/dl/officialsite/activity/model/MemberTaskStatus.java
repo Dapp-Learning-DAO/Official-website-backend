@@ -10,6 +10,7 @@ public class MemberTaskStatus {
     private String target;
     private String targetUrl;
     private String description;
+    private String viewExplorer;
 
     private boolean requiredAuthorization = true;
     private boolean finished = false;
@@ -17,11 +18,13 @@ public class MemberTaskStatus {
     public MemberTaskStatus() {
     }
 
-    public MemberTaskStatus(TaskTypeEnum taskType, String taskName, String target, String targetUrl, String description) {
+    public MemberTaskStatus(TaskTypeEnum taskType, String taskName, String target, String targetUrl, String description,
+                            String viewExplorer) {
         this.taskType = taskType;
         this.taskName = taskName;
         this.target = target;
         this.targetUrl = targetUrl;
         this.description = description;
+        this.viewExplorer = viewExplorer;
     }
 }
