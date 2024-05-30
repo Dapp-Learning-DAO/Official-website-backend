@@ -91,7 +91,7 @@ public class SharingController {
     /**
      * 条件搜索
      */
-    @PostMapping("search")
+    @PostMapping("/search")
     public BaseResponse searchSharing(@RequestBody ShareSearchVo searchVo, @RequestParam(value =
         "pageNo",defaultValue = "1") int pageNumber,
                                       @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
