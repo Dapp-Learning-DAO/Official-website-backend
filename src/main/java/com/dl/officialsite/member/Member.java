@@ -39,6 +39,8 @@ import java.io.Serializable;
     @UniqueConstraint(name = "address", columnNames = {"address"}),
     @UniqueConstraint(name = "tweetId", columnNames = {"tweetId"}),
     @UniqueConstraint(name = "githubId", columnNames = {"githubId"}),
+    @UniqueConstraint(name = "discordId", columnNames = {"discordId"}),
+    @UniqueConstraint(name = "telegramUserId", columnNames = {"telegramUserId"}),
     @UniqueConstraint(name = "nickName", columnNames = {"nickName"})})
 public class Member implements Serializable {
 
@@ -116,5 +118,10 @@ public class Member implements Serializable {
     @Column(columnDefinition = "tinyint default 0")
     private Integer status = 0;
 
+    @Column(length = 32)
+    private String discordId;
+
+    @Column(length = 32)
+    private String telegramUserId;
 
 }

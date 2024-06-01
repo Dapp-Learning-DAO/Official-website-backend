@@ -94,18 +94,8 @@ jobs:
     corn: ${CRON_DIS:0/5 * * * * ?}
   defi:
     corn: ${CRON_DEFI:0 10 * * * ?}
-oauth:
-  registrations:
-    github:
-      clientId: "${GITHUB_CLIENT_ID}"
-      clientSecret: "${GITHUB_CLIENT_SECRET}"
-      accessTokenUri: https://github.com/login/oauth/access_token
-      userAuthorizationUri: https://github.com/login/oauth/authorize
-      userInfoUri: https://api.github.com/user
-    twitter:
-      clientId: "${TWITTER_CLIENT_KEY}"
-      clientSecret: "${TWITTER_CLIENT_SECRET}"
-      callbackUrl: "${TWITTER_CALLBACK_URL}"
+  bounty:
+    corn: ${CRON_BOUNTY:0 0 * * * *}
 
 qcloud:
   #初始化用户身份信息 前往控制台密钥管理查看
@@ -117,37 +107,11 @@ qcloud:
   regionName: ${REGION_NAME}
 
 chain:
-  ids: ["11155111", "10", "534352", "42161", "324", "1101", "59144"]
+  ids: [ "11155111", "10", "534352", "42161", "324", "1101", "59144" ]
 
 login:
   filter: ${LOGIN_FILTER:true}
 
-bot:
-  discord:
-    botToken: ${DISCORD_BOT_TOKEN}
-    groupList:
-      - groupId: ${GUILD_DAPP_LEARNING_ID}
-        groupName: DAPP_LEARNING
-
-  telegram:
-    botToken: ${TG_BOT_TOKEN}
-    timeoutInSeconds: ${TG_BOT_TIMEOUT:10}
-    groupList:
-      - groupId: ${TG_DAPP_LEARNING_GROUP_ID}
-        groupName: DAPP_LEARNING
-        topicOrChannelList:
-          - name: general-chat
-            threadOrTopicId: 1
-          - name: sharing
-            threadOrTopicId: 414
-          - name: hiring
-            threadOrTopicId: 423
-          - name: github
-            threadOrTopicId: 415
-          - name: builder
-            threadOrTopicId: 422
-          - name: translation
-            threadOrTopicId: 416
 
 hook:
   open: false
@@ -157,3 +121,4 @@ debank:
   protocolList: https://pro-openapi.debank.com/v1/user/all_simple_protocol_list
   userTokenList: https://pro-openapi.debank.com/v1/user/all_token_list
   totalBalance: https://pro-openapi.debank.com/v1/user/total_balance
+  key:

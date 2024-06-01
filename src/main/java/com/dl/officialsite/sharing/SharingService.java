@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.util.StringUtils;
 
 @Service
 @Slf4j
@@ -216,7 +217,7 @@ public class SharingService {
         Page<Share> page = sharingRepository.findAll(
             (Specification<Share>) (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new LinkedList<>();
-                if (searchVo.getTheme() != null) {
+                if (StringUtils.hasText(searchVo.getTheme())) {
                     predicates.add(
                         criteriaBuilder.like(root.get("theme"), "%" + searchVo.getTheme() + "%"));
                 }
@@ -237,7 +238,7 @@ public class SharingService {
                     predicates.add(criteriaBuilder.greaterThan(root.get("date"), searchVo.getDate()));
                 }
                 query.orderBy(criteriaBuilder.desc(root.get("createTime")));
-                return null;
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             }, pageable);
         return page;
     }

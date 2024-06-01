@@ -60,11 +60,14 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/defi/tokenApy");
         add("/defi/healthInfo");
         add("/bounty/list");
+        add("/nft/WarCraft");
     }} ;
 
-    private Set<String> noAddrCheckApis = new HashSet(){{
-       add("oauth2/bind/code/github");
-       add("oauth2/callback/twitter");
+    private Set<String> noAddrCheckApis = new HashSet() {{
+        add("oauth2/bind/code/github");
+        add("oauth2/callback/twitter");
+        add("oauth2/callback/discord");
+        add("oauth2/callback/telegram");
     }};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

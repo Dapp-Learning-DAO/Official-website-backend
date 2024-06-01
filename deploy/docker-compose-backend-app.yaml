@@ -14,28 +14,17 @@ services:
       - REGION_NAME=
       - SECRET_ID=
       - SECRET_KEY=
-      # GitHub and Twitter
-      - GITHUB_CLIENT_ID=
-      - GITHUB_CLIENT_SECRET=
-      - TWITTER_CLIENT_KEY=
-      - TWITTER_CLIENT_SECRET=
-      - TWITTER_CALLBACK_URL=
       # GMAIL
       - MAIL_ADDRESS=
       - MAIL_PASSWORD=
       # Chain ids
       - CHAIN_IDS=
-      # Telegram
-      - TG_BOT_TOKEN=
-      - TG_DAPP_LEARNING_GROUP_ID=
-      # Discord
-      - DISCORD_BOT_TOKEN=
-      - GUILD_DAPP_LEARNING_ID=
       # CRON
       - CRON_REDPACKET=
       - CRON_DIS=
     ports:
       - '8080:8080'
+      - '127.0.0.1:9093:9093'
     volumes:
       - ./logs:/logs
     restart: always

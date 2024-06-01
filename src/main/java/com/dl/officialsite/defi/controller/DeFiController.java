@@ -5,6 +5,7 @@ import com.dl.officialsite.config.ChainInfo;
 import com.dl.officialsite.defi.entity.Whale;
 import com.dl.officialsite.defi.entity.WhaleTxRow;
 import com.dl.officialsite.defi.service.AaveTokenAPYService;
+import com.dl.officialsite.defi.service.WhaleProtocolService;
 import com.dl.officialsite.defi.service.WhaleService;
 import com.dl.officialsite.defi.vo.HealthInfoVo;
 import com.dl.officialsite.defi.vo.params.QueryWhaleParams;
@@ -37,14 +38,18 @@ public class DeFiController {
 
     private final WhaleService whaleService;
 
+    private final WhaleProtocolService whaleProtocolService;
+
     private final MemberService memberService;
 
     private final TeamService teamService;
 
     public DeFiController(AaveTokenAPYService aaveService, WhaleService whaleService,
+        WhaleProtocolService whaleProtocolService,
         MemberService memberService, TeamService teamService) {
         this.aaveService = aaveService;
         this.whaleService = whaleService;
+        this.whaleProtocolService = whaleProtocolService;
         this.memberService = memberService;
         this.teamService = teamService;
     }
@@ -82,6 +87,12 @@ public class DeFiController {
         return BaseResponse.success();
     }
 
+    @GetMapping("/init/whale/protocol")
+    public BaseResponse initWhaleProtocol() {
+        whaleProtocolService.initWhaleProtocol();
+        return BaseResponse.success();
+    }
+
     @GetMapping("/Listener")
     public BaseResponse Listener() {
         whaleService.aaveListener();
@@ -95,9 +106,11 @@ public class DeFiController {
         @RequestBody QueryWhaleParams query) {
         Pageable pageable = null;
         if (query.getOrder() == 1) {
-            pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "amountUsd"));
+            pageable = PageRequest.of(pageNumber - 1, pageSize,
+                Sort.by(Sort.Direction.DESC, "amountUsd"));
         } else {
-            pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.ASC, "amountUsd"));
+            pageable = PageRequest.of(pageNumber - 1, pageSize,
+                Sort.by(Sort.Direction.ASC, "amountUsd"));
         }
         Page<Whale> whaleDataVos = whaleService.queryWhale(pageable, query);
         return BaseResponse.successWithData(whaleDataVos);
@@ -108,10 +121,33 @@ public class DeFiController {
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize,
         @RequestParam String address) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,
+            Sort.by(Sort.Direction.DESC, "createTime"));
         Page<WhaleTxRow> whaleDataVos = whaleService.queryWhaleTx(pageable, address);
         return BaseResponse.successWithData(whaleDataVos);
     }
 
+    @GetMapping("/query/whale/protocol")
+    public BaseResponse queryWhaleProtocol(
+        @RequestParam(defaultValue = "1") Integer pageNumber,
+        @RequestParam(defaultValue = "10") Integer pageSize,
+        @RequestParam String address) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,
+            Sort.by(Sort.Direction.DESC, "createTime"));
+        return BaseResponse.successWithData(whaleProtocolService.queryWhaleProtocol(address, pageable));
+    }
+
+    @GetMapping("/query/whale/chain/token")
+    public BaseResponse queryWhaleChainToken(@RequestParam String whaleAddress,
+        @RequestParam Integer update) {
+        return BaseResponse.successWithData(whaleService.getUserTotalBalance(whaleAddress, update));
+    }
+
+    @GetMapping("/query/whale/chain/value")
+    public BaseResponse queryWhaleChainValue(@RequestParam String whaleAddress,@RequestParam Integer update) {
+        return BaseResponse.successWithData(whaleService.getUserTokenList(whaleAddress,update));
+    }
+
 
 }
+
