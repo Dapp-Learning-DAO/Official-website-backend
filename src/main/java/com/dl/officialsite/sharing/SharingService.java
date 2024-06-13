@@ -117,12 +117,12 @@ public class SharingService {
             sharing.setYoutubeLink(req.getYoutubeLink());
 
             this.sharingRepository.save(sharing);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+/*            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String formatDate = format.format(req.getDate());
             applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
                 ChannelEnum.SHARING,
                 NotifyMessageFactory.sharingMessage("‼️‼️Edit Share Info‼️‼️", member.getNickName(), req.getTheme(),
-                    formatDate)));
+                    formatDate)));*/
         } else {
             throw new BizException(CodeEnums.SHARING_NOT_OWNER_OR_ADMIN);
         }
