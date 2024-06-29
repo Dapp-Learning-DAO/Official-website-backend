@@ -44,9 +44,9 @@ public class NFTController {
         @NotNull @RequestParam("rank") Integer rank) {
         NFTMetadata nftMetadata = fileLoadConfig.get(nftType, rank);
         if (nftMetadata == null) {
-            return BaseResponse.failWithReason("1302", String.format("No NFT found for rank [%s]", rank));
+            return "";
         }
+
         return nftMetadata;
     }
-
 }
