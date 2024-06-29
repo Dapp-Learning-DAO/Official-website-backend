@@ -20,6 +20,7 @@ import com.dl.officialsite.nft.service.WarCraftContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.dl.officialsite.common.enums.CodeEnums.PARAM_ERROR;
@@ -143,7 +146,7 @@ public class ActivityController {
     /**
      * 检查用户的 Mint 结果
      */
-    @GetMapping("/v2/claim/result")
+    @GetMapping("/claim/result/v2")
     public BaseResponse claimResultWithTokenId(@NotNull @RequestParam("chainId") String chainIdParam,
                                     @RequestParam(required = false) String addressForTesting,
                                     @RequestParam(required = false, defaultValue = "WarCraft") String contractName,
@@ -154,7 +157,10 @@ public class ActivityController {
 
         SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
         final String address = sessionUserInfo != null ? sessionUserInfo.getAddress() : addressForTesting;
-
-        return BaseResponse.successWithData(this.warCraftContractService.rank(address, ContractNameEnum.fromValue(contractName), chainId));
+        Pair<Integer, Integer> rank = this.warCraftContractService.rank(address, ContractNameEnum.fromValue(contractName), chainId);
+        Map<String, Integer> result = new HashMap<>();
+        result.put("rankId", rank.getKey());
+        result.put("tokenId", rank.getValue());
+        return BaseResponse.successWithData(result);
     }
 }

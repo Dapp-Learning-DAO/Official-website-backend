@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -57,8 +58,10 @@ public class MemberNFTMintRecord implements Serializable {
     @NotNull
     private String chainId;
 
+    @ColumnDefault("-1")
     private int tokenId = -1;
 
+    @ColumnDefault("-1")
     private int rankValue = -1;
 
     @CreatedDate
