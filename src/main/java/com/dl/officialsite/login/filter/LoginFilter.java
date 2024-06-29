@@ -61,6 +61,7 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/defi/healthInfo");
         add("/bounty/list");
         add("/nft/WarCraft");
+        add("/nft/raw/WarCraft");
     }} ;
 
     private Set<String> noAddrCheckApis = new HashSet() {{

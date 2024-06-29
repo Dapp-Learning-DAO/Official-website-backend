@@ -57,6 +57,8 @@ public class MemberNFTMintRecord implements Serializable {
     @NotNull
     private String chainId;
 
+    private int tokenId = -1;
+
     private int rankValue = -1;
 
     @CreatedDate

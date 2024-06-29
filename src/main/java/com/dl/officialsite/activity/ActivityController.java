@@ -122,7 +122,7 @@ public class ActivityController {
     }
 
     /**
-     * 检查用户是否完成所有任务，如果完成，则生成 NFT mint 签名
+     * 检查用户的 Mint 结果
      */
     @GetMapping("/claim/result")
     public BaseResponse claimResult(@NotNull @RequestParam("chainId") String chainIdParam,
@@ -136,6 +136,25 @@ public class ActivityController {
         SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
         final String address = sessionUserInfo != null ? sessionUserInfo.getAddress() : addressForTesting;
 
-        return this.warCraftContractService.rank(address, ContractNameEnum.fromValue(contractName), chainId);
+        return BaseResponse.successWithData(this.warCraftContractService.rank(address, ContractNameEnum.fromValue(contractName),
+            chainId).getKey());
+    }
+
+    /**
+     * 检查用户的 Mint 结果
+     */
+    @GetMapping("/v2/claim/result")
+    public BaseResponse claimResultWithTokenId(@NotNull @RequestParam("chainId") String chainIdParam,
+                                    @RequestParam(required = false) String addressForTesting,
+                                    @RequestParam(required = false, defaultValue = "WarCraft") String contractName,
+                                    HttpSession session) {
+        String chainId = Arrays.stream(chainConfig.getIds()).filter(id -> StringUtils.equalsIgnoreCase(chainIdParam, id))
+            .findFirst()
+            .orElseThrow(() -> new BizException(PARAM_ERROR.getCode(), String.format("Chain id %s not exists", chainIdParam)));
+
+        SessionUserInfo sessionUserInfo = HttpSessionUtils.getMember(session);
+        final String address = sessionUserInfo != null ? sessionUserInfo.getAddress() : addressForTesting;
+
+        return BaseResponse.successWithData(this.warCraftContractService.rank(address, ContractNameEnum.fromValue(contractName), chainId));
     }
 }
