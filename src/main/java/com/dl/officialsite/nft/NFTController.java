@@ -25,7 +25,7 @@ public class NFTController {
      * 获取 NFT 的元数据
      */
     @GetMapping("nft/{nftType}")
-    public BaseResponse verifyAndMint(
+    public BaseResponse fetchNftMetadata(
         @PathVariable String nftType,
         @NotNull @RequestParam("rank") Integer rank) {
         NFTMetadata nftMetadata = fileLoadConfig.get(nftType, rank);
@@ -33,5 +33,20 @@ public class NFTController {
             return BaseResponse.failWithReason("1302", String.format("No NFT found for rank [%s]", rank));
         }
         return BaseResponse.successWithData(nftMetadata);
+    }
+
+    /**
+     * 获取 NFT 的原始元数据
+     */
+    @GetMapping("nft/raw/{nftType}")
+    public Object fetchRawNftMetadata(
+        @PathVariable String nftType,
+        @NotNull @RequestParam("rank") Integer rank) {
+        NFTMetadata nftMetadata = fileLoadConfig.get(nftType, rank);
+        if (nftMetadata == null) {
+            return "";
+        }
+
+        return nftMetadata;
     }
 }
