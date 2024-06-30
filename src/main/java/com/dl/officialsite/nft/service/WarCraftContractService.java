@@ -1,6 +1,6 @@
 package com.dl.officialsite.nft.service;
 
-import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.nft.bean.MemberNFTMintRecord;
 import com.dl.officialsite.nft.bean.MemberNFTMintRecordRepository;
 import com.dl.officialsite.nft.config.ContractConfigService;
@@ -8,6 +8,7 @@ import com.dl.officialsite.nft.constant.ContractNameEnum;
 import com.dl.officialsite.nft.contract.WarCraftContract;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
@@ -32,21 +33,23 @@ public class WarCraftContractService {
     @Autowired
     private MemberNFTMintRecordRepository memberNFTMintRecordRepository;
 
-    public BaseResponse rank(String address, ContractNameEnum contractName, String chainId) {
+    public Pair<Integer, Integer> rank(String address, ContractNameEnum contractName, String chainId) {
         String contractAddress = this.contractConfigService.getContractAddressByName(contractName, chainId);
         String rpcAddress = this.contractConfigService.getRpcAddressByName(contractName, chainId);
 
         if (StringUtils.isAnyBlank(contractAddress, rpcAddress)) {
             log.error("Fetch blank values of contractAddress:[{}] or rpcAddress:[{}] filtered by contractName:[{}] and chainId:[{}]",
                 contractAddress, rpcAddress, contractName.getContractName(), chainId);
-            return BaseResponse.failWithReason("1204", "Fetch rank failed, please try again later.");
+            throw new BizException("1204", "Fetch rank failed, please try again later.");
         }
 
         Optional<MemberNFTMintRecord> memberTaskRecordExists =
             memberNFTMintRecordRepository.findByAddressAndContractNameAndChainId(address, contractName.name(), chainId);
 
-        if(memberTaskRecordExists.isPresent() && memberTaskRecordExists.get().getRankValue() >= 0){
-            return BaseResponse.successWithData(memberTaskRecordExists.get().getRankValue());
+        if(memberTaskRecordExists.isPresent()
+            && memberTaskRecordExists.get().getRankValue() >= 0
+            && memberTaskRecordExists.get().getTokenId() >= 0){
+            return Pair.of(memberTaskRecordExists.get().getRankValue(), memberTaskRecordExists.get().getTokenId());
         }
 
         Web3j web3j = Web3j.build(new HttpService(rpcAddress));
@@ -58,25 +61,26 @@ public class WarCraftContractService {
             BigInteger tokenId = contract.claimedTokenIdBy(address).sendAsync().get(TIMEOUT, TimeUnit.SECONDS);
             if (tokenId == null || tokenId.intValue() == 0) {
                 log.error("No claim(tokenId) info found for address:[{}].", address);
-                return BaseResponse.failWithReason("200", "No claim info found.");
+                throw new BizException("200", "No claim info found.");
             }
 
             String rank = contract.tokenURIs(tokenId).sendAsync().get(TIMEOUT, TimeUnit.SECONDS);
             if (StringUtils.isBlank(rank)) {
                 log.error("No rank info found for address:[{}] and tokenId:[{}].", address, tokenId.intValue());
-                return BaseResponse.failWithReason("200", "No rank info found.");
+                throw new BizException("200", "No rank info found.");
             }
 
-            MemberNFTMintRecord memberNFTMintRecord = new MemberNFTMintRecord();
+            MemberNFTMintRecord memberNFTMintRecord = memberTaskRecordExists.orElseGet(MemberNFTMintRecord::new);
             memberNFTMintRecord.setAddress(address);
             memberNFTMintRecord.setContractName(contractName);
             memberNFTMintRecord.setChainId(chainId);
+            memberNFTMintRecord.setTokenId(tokenId.intValue());
             memberNFTMintRecord.setRankValue(Integer.parseInt(rank));
             this.memberNFTMintRecordRepository.save(memberNFTMintRecord);
-            return BaseResponse.successWithData(rank);
+            return Pair.of(memberNFTMintRecord.getRankValue(), memberNFTMintRecord.getTokenId());
         } catch (Exception e) {
             log.error("Call contract method:[claimedTokenIdBy] remote error.", e);
-            return BaseResponse.failWithReason("1205", "Fetch rank failed, please try again later.");
+            throw new BizException("1205", "Fetch rank failed, please try again later.");
         }
 
     }
