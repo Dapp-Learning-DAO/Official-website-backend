@@ -37,7 +37,9 @@ public enum ConfigEnum {
 
     ECDSA_PRIVATE_KEY("ECDSA_PRIVATE_KEY", EcdsaKeyConfigService.class),
 
-    CONTRACT_ADDRESS("CONTRACT_ADDRESS", EcdsaKeyConfigService.class);
+    CONTRACT_ADDRESS("CONTRACT_ADDRESS", EcdsaKeyConfigService.class),
+    RED_PACKET_API_KEY("RED_PACKET_API_KEY", EcdsaKeyConfigService.class),
+    MERKLE_DISTRIBUTION_API_KEY("MERKLE_DISTRIBUTION_API_KEY", EcdsaKeyConfigService.class);
 
     private String configName;
     private Class<? extends Refreshable> refreshClass;

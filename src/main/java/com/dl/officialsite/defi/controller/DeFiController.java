@@ -4,6 +4,7 @@ import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.config.ChainInfo;
 import com.dl.officialsite.defi.entity.Whale;
 import com.dl.officialsite.defi.entity.WhaleTxRow;
+import com.dl.officialsite.defi.handler.AaveWhaleProtocolHandler;
 import com.dl.officialsite.defi.service.AaveTokenAPYService;
 import com.dl.officialsite.defi.service.WhaleProtocolService;
 import com.dl.officialsite.defi.service.WhaleService;
@@ -40,16 +41,20 @@ public class DeFiController {
 
     private final WhaleProtocolService whaleProtocolService;
 
+    private final AaveWhaleProtocolHandler aaveWhaleProtocolHandler;
+
     private final MemberService memberService;
 
     private final TeamService teamService;
 
     public DeFiController(AaveTokenAPYService aaveService, WhaleService whaleService,
         WhaleProtocolService whaleProtocolService,
+        AaveWhaleProtocolHandler aaveWhaleProtocolHandler,
         MemberService memberService, TeamService teamService) {
         this.aaveService = aaveService;
         this.whaleService = whaleService;
         this.whaleProtocolService = whaleProtocolService;
+        this.aaveWhaleProtocolHandler = aaveWhaleProtocolHandler;
         this.memberService = memberService;
         this.teamService = teamService;
     }
@@ -89,7 +94,7 @@ public class DeFiController {
 
     @GetMapping("/init/whale/protocol")
     public BaseResponse initWhaleProtocol() {
-        whaleProtocolService.initWhaleProtocol();
+        aaveWhaleProtocolHandler.initWhaleProtocol();
         return BaseResponse.success();
     }
 
