@@ -47,7 +47,7 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "${jobs.redpacket.corn:0/10 * * * * ?}")
+    @Scheduled(cron = "${jobs.redpacket.corn:0/30 * * * * ?}")
     @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateRedpacketStatus() {
         log.info("schedule task begin --------------------- ");

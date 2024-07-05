@@ -104,7 +104,7 @@ public class DistributeService {
     @Resource
     private MerkleDistributorConfig merkleDistributorConfig;
 
-    @Scheduled(cron = "${jobs.distribute.corn:0/10 * * * * ?}")
+    @Scheduled(cron = "${jobs.distribute.corn:0/30 * * * * ?}")
     @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateDistributeStatus() {
         log.info("schedule task begin --------------------- ");
