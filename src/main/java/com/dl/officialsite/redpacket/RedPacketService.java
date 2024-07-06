@@ -6,6 +6,7 @@ import com.dl.officialsite.config.ChainConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -43,16 +44,18 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "${jobs.redpacket.corn:0/10 * * * * ?}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
+//    @Scheduled(cron = "${jobs.redpacket.corn:0/10 * * * * ?}")
+//    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateRedpacketStatus() {
         log.info("schedule task begin --------------------- ");
+        XxlJobHelper.log("RedPacketService updateRedPacketStatus start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateRedpacketStatusByChainId(chainId);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("updateRedpacketStatusByChainId:  " + chainId + " error:" + e.getMessage());
+                XxlJobHelper.log("updateRedPacketStatusByChainId:  " + chainId + " error:" + e.getMessage());
             }
         }
     }
@@ -64,6 +67,7 @@ public class RedPacketService {
 
             if (jsonResponse.contains("errors")) {
                 log.info("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
+                XxlJobHelper.log("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
                 return;
             }
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();

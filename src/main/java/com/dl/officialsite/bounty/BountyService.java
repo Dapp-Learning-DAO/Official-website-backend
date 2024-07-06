@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
 
+import com.xxl.job.core.context.XxlJobHelper;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -65,10 +67,11 @@ public class BountyService {
 
 
 
-    @Scheduled(cron = "${jobs.bounty.corn:0 0 * * * *}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
+//    @Scheduled(cron = "${jobs.bounty.corn:0 0 * * * *}")
+//    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateBountyData() {
         log.info("updateBountyData_schedule task begin --------------------- ");
+        XxlJobHelper.log("updateBountyData_schedule task begin --------------------- ");
         //update status
         long currentSeconds = System.currentTimeMillis() / 1000;
         List<Bounty> bountyList = bountyRepository.findAll(

@@ -122,3 +122,14 @@ debank:
   userTokenList: https://pro-openapi.debank.com/v1/user/all_token_list
   totalBalance: https://pro-openapi.debank.com/v1/user/total_balance
   key:
+
+#xxl-job config
+xxl:
+  job:
+    admin:
+      addresses: http://127.0.0.1:8087/xxl-job-admin
+    accessToken: ${XXL_JOB_TOKEN}
+    executor:
+      appName: websit-backend
+      port: 9998
+      log-path: /Users/apple/workSpace/dapp-learning/mybackend/logs/ #todo 更换

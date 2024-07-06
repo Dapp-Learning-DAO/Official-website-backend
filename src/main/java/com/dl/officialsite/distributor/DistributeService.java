@@ -24,6 +24,7 @@ import com.dl.officialsite.tokenInfo.TokenInfoRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -100,16 +101,18 @@ public class DistributeService {
     @Autowired
     private ConstantConfig constantConfig;
 
-    @Scheduled(cron = "${jobs.distribute.corn:0/10 * * * * ?}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
+//    @Scheduled(cron = "${jobs.distribute.corn:0/10 * * * * ?}")
+//    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateDistributeStatus() {
         log.info("schedule task begin --------------------- ");
+        XxlJobHelper.log("DistributeService updateDistributeStatus start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateDistributeStatusByChainId(chainId);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("updateDistributeStatusByChainId:  " + chainId + " error:" + e.getMessage());
+                XxlJobHelper.log("updateDistributeStatusByChainId:  " + chainId + " error:" + e.getMessage());
             }
         }
     }
