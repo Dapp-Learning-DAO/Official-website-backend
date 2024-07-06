@@ -3,9 +3,14 @@ package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.ChainConfig;
+import com.dl.officialsite.redpacket.config.RedPacketConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,10 +24,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName TeamService
@@ -41,9 +42,12 @@ public class RedPacketService {
     @Autowired
     private ChainConfig chainConfig;
 
+    @Resource
+    private RedPacketConfig redPacketConfig;
+
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "${jobs.redpacket.corn:0/10 * * * * ?}")
+    @Scheduled(cron = "${jobs.redpacket.corn:0/30 * * * * ?}")
     @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateRedpacketStatus() {
         log.info("schedule task begin --------------------- ");
@@ -145,31 +149,32 @@ public class RedPacketService {
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/G7LuMuUuWUW8UknEx8x2aVSeFtqpNMEKHvka2aKiDzRm");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +
+                        "/subgraphs/id/G7LuMuUuWUW8UknEx8x2aVSeFtqpNMEKHvka2aKiDzRm");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: //sepolia
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/84hUXdB1qCmn8Du8bDmpLxxFSHjsgFCUKcrbtM4j5tp6");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/84hUXdB1qCmn8Du8bDmpLxxFSHjsgFCUKcrbtM4j5tp6");
                 break;
             case Constants.CHAIN_ID_SCROLL: //scrool
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/6Ln5DVxZuYiY4VZzDQ2hzweBMRBpwW1SKRjeUy2YouRC");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/6Ln5DVxZuYiY4VZzDQ2hzweBMRBpwW1SKRjeUy2YouRC");
                 break;
             case Constants.CHAIN_ID_ARBITRUM: //arbitrum
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/9S1hiM5vzZ3m7o9SBpywHHcC8VZBSRUZTv3R8Npt56gS");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/9S1hiM5vzZ3m7o9SBpywHHcC8VZBSRUZTv3R8Npt56gS");
                 break;
             case Constants.CHAIN_ID_ZKSYNC: //zksync
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/ERTqnTVeQKH8CVYwfGnqqZjtNDzgdnJRYQCgD4TY1gUX");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/ERTqnTVeQKH8CVYwfGnqqZjtNDzgdnJRYQCgD4TY1gUX");
                 break;
             case Constants.CHAIN_ID_POLYGON_ZKEVM: //polygon zkevm
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/5DsufFHE6P7tK7QT1mGCPrQEKURD2E1SSHAyCSzf5CAg");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/5DsufFHE6P7tK7QT1mGCPrQEKURD2E1SSHAyCSzf5CAg");
                 break;
             case Constants.CHAIN_ID_LINEA: //linea
                 request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/a5de3024bd9623fdc430f484c6c25ae1/subgraphs/id/958YHrTJturbhR6uwRyPu1wmBNiXivNkLMPY7tUiL4wD");
+                    "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/958YHrTJturbhR6uwRyPu1wmBNiXivNkLMPY7tUiL4wD");
                 break;
 
         }

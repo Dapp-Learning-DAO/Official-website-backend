@@ -9,6 +9,7 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.config.ConstantConfig;
+import com.dl.officialsite.distributor.config.MerkleDistributorConfig;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimer;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerManager;
 import com.dl.officialsite.distributor.distributeClaimer.DistributeClaimerRepository;
@@ -24,6 +25,21 @@ import com.dl.officialsite.tokenInfo.TokenInfoRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -45,21 +61,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j(topic = "Distribute")
@@ -99,8 +100,11 @@ public class DistributeService {
 
     @Autowired
     private ConstantConfig constantConfig;
+    
+    @Resource
+    private MerkleDistributorConfig merkleDistributorConfig;
 
-    @Scheduled(cron = "${jobs.distribute.corn:0/10 * * * * ?}")
+    @Scheduled(cron = "${jobs.distribute.corn:0/30 * * * * ?}")
     @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateDistributeStatus() {
         log.info("schedule task begin --------------------- ");
@@ -224,31 +228,30 @@ public class DistributeService {
         }
 
     }
-
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP: // op
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/Bfrtk6bLRZoULLzAZ99hZ1Ae8kvFxsUWa4e97XzWJYhG");
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/Bfrtk6bLRZoULLzAZ99hZ1Ae8kvFxsUWa4e97XzWJYhG");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: // sepolia
                 request = new HttpPost(
-                        "https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/9p6zFejTBC2bLLJRCdrk1A2PXfZkriRMacM5wiCAyh5Z");
+                        "https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/9p6zFejTBC2bLLJRCdrk1A2PXfZkriRMacM5wiCAyh5Z");
                 break;
             case Constants.CHAIN_ID_SCROLL: // scroll
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
                 break;
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/BbFUyrr7KeB9VjxrSqWFDWAcsyDsGdbinrteLrPK5MVb");
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/BbFUyrr7KeB9VjxrSqWFDWAcsyDsGdbinrteLrPK5MVb");
                 break;
             case Constants.CHAIN_ID_ZKSYNC: // zksync
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
                 break;
             case Constants.CHAIN_ID_POLYGON_ZKEVM: // polygon zkevm
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/A46TwCAxDy4upqLuS7bgXd14yLQdTjfS4AVPMNwWkZSR");
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/A46TwCAxDy4upqLuS7bgXd14yLQdTjfS4AVPMNwWkZSR");
                 break;
             case Constants.CHAIN_ID_LINEA: //linea
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/18ec3dcb6a75917897da2d5798fb98d3/subgraphs/id/DatcM6CoN5u79XPx1wYFFnWXpHYcfDodkbycx2vSp25C");
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DatcM6CoN5u79XPx1wYFFnWXpHYcfDodkbycx2vSp25C");
                 break;
         }
 
