@@ -3,9 +3,14 @@ package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.config.ChainConfig;
+import com.dl.officialsite.redpacket.config.RedPacketConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Resource;
 import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -20,10 +25,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName TeamService
@@ -42,9 +43,12 @@ public class RedPacketService {
     @Autowired
     private ChainConfig chainConfig;
 
+    @Resource
+    private RedPacketConfig redPacketConfig;
+
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-//    @Scheduled(cron = "${jobs.redpacket.corn:0/10 * * * * ?}")
+//    @Scheduled(cron = "${jobs.redpacket.corn:0/30 * * * * ?}")
 //    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateRedpacketStatus() {
         log.info("schedule task begin --------------------- ");

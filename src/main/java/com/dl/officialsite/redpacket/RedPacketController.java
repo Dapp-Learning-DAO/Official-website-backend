@@ -1,17 +1,10 @@
 package com.dl.officialsite.redpacket;
 
 import com.dl.officialsite.common.base.BaseResponse;
-import com.dl.officialsite.login.Auth;
-import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberController;
-import com.dl.officialsite.member.MemberRepository;
-import com.dl.officialsite.member.MemberService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,11 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.dl.officialsite.common.converter.StringListConverter.SPLIT_CHAR;
 import static org.hibernate.criterion.Restrictions.in;
 
 @RestController
@@ -68,13 +59,12 @@ public class RedPacketController {
 
     @RequestMapping(value = "/query/user", method = RequestMethod.GET)
     BaseResponse getRedPacketByAddress(@RequestParam String address, @RequestParam(required = false) Integer status,
-            @RequestParam String chainId) {
+            @RequestParam(required = false) String chainId) {
         List<RedPacket> result;
         if (status == 0) {
-            result = redPacketRepository.findByUnclaimedPacket("%" + address + "%", 0, chainId);
+            result = redPacketRepository.findByUnclaimedPacketWithoutChainId("%" + address + "%", 0, chainId);
         } else {
-            result = redPacketRepository.findByClaimedPacket("%" + address + "%", chainId);
-
+            result = redPacketRepository.findByClaimedPacketWithoutChainId("%" + address + "%", chainId);
         }
         return BaseResponse.successWithData(result);
     }
