@@ -6,6 +6,7 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.login.Auth;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberService;
+import com.dl.officialsite.team.vo.TeamMemberAddQueryVO;
 import com.dl.officialsite.team.vo.TeamMemberApproveVO;
 import com.dl.officialsite.team.vo.TeamMemberBatchJoinVO;
 import com.dl.officialsite.team.vo.TeamMemberJoinVO;
@@ -53,6 +54,17 @@ public class TeamController {
     BaseResponse update(@RequestBody Team team, @RequestParam String address) {
         teamService.update(team,address);
         return BaseResponse.successWithData(null);
+    }
+
+    /**
+     * 通过地址信息查询member信息
+     * @param teamMemberAddQueryVO
+     * @return
+     */
+    @PostMapping("queryMemberInfoByAddress")
+    BaseResponse<List<Member>> queryMemberInfoByAddress(@RequestBody TeamMemberAddQueryVO teamMemberAddQueryVO) {
+        List<Member> members = memberService.queryMemberInfoByAddress(teamMemberAddQueryVO.getAddressList());
+        return BaseResponse.successWithData(members);
     }
 
     /**

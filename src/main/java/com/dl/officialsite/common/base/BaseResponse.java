@@ -37,4 +37,8 @@ public class BaseResponse<T> {
     public static <T> BaseResponse failWithReason(String code, String msg){
         return new BaseResponse(code, msg, null);
     }
+
+    public static <T> BaseResponse failWithReason(CodeEnums codeEnums){
+        return new BaseResponse(codeEnums.getCode(), codeEnums.getMsg(), null);
+    }
 }
