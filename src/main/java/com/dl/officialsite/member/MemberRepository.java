@@ -26,4 +26,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
     @Query(value = "update member set github_id=NULL, github_status=0, discord_id=NULL, telegram_user_id=NULL where address = :address",
         nativeQuery = true)
     void removeGitHubTgAndDiscordId(@Param("address") String address);
+
+
+    @Query(value = "select * from member where address in :addressList", nativeQuery = true)
+    List<Member> findByAddressList(@Param("addressList") List<String> addressList);
 }

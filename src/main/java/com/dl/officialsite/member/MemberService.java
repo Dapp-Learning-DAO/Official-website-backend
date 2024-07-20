@@ -1,5 +1,6 @@
 package com.dl.officialsite.member;
 
+import cn.hutool.core.collection.CollUtil;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
@@ -124,4 +125,22 @@ public class MemberService {
             throw new RuntimeException("Nickname already exists, please change another one.") ;
         }
     }
+
+    public List<Member> queryMemberInfoByAddress(List<String> addressList){
+        if(CollUtil.isEmpty(addressList)){
+            return new ArrayList<>();
+        }
+        List<Member> memberList = memberRepository.findByAddressList(addressList);
+        //只保留id、address、nickName字段
+        List<Member> result = new ArrayList<>();
+        for (Member member : memberList) {
+            Member filteredMember = new Member();
+            filteredMember.setId(member.getId());
+            filteredMember.setAddress(member.getAddress());
+            filteredMember.setNickName(member.getNickName());
+            result.add(filteredMember);
+        }
+        return result;
+    }
+
 }
