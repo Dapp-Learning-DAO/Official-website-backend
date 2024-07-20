@@ -2,6 +2,7 @@ package com.dl.officialsite.bounty;
 
 import static com.dl.officialsite.common.constants.Constants.BOUNTY_MEMBER_MAP_STATUS_FINISH;
 import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_BOUNTY;
+import static com.dl.officialsite.common.enums.CodeEnums.NOT_FOUND_MEMBER;
 
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
@@ -14,16 +15,14 @@ import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.bounty.vo.MyBountySearchVo;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.exception.BizException;
-import com.dl.officialsite.hiring.application.Application;
+import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -54,13 +53,16 @@ public class BountyService {
 
     private final ApplicationContext applicationContext;
 
+    private final EmailService emailService;
+
     public BountyService(BountyRepository bountyRepository,
                          BountyMemberMapRepository bountyMemberMapRepository, MemberRepository memberRepository,
-                         ApplicationContext applicationContext) {
+                         ApplicationContext applicationContext, EmailService emailService) {
         this.bountyRepository = bountyRepository;
         this.bountyMemberMapRepository = bountyMemberMapRepository;
         this.memberRepository = memberRepository;
         this.applicationContext = applicationContext;
+        this.emailService = emailService;
     }
 
 
@@ -195,6 +197,15 @@ public class BountyService {
         bountyMemberMap.setMemberAddress(address);
         bountyMemberMap.setStatus(Constants.BOUNTY_MEMBER_MAP_STATUS_APPLY);
         bountyMemberMapRepository.save(bountyMemberMap);
+        String creatorAddress = bounty.getCreator();
+        Member createBountyMember = memberRepository.findByAddress(creatorAddress)
+            .orElseThrow(() -> new BizException(NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
+
+        try {
+            emailService.sendMail(createBountyMember.getEmail(), "有新人申请bounty", "赶紧去看看吧 https://dapplearning.org/bounty");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<BountyMemberMap> findBountyMemberMapByBountyId(Long bounty) {

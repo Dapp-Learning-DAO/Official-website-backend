@@ -64,7 +64,7 @@ public class ApplicationService {
                 throw new BizException(APPLY_REPEAT.getCode(), APPLY_REPEAT.getMsg());
             });
         try {
-            emailService.sendMail(member.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "
+            emailService.sendMail(createJDMember.getEmail(), "有新人投递简历", "有新人投递简历:\n简历地址：\n "
                 + "https://dlh-1257682033.cos.ap-hongkong.myqcloud.com/" + applyVo.getFile());
             //添加应聘记录
             Application application = new Application();
