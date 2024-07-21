@@ -56,6 +56,7 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
+        message.setCc("dapplearning@gmail.com");
         emailSender.send(message);
     }
 

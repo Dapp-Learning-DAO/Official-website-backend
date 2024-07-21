@@ -235,27 +235,27 @@ public class DistributeService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP: // op
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/Bfrtk6bLRZoULLzAZ99hZ1Ae8kvFxsUWa4e97XzWJYhG");
+                request = new HttpPost("https://subgraph.satsuma-prod.com/3213d35a17f1/zhes-team--158805/dloptimismdistribute/api");
                 break;
-            case Constants.CHAIN_ID_SEPOLIA: // sepolia
-                request = new HttpPost(
-                        "https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/9p6zFejTBC2bLLJRCdrk1A2PXfZkriRMacM5wiCAyh5Z");
-                break;
-            case Constants.CHAIN_ID_SCROLL: // scroll
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
-                break;
+//            case Constants.CHAIN_ID_SEPOLIA: // sepolia
+//                request = new HttpPost(
+//                        "https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/9p6zFejTBC2bLLJRCdrk1A2PXfZkriRMacM5wiCAyh5Z");
+//                break;
+//            case Constants.CHAIN_ID_SCROLL: // scroll
+//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
+//                break;
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/BbFUyrr7KeB9VjxrSqWFDWAcsyDsGdbinrteLrPK5MVb");
+                request = new HttpPost("https://subgraph.satsuma-prod.com/3213d35a17f1/zhes-team--158805/dlarbitrumdistribute/api");
                 break;
-            case Constants.CHAIN_ID_ZKSYNC: // zksync
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
-                break;
-            case Constants.CHAIN_ID_POLYGON_ZKEVM: // polygon zkevm
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/A46TwCAxDy4upqLuS7bgXd14yLQdTjfS4AVPMNwWkZSR");
-                break;
-            case Constants.CHAIN_ID_LINEA: //linea
-                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DatcM6CoN5u79XPx1wYFFnWXpHYcfDodkbycx2vSp25C");
-                break;
+//            case Constants.CHAIN_ID_ZKSYNC: // zksync
+//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
+//                break;
+//            case Constants.CHAIN_ID_POLYGON_ZKEVM: // polygon zkevm
+//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/A46TwCAxDy4upqLuS7bgXd14yLQdTjfS4AVPMNwWkZSR");
+//                break;
+//            case Constants.CHAIN_ID_LINEA: //linea
+//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DatcM6CoN5u79XPx1wYFFnWXpHYcfDodkbycx2vSp25C");
+//                break;
         }
 
         if (request == null)
