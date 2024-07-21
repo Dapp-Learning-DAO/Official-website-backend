@@ -127,9 +127,9 @@ debank:
 xxl:
   job:
     admin:
-      addresses: http://127.0.0.1:8087/xxl-job-admin
+      addresses: http://${XXL_JOB_TOKEN}/xxl-job-admin
     accessToken: ${XXL_JOB_TOKEN}
     executor:
       appName: websit-backend
       port: 9998
-      log-path: /Users/apple/workSpace/dapp-learning/mybackend/logs/ #todo 更换
+      log-path: /logs/executor/ #todo 更换
