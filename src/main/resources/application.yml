@@ -127,7 +127,7 @@ debank:
 xxl:
   job:
     admin:
-      addresses: http://${XXL_JOB_TOKEN}/xxl-job-admin
+      addresses: http://${XXL_JOB_ADMIN_HOST}/xxl-job-admin
     accessToken: ${XXL_JOB_TOKEN}
     executor:
       appName: websit-backend
