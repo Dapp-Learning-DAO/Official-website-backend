@@ -40,7 +40,6 @@ public class Schedule {
     /**
      * 监控价格一天发送一次
      */
-//    @Scheduled(cron = "0 0 12 * * ?")
     public void monitorPrice() throws Exception {
         log.info("monitorPrice start");
         //查找team0 memeber获取地址
@@ -62,7 +61,6 @@ public class Schedule {
     /**
      * 监控健康系数，如果小于1.2，立即发送邮件
      */
-//    @Scheduled(cron = "0 0/30 * * * ? ")
     public void monitorHealth() {
         try {
             log.info("monitorHealth start");

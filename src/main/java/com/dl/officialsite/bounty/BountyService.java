@@ -70,8 +70,6 @@ public class BountyService {
 
 
 
-//    @Scheduled(cron = "${jobs.bounty.corn:0 0 * * * *}")
-//    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateBountyData() {
         log.info("updateBountyData_schedule task begin --------------------- ");
         XxlJobHelper.log("updateBountyData_schedule task begin --------------------- ");

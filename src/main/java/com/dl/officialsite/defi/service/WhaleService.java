@@ -88,8 +88,6 @@ public class WhaleService {
         this.whaleChainTokenRepository = whaleChainTokenRepository;
     }
 
-//    @Scheduled(cron =  "${jobs.defi.corn: 0 30 * * * * ?}")
-//    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void aaveListener() {
         List<Whale> whaleList = new ArrayList<>();
         List<WhaleTxRow> insertWhaleTxRowList = new ArrayList<>();

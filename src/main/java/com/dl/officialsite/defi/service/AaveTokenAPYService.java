@@ -133,8 +133,6 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
         return new ArrayList<>(Web3jAutoConfiguration.web3jMap.keySet());
     }
 
-//    @Scheduled(cron =  "${jobs.defi.corn: 0 30 * * * * ?}")
-//    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateTokenAPYInfo()  {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("update token info task begin --------------------- ");
