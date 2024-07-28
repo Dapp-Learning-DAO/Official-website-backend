@@ -71,7 +71,6 @@ public class BountyService {
 
 
     public void updateBountyData() {
-        log.info("updateBountyData_schedule task begin --------------------- ");
         XxlJobHelper.log("updateBountyData_schedule task begin --------------------- ");
         //update status
         long currentSeconds = System.currentTimeMillis() / 1000;

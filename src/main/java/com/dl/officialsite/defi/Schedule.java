@@ -63,7 +63,6 @@ public class Schedule {
      */
     public void monitorHealth() {
         try {
-            log.info("monitorHealth start");
             XxlJobHelper.log("monitorHealth start");
             //查找team0 memeber获取地址
             TeamQueryVo teamQueryVo = new TeamQueryVo();
@@ -86,7 +85,6 @@ public class Schedule {
                 }
             }
         } catch (Exception e) {
-            log.error("monitorHealth error", e);
             XxlJobHelper.log("monitorHealth error", e);
         }
     }

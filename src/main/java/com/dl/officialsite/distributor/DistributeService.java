@@ -106,14 +106,11 @@ public class DistributeService {
     private MerkleDistributorConfig merkleDistributorConfig;
 
     public void updateDistributeStatus() {
-        log.info("schedule task begin --------------------- ");
         XxlJobHelper.log("DistributeService updateDistributeStatus start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateDistributeStatusByChainId(chainId);
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("updateDistributeStatusByChainId:  " + chainId + " error:" + e.getMessage());
                 XxlJobHelper.log("updateDistributeStatusByChainId:  " + chainId + " error:" + e.getMessage());
             }
         }

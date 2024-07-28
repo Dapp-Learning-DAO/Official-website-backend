@@ -49,14 +49,11 @@ public class RedPacketService {
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
     public void updateRedpacketStatus() {
-        log.info("schedule task begin --------------------- ");
         XxlJobHelper.log("RedPacketService updateRedPacketStatus start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateRedpacketStatusByChainId(chainId);
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("updateRedpacketStatusByChainId:  " + chainId + " error:" + e.getMessage());
                 XxlJobHelper.log("updateRedPacketStatusByChainId:  " + chainId + " error:" + e.getMessage());
             }
         }
@@ -68,7 +65,6 @@ public class RedPacketService {
             String jsonResponse = EntityUtils.toString(entity);
 
             if (jsonResponse.contains("errors")) {
-                log.info("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
                 XxlJobHelper.log("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
                 return;
             }
