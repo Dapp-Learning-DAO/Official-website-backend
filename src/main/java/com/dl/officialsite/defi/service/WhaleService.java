@@ -105,6 +105,10 @@ public class WhaleService {
             XxlJobHelper.log("解析aave的graph失败");
             throw new RuntimeException("解析aave的graph失败");
         }
+        if(jsonObject == null || jsonObject.isEmpty()){
+            log.error("jsonObject为空 jsonObject = {}",jsonObject);
+            return;
+        }
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray positions = data.getJSONArray("positions");
         if (positions.isEmpty()) {
