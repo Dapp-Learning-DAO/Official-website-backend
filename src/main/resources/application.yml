@@ -123,3 +123,14 @@ debank:
   userTokenList: https://pro-openapi.debank.com/v1/user/all_token_list
   totalBalance: https://pro-openapi.debank.com/v1/user/total_balance
   key:
+
+#xxl-job config
+xxl:
+  job:
+    admin:
+      addresses: http://${XXL_JOB_ADMIN_HOST}/xxl-job-admin
+    accessToken: ${XXL_JOB_TOKEN}
+    executor:
+      appName: websit-backend
+      port: 9998
+      log-path: ${XXL_JOB_EXECUTOR_lOG_PATH} # executor log path

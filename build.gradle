@@ -64,6 +64,7 @@ dependencies{
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'com.qcloud:cos_api:5.6.155'
     implementation 'org.springframework.social:spring-social-twitter:1.1.2.RELEASE'
+	implementation("com.xuxueli:xxl-job-core:2.4.1")
 
 	//graphql
 //	implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
