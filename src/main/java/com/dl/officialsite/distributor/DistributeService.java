@@ -228,9 +228,13 @@ public class DistributeService {
     }
     private HttpEntity getHttpEntityFromChain(String chainId) throws IOException {
         HttpPost request = null;
+
+
+//todo
+        String ip = "43.135.22.107";
         switch (chainId) {
             case Constants.CHAIN_ID_OP: // op
-                request = new HttpPost("https://subgraph.satsuma-prod.com/3213d35a17f1/zhes-team--158805/dloptimismdistribute/api");
+                request = new HttpPost("http://"+ ip + ":8300/subgraphs/name/redpacket_optimism");
                 break;
 //            case Constants.CHAIN_ID_SEPOLIA: // sepolia
 //                request = new HttpPost(
@@ -240,7 +244,7 @@ public class DistributeService {
 //                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
 //                break;
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
-                request = new HttpPost("https://subgraph.satsuma-prod.com/3213d35a17f1/zhes-team--158805/dlarbitrumdistribute/api");
+                request = new HttpPost("http://"+ ip + ":8400/subgraphs/name/redpacket_arbitrum");
                 break;
 //            case Constants.CHAIN_ID_ZKSYNC: // zksync
 //                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
