@@ -7,11 +7,11 @@ import com.dl.officialsite.redpacket.config.RedPacketConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
-import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,9 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -147,7 +145,7 @@ public class RedPacketService {
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
                 request = new HttpPost(
-                    "https://subgraph.satsuma-prod.com/f440a1fb5a7f/caodalong--672935/dloptimismredpacket/api");
+                    "http://production_site:8300/subgraphs/name/redpacket_optimism");
                 break;
 //            case Constants.CHAIN_ID_SEPOLIA: //sepolia
 //                request = new HttpPost(
@@ -159,7 +157,7 @@ public class RedPacketService {
 //                break;
             case Constants.CHAIN_ID_ARBITRUM: //arbitrum
                 request = new HttpPost(
-                    "https://subgraph.satsuma-prod.com/f440a1fb5a7f/caodalong--672935/dlarbitrumredpacket/api");
+                    "http://production_site:8400/subgraphs/name/redpacket_arbitrum");
                 break;
 //            case Constants.CHAIN_ID_ZKSYNC: //zksync
 //                request = new HttpPost(
