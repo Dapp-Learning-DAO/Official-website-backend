@@ -72,19 +72,6 @@ public class RedPacketService {
             JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
             log.debug("lastupdatesArray" + lastupdatesArray.toString());
 
-            // todo
-//            if(lastupdatesArray.size() != 0){
-//                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
-//
-//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestampMap.get(chainId))){
-//                    log.debug("chainId "+ chainId + "no event update");
-//                    return ;
-//                } else {
-//                    lastUpdateTimestampMap.put( chainId, lastTimestampFromGraph);
-//                    log.debug("chainId "+ chainId + "set new  event update: "+ lastTimestampFromGraph );
-//                }
-//            }
-
             List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
 
             for (int i = 0; i < redpacketsArray.size(); i++) {
@@ -145,7 +132,7 @@ public class RedPacketService {
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
                 request = new HttpPost(
-                    "http://production_site:8300/subgraphs/name/redpacket_optimism");
+                    "http://103.99.179.200:8300/subgraphs/name/redpacket_optimism");
                 break;
 //            case Constants.CHAIN_ID_SEPOLIA: //sepolia
 //                request = new HttpPost(
@@ -157,7 +144,7 @@ public class RedPacketService {
 //                break;
             case Constants.CHAIN_ID_ARBITRUM: //arbitrum
                 request = new HttpPost(
-                    "http://production_site:8400/subgraphs/name/redpacket_arbitrum");
+                    "http://103.99.179.200:8400/subgraphs/name/redpacket_arbitrum");
                 break;
 //            case Constants.CHAIN_ID_ZKSYNC: //zksync
 //                request = new HttpPost(
