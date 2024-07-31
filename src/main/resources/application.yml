@@ -131,6 +131,6 @@ xxl:
       addresses: http://${XXL_JOB_ADMIN_HOST}/xxl-job-admin
     accessToken: ${XXL_JOB_TOKEN}
     executor:
-      appName: websit-backend
+      appName: ${XXL_JOB_APPNAME}
       port: 9998
       log-path: ${XXL_JOB_EXECUTOR_lOG_PATH} # executor log path
