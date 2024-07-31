@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,27 +90,29 @@ public class RedPacketController {
             public Predicate toPredicate(Root<RedPacket> root, CriteriaQuery<?> criteriaQuery,
                     CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (redPacket.getId() != null) {
-                    logger.info(redPacket.getId());
-                    predicates.add(criteriaBuilder.like(root.get("id"), "%" + redPacket.getId() + "%"));
-                }
-                if (redPacket.getName() != null) {
-                    predicates.add(criteriaBuilder.like(root.get("name"), "%" + redPacket.getName() + "%"));
-                }
-                if (redPacket.getChainId() != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("chainId"), redPacket.getChainId()));
-                }
-                if (redPacket.getCreator() != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("creator"), redPacket.getCreator()));
-                }
-                if (redPacket.getExpireTime() != null) {
-                    predicates.add(criteriaBuilder.lessThan(root.get("expireTime"), redPacket.getExpireTime()));
-                }
-                if (redPacket.getCreateTime() != null) {
-                    predicates.add(criteriaBuilder.greaterThan(root.get("createTime"), redPacket.getCreateTime()));
-                }
-                if (redPacket.getStatus() != null) {
-                    predicates.add(criteriaBuilder.like(root.get("status"), "%" + redPacket.getStatus() + "%"));
+                if (!ObjectUtils.isEmpty(redPacket)) {
+                    if (redPacket.getId() != null) {
+                        logger.info(redPacket.getId());
+                        predicates.add(criteriaBuilder.like(root.get("id"), "%" + redPacket.getId() + "%"));
+                    }
+                    if (redPacket.getName() != null) {
+                        predicates.add(criteriaBuilder.like(root.get("name"), "%" + redPacket.getName() + "%"));
+                    }
+                    if (redPacket.getChainId() != null) {
+                        predicates.add(criteriaBuilder.equal(root.get("chainId"), redPacket.getChainId()));
+                    }
+                    if (redPacket.getCreator() != null) {
+                        predicates.add(criteriaBuilder.equal(root.get("creator"), redPacket.getCreator()));
+                    }
+                    if (redPacket.getExpireTime() != null) {
+                        predicates.add(criteriaBuilder.lessThan(root.get("expireTime"), redPacket.getExpireTime()));
+                    }
+                    if (redPacket.getCreateTime() != null) {
+                        predicates.add(criteriaBuilder.greaterThan(root.get("createTime"), redPacket.getCreateTime()));
+                    }
+                    if (redPacket.getStatus() != null) {
+                        predicates.add(criteriaBuilder.like(root.get("status"), "%" + redPacket.getStatus() + "%"));
+                    }
                 }
                 predicates.add(criteriaBuilder.isNotNull(root.get("status")));
 
