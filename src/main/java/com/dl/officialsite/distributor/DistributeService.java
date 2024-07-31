@@ -40,6 +40,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -100,20 +101,17 @@ public class DistributeService {
 
     @Autowired
     private ConstantConfig constantConfig;
-    
+
     @Resource
     private MerkleDistributorConfig merkleDistributorConfig;
 
-    @Scheduled(cron = "${jobs.distribute.corn:0/30 * * * * ?}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateDistributeStatus() {
-        log.info("schedule task begin --------------------- ");
+        XxlJobHelper.log("DistributeService updateDistributeStatus start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateDistributeStatusByChainId(chainId);
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("updateDistributeStatusByChainId:  " + chainId + " error:" + e.getMessage());
+                XxlJobHelper.log("updateDistributeStatusByChainId:  " + chainId + " error:" + e.getMessage());
             }
         }
     }

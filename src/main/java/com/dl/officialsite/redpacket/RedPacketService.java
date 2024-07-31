@@ -7,6 +7,7 @@ import com.dl.officialsite.redpacket.config.RedPacketConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,16 +46,13 @@ public class RedPacketService {
 
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Scheduled(cron = "${jobs.redpacket.corn:0/30 * * * * ?}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateRedpacketStatus() {
-        log.info("schedule task begin --------------------- ");
+        XxlJobHelper.log("RedPacketService updateRedPacketStatus start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateRedpacketStatusByChainId(chainId);
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("updateRedpacketStatusByChainId:  " + chainId + " error:" + e.getMessage());
+                XxlJobHelper.log("updateRedPacketStatusByChainId:  " + chainId + " error:" + e.getMessage());
             }
         }
     }
@@ -67,7 +63,7 @@ public class RedPacketService {
             String jsonResponse = EntityUtils.toString(entity);
 
             if (jsonResponse.contains("errors")) {
-                log.info("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
+                XxlJobHelper.log("response from the graph: chainId{}, data {} ", chainId, jsonResponse);
                 return;
             }
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
@@ -75,19 +71,6 @@ public class RedPacketService {
             JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
             JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
             log.debug("lastupdatesArray" + lastupdatesArray.toString());
-
-            // todo
-//            if(lastupdatesArray.size() != 0){
-//                String lastTimestampFromGraph = lastupdatesArray.get(0).getAsJsonObject().get("lastupdateTimestamp").getAsString();
-//
-//                if(Objects.equals(lastTimestampFromGraph, lastUpdateTimestampMap.get(chainId))){
-//                    log.debug("chainId "+ chainId + "no event update");
-//                    return ;
-//                } else {
-//                    lastUpdateTimestampMap.put( chainId, lastTimestampFromGraph);
-//                    log.debug("chainId "+ chainId + "set new  event update: "+ lastTimestampFromGraph );
-//                }
-//            }
 
             List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
 
@@ -149,7 +132,7 @@ public class RedPacketService {
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
                 request = new HttpPost(
-                    "https://subgraph.satsuma-prod.com/f440a1fb5a7f/caodalong--672935/dloptimismredpacket/api");
+                    "https://gateway-arbitrum.network.thegraph.com/api/4146067af3cd632fedc37eef1783bdb2/subgraphs/id/G7LuMuUuWUW8UknEx8x2aVSeFtqpNMEKHvka2aKiDzRm");
                 break;
 //            case Constants.CHAIN_ID_SEPOLIA: //sepolia
 //                request = new HttpPost(
@@ -161,7 +144,7 @@ public class RedPacketService {
 //                break;
             case Constants.CHAIN_ID_ARBITRUM: //arbitrum
                 request = new HttpPost(
-                    "https://subgraph.satsuma-prod.com/f440a1fb5a7f/caodalong--672935/dlarbitrumredpacket/api");
+                    "http://103.99.179.200:8400/subgraphs/name/redpacket_arbitrum");
                 break;
 //            case Constants.CHAIN_ID_ZKSYNC: //zksync
 //                request = new HttpPost(

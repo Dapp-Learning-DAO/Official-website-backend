@@ -27,6 +27,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -86,8 +88,6 @@ public class WhaleService {
         this.whaleChainTokenRepository = whaleChainTokenRepository;
     }
 
-    @Scheduled(cron =  "${jobs.defi.corn: 0 30 * * * * ?}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void aaveListener() {
         List<Whale> whaleList = new ArrayList<>();
         List<WhaleTxRow> insertWhaleTxRowList = new ArrayList<>();
@@ -102,7 +102,12 @@ public class WhaleService {
         String jsonStr = requestAaveGraph(100, 0);
         JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
         if (jsonObject.toString().contains("error")) {
+            XxlJobHelper.log("解析aave的graph失败");
             throw new RuntimeException("解析aave的graph失败");
+        }
+        if(jsonObject == null || jsonObject.isEmpty()){
+            log.error("jsonObject为空 jsonObject = {}",jsonObject);
+            return;
         }
         JSONObject data = jsonObject.getJSONObject("data");
         JSONArray positions = data.getJSONArray("positions");
@@ -134,8 +139,11 @@ public class WhaleService {
 
     public void insertWhaleAndTx(List<Whale> whaleList, List<WhaleTxRow> whaleTxRowList) {
         log.info("开始插入数据");
+        XxlJobHelper.log("开始插入数据");
         log.info("whaleList.size() = {}-------------------", whaleList.size());
+        XxlJobHelper.log("whaleList.size() = {}-------------------", whaleList.size());
         log.info("whaleTxRowList.size() = {}-------------------", whaleTxRowList.size());
+        XxlJobHelper.log("whaleTxRowList.size() = {}-------------------", whaleTxRowList.size());
         if (!whaleList.isEmpty()) {
             batchRepository.batchInsert(whaleList);
         }
@@ -156,6 +164,7 @@ public class WhaleService {
             }
         }
         log.info("插入数据结束");
+        XxlJobHelper.log("插入数据结束");
     }
 
     private Long getOneYearBefore() {

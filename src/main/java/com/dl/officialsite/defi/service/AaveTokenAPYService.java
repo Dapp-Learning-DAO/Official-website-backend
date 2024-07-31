@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -131,12 +133,12 @@ public class AaveTokenAPYService extends AbstractTokenAPY {
         return new ArrayList<>(Web3jAutoConfiguration.web3jMap.keySet());
     }
 
-    @Scheduled(cron =  "${jobs.defi.corn: 0 30 * * * * ?}")
-    @ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
     public void updateTokenAPYInfo()  {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("update token info task begin --------------------- ");
+        XxlJobHelper.log("update token info task begin --------------------- ");
         log.info("now date {}", LocalDateTime.now().format(formatter));
+        XxlJobHelper.log("now date {}", LocalDateTime.now().format(formatter));
         List<TokenAPYInfo> tokenAPYInfoList = queryTokenApyOnChain();
         tokenAPYInfoRepository.deleteAll();
         tokenAPYInfoRepository.saveAll(tokenAPYInfoList);

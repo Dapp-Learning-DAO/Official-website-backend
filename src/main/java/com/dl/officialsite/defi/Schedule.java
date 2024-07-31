@@ -9,6 +9,8 @@ import com.dl.officialsite.team.vo.TeamQueryVo;
 import com.dl.officialsite.team.vo.TeamsWithMembers;
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,7 +40,6 @@ public class Schedule {
     /**
      * 监控价格一天发送一次
      */
-    @Scheduled(cron = "0 0 12 * * ?")
     public void monitorPrice() throws Exception {
         log.info("monitorPrice start");
         //查找team0 memeber获取地址
@@ -60,10 +61,9 @@ public class Schedule {
     /**
      * 监控健康系数，如果小于1.2，立即发送邮件
      */
-    @Scheduled(cron = "0 0/30 * * * ? ")
     public void monitorHealth() {
         try {
-            log.info("monitorHealth start");
+            XxlJobHelper.log("monitorHealth start");
             //查找team0 memeber获取地址
             TeamQueryVo teamQueryVo = new TeamQueryVo();
             teamQueryVo.setTeamName("Dapp-Learning DAO core founders");
@@ -85,7 +85,7 @@ public class Schedule {
                 }
             }
         } catch (Exception e) {
-            log.error("monitorHealth error", e);
+            XxlJobHelper.log("monitorHealth error", e);
         }
     }
 

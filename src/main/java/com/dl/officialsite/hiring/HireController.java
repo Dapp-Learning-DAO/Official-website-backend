@@ -58,7 +58,7 @@ public class HireController {
      * 查询招聘详情
      */
     @GetMapping
-    public BaseResponse detail(@RequestParam String address,@RequestParam Long id) {
+    public BaseResponse detail(@RequestParam Long id) {
         HiringVO hiringVO = hireService.detail(id);
         return BaseResponse.successWithData(hiringVO);
     }
@@ -67,7 +67,7 @@ public class HireController {
      * 查询所有招聘
      */
     @GetMapping("/all")
-    public BaseResponse all(@RequestParam String address,
+    public BaseResponse all(
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));

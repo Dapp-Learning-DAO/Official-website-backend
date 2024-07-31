@@ -70,7 +70,6 @@ public class BountyController {
      */
     @GetMapping("/detail")
     public BaseResponse detail(@RequestParam Long id,
-        @RequestParam String address,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
         BountyVo bountyVo = bountyService.findByIdInternal(id);
@@ -81,7 +80,7 @@ public class BountyController {
      * 查询bounty申请人下的信息
      */
     @GetMapping("/detail/member")
-    public BaseResponse detailMember(@RequestParam Long id, @RequestParam String address,
+    public BaseResponse detailMember(@RequestParam Long id,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));

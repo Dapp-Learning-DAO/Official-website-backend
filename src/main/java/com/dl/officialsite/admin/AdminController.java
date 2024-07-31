@@ -1,5 +1,6 @@
 package com.dl.officialsite.admin;
 
+import cn.hutool.core.util.StrUtil;
 import com.dl.officialsite.admin.vo.HireSearchParams;
 import com.dl.officialsite.bounty.BountyService;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
@@ -87,11 +88,11 @@ public class AdminController {
     }
 
     @PostMapping("/bounty/all")
-    public BaseResponse allBounty(@RequestParam String adminAddress,
+    public BaseResponse allBounty(@RequestParam(required = false) String adminAddress,
         @RequestParam(defaultValue = "1") Integer pageNumber,
         @RequestParam(defaultValue = "10") Integer pageSize,
         @RequestBody BountySearchVo bountySearchParams) {
-        if (!teamService.checkMemberIsAdmin(adminAddress)) {
+        if (StrUtil.isNotEmpty(adminAddress) && !teamService.checkMemberIsAdmin(adminAddress)) {
             throw new BizException(CodeEnums.NOT_THE_ADMIN);
         }
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize,
