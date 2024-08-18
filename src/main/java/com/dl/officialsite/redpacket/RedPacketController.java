@@ -31,6 +31,9 @@ public class RedPacketController {
 
     @Autowired
     private RedPacketRepository redPacketRepository;
+
+    @Autowired
+    private RedPacketService redPacketService;
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @PostMapping("/create")
