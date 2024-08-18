@@ -143,7 +143,7 @@ public class RedPacketService {
 //                break;
             case Constants.CHAIN_ID_ARBITRUM: //arbitrum
                 request = new HttpPost(
-                    "https://indexer.bigdevenergy.link/40a09e1/v1/graphql\n");
+                    "https://indexer.bigdevenergy.link/40a09e1/v1/graphql");
                 break;
 //            case Constants.CHAIN_ID_ZKSYNC: //zksync
 //                request = new HttpPost(
