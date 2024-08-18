@@ -68,8 +68,8 @@ public class RedPacketService {
             }
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
             JsonObject data = jsonObject.getAsJsonObject("data");
-            JsonArray redpacketsArray = data.getAsJsonArray("redpackets");
-            JsonArray lastupdatesArray = data.getAsJsonArray("lastupdates");
+            JsonArray redpacketsArray = data.getAsJsonArray("Redpacket");
+            JsonArray lastupdatesArray = data.getAsJsonArray("Lastupdate");
             log.debug("lastupdatesArray" + lastupdatesArray.toString());
 
             List<RedPacket> redPacketList = redPacketRepository.findUnfinishedRedpacketByChainId(chainId);
@@ -131,8 +131,7 @@ public class RedPacketService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
-                request = new HttpPost(
-                    "https://gateway-arbitrum.network.thegraph.com/api/4146067af3cd632fedc37eef1783bdb2/subgraphs/id/G7LuMuUuWUW8UknEx8x2aVSeFtqpNMEKHvka2aKiDzRm");
+                request = new HttpPost("https://indexer.bigdevenergy.link/f9489a8/v1/graphql");
                 break;
 //            case Constants.CHAIN_ID_SEPOLIA: //sepolia
 //                request = new HttpPost(
@@ -144,7 +143,7 @@ public class RedPacketService {
 //                break;
             case Constants.CHAIN_ID_ARBITRUM: //arbitrum
                 request = new HttpPost(
-                    "http://103.99.179.200:8400/subgraphs/name/redpacket_arbitrum");
+                    "https://indexer.bigdevenergy.link/40a09e1/v1/graphql\n");
                 break;
 //            case Constants.CHAIN_ID_ZKSYNC: //zksync
 //                request = new HttpPost(
@@ -168,29 +167,12 @@ public class RedPacketService {
         String creationTimeGtValue = String.valueOf(time);
 
 
-        String graphQL = "\" {" +
-            "  redpackets (where: { creationTime_gt: " + creationTimeGtValue + " }) {" +
-            "    id     " +
-            "    refunded   " +
-            "   lock " +
-            "    name       " +
-            "    creationTime   " +
-            "    allClaimed  " +
-            "    claimers {" +
-            "    claimer" +
-            "    claimedValue " +
-            "    }" +
-            " }" +
-            "  lastupdates (orderBy : lastupdateTimestamp , orderDirection: desc) { lastupdateTimestamp } " +
-
-            "}\"";
+        String graphQL = "{\n"
+            + "    \"query\": \"{\\n  Redpacket(\\n    where: {creationTime: {_gt: \\\"" + creationTimeGtValue + "\\\"}}\\n    order_by: {creationTime: desc}\\n  ) {\\n    id\\n    refunded\\n    lock\\n    name\\n    creationTime\\n    allClaimed\\n    claimers {\\n      claimer\\n      claimedValue\\n    }\\n  }\\n  Lastupdate(order_by: {lastupdateTimestamp: asc}) {\\n    lastupdateTimestamp\\n  }\\n}\"\n"
+            + "}";
 
 
-        String query = "{ \"query\": " +
-            graphQL +
-            " }";
-
-        request.setEntity(new StringEntity(query));
+        request.setEntity(new StringEntity(graphQL));
         HttpResponse response = httpClient.execute(request);
         // System.out.println("response" + response);
         HttpEntity entity = response.getEntity();
