@@ -69,6 +69,8 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/hire/all");
         add("/hire/detail");
         add("/share/search");
+        add("/share/query");
+        add("/sponsors/all");
     }} ;
 
     private Set<String> noAddrCheckApis = new HashSet() {{
