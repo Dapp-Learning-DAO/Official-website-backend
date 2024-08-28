@@ -27,7 +27,7 @@ public class SponsorController {
 
     }
     @GetMapping("/all")
-    public BaseResponse all(@RequestParam String address) {
+    public BaseResponse all() {
         List<Sponsor> sponsors = sponsorRepository.findAll();
         return BaseResponse.successWithData(sponsors);
     }
