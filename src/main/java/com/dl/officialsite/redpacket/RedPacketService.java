@@ -147,7 +147,7 @@ public class RedPacketService {
                 break;
             case Constants.CHAIN_ID_ZKSYNC: //zksync
                 request = new HttpPost(
-                    "https://indexer.bigdevenergy.link/8689fa6/v1/graphql");
+                    "https://indexer.bigdevenergy.link/93a81ef/v1/graphql");
                 break;
 /*            case Constants.CHAIN_ID_POLYGON_ZKEVM: //polygon zkevm
                 request = new HttpPost(
