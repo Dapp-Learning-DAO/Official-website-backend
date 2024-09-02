@@ -57,7 +57,7 @@ public class HireController {
     /**
      * 查询招聘详情
      */
-    @GetMapping
+    @GetMapping("/detail")
     public BaseResponse detail(@RequestParam Long id) {
         HiringVO hiringVO = hireService.detail(id);
         return BaseResponse.successWithData(hiringVO);
