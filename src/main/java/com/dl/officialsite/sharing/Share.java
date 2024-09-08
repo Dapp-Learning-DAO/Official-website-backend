@@ -133,6 +133,12 @@ public class Share {
     @Column
     private String otherMediumLink;
 
+    /**
+     * tag
+     */
+    @Column(name = "tag")
+    private String tag;
+
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;

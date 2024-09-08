@@ -127,4 +127,12 @@ public class SharingController {
         List<RankDto> rankList = sharingService.rank(rankNumber);
         return BaseResponse.successWithData(rankList);
     }
+
+    /**
+     * 查询分享标签
+     */
+    @PostMapping("/queryShareTag")
+    public BaseResponse queryShareTag(){
+        return BaseResponse.successWithData(sharingService.queryShareTag());
+    }
 }

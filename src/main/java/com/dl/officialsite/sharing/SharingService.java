@@ -9,6 +9,9 @@ import com.dl.officialsite.common.base.PagedList;
 import com.dl.officialsite.common.base.Pagination;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.config.bean.ServerConfig;
+import com.dl.officialsite.config.bean.ServerConfigRepository;
+import com.dl.officialsite.config.constant.ConfigEnum;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
@@ -16,7 +19,9 @@ import com.dl.officialsite.sharing.constant.SharingLockStatus;
 import com.dl.officialsite.sharing.constant.SharingStatus;
 import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
+import com.dl.officialsite.sharing.model.resp.ShareTagResp;
 import com.dl.officialsite.team.TeamService;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -48,6 +53,9 @@ public class SharingService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ServerConfigRepository serverConfigRepository;
 
     @Autowired(required = true)
     private HttpServletRequest request;
@@ -237,6 +245,11 @@ public class SharingService {
                 if (searchVo.getDate() != null) {
                     predicates.add(criteriaBuilder.greaterThan(root.get("date"), searchVo.getDate()));
                 }
+                if (searchVo.getTag() != null) {
+                    predicates.add(
+                            criteriaBuilder.like(root.get("tag"),
+                                    "%" + searchVo.getTag() + "%"));
+                }
                 query.orderBy(criteriaBuilder.desc(root.get("createTime")));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             }, pageable);
@@ -254,4 +267,15 @@ public class SharingService {
         }
         return rankDtoList;
     }
+
+    public ShareTagResp queryShareTag() {
+        ShareTagResp shareTagResp = new ShareTagResp();
+        Optional<ServerConfig> oneByConfigName = serverConfigRepository.findOneByConfigName(ConfigEnum.SHARE_TAG_KEY.getConfigName());
+        if (oneByConfigName.isPresent()) {
+            shareTagResp.setTagList(Lists.newArrayList(oneByConfigName.get().getConfigValue().split(",")));
+        }
+        return shareTagResp;
+    }
+
+
 }
