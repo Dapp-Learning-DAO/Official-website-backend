@@ -15,6 +15,7 @@ import com.dl.officialsite.oauth2.config.DiscordOAuthConfig;
 import com.dl.officialsite.oauth2.config.GitHubOAuthConfig;
 import com.dl.officialsite.oauth2.config.TelegramOAuthConfig;
 import com.dl.officialsite.oauth2.config.TwitterOAuthConfig;
+import com.dl.officialsite.sharing.config.ShareTagConfigService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -39,7 +40,8 @@ public enum ConfigEnum {
 
     CONTRACT_ADDRESS("CONTRACT_ADDRESS", EcdsaKeyConfigService.class),
     RED_PACKET_API_KEY("RED_PACKET_API_KEY", EcdsaKeyConfigService.class),
-    MERKLE_DISTRIBUTION_API_KEY("MERKLE_DISTRIBUTION_API_KEY", EcdsaKeyConfigService.class);
+    MERKLE_DISTRIBUTION_API_KEY("MERKLE_DISTRIBUTION_API_KEY", EcdsaKeyConfigService.class),
+    SHARE_TAG_KEY("SHARE_TAG_KEY",ShareTagConfigService .class);
 
     private String configName;
     private Class<? extends Refreshable> refreshClass;
