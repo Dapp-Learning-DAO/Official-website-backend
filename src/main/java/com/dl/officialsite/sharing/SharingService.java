@@ -123,6 +123,7 @@ public class SharingService {
             sharing.setLabel(req.getLabel());
             sharing.setBilibiliLink(req.getBilibiliLink());
             sharing.setYoutubeLink(req.getYoutubeLink());
+            sharing.setTag(req.getTag());
 
             this.sharingRepository.save(sharing);
 /*            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

@@ -73,4 +73,9 @@ public class UpdateSharingReq {
     private String youtubeLink;
 
     private String bilibiliLink;
+
+    /**
+     * tag
+     */
+    private String tag;
 }
