@@ -150,6 +150,7 @@ public class MemberService {
     }
 
     public void updateShareCount(){
+        //TODO 考虑到数据量大，后期分页查询或者修改触发点
         List<Share> shareList = sharingRepository.findAll();
         List<Member> memberList = memberRepository.findAll();
         // 将shareList按照presenter分组统计求和，得到一个map,key为presenter，value为分享次数
