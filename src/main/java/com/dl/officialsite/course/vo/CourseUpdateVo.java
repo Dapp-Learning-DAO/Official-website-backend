@@ -23,8 +23,8 @@ public class CourseUpdateVo {
     private String remark;
     //合作社区
     private String cooperateCommunity;
-    //课程状态
-    private Integer status;
+//    //课程状态
+//    private Integer status;
 
     /**
      * 分享id列表

@@ -33,8 +33,8 @@ public class CourseQueryVo {
     //更新时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Long updateTime;
-    //状态,0:进行中,1:已结束
-    private Integer status;
+//    //状态,0:进行中,1:已结束
+//    private Integer status;
 
     private Page<Share> sharePage;
 }
