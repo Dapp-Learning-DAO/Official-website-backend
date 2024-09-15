@@ -23,5 +23,5 @@ public class CourseShareAddReq {
     /**
      * 分享id列表
      */
-    private Long shareId;
+    private List<Long> shareIdList;
 }

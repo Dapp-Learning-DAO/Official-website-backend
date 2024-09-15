@@ -2,6 +2,8 @@ package com.dl.officialsite.course.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author xiaoming
@@ -16,4 +18,9 @@ public class CourseAddVo {
     private String remark;
     //合作社区
     private String cooperateCommunity;
+
+    /**
+     * 分享id列表
+     */
+    private List<Long> shareIdList;
 }

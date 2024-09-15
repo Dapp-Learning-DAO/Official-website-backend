@@ -42,4 +42,15 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
     @Transactional
     @Query("update Share s set s.courseId = null where s.id = :id")
     void updateCourseIdToNull(@Param("id") Long id);
+
+
+    //通过idList将share表中的courseId字段置为null
+    @Modifying
+    @Transactional
+    @Query("update Share s set s.courseId = null where s.id in :idList")
+    void updateCourseIdToNull(@Param("idList") List<Long> idList);
+
+    //通过courseId查询share表中的数据
+    @Query(value = "select * from share s where s.course_id = :courseId", nativeQuery = true)
+    List<Share> findByCourseId(Long courseId);
 }

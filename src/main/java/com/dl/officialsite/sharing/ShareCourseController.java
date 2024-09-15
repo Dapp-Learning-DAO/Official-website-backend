@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/shareCourse")
 @Slf4j
+@Deprecated
 public class ShareCourseController {
 
     @Resource

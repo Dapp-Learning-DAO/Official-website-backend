@@ -44,15 +44,18 @@ public class CourseController {
     }
 
     @PostMapping("/detail")
-    public BaseResponse detail(@RequestParam Long id) {
-        return BaseResponse.successWithData(courseService.detail(id));
+    public BaseResponse detail(@RequestParam Long id, @RequestParam(defaultValue = "1") Integer pageNumber,
+                               @RequestParam(defaultValue = "10") Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        return BaseResponse.successWithData(courseService.detail(id, pageable));
     }
 
     @PostMapping("/list")
-    public BaseResponse list(@RequestBody CourseSearchVo courseSearchVo,
+    public BaseResponse list(
                              @RequestParam(defaultValue = "1") Integer pageNumber,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
+        CourseSearchVo courseSearchVo = new CourseSearchVo();
         Page<CourseQueryVo> page = courseService.search(courseSearchVo, pageable);
         return BaseResponse.successWithData(page);
     }

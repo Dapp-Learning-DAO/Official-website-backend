@@ -1,9 +1,11 @@
 package com.dl.officialsite.course.vo;
 
+import com.dl.officialsite.sharing.Share;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 /**
  * @Description
@@ -33,4 +35,6 @@ public class CourseQueryVo {
     private Long updateTime;
     //状态,0:进行中,1:已结束
     private Integer status;
+
+    private Page<Share> sharePage;
 }

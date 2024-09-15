@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author xiaoming
@@ -23,4 +25,9 @@ public class CourseUpdateVo {
     private String cooperateCommunity;
     //课程状态
     private Integer status;
+
+    /**
+     * 分享id列表
+     */
+    private List<Long> shareIdList;
 }
