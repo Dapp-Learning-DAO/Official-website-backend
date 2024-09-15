@@ -139,6 +139,12 @@ public class Share {
     @Column(name = "tag")
     private String tag;
 
+    /**
+     * 课程Id
+     */
+    @Column(name = "course_id")
+    private Long courseId;
+
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;
