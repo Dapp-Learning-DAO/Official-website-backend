@@ -5,8 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import javax.transaction.Transactional;
 
 public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecificationExecutor<Share> {
 
@@ -33,4 +36,10 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
     @Query(value = "SELECT presenter, COUNT(*) AS shareCount FROM share GROUP BY presenter ORDER"
         + " BY shareCount DESC LIMIT :rankNumber" ,nativeQuery = true)
     List<Object[]> findTopGroups(@Param("rankNumber") Integer rankNumber);
+
+    //通过id将share表中的courseId字段置为null
+    @Modifying
+    @Transactional
+    @Query("update Share s set s.courseId = null where s.id = :id")
+    void updateCourseIdToNull(@Param("id") Long id);
 }
