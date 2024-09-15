@@ -1,7 +1,5 @@
 package com.dl.officialsite.course;
 
-import com.dl.officialsite.bounty.vo.BountySearchVo;
-import com.dl.officialsite.bounty.vo.BountyVo;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.course.vo.CourseAddVo;
 import com.dl.officialsite.course.vo.CourseQueryVo;
@@ -46,7 +44,7 @@ public class CourseController {
     }
 
     @PostMapping("/detail")
-    public BaseResponse detail(@RequestParam Long id, @RequestParam String address) {
+    public BaseResponse detail(@RequestParam Long id) {
         return BaseResponse.successWithData(courseService.detail(id));
     }
 
