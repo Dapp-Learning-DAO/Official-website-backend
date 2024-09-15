@@ -34,7 +34,7 @@ public class ShareCourseService {
 
     public void deleteShareCourse(CourseShareDeleteReq courseShareDeleteReq){
         Long shareId = courseShareDeleteReq.getShareId();
-//        sharingRepository.findById(shareId).orElseThrow(() -> new BizException(CodeEnums.SHARING_NOT_FOUND.getCode(), CodeEnums.SHARING_NOT_FOUND.getMsg()));
+        sharingRepository.findById(shareId).orElseThrow(() -> new BizException(CodeEnums.SHARING_NOT_FOUND.getCode(), CodeEnums.SHARING_NOT_FOUND.getMsg()));
         sharingRepository.updateCourseIdToNull(shareId);
     }
 }
