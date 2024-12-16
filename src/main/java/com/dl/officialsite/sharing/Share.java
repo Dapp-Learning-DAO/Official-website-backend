@@ -154,7 +154,4 @@ public class Share {
 
     @Transient
     private String shareCount;
-
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String outline;
 }
