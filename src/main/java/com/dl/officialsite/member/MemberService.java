@@ -5,6 +5,8 @@ import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.common.utils.UserSecurityUtils;
 import com.dl.officialsite.hiring.application.ApplicationRepository;
+import com.dl.officialsite.sharing.Share;
+import com.dl.officialsite.sharing.SharingRepository;
 import com.dl.officialsite.team.Team;
 import com.dl.officialsite.team.TeamRepository;
 import com.dl.officialsite.team.TeamService;
@@ -19,8 +21,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.dl.officialsite.common.enums.CodeEnums.INVALID_MEMBER;
 
@@ -40,6 +44,8 @@ public class MemberService {
     private ApplicationRepository applicationRepository;
     @Autowired
     private MemberManager memberManager;
+    @Autowired
+    private SharingRepository sharingRepository;
 
     public MemberWithTeam getMemberWithTeamInfoByAddress(String address) {
         Optional<Member> member = memberRepository.findByAddress(address);
@@ -141,6 +147,28 @@ public class MemberService {
             result.add(filteredMember);
         }
         return result;
+    }
+
+    public void updateShareCount(){
+        //TODO 考虑到数据量大，后期分页查询或者修改触发点
+        List<Share> shareList = sharingRepository.findAll();
+        List<Member> memberList = memberRepository.findAll();
+        // 将shareList按照presenter分组统计求和，得到一个map,key为presenter，value为分享次数
+        Map<String, Long> presenterShareCountMap = shareList.stream()
+                .collect(Collectors.groupingBy(Share::getPresenter, Collectors.counting()));
+
+        // 遍历memberList，根据nickName找到对应的presenter，将分享次数赋值给member的shareCount字段
+        for (Member member : memberList) {
+            Long shareCount = presenterShareCountMap.get(member.getNickName());
+            if (shareCount != null) {
+                member.setShareCount(Math.toIntExact(shareCount));
+            } else {
+                member.setShareCount(0);
+            }
+        }
+        // 保存member
+        memberRepository.saveAll(memberList);
+
     }
 
 }

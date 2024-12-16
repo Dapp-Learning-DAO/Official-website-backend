@@ -44,4 +44,9 @@ public class ShareSearchVo {
      */
     private String label;
 
+    /**
+     * tag
+     */
+    private String tag;
+
 }
