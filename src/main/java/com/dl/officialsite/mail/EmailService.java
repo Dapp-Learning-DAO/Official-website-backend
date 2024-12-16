@@ -9,6 +9,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @Component
+@Slf4j
 public class EmailService {
 
 
@@ -28,7 +30,7 @@ public class EmailService {
     private String from;
 
     public void sendSimpleMessage(
-            String to, String subject, String text) {
+        String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
@@ -59,6 +61,27 @@ public class EmailService {
         message.setCc("dapplearning@gmail.com");
         emailSender.send(message);
     }
+
+    public void sendMail(List<String> to, String subject, String text, List<String> cc) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+
+        // 将 List<String> 转换为 String[] 并设置多个收件人
+        message.setTo(to.toArray(new String[0]));
+
+        // 如果 cc 不为空，将其转换为 String[] 并设置多个抄送人
+        if (cc != null && !cc.isEmpty()) {
+            message.setCc(cc.toArray(new String[0]));
+        }
+
+        message.setSubject(subject);
+        message.setText(text);
+
+        // 发送邮件
+        log.info("Sending email to: {}, tile: {}, content: {}", to, subject, text);
+        emailSender.send(message);
+    }
+
 
     public void sendMailWithFile(String to, String subject, String text, MultipartFile file)
         throws Exception {
