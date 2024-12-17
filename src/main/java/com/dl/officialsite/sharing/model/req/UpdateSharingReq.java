@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import lombok.Data;
 
-import javax.persistence.Column;
-
 @Data
 public class UpdateSharingReq {
 
@@ -85,4 +83,7 @@ public class UpdateSharingReq {
      * 课程Id
      */
     private Long courseId;
+
+    @ApiModelProperty("课程大纲")
+    private String outline;
 }

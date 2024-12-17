@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -57,9 +56,6 @@ public class SharingService {
 
     @Autowired
     private ServerConfigRepository serverConfigRepository;
-
-    @Autowired(required = true)
-    private HttpServletRequest request;
 
     @Autowired
     TeamService teamService;
@@ -164,14 +160,9 @@ public class SharingService {
             sharing.setYoutubeLink(req.getYoutubeLink());
             sharing.setTag(req.getTag());
             sharing.setCourseId(req.getCourseId());
+            sharing.setOutline(req.getOutline());
 
             this.sharingRepository.save(sharing);
-/*            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            String formatDate = format.format(req.getDate());
-            applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
-                ChannelEnum.SHARING,
-                NotifyMessageFactory.sharingMessage("‼️‼️Edit Share Info‼️‼️", member.getNickName(), req.getTheme(),
-                    formatDate)));*/
         } else {
             throw new BizException(CodeEnums.SHARING_NOT_OWNER_OR_ADMIN);
         }
