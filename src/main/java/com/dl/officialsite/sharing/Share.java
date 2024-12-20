@@ -133,6 +133,18 @@ public class Share {
     @Column
     private String otherMediumLink;
 
+    /**
+     * tag
+     */
+    @Column(name = "tag")
+    private String tag;
+
+    /**
+     * 课程Id
+     */
+    @Column(name = "course_id")
+    private Long courseId;
+
     @CreatedDate
     @Column(updatable = false)
     private Long createTime;
@@ -142,4 +154,7 @@ public class Share {
 
     @Transient
     private String shareCount;
+  
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String outline;
 }

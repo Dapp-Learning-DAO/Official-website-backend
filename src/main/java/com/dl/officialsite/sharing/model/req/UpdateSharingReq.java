@@ -73,4 +73,17 @@ public class UpdateSharingReq {
     private String youtubeLink;
 
     private String bilibiliLink;
+
+    /**
+     * tag
+     */
+    private String tag;
+
+    /**
+     * 课程Id
+     */
+    private Long courseId;
+
+    @ApiModelProperty("课程大纲")
+    private String outline;
 }
