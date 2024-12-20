@@ -1,5 +1,6 @@
 package com.dl.officialsite.sharing;
 
+import cn.hutool.core.lang.Assert;
 import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
@@ -42,6 +43,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -72,62 +83,24 @@ public class SharingService {
 
     @Transactional(rollbackFor = Exception.class)
     public Share createSharing(Share share, String address) {
-        // 保存分享记录
+        /**
+         * 登陆用户转member
+         */
+//        SessionUserInfo userInfo = HttpSessionUtils.getMember(request.getSession());
+//        Preconditions.checkState(userInfo != null, "User info not null");
+//        Optional<Member> memberOpt = this.memberRepository.findByAddress(userInfo.getAddress());
+//        Member member = memberOpt.get();
+//        if(member.getId() != req.)
         share = sharingRepository.save(share);
-
-        // 查找分享创建者的信息
-        Member creatorInfo = memberRepository.findByAddress(address)
-            .orElseThrow(() -> new IllegalArgumentException("Member not found by address: " + address));
-
-        // 格式化日期
-        String formattedDate = formatDate(share.getDate());
-
-        // 发布事件通知
-        publishShareCreationEvent(creatorInfo, share, formattedDate);
-
-        // 准备邮件内容
-        String emailTitle = "New Sharing Created";
-        String emailContent = createEmailContent(share, creatorInfo);
-
-        // 定义邮件收件人列表
-        List<String> toAddressList = Stream.of(
-            "0xstan.com@gmail.com", "yanyanho126@gmail.com", "longdacao2@gmail.com"
-        ).collect(Collectors.toList());
-
-        // 发送邮件
-        emailService.sendMail(toAddressList, emailTitle, emailContent, null);
-
-        return share;
-    }
-
-    private String formatDate(Date date) {
-        // 格式化日期为字符串
+        Member creatorInfo = memberRepository.findByAddress(address).orElse(null);
+        Assert.isNull(creatorInfo, "not found member by address");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(date);
-    }
-
-    private void publishShareCreationEvent(Member creatorInfo, Share share, String formattedDate) {
-        // 发布创建分享事件的通知
-        applicationContext.publishEvent(new EventNotify(
-            Member.class,
-            BotEnum.TELEGRAM,
+        String formatDate = format.format(share.getDate());
+        applicationContext.publishEvent(new EventNotify(Member.class, BotEnum.TELEGRAM,
             ChannelEnum.SHARING,
-            NotifyMessageFactory.sharingMessage(
-                "👏Create New Share👏",
-                creatorInfo.getNickName(),
-                share.getTheme(),
-                formattedDate
-            )
-        ));
-    }
-
-    private String createEmailContent(Share share, Member creatorInfo) {
-        // 构造邮件内容
-        return String.format(
-            "Have a new sharing\n👉👉👉Theme: %s👈👈👈\nCreator: %s",
-            share.getTheme(),
-            creatorInfo.getNickName()
-        );
+            NotifyMessageFactory.sharingMessage("👏Create New Share👏", creatorInfo.getNickName(), share.getTheme(),
+                formatDate)));
+        return share;
     }
 
 
