@@ -8,6 +8,7 @@ import com.dl.officialsite.bot.constant.BotEnum;
 import com.dl.officialsite.bot.constant.ChannelEnum;
 import com.dl.officialsite.bot.event.EventNotify;
 import com.dl.officialsite.bot.event.NotifyMessageFactory;
+import com.dl.officialsite.bounty.params.ApplyBountyParam;
 import com.dl.officialsite.bounty.vo.ApplyBountyVo;
 import com.dl.officialsite.bounty.vo.BountyMemberVo;
 import com.dl.officialsite.bounty.vo.BountySearchVo;
@@ -18,22 +19,18 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.mail.EmailService;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+import com.xxl.job.core.context.XxlJobHelper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.criteria.Predicate;
-
-import com.xxl.job.core.context.XxlJobHelper;
-import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -181,7 +178,9 @@ public class BountyService {
         return mapToBountyVo(bounty);
     }
 
-    public void apply(Long bountyId, String address) {
+    public void apply(ApplyBountyParam applyBountyParam) {
+        Long bountyId = applyBountyParam.getBountyId();
+        String address = applyBountyParam.getAddress();
         Bounty bounty = bountyRepository.findById(bountyId)
             .orElseThrow(
                 () -> new BizException(NOT_FOUND_BOUNTY.getCode(), NOT_FOUND_BOUNTY.getMsg()));
@@ -197,13 +196,18 @@ public class BountyService {
         bountyMemberMap.setBountyId(bountyId);
         bountyMemberMap.setMemberAddress(address);
         bountyMemberMap.setStatus(Constants.BOUNTY_MEMBER_MAP_STATUS_APPLY);
+        bountyMemberMap.setContractAddress(applyBountyParam.getContractAddress());
+        bountyMemberMap.setIntroduction(applyBountyParam.getIntroduction());
         bountyMemberMapRepository.save(bountyMemberMap);
         String creatorAddress = bounty.getCreator();
         Member createBountyMember = memberRepository.findByAddress(creatorAddress)
             .orElseThrow(() -> new BizException(NOT_FOUND_MEMBER.getCode(), NOT_FOUND_MEMBER.getMsg()));
 
         try {
-            emailService.sendMail(createBountyMember.getEmail(), "有新人申请bounty", "赶紧去看看吧 https://dapplearning.org/bounty");
+            emailService.sendMail(createBountyMember.getEmail(), "有新人申请bounty", "bounty名称:"
+                + bounty.getTitle() + "\n" + "申请人地址:" + createBountyMember.getAddress() +
+                "\n" + "赶紧去看看吧 "
+                + "https://dapplearning.org/bounty");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

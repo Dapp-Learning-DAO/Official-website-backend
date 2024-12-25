@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -36,6 +35,11 @@ public class BountyMemberMap {
     private String memberAddress;
 
     private Integer status;
+
+    private String contractAddress;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String introduction;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = true)
