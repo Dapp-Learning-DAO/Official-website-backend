@@ -19,10 +19,10 @@ public class ApplyBountyParam {
     @NotBlank(message = "address not blank")
     private String address;
 
-    @NotBlank(message = "contractAddress not blank")
+    //@NotBlank(message = "contractAddress not blank")
     private String contractAddress;
 
-    @NotBlank(message = "introduction not blank")
+    //@NotBlank(message = "introduction not blank")
     private String introduction;
 
 }
