@@ -25,6 +25,7 @@ import com.dl.officialsite.tokenInfo.TokenInfoRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import com.xxl.job.core.context.XxlJobHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -52,7 +52,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -60,7 +59,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -230,27 +228,27 @@ public class DistributeService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP: // op
-                request = new HttpPost("https://subgraph.satsuma-prod.com/3213d35a17f1/zhes-team--158805/dloptimismdistribute/api");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/f9e44a3/v1/graphql");
                 break;
-//            case Constants.CHAIN_ID_SEPOLIA: // sepolia
-//                request = new HttpPost(
-//                        "https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/9p6zFejTBC2bLLJRCdrk1A2PXfZkriRMacM5wiCAyh5Z");
-//                break;
-//            case Constants.CHAIN_ID_SCROLL: // scroll
-//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
-//                break;
+            case Constants.CHAIN_ID_SEPOLIA: // sepolia
+                request = new HttpPost(
+                        "https://indexer.dev.hyperindex.xyz/22fcb49/v1/graphql");
+                break;
+/*            case Constants.CHAIN_ID_SCROLL: // scroll
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/8HhHjdsXrZ1cjq5qNpksoWfAm1NTDDFhH2Yb8ZkBixjo");
+                break;
             case Constants.CHAIN_ID_ARBITRUM: // arbitrum
                 request = new HttpPost("https://subgraph.satsuma-prod.com/3213d35a17f1/zhes-team--158805/dlarbitrumdistribute/api");
                 break;
-//            case Constants.CHAIN_ID_ZKSYNC: // zksync
-//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
-//                break;
-//            case Constants.CHAIN_ID_POLYGON_ZKEVM: // polygon zkevm
-//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/A46TwCAxDy4upqLuS7bgXd14yLQdTjfS4AVPMNwWkZSR");
-//                break;
-//            case Constants.CHAIN_ID_LINEA: //linea
-//                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DatcM6CoN5u79XPx1wYFFnWXpHYcfDodkbycx2vSp25C");
-//                break;
+            case Constants.CHAIN_ID_ZKSYNC: // zksync
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DzTmBT2V5kFQL6LpjC3iubYkusfj4HLVScCrAcT2DKGK");
+                break;
+            case Constants.CHAIN_ID_POLYGON_ZKEVM: // polygon zkevm
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/A46TwCAxDy4upqLuS7bgXd14yLQdTjfS4AVPMNwWkZSR");
+                break;
+            case Constants.CHAIN_ID_LINEA: //linea
+                request = new HttpPost("https://gateway-arbitrum.network.thegraph.com/api/" + merkleDistributorConfig.getGraphConfig().getKey()  +"/subgraphs/id/DatcM6CoN5u79XPx1wYFFnWXpHYcfDodkbycx2vSp25C");
+                break;*/
         }
 
         if (request == null)
