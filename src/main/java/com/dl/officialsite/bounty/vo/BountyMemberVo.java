@@ -3,12 +3,7 @@ package com.dl.officialsite.bounty.vo;
 import com.dl.officialsite.member.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * @ClassName BountyMemberVo
@@ -37,4 +32,8 @@ public class BountyMemberVo {
     private Date createTime;
 
     private Member member;
+
+    private String contractAddress;
+
+    private String introduction;
 }

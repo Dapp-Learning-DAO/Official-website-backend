@@ -131,13 +131,13 @@ public class RedPacketService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
-                request = new HttpPost("https://indexer.bigdevenergy.link/f9489a8/v1/graphql");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/31816b0/v1/graphql");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: //sepolia
                 request = new HttpPost(
-                    "https://indexer.bigdevenergy.link/83930ab/v1/graphql");
+                    "https://indexer.dev.hyperindex.xyz/616a894/v1/graphql");
                 break;
-            case Constants.CHAIN_ID_SCROLL: //scrool
+/*            case Constants.CHAIN_ID_SCROLL: //scrool
                 request = new HttpPost(
                     "https://indexer.bigdevenergy.link/d3f3a96/v1/graphql");
                 break;
@@ -148,7 +148,7 @@ public class RedPacketService {
             case Constants.CHAIN_ID_ZKSYNC: //zksync
                 request = new HttpPost(
                     "https://indexer.bigdevenergy.link/93a81ef/v1/graphql");
-                break;
+                break;*/
 /*            case Constants.CHAIN_ID_POLYGON_ZKEVM: //polygon zkevm
                 request = new HttpPost(
                     "https://gateway-arbitrum.network.thegraph.com/api/" + redPacketConfig.getGraphConfig().getKey()  +"/subgraphs/id/5DsufFHE6P7tK7QT1mGCPrQEKURD2E1SSHAyCSzf5CAg");
