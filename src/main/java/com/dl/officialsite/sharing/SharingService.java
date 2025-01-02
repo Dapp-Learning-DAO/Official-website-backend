@@ -123,11 +123,20 @@ public class SharingService {
     }
 
     private String createEmailContent(Share share, Member creatorInfo) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String shareTime = formatter.format(share.getDate()) + "-" + share.getTime();
+        String shareLanguage = share.getLanguage() == 0 ? "Chinese" : "English";
         // 构造邮件内容
         return String.format(
-            "Have a new sharing\n👉👉👉Theme: %s👈👈👈\nCreator: %s",
+            "Have a new sharing\n👉👉👉Theme: %s👈👈👈\nOutLine: %s\nCreator: %s\nlanguage: "
+                + "%s\nsharingDoc: %s\nShareTime: %s\nOrg: %s\n",
             share.getTheme(),
-            creatorInfo.getNickName()
+            share.getOutline(),
+            creatorInfo.getNickName(),
+            shareLanguage,
+            share.getSharingDoc(),
+            shareTime,
+            share.getOrg()
         );
     }
 
