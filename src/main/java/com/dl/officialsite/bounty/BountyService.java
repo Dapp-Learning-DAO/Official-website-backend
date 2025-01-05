@@ -207,7 +207,7 @@ public class BountyService {
             emailService.sendMail(createBountyMember.getEmail(), "有新人申请bounty", "bounty名称:" + bounty.getTitle() + "\n"
                 + "申请人地址:" + createBountyMember.getAddress()  + "\n"
                 + "联系方式:" + applyBountyParam.getContractAddress() + "\n"
-                + "简介:" + applyBountyParam.getIntroduction() + "\n"
+                + "简介:\n" + applyBountyParam.getIntroduction() + "\n"
                 + "赶紧去看看吧: https://dapplearning.org/bounty");
         } catch (Exception e) {
             throw new RuntimeException(e);
