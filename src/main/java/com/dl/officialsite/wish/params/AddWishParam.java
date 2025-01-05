@@ -1,7 +1,6 @@
 package com.dl.officialsite.wish.params;
 
 import com.dl.officialsite.wish.Wish;
-import javax.persistence.Column;
 import lombok.Data;
 
 /**
@@ -15,7 +14,6 @@ public class AddWishParam {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String tag;
@@ -26,7 +24,7 @@ public class AddWishParam {
 
     private String createAddress;
 
-    public Wish buildWish() {
+    public Wish toWish() {
         Wish wish = new Wish();
         wish.setTitle(title);
         wish.setDescription(description);
