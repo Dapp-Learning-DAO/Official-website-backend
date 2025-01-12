@@ -28,6 +28,8 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String vaultId;
+
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -35,9 +37,13 @@ public class Wish {
 
     private String tag;
 
+    private String tokenSymbol;
+
+    private String targetAmount;
+
     private String amount;
 
-    private String applyAddress;
+    private Integer likeNumber;
 
     private String shareUrl;
 
@@ -45,9 +51,15 @@ public class Wish {
 
     private String shareAddress;
 
+    private Integer status;
+
     private String createUser;
 
     private String createAddress;
+
+    private LocalDateTime beginTime;
+
+    private LocalDateTime endTime;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
