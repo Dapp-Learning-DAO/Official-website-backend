@@ -19,8 +19,8 @@ import org.hibernate.annotations.CreationTimestamp;
  **/
 @Data
 @Entity
-@Table(name = "wish_like")
-public class WishLike {
+@Table(name = "wish_apply")
+public class WishApply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +29,10 @@ public class WishLike {
     private Long wishId;
 
     private Long memberId;
+
+    private String amount;
+
+    private String tokenSymbol;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

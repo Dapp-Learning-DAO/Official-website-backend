@@ -2,6 +2,7 @@ package com.dl.officialsite.wish;
 
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.wish.params.AddWishParam;
+import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
 import com.dl.officialsite.wish.result.WishDetailResult;
@@ -72,8 +73,8 @@ public class WishController {
 
     //like wish
     @PostMapping("/like")
-    public BaseResponse like(@RequestParam String address, @RequestParam Long wishId) {
-        wishService.like(address, wishId);
+    public BaseResponse like(@RequestParam Long wishId) {
+        wishService.like(wishId);
         return BaseResponse.success();
     }
 
@@ -84,14 +85,14 @@ public class WishController {
         @RequestParam(value = "pageNo",defaultValue = "1") int pageNumber,
         @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        Page<WishLike> page = wishService.getLikeList(wishId, pageable);
+        Page<WishApply> page = wishService.getLikeList(wishId, pageable);
         return BaseResponse.successWithData(page);
     }
 
     //apply wish
     @PostMapping("/apply")
-    public BaseResponse apply(@RequestParam String address, @RequestParam Long wishId) {
-        wishService.apply(address, wishId);
+    public BaseResponse apply(@RequestParam String address, @RequestBody ApplyWishParam applyWishParam) {
+        wishService.apply(address, applyWishParam);
         return BaseResponse.success();
     }
 

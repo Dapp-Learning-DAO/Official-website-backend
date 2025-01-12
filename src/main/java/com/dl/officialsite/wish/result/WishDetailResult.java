@@ -16,17 +16,21 @@ public class WishDetailResult {
 
     private Long id;
 
+    private String vaultId;
+
     private String title;
 
     private String description;
 
     private String tag;
 
+    private String tokenSymbol;
+
+    private String targetAmount;
+
     private String amount;
 
-    private String applyUser;
-
-    private String applyAddress;
+    private Integer likeNumber;
 
     private String shareUrl;
 
@@ -37,6 +41,12 @@ public class WishDetailResult {
     private String createUser;
 
     private String createAddress;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime beginTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime endTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

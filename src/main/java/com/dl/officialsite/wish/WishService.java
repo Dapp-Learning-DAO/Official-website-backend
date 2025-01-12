@@ -5,6 +5,7 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.wish.params.AddWishParam;
+import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
 import com.dl.officialsite.wish.result.WishDetailResult;
@@ -49,10 +50,7 @@ public class WishService {
 
     public void edit(EditWishParam editWishParam, String address) {
         Long id = editWishParam.getId();
-        Wish wish = wishRepository.findById(id).orElse(null);
-        if (ObjectUtils.isEmpty(wish)) {
-            throw new RuntimeException("许愿清单不存在");
-        }
+        Wish wish = wishRepository.findById(id).orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
         BeanUtils.copyProperties(editWishParam, wish);
         wishRepository.save(wish);
     }
@@ -98,19 +96,20 @@ public class WishService {
     }
 
     @Transactional
-    public void like(String address, Long wishId) {
-        Member member =
-            memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
-                CodeEnums.NOT_FOUND_MEMBER));
-        WishLike wishLike = new WishLike();
-        wishLike.setMemberId(member.getId());
-        wishLike.setWishId(wishId);
-        wishLikeRepository.save(wishLike);
+    public void like(Long wishId) {
+        Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new BizException(
+            CodeEnums.NOT_FOUND_WISH
+        ));
+        if (ObjectUtils.isEmpty(wish.getLikeNumber())) {
+            wish.setLikeNumber(0);
+        }
+        wish.setLikeNumber(wish.getLikeNumber() + 1);
+        wishRepository.save(wish);
     }
 
-    public Page<WishLike> getLikeList(Long wishId, Pageable pageable) {
-        Page<WishLike> page = wishLikeRepository.findAll(
-            (Specification<WishLike>) (root, query, criteriaBuilder) -> {
+    public Page<WishApply> getLikeList(Long wishId, Pageable pageable) {
+        Page<WishApply> page = wishLikeRepository.findAll(
+            (Specification<WishApply>) (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new LinkedList<>();
                 predicates.add(criteriaBuilder.equal(root.get("wishId"), wishId));
                 query.orderBy(criteriaBuilder.desc(root.get("createTime")));
@@ -120,15 +119,22 @@ public class WishService {
     }
 
     @Transactional
-    public void apply(String address, Long wishId) {
-        Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new BizException(
+    public void apply(String address, ApplyWishParam applyWishParam) {
+        Wish wish = wishRepository.findById(applyWishParam.getWishId()).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));
         Member member =
             memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
                 CodeEnums.NOT_FOUND_MEMBER));
-        wish.setApplyAddress(member.getAddress());
-        wishRepository.save(wish);
+        WishApply wishApply = new WishApply();
+        wishApply.setWishId(wish.getId());
+        wishApply.setMemberId(member.getId());
+        wishApply.setAmount(applyWishParam.getAmount());
+        wishApply.setTokenSymbol(applyWishParam.getTokenSymbol());
+        wishLikeRepository.save(wishApply);
 
     }
 }
+
+
+

@@ -19,6 +19,12 @@ public class EditWishParam {
 
     private String tag;
 
-    private String amount;
+    private String shareUrl;
+
+    private String shareUser;
+
+    private String shareAddress;
+
+    private Integer status;
 
 }

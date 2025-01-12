@@ -1,7 +1,9 @@
 package com.dl.officialsite.wish.params;
 
 import com.dl.officialsite.wish.Wish;
+import java.time.LocalDateTime;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 /**
  * @ClassName AddWishParams
@@ -12,11 +14,17 @@ import lombok.Data;
 @Data
 public class AddWishParam {
 
+    private String vaultId;
+
     private String title;
 
     private String description;
 
     private String tag;
+
+    private String tokenSymbol;
+
+    private String targetAmount;
 
     private String amount;
 
@@ -24,14 +32,13 @@ public class AddWishParam {
 
     private String createAddress;
 
+    private LocalDateTime beginTime;
+
+    private LocalDateTime endTime;
+
     public Wish toWish() {
         Wish wish = new Wish();
-        wish.setTitle(title);
-        wish.setDescription(description);
-        wish.setTag(tag);
-        wish.setAmount(amount);
-        wish.setCreateUser(createUser);
-        wish.setCreateAddress(createAddress);
+        BeanUtils.copyProperties(this, wish);
         return wish;
     }
 
