@@ -36,6 +36,8 @@ public class AddWishParam {
 
     private LocalDateTime endTime;
 
+    private String chainId;
+
     public Wish toWish() {
         Wish wish = new Wish();
         BeanUtils.copyProperties(this, wish);

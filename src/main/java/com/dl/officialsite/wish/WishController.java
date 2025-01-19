@@ -96,6 +96,11 @@ public class WishController {
         return BaseResponse.success();
     }
 
+    @GetMapping("test")
+    public void test() {
+        wishService.updateWishTokenAmount();
+    }
+
 
 
 }

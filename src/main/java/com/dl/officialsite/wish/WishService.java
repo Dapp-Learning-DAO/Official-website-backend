@@ -1,7 +1,9 @@
 package com.dl.officialsite.wish;
 
+import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
+import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.wish.params.AddWishParam;
@@ -9,12 +11,26 @@ import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
 import com.dl.officialsite.wish.result.WishDetailResult;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.xxl.job.core.context.XxlJobHelper;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +45,7 @@ import org.springframework.util.StringUtils;
  * @Description WishService
  **/
 @Service
+@Slf4j
 public class WishService {
 
     @Resource
@@ -39,6 +56,11 @@ public class WishService {
 
     @Resource
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ChainConfig chainConfig;
+
+    public CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
     @Transactional
@@ -133,6 +155,76 @@ public class WishService {
         wishApply.setTokenSymbol(applyWishParam.getTokenSymbol());
         wishLikeRepository.save(wishApply);
 
+    }
+
+    /**
+     * 定时查询愿望清单中的amount
+     */
+    public void updateWishTokenAmount() {
+        XxlJobHelper.log("WishService updateWishTokenAmount start");
+        for (String chainId : chainConfig.getIds()) {
+            try {
+                updateWishForChain(chainId);
+            } catch (Exception e) {
+                XxlJobHelper.log("updateWishForChain:  " + chainId + " error:" + e.getMessage());
+            }
+        }
+
+    }
+
+
+    private void updateWishForChain(String chainId) {
+
+        String jsonResponse = "";
+        try {
+            HttpEntity entity = getHttpEntityFromChain(chainId);
+            jsonResponse = EntityUtils.toString(entity);
+            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+            JsonObject data = jsonObject.getAsJsonObject("data");
+            JsonArray vaultsArray = data.getAsJsonArray("Vault");
+            List<Wish> wishList = wishRepository.findByChainId(chainId);
+            if (wishList.isEmpty()) {
+                return;
+            }
+
+            for (Wish wish : wishList) {
+                for (int i = 0; i < wishList.size(); i++) {
+                    JsonObject vault = vaultsArray.get(i).getAsJsonObject();
+                    if (vault.get("vaultId").getAsString().equals(wish.getVaultId())) {
+                        wish.setAmount(vault.get("totalAmount").getAsString());
+                    }
+                }
+            }
+            wishRepository.saveAll(wishList);
+
+        } catch (IOException e) {
+            log.error("定时更新愿望清单失败{}", e);
+        }
+    }
+
+
+
+    private HttpEntity getHttpEntityFromChain(String chainId)  throws IOException{
+        HttpPost request = null;
+        switch (chainId) {
+            case Constants.CHAIN_ID_OP:  // op
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/31816b0/v1/graphql");
+                break;
+            case Constants.CHAIN_ID_SEPOLIA: //sepolia
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/e1a5902/v1/graphql");
+                break;
+
+        }
+        request.setHeader("Content-Type", "application/json");
+        String graphQL = buildGraphQL();
+        request.setEntity(new StringEntity(graphQL));
+        HttpResponse response = httpClient.execute(request);
+        HttpEntity entity = response.getEntity();
+        return entity;
+    }
+
+    private String buildGraphQL() {
+        return "{\"query\":\"{\\n  Vault {\\n    id\\n    vaultId\\n    totalAmount\\n  }\\n}\"}";
     }
 }
 

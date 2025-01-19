@@ -61,6 +61,8 @@ public class Wish {
 
     private LocalDateTime endTime;
 
+    private String chainId;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
