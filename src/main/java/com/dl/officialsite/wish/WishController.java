@@ -78,17 +78,6 @@ public class WishController {
         return BaseResponse.success();
     }
 
-    //get like wish list
-    @GetMapping("/like/list")
-    public BaseResponse getLikeList(@RequestParam Long wishId,
-        @RequestParam String address,
-        @RequestParam(value = "pageNo",defaultValue = "1") int pageNumber,
-        @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        Page<WishApply> page = wishService.getLikeList(wishId, pageable);
-        return BaseResponse.successWithData(page);
-    }
-
     //apply wish
     @PostMapping("/apply")
     public BaseResponse apply(@RequestParam String address, @RequestBody ApplyWishParam applyWishParam) {

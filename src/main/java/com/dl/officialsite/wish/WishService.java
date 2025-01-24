@@ -31,8 +31,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -52,7 +55,7 @@ public class WishService {
     private WishRepository wishRepository;
 
     @Resource
-    private WishLikeRepository wishLikeRepository;
+    private WishApplyRepository wishApplyRepository;
 
     @Resource
     private MemberRepository memberRepository;
@@ -108,7 +111,15 @@ public class WishService {
     }
 
     public WishDetailResult get(Long id, String address) {
-        return wishRepository.findById(id).map(this::buildWishDetailResult).orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
+        WishApply example = new WishApply();
+        example.setWishId(id);
+        List<WishApply> wishApplyList = wishApplyRepository.findAll(Example.of(example),
+            Sort.by(Direction.DESC, "createTime"));
+        WishDetailResult wishDetailResult = wishRepository.findById(id)
+            .map(this::buildWishDetailResult)
+            .orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
+        wishDetailResult.setWishApplyList(wishApplyList);
+        return wishDetailResult;
     }
 
     private WishDetailResult buildWishDetailResult(Wish wish) {
@@ -129,17 +140,6 @@ public class WishService {
         wishRepository.save(wish);
     }
 
-    public Page<WishApply> getLikeList(Long wishId, Pageable pageable) {
-        Page<WishApply> page = wishLikeRepository.findAll(
-            (Specification<WishApply>) (root, query, criteriaBuilder) -> {
-                List<Predicate> predicates = new LinkedList<>();
-                predicates.add(criteriaBuilder.equal(root.get("wishId"), wishId));
-                query.orderBy(criteriaBuilder.desc(root.get("createTime")));
-                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-            }, pageable);
-        return page;
-    }
-
     @Transactional
     public void apply(String address, ApplyWishParam applyWishParam) {
         Wish wish = wishRepository.findById(applyWishParam.getWishId()).orElseThrow(() -> new BizException(
@@ -153,7 +153,8 @@ public class WishService {
         wishApply.setMemberId(member.getId());
         wishApply.setAmount(applyWishParam.getAmount());
         wishApply.setTokenSymbol(applyWishParam.getTokenSymbol());
-        wishLikeRepository.save(wishApply);
+        wishApply.setToken(applyWishParam.getToken());
+        wishApplyRepository.save(wishApply);
 
     }
 
