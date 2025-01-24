@@ -30,6 +30,8 @@ public class Wish {
 
     private String vaultId;
 
+    private String acceptTokens;
+
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -51,7 +53,7 @@ public class Wish {
 
     private String shareAddress;
 
-    private Integer status;
+    private Integer status = 0;
 
     private String createUser;
 

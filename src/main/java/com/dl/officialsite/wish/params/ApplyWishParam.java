@@ -1,5 +1,7 @@
 package com.dl.officialsite.wish.params;
 
+import com.dl.officialsite.wish.config.TokenDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 /**
@@ -16,6 +18,9 @@ public class ApplyWishParam {
     private String amount;
 
     private String tokenSymbol;
+
+    @JsonDeserialize(using = TokenDeserializer.class)
+    private String token;
 
 
 }

@@ -1,8 +1,10 @@
 package com.dl.officialsite.wish.result;
 
+import com.dl.officialsite.wish.WishApply;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -17,6 +19,10 @@ public class WishDetailResult {
     private Long id;
 
     private String vaultId;
+
+    private String chainId;
+
+    private String acceptTokens;
 
     private String title;
 
@@ -53,5 +59,9 @@ public class WishDetailResult {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
+
+    private Integer status;
+
+    private List<WishApply> wishApplyList;
 
 }

@@ -34,6 +34,8 @@ public class WishApply {
 
     private String tokenSymbol;
 
+    private String token;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

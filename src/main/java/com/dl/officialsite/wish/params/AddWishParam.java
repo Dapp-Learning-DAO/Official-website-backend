@@ -1,6 +1,8 @@
 package com.dl.officialsite.wish.params;
 
 import com.dl.officialsite.wish.Wish;
+import com.dl.officialsite.wish.config.TokenDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,9 @@ import org.springframework.beans.BeanUtils;
 public class AddWishParam {
 
     private String vaultId;
+
+    @JsonDeserialize(using = TokenDeserializer.class)
+    private String acceptTokens;
 
     private String title;
 

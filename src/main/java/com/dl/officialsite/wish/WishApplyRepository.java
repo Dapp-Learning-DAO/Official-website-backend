@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @Date 2025/1/2 23:16
  * @Description WishLikeRepository
  **/
-public interface WishLikeRepository extends JpaRepository<WishApply, Long>,
+public interface WishApplyRepository extends JpaRepository<WishApply, Long>,
     JpaSpecificationExecutor<WishApply> {
 
 }
