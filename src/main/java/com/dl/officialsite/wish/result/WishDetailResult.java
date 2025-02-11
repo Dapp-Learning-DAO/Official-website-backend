@@ -1,5 +1,6 @@
 package com.dl.officialsite.wish.result;
 
+import com.dl.officialsite.member.Member;
 import com.dl.officialsite.wish.WishApply;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
@@ -63,5 +64,7 @@ public class WishDetailResult {
     private Integer status;
 
     private List<WishApply> wishApplyList;
+
+    private Member creator;
 
 }

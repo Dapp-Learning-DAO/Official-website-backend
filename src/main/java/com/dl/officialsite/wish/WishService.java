@@ -119,6 +119,9 @@ public class WishService {
             .map(this::buildWishDetailResult)
             .orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
         wishDetailResult.setWishApplyList(wishApplyList);
+        Member creator = memberRepository.findByAddress(wishDetailResult.getCreateAddress())
+            .orElse(new Member());
+        wishDetailResult.setCreator(creator);
         return wishDetailResult;
     }
 
