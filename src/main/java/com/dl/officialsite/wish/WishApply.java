@@ -30,6 +30,10 @@ public class WishApply {
 
     private Long memberId;
 
+    private String memberName;
+
+    private String memberAddress;
+
     private String amount;
 
     private String tokenSymbol;

@@ -151,6 +151,8 @@ public class WishService {
         WishApply wishApply = new WishApply();
         wishApply.setWishId(wish.getId());
         wishApply.setMemberId(member.getId());
+        wishApply.setMemberName(member.getNickName());
+        wishApply.setMemberAddress(member.getAddress());
         wishApply.setAmount(applyWishParam.getAmount());
         wishApply.setTokenSymbol(applyWishParam.getTokenSymbol());
         wishApply.setToken(applyWishParam.getToken());
