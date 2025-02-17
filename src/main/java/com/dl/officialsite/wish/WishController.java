@@ -73,8 +73,8 @@ public class WishController {
 
     //like wish
     @PostMapping("/like")
-    public BaseResponse like(@RequestParam Long wishId) {
-        wishService.like(wishId);
+    public BaseResponse like(@RequestParam Long wishId, @RequestParam String address) {
+        wishService.like(wishId, address);
         return BaseResponse.success();
     }
 
