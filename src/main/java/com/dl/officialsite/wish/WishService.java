@@ -132,7 +132,12 @@ public class WishService {
     }
 
     @Transactional
-    public void like(Long wishId) {
+    public void like(Long wishId, String address) {
+        Member member =
+            memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_MEMBER));
+        member.setLiked(1);
+        memberRepository.save(member);
         Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));

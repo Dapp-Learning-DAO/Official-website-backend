@@ -124,4 +124,7 @@ public class Member implements Serializable {
     @Column(length = 32)
     private String telegramUserId;
 
+    //like wish
+    private Integer liked = 0;
+
 }
