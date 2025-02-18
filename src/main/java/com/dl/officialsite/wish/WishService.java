@@ -199,10 +199,13 @@ public class WishService {
             }
 
             for (Wish wish : wishList) {
-                for (int i = 0; i < wishList.size(); i++) {
+                for (int i = 0; i < vaultsArray.size(); i++) {
                     JsonObject vault = vaultsArray.get(i).getAsJsonObject();
                     if (vault.get("vaultId").getAsString().equals(wish.getVaultId())) {
                         wish.setAmount(vault.get("totalAmount").getAsString());
+                        if (vault.getAsJsonArray("claims").size() > 0) {
+                            wish.setStatus(1);
+                        }
                     }
                 }
             }
@@ -222,7 +225,7 @@ public class WishService {
                 request = new HttpPost("https://indexer.dev.hyperindex.xyz/31816b0/v1/graphql");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: //sepolia
-                request = new HttpPost("https://indexer.dev.hyperindex.xyz/e1a5902/v1/graphql");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
                 break;
 
         }
@@ -235,7 +238,8 @@ public class WishService {
     }
 
     private String buildGraphQL() {
-        return "{\"query\":\"{\\n  Vault {\\n    id\\n    vaultId\\n    totalAmount\\n  }\\n}\"}";
+        return "{\"query\":\"query {\\n  Vault(limit: 50) {\\n    id\\n    vaultId\\n    "
+            + "creator\\n    createdAt\\n    message\\n    token\\n    totalAmount\\n    totalClaimedAmount\\n    lockTime\\n    donations {\\n      donor\\n      amount\\n      token\\n    }\\n    claims {\\n      claimer\\n      token\\n      amount\\n    }\\n    settlements {\\n      claimer\\n      maxClaimableAmount\\n    }\\n  }\\n}\"}";
     }
 }
 
