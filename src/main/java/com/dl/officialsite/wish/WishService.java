@@ -222,7 +222,7 @@ public class WishService {
             for (Wish wish : wishList) {
                 JsonObject vault = vaultsMap.get(wish.getVaultId());
                 if (vault != null) {
-                    wish.setAmount(vault.get("totalAmount").getAsString());
+                    wish.setTargetAmount(vault.get("totalAmount").getAsString());
 
                     // 如果有claims，更新状态
                     if (vault.getAsJsonArray("claims").size() > 0) {
