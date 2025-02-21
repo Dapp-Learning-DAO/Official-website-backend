@@ -6,18 +6,24 @@ import com.dl.officialsite.common.exception.BizException;
 import com.dl.officialsite.config.ChainConfig;
 import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
+import com.dl.officialsite.sharing.Share;
+import com.dl.officialsite.sharing.SharingService;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
 import com.dl.officialsite.wish.result.WishDetailResult;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
@@ -63,6 +69,9 @@ public class WishService {
     @Autowired
     private ChainConfig chainConfig;
 
+    @Resource
+    private SharingService sharingService;
+
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
@@ -74,9 +83,14 @@ public class WishService {
     }
 
     public void edit(EditWishParam editWishParam, String address) {
+        Share share = sharingService.querySharing(editWishParam.getShareId());
         Long id = editWishParam.getId();
         Wish wish = wishRepository.findById(id).orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
         BeanUtils.copyProperties(editWishParam, wish);
+        wish.setShareAddress(share.getMemberAddress());
+        wish.setShareUrl(share.getSharingDoc());
+        wish.setShareUser(share.getPresenter());
+        wish.setAmount(editWishParam.getDonationAmount());
         wishRepository.save(wish);
     }
 
@@ -185,36 +199,57 @@ public class WishService {
 
 
     private void updateWishForChain(String chainId) {
-
-        String jsonResponse = "";
         try {
             HttpEntity entity = getHttpEntityFromChain(chainId);
-            jsonResponse = EntityUtils.toString(entity);
+            String jsonResponse = EntityUtils.toString(entity);
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
             JsonObject data = jsonObject.getAsJsonObject("data");
             JsonArray vaultsArray = data.getAsJsonArray("Vault");
+
+            // 构建一个vaultId到vault对象的映射，避免嵌套循环
+            Map<String, JsonObject> vaultsMap = new HashMap<>();
+            for (int i = 0; i < vaultsArray.size(); i++) {
+                JsonObject vault = vaultsArray.get(i).getAsJsonObject();
+                vaultsMap.put(vault.get("vaultId").getAsString(), vault);
+            }
+
+            // 查找并更新wish列表
             List<Wish> wishList = wishRepository.findByChainId(chainId);
             if (wishList.isEmpty()) {
                 return;
             }
 
             for (Wish wish : wishList) {
-                for (int i = 0; i < vaultsArray.size(); i++) {
-                    JsonObject vault = vaultsArray.get(i).getAsJsonObject();
-                    if (vault.get("vaultId").getAsString().equals(wish.getVaultId())) {
-                        wish.setAmount(vault.get("totalAmount").getAsString());
-                        if (vault.getAsJsonArray("claims").size() > 0) {
-                            wish.setStatus(1);
+                JsonObject vault = vaultsMap.get(wish.getVaultId());
+                if (vault != null) {
+                    wish.setAmount(vault.get("totalAmount").getAsString());
+
+                    // 如果有claims，更新状态
+                    if (vault.getAsJsonArray("claims").size() > 0) {
+                        wish.setStatus(1);
+
+                        // 计算所有donations的总金额
+                        JsonArray donations = vault.getAsJsonArray("donations");
+                        if (donations.size() > 0) {
+                            BigDecimal totalAmount = new BigDecimal(0);
+                            for (int j = 0; j < donations.size(); j++) {
+                                String amount = donations.get(j).getAsJsonObject().get("amount").getAsString();
+                                totalAmount = totalAmount.add(new BigDecimal(amount));
+                            }
+                            wish.setAmount(totalAmount.toPlainString());
                         }
                     }
                 }
             }
+
+            // 批量保存更新后的wish
             wishRepository.saveAll(wishList);
 
         } catch (IOException e) {
             log.error("定时更新愿望清单失败{}", e);
         }
     }
+
 
 
 
