@@ -47,6 +47,8 @@ public class Wish {
 
     private Integer likeNumber;
 
+    private Long shareId;
+
     private String shareUrl;
 
     private String shareUser;

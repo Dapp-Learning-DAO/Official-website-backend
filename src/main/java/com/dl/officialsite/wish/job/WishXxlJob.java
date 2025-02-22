@@ -17,7 +17,7 @@ public class WishXxlJob {
      * 更新Wish状态
      */
     @XxlJob("updateWishTokenAmountJobHandler")
-    public void updateRedPacketStatus() {
+    public void updateWishTokenAmountJobHandler() {
         XxlJobHelper.log("updateWishTokenAmount start");
         wishService.updateWishTokenAmount();
         XxlJobHelper.log("updateWishTokenAmount end");
