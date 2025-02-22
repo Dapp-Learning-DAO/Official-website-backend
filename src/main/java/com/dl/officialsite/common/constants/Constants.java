@@ -64,6 +64,7 @@ public class Constants {
     public static final String CHAIN_ID_LINEA = "59144";
     public static final String CHAIN_ID_BASE = "8453";
     public static final String CHAIN_ID_GNOSIS = "100";
+    public static final String CHAIN_ID_OP_SEPOLIA = "11155420";
 
 
     /**

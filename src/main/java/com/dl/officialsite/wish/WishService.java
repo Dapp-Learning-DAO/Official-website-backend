@@ -237,7 +237,6 @@ public class WishService {
                         }
                     }
                 } else {
-                    wishList.remove(wish);
                     deleteWishList.add(wish);
                 }
             }
@@ -261,6 +260,9 @@ public class WishService {
                 request = new HttpPost("https://indexer.dev.hyperindex.xyz/31816b0/v1/graphql");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: //sepolia
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
+                break;
+            case Constants.CHAIN_ID_OP_SEPOLIA: //sepolia
                 request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
                 break;
 
