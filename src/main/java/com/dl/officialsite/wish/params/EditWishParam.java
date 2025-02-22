@@ -19,11 +19,9 @@ public class EditWishParam {
 
     private String tag;
 
-    private String shareUrl;
+    private Long shareId;
 
-    private String shareUser;
-
-    private String shareAddress;
+    private String donationAmount;
 
     private Integer status;
 
