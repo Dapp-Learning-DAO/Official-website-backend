@@ -20,6 +20,7 @@ import com.google.gson.JsonParser;
 import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -147,11 +148,6 @@ public class WishService {
 
     @Transactional
     public void like(Long wishId, String address) {
-        Member member =
-            memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
-                CodeEnums.NOT_FOUND_MEMBER));
-        member.setLiked(1);
-        memberRepository.save(member);
         Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));
@@ -218,6 +214,7 @@ public class WishService {
             if (wishList.isEmpty()) {
                 return;
             }
+            List<Wish> deleteWishList = new ArrayList<>();
 
             for (Wish wish : wishList) {
                 JsonObject vault = vaultsMap.get(wish.getVaultId());
@@ -239,11 +236,15 @@ public class WishService {
                             wish.setAmount(totalAmount.toPlainString());
                         }
                     }
+                } else {
+                    wishList.remove(wish);
+                    deleteWishList.add(wish);
                 }
             }
 
             // 批量保存更新后的wish
             wishRepository.saveAll(wishList);
+            wishRepository.deleteAll(deleteWishList);
 
         } catch (IOException e) {
             log.error("定时更新愿望清单失败{}", e);
