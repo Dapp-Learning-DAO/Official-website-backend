@@ -213,6 +213,10 @@ public class SharingService {
         return sharingEntity.get();
     }
 
+    public Optional<Share> querySharingByWishId(Long wishId) {
+        return this.sharingRepository.findByWishId(wishId);
+    }
+
 
     public PagedList loadSharingByUser(String memberAddress, int pageNo, int pageSize) {
         int offset = (pageNo - 1) * pageSize;

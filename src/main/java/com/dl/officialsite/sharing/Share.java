@@ -157,4 +157,6 @@ public class Share {
   
     @Column(columnDefinition = "MEDIUMTEXT")
     private String outline;
+
+    private Long wishId;
 }
