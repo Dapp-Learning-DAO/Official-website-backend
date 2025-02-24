@@ -1,4 +1,4 @@
-package com.dl.officialsite.wish;
+package com.dl.officialsite.wish.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;

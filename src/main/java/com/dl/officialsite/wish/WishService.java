@@ -1,5 +1,11 @@
 package com.dl.officialsite.wish;
 
+import static com.dl.officialsite.common.enums.CodeEnums.NOT_REPEAT_LIKE;
+
+import com.dl.officialsite.bot.constant.BotEnum;
+import com.dl.officialsite.bot.constant.ChannelEnum;
+import com.dl.officialsite.bot.event.EventNotify;
+import com.dl.officialsite.bot.event.NotifyMessageFactory;
 import com.dl.officialsite.common.constants.Constants;
 import com.dl.officialsite.common.enums.CodeEnums;
 import com.dl.officialsite.common.exception.BizException;
@@ -8,19 +14,26 @@ import com.dl.officialsite.member.Member;
 import com.dl.officialsite.member.MemberRepository;
 import com.dl.officialsite.sharing.Share;
 import com.dl.officialsite.sharing.SharingService;
+import com.dl.officialsite.wish.domain.Wish;
+import com.dl.officialsite.wish.domain.WishApply;
+import com.dl.officialsite.wish.domain.WishLike;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
+import com.dl.officialsite.wish.repository.WishApplyRepository;
+import com.dl.officialsite.wish.repository.WishLikeRepository;
+import com.dl.officialsite.wish.repository.WishRepository;
 import com.dl.officialsite.wish.result.WishDetailResult;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +51,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,6 +87,12 @@ public class WishService {
     @Resource
     private SharingService sharingService;
 
+    @Resource
+    private WishLikeRepository wishLikeRepository;
+
+    @Resource
+    private ApplicationContext applicationContext;
+
     public CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
@@ -80,7 +100,38 @@ public class WishService {
     public Wish add(AddWishParam addWishParam, String address) {
         Wish wish = addWishParam.toWish();
         wishRepository.save(wish);
+
+        // 查找分享创建者的信息
+        Member creatorInfo = memberRepository.findByAddress(address)
+            .orElseThrow(() -> new IllegalArgumentException("Member not found by address: " + address));
+
+        // 格式化日期
+        String formattedDate = formatDate(wish.getCreateTime());
+
+        // 发布事件通知
+        publishShareCreationEvent(creatorInfo, wish, formattedDate);
         return wish;
+    }
+
+    private String formatDate(Date date) {
+        // 格式化日期为字符串
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(date);
+    }
+
+    private void publishShareCreationEvent(Member creatorInfo, Wish wish, String formattedDate) {
+        // 发布创建分享事件的通知
+        applicationContext.publishEvent(new EventNotify(
+            Member.class,
+            BotEnum.TELEGRAM,
+            ChannelEnum.GENERAL,
+            NotifyMessageFactory.sharingMessage(
+                "👏Create New Wish👏",
+                creatorInfo.getNickName(),
+                wish.getTitle(),
+                formattedDate
+            )
+        ));
     }
 
     public void edit(EditWishParam editWishParam, String address) {
@@ -88,9 +139,6 @@ public class WishService {
         Long id = editWishParam.getId();
         Wish wish = wishRepository.findById(id).orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
         BeanUtils.copyProperties(editWishParam, wish);
-        wish.setShareAddress(share.getMemberAddress());
-        wish.setShareUrl(share.getSharingDoc());
-        wish.setShareUser(share.getPresenter());
         wish.setAmount(editWishParam.getDonationAmount());
         wishRepository.save(wish);
     }
@@ -137,6 +185,12 @@ public class WishService {
         Member creator = memberRepository.findByAddress(wishDetailResult.getCreateAddress())
             .orElse(new Member());
         wishDetailResult.setCreator(creator);
+        wishLikeRepository.findByMemberIdAndWishId(creator.getId(), id).ifPresent(wishLike -> wishDetailResult.setLiked(1));
+        sharingService.querySharingByWishId(id).ifPresent(share -> {
+            wishDetailResult.setShareAddress(share.getMemberAddress());
+            wishDetailResult.setShareUrl(share.getSharingDoc());
+            wishDetailResult.setShareUser(share.getPresenter());
+        });
         return wishDetailResult;
     }
 
@@ -148,6 +202,9 @@ public class WishService {
 
     @Transactional
     public void like(Long wishId, String address) {
+        Member member =
+            memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_MEMBER));
         Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));
@@ -155,7 +212,15 @@ public class WishService {
             wish.setLikeNumber(0);
         }
         wish.setLikeNumber(wish.getLikeNumber() + 1);
+        wishLikeRepository.findByMemberIdAndWishId(member.getId(), wishId).ifPresent(wishLike -> {
+            throw new BizException(NOT_REPEAT_LIKE);
+        });
         wishRepository.save(wish);
+        WishLike wishLike = new WishLike();
+        wishLike.setMemberId(member.getId());
+        wishLike.setWishId(wish.getId());
+        wishLikeRepository.save(wishLike);
+
     }
 
     @Transactional

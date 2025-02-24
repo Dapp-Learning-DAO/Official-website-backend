@@ -1,4 +1,4 @@
-package com.dl.officialsite.wish;
+package com.dl.officialsite.wish.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
@@ -47,14 +47,6 @@ public class Wish {
 
     private Integer likeNumber;
 
-    private Long shareId;
-
-    private String shareUrl;
-
-    private String shareUser;
-
-    private String shareAddress;
-
     private Integer status = 0;
 
     private String createUser;
@@ -70,7 +62,7 @@ public class Wish {
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

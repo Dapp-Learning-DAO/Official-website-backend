@@ -1,6 +1,7 @@
 package com.dl.officialsite.wish;
 
 import com.dl.officialsite.common.base.BaseResponse;
+import com.dl.officialsite.wish.domain.Wish;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;

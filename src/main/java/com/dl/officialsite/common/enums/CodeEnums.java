@@ -57,7 +57,10 @@ public enum CodeEnums {
     INVALID_AMOUNT("6007", "Invalid amount"),
     DUPLICATE_CLAIMER("6008", "Duplicate claimer"),
     SIZE_NOT_MATCH("6009", "Size not match"),
-    NOT_FOUND_WISH("7000", "not found wish");
+    NOT_FOUND_WISH("7000", "not found wish"),
+
+    // wish
+    NOT_REPEAT_LIKE("7001", "not repeat like");
 
     private String code;
 

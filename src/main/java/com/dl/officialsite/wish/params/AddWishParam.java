@@ -1,6 +1,6 @@
 package com.dl.officialsite.wish.params;
 
-import com.dl.officialsite.wish.Wish;
+import com.dl.officialsite.wish.domain.Wish;
 import com.dl.officialsite.wish.config.TokenDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDateTime;
