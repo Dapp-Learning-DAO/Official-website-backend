@@ -171,6 +171,7 @@ public class SharingService {
             sharing.setTag(req.getTag());
             sharing.setCourseId(req.getCourseId());
             sharing.setOutline(req.getOutline());
+            sharing.setWishId(req.getWishId());
 
             this.sharingRepository.save(sharing);
         } else {
