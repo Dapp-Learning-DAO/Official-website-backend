@@ -289,17 +289,16 @@ public class WishService {
                     // 如果有claims，更新状态
                     if (vault.getAsJsonArray("claims").size() > 0) {
                         wish.setStatus(1);
-
-                        // 计算所有donations的总金额
-                        JsonArray donations = vault.getAsJsonArray("donations");
-                        if (donations.size() > 0) {
-                            BigDecimal totalAmount = new BigDecimal(0);
-                            for (int j = 0; j < donations.size(); j++) {
-                                String amount = donations.get(j).getAsJsonObject().get("amount").getAsString();
-                                totalAmount = totalAmount.add(new BigDecimal(amount));
-                            }
-                            wish.setAmount(totalAmount.toPlainString());
+                    }
+                    // 计算所有donations的总金额
+                    JsonArray donations = vault.getAsJsonArray("donations");
+                    if (donations.size() > 0) {
+                        BigDecimal totalAmount = new BigDecimal(0);
+                        for (int j = 0; j < donations.size(); j++) {
+                            String amount = donations.get(j).getAsJsonObject().get("amount").getAsString();
+                            totalAmount = totalAmount.add(new BigDecimal(amount));
                         }
+                        wish.setAmount(totalAmount.toPlainString());
                     }
                 } else {
                     deleteWishList.add(wish);
