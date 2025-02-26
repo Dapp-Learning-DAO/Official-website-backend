@@ -21,6 +21,8 @@ import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.ShareTagResp;
 import com.dl.officialsite.team.TeamService;
 import com.dl.officialsite.wish.WishService;
+import com.dl.officialsite.wish.domain.Wish;
+import com.dl.officialsite.wish.repository.WishRepository;
 import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -64,7 +66,7 @@ public class SharingService {
     TeamService teamService;
 
     @Resource
-    private WishService wishService;
+    private WishRepository wishRepository;
 
     private final EmailService emailService;
 
@@ -105,7 +107,11 @@ public class SharingService {
         emailService.sendMail(toAddressList, emailTitle, emailContent, null);
 
         if (!ObjectUtils.isEmpty(share.getWishId())) {
-            wishService.apply(share.getWishId());
+            Wish wish = wishRepository.findById(share.getWishId()).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_WISH
+            ));
+            wish.setApply(1);
+            wishRepository.save(wish);
         }
 
         return share;
