@@ -88,11 +88,6 @@ public class WishController {
         return BaseResponse.success();
     }
 
-    //apply wish
-    @PostMapping("/apply")
-    public BaseResponse applyList(@RequestParam Long wishId, @RequestParam ApplyWishParam applyWishParam) {
-        return BaseResponse.successWithData(wishService.apply(wishId, applyWishParam));
-    }
 
     @GetMapping("test")
     public void test() {

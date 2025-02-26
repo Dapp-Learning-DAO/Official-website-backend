@@ -345,12 +345,11 @@ public class WishService {
             + "creator\\n    createdAt\\n    message\\n    token\\n    totalAmount\\n    totalClaimedAmount\\n    lockTime\\n    donations {\\n      donor\\n      amount\\n      token\\n    }\\n    claims {\\n      claimer\\n      token\\n      amount\\n    }\\n    settlements {\\n      claimer\\n      maxClaimableAmount\\n    }\\n  }\\n}\"}";
     }
 
-    public Wish apply(Long wishId, ApplyWishParam applyWishParam) {
-        Wish wish = wishRepository.findById(applyWishParam.getWishId()).orElseThrow(() -> new BizException(
+    public Wish apply(Long wishId) {
+        Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));
-        wish.setApplyAddress(applyWishParam.getApplyAddress());
-        wish.setApplyUserName(applyWishParam.getApplyUserName());
+        wish.setApply(1);
         wishRepository.save(wish);
         return wish;
     }

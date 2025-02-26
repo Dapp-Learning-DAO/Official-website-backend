@@ -20,6 +20,7 @@ import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.ShareTagResp;
 import com.dl.officialsite.team.TeamService;
+import com.dl.officialsite.wish.WishService;
 import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -59,6 +62,9 @@ public class SharingService {
 
     @Autowired
     TeamService teamService;
+
+    @Resource
+    private WishService wishService;
 
     private final EmailService emailService;
 
@@ -97,6 +103,10 @@ public class SharingService {
 
         // 发送邮件
         emailService.sendMail(toAddressList, emailTitle, emailContent, null);
+
+        if (!ObjectUtils.isEmpty(share.getWishId())) {
+            wishService.apply(share.getWishId());
+        }
 
         return share;
     }
