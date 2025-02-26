@@ -4,6 +4,7 @@ import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.wish.domain.Wish;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
+import com.dl.officialsite.wish.params.DonationWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
 import com.dl.officialsite.wish.result.WishDetailResult;
@@ -79,11 +80,18 @@ public class WishController {
         return BaseResponse.success();
     }
 
+    //donation wish
+    @PostMapping("/donation")
+    public BaseResponse apply(@RequestParam String address,
+        @RequestBody DonationWishParam donationWishParam) {
+        wishService.donation(address, donationWishParam);
+        return BaseResponse.success();
+    }
+
     //apply wish
     @PostMapping("/apply")
-    public BaseResponse apply(@RequestParam String address, @RequestBody ApplyWishParam applyWishParam) {
-        wishService.apply(address, applyWishParam);
-        return BaseResponse.success();
+    public BaseResponse applyList(@RequestParam Long wishId, @RequestParam ApplyWishParam applyWishParam) {
+        return BaseResponse.successWithData(wishService.apply(wishId, applyWishParam));
     }
 
     @GetMapping("test")
