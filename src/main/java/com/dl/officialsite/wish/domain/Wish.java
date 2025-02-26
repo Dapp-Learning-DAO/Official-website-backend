@@ -49,6 +49,10 @@ public class Wish {
 
     private Integer status = 0;
 
+    private String applyUserName;
+
+    private String applyAddress;
+
     private String createUser;
 
     private String createAddress;
