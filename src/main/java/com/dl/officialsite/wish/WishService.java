@@ -17,11 +17,13 @@ import com.dl.officialsite.sharing.SharingService;
 import com.dl.officialsite.wish.domain.Wish;
 import com.dl.officialsite.wish.domain.WishApply;
 import com.dl.officialsite.wish.domain.WishLike;
+import com.dl.officialsite.wish.enums.WishStatusEnum;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.DonationWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
+import com.dl.officialsite.wish.params.SettleWishParam;
 import com.dl.officialsite.wish.repository.WishApplyRepository;
 import com.dl.officialsite.wish.repository.WishLikeRepository;
 import com.dl.officialsite.wish.repository.WishRepository;
@@ -352,6 +354,15 @@ public class WishService {
         wish.setApply(1);
         wishRepository.save(wish);
         return wish;
+    }
+
+    public void settle(String address, SettleWishParam settleWishParam) {
+        Wish wish =
+            wishRepository.findById(settleWishParam.getWishId()).orElseThrow(() -> new BizException(
+            CodeEnums.NOT_FOUND_WISH
+        ));
+        wish.setStatus(WishStatusEnum.SETTLE.getStatus());
+        wishRepository.save(wish);
     }
 }
 
