@@ -7,6 +7,7 @@ import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.DonationWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
+import com.dl.officialsite.wish.params.SettleWishParam;
 import com.dl.officialsite.wish.result.WishDetailResult;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +86,14 @@ public class WishController {
     public BaseResponse apply(@RequestParam String address,
         @RequestBody DonationWishParam donationWishParam) {
         wishService.donation(address, donationWishParam);
+        return BaseResponse.success();
+    }
+
+    //settle wish
+    @PostMapping("/settle")
+    public BaseResponse apply(@RequestParam String address,
+        @RequestBody SettleWishParam settleWishParam) {
+        wishService.settle(address, settleWishParam);
         return BaseResponse.success();
     }
 
