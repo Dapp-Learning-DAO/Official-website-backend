@@ -19,6 +19,7 @@ import com.dl.officialsite.wish.domain.WishApply;
 import com.dl.officialsite.wish.domain.WishLike;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
+import com.dl.officialsite.wish.params.DonationWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
 import com.dl.officialsite.wish.repository.WishApplyRepository;
@@ -224,8 +225,8 @@ public class WishService {
     }
 
     @Transactional
-    public void apply(String address, ApplyWishParam applyWishParam) {
-        Wish wish = wishRepository.findById(applyWishParam.getWishId()).orElseThrow(() -> new BizException(
+    public void donation(String address, DonationWishParam donationWishParam) {
+        Wish wish = wishRepository.findById(donationWishParam.getWishId()).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));
         Member member =
@@ -236,9 +237,9 @@ public class WishService {
         wishApply.setMemberId(member.getId());
         wishApply.setMemberName(member.getNickName());
         wishApply.setMemberAddress(member.getAddress());
-        wishApply.setAmount(applyWishParam.getAmount());
-        wishApply.setTokenSymbol(applyWishParam.getTokenSymbol());
-        wishApply.setToken(applyWishParam.getToken());
+        wishApply.setAmount(donationWishParam.getAmount());
+        wishApply.setTokenSymbol(donationWishParam.getTokenSymbol());
+        wishApply.setToken(donationWishParam.getToken());
         wishApplyRepository.save(wishApply);
 
     }
@@ -342,6 +343,16 @@ public class WishService {
     private String buildGraphQL() {
         return "{\"query\":\"query {\\n  Vault(limit: 50) {\\n    id\\n    vaultId\\n    "
             + "creator\\n    createdAt\\n    message\\n    token\\n    totalAmount\\n    totalClaimedAmount\\n    lockTime\\n    donations {\\n      donor\\n      amount\\n      token\\n    }\\n    claims {\\n      claimer\\n      token\\n      amount\\n    }\\n    settlements {\\n      claimer\\n      maxClaimableAmount\\n    }\\n  }\\n}\"}";
+    }
+
+    public Wish apply(Long wishId, ApplyWishParam applyWishParam) {
+        Wish wish = wishRepository.findById(applyWishParam.getWishId()).orElseThrow(() -> new BizException(
+            CodeEnums.NOT_FOUND_WISH
+        ));
+        wish.setApplyAddress(applyWishParam.getApplyAddress());
+        wish.setApplyUserName(applyWishParam.getApplyUserName());
+        wishRepository.save(wish);
+        return wish;
     }
 }
 

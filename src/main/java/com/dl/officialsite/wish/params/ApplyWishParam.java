@@ -1,13 +1,11 @@
 package com.dl.officialsite.wish.params;
 
-import com.dl.officialsite.wish.config.TokenDeserializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 /**
  * @ClassName ApplyWishParam
  * @Author jackchen
- * @Date 2025/1/12 13:10
+ * @Date 2025/2/26 22:52
  * @Description ApplyWishParam
  **/
 @Data
@@ -15,12 +13,7 @@ public class ApplyWishParam {
 
     private Long wishId;
 
-    private String amount;
+    private String applyUserName;
 
-    private String tokenSymbol;
-
-    @JsonDeserialize(using = TokenDeserializer.class)
-    private String token;
-
-
+    private String applyAddress;
 }
