@@ -187,8 +187,11 @@ public class WishService {
         wishDetailResult.setWishApplyList(wishApplyList);
         Member creator = memberRepository.findByAddress(wishDetailResult.getCreateAddress())
             .orElse(new Member());
+
+        Member loginUser = memberRepository.findByAddress(address)
+            .orElse(new Member());
         wishDetailResult.setCreator(creator);
-        wishLikeRepository.findByMemberIdAndWishId(creator.getId(), id).ifPresent(wishLike -> wishDetailResult.setLiked(1));
+        wishLikeRepository.findByMemberIdAndWishId(loginUser.getId(), id).ifPresent(wishLike -> wishDetailResult.setLiked(1));
         sharingService.querySharingByWishId(id).ifPresent(share -> {
             wishDetailResult.setShareAddress(share.getMemberAddress());
             wishDetailResult.setShareUrl(share.getSharingDoc());
