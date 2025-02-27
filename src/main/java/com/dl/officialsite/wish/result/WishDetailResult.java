@@ -39,11 +39,9 @@ public class WishDetailResult {
 
     private Integer likeNumber;
 
-    private String shareUrl;
+    private String shareTitle;
 
-    private String shareUser;
-
-    private String shareAddress;
+    private Long shareId;
 
     private String createUser;
 

@@ -196,9 +196,8 @@ public class WishService {
         wishDetailResult.setCreator(creator);
         wishLikeRepository.findByMemberIdAndWishId(loginUser.getId(), id).ifPresent(wishLike -> wishDetailResult.setLiked(1));
         sharingService.querySharingByWishId(id).ifPresent(share -> {
-            wishDetailResult.setShareAddress(share.getMemberAddress());
-            wishDetailResult.setShareUrl(share.getSharingDoc());
-            wishDetailResult.setShareUser(share.getPresenter());
+            wishDetailResult.setShareId(share.getId());
+            wishDetailResult.setShareTitle(share.getTheme());
         });
         return wishDetailResult;
     }
