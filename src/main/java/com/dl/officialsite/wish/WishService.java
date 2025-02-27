@@ -198,6 +198,8 @@ public class WishService {
         sharingService.querySharingByWishId(id).ifPresent(share -> {
             wishDetailResult.setShareId(share.getId());
             wishDetailResult.setShareTitle(share.getTheme());
+            wishDetailResult.setShareAddress(share.getMemberAddress());
+            wishDetailResult.setShareUser(share.getPresenter());
         });
         return wishDetailResult;
     }
