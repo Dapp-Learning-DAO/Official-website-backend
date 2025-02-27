@@ -43,6 +43,10 @@ public class WishDetailResult {
 
     private Long shareId;
 
+    private String shareUser;
+
+    private String shareAddress;
+
     private String createUser;
 
     private String createAddress;
