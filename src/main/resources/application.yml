@@ -28,6 +28,7 @@ spring:
           batch_versioned_data: true
         order_inserts: true
         order_updates: true
+        time_zone: "Asia/Shanghai"
   mail:
     host: ${SMTP_SERVER:smtp.163.com}
     port: ${SMTP_SERVER_PORT:465}

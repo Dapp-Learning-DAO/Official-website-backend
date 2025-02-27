@@ -102,11 +102,14 @@ public class WishService {
     @Transactional
     public Wish add(AddWishParam addWishParam, String address) {
         Wish wish = addWishParam.toWish();
-        wishRepository.save(wish);
+
 
         // 查找分享创建者的信息
         Member creatorInfo = memberRepository.findByAddress(address)
             .orElseThrow(() -> new IllegalArgumentException("Member not found by address: " + address));
+        wish.setCreateAddress(creatorInfo.getAddress());
+        wish.setCreateUser(creatorInfo.getNickName());
+        wishRepository.save(wish);
 
         // 格式化日期
         String formattedDate = formatDate(wish.getCreateTime());
