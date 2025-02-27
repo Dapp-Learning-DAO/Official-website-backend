@@ -159,4 +159,6 @@ public class Share {
     private String outline;
 
     private Long wishId;
+
+    private String wishTitle;
 }
