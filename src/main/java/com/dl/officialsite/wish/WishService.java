@@ -333,7 +333,7 @@ public class WishService {
                 request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
                 break;
             case Constants.CHAIN_ID_OP_SEPOLIA: //sepolia
-                request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/a228a53/v1/graphql");
                 break;
 
         }
