@@ -81,6 +81,15 @@ public class SharingService {
     @Transactional(rollbackFor = Exception.class)
     public Share createSharing(Share share, String address) {
 
+        if (!ObjectUtils.isEmpty(share.getWishId())) {
+            Wish wish = wishRepository.findById(share.getWishId()).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_WISH
+            ));
+            wish.setApply(1);
+            wishRepository.save(wish);
+            share.setWishTitle(wish.getTitle());
+        }
+
         // 保存分享记录
         share = sharingRepository.save(share);
 
@@ -106,13 +115,7 @@ public class SharingService {
         // 发送邮件
         emailService.sendMail(toAddressList, emailTitle, emailContent, null);
 
-        if (!ObjectUtils.isEmpty(share.getWishId())) {
-            Wish wish = wishRepository.findById(share.getWishId()).orElseThrow(() -> new BizException(
-                CodeEnums.NOT_FOUND_WISH
-            ));
-            wish.setApply(1);
-            wishRepository.save(wish);
-        }
+
 
         return share;
     }
