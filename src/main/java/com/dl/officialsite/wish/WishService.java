@@ -61,6 +61,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -256,8 +257,8 @@ public class WishService {
     /**
      * 定时查询愿望清单中的amount
      */
+    @Scheduled(fixedRate = 10000)
     public void updateWishTokenAmount() {
-        XxlJobHelper.log("WishService updateWishTokenAmount start");
         for (String chainId : chainConfig.getIds()) {
             try {
                 updateWishForChain(chainId);
