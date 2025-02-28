@@ -51,6 +51,10 @@ public class WishDetailResult {
 
     private String createAddress;
 
+    private String settleUser;
+
+    private String settleAddress;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime beginTime;
 
