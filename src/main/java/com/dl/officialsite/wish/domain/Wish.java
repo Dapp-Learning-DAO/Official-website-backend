@@ -49,11 +49,17 @@ public class Wish {
 
     private Integer status = 0;
 
+    private Integer createStatus = 0;
+
     private Integer apply = 0;
 
     private String createUser;
 
     private String createAddress;
+
+    private String settleUser;
+
+    private String settleAddress;
 
     private LocalDateTime beginTime;
 

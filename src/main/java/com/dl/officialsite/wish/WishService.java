@@ -174,6 +174,8 @@ public class WishService {
                     predicates.add(
                         criteriaBuilder.like(root.get("amount"), "%" + queryWishParam.getAmount() + "%"));
                 }
+                predicates.add(
+                    criteriaBuilder.equal(root.get("createStatus"), 1));
                 query.orderBy(criteriaBuilder.desc(root.get("createTime")));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);
@@ -290,7 +292,6 @@ public class WishService {
             if (wishList.isEmpty()) {
                 return;
             }
-            List<Wish> deleteWishList = new ArrayList<>();
 
             for (Wish wish : wishList) {
                 JsonObject vault = vaultsMap.get(wish.getVaultId());
@@ -310,15 +311,13 @@ public class WishService {
                             totalAmount = totalAmount.add(new BigDecimal(amount));
                         }
                         wish.setAmount(totalAmount.toPlainString());
+                        wish.setCreateStatus(1);
                     }
-                } else {
-                    deleteWishList.add(wish);
                 }
             }
 
             // 批量保存更新后的wish
             wishRepository.saveAll(wishList);
-            wishRepository.deleteAll(deleteWishList);
 
         } catch (IOException e) {
             log.error("定时更新愿望清单失败{}", e);
@@ -365,6 +364,13 @@ public class WishService {
             wishRepository.findById(settleWishParam.getWishId()).orElseThrow(() -> new BizException(
             CodeEnums.NOT_FOUND_WISH
         ));
+
+        Member member =
+            memberRepository.findByAddress(address).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_MEMBER));
+
+        wish.setSettleUser(member.getNickName());
+        wish.setSettleAddress(member.getAddress());
         wish.setStatus(WishStatusEnum.SETTLE.getStatus());
         wishRepository.save(wish);
     }
