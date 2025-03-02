@@ -119,12 +119,27 @@ public class WishService {
         wish.setCreateUser(creatorInfo.getNickName());
         wishRepository.save(wish);
 
+        addWishApplyUser(wish, creatorInfo, addWishParam);
+
         // 格式化日期
         String formattedDate = formatDate(wish.getCreateTime());
 
         // 发布事件通知
         publishShareCreationEvent(creatorInfo, wish, formattedDate);
         return wish;
+    }
+
+    private void addWishApplyUser(Wish wish, Member creatorInfo, AddWishParam addWishParam) {
+        WishApply wishApply = new WishApply();
+        wishApply.setWishId(wish.getId());
+        wishApply.setMemberId(creatorInfo.getId());
+        wishApply.setMemberName(creatorInfo.getNickName());
+        wishApply.setMemberAddress(creatorInfo.getAddress());
+        wishApply.setAmount(addWishParam.getDonationWishParam().getAmount());
+        wishApply.setTokenSymbol(addWishParam.getDonationWishParam().getTokenSymbol());
+        wishApply.setToken(addWishParam.getDonationWishParam().getToken());
+        wishApply.setChainId(addWishParam.getDonationWishParam().getChainId());
+        wishApplyRepository.save(wishApply);
     }
 
     private String formatDate(LocalDateTime date) {
