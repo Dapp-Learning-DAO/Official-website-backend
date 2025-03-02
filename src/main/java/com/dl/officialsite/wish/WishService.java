@@ -17,6 +17,7 @@ import com.dl.officialsite.sharing.SharingService;
 import com.dl.officialsite.wish.domain.Wish;
 import com.dl.officialsite.wish.domain.WishApply;
 import com.dl.officialsite.wish.domain.WishLike;
+import com.dl.officialsite.wish.enums.DonateStatusEnum;
 import com.dl.officialsite.wish.enums.WishStatusEnum;
 import com.dl.officialsite.wish.params.AddWishParam;
 import com.dl.officialsite.wish.params.ApplyWishParam;
@@ -43,6 +44,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
@@ -254,6 +258,7 @@ public class WishService {
         wishApply.setAmount(donationWishParam.getAmount());
         wishApply.setTokenSymbol(donationWishParam.getTokenSymbol());
         wishApply.setToken(donationWishParam.getToken());
+        wishApply.setChainId(donationWishParam.getChainId());
         wishApplyRepository.save(wishApply);
 
     }
@@ -315,6 +320,8 @@ public class WishService {
                         wish.setAmount(totalAmount.toPlainString());
                         wish.setCreateStatus(1);
                     }
+                    //update wish apply status
+                    syncWishApplyStatus(wish, donations,chainId);
                 }
             }
 
@@ -326,6 +333,24 @@ public class WishService {
         }
     }
 
+    private void syncWishApplyStatus(Wish wish, JsonArray donations, String chainId) {
+        // 提取所有 donor 地址到 Set，提高匹配效率
+        Set<String> donorAddresses = StreamSupport.stream(donations.spliterator(), false)
+            .map(donation -> donation.getAsJsonObject().get("donor").getAsString())
+            .collect(Collectors.toSet());
+
+        // 过滤出需要更新状态的 wishApply
+        List<WishApply> updatedWishApplies = wishApplyRepository.findByWishIdAndChainId(wish.getId(), chainId).stream()
+            .filter(wishApply -> donorAddresses.contains(wishApply.getMemberAddress()))
+            .peek(wishApply -> wishApply.setStatus(DonateStatusEnum.SUCCESS.getDesc()))
+            .collect(Collectors.toList());
+
+        // 批量保存更新的 wishApply
+        if (!updatedWishApplies.isEmpty()) {
+            wishApplyRepository.saveAll(updatedWishApplies);
+        }
+    }
+
 
 
 
@@ -333,8 +358,10 @@ public class WishService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP_SEPOLIA: //sepolia
-                request = new HttpPost("https://indexer.dev.hyperindex.xyz/a228a53/v1/graphql");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
                 break;
+            case Constants.CHAIN_ID_OP:
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/0e66bcb/v1/graphql");
             default:
                 break;
 
