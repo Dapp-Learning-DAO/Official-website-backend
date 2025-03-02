@@ -285,6 +285,7 @@ public class WishService {
      * 定时查询愿望清单中的amount
      */
     @Scheduled(fixedRate = 10000)
+    @Transactional
     public void updateWishTokenAmount() {
         for (String chainId : chainConfig.getIds()) {
             try {
@@ -297,7 +298,8 @@ public class WishService {
     }
 
 
-    private void updateWishForChain(String chainId) {
+
+    public void updateWishForChain(String chainId) {
         try {
             HttpEntity entity = getHttpEntityFromChain(chainId);
             String jsonResponse = EntityUtils.toString(entity);
@@ -406,6 +408,7 @@ public class WishService {
         return wish;
     }
 
+    @Transactional
     public void settle(String address, SettleWishParam settleWishParam) {
         Wish wish =
             wishRepository.findById(settleWishParam.getWishId()).orElseThrow(() -> new BizException(
