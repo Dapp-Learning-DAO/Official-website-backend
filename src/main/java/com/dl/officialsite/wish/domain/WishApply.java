@@ -1,5 +1,6 @@
 package com.dl.officialsite.wish.domain;
 
+import com.dl.officialsite.wish.enums.DonateStatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -30,6 +31,8 @@ public class WishApply {
 
     private Long memberId;
 
+    private String chainId;
+
     private String memberName;
 
     private String memberAddress;
@@ -39,6 +42,8 @@ public class WishApply {
     private String tokenSymbol;
 
     private String token;
+
+    private String status = DonateStatusEnum.PENDING.getDesc();
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

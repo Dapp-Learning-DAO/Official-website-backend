@@ -22,5 +22,7 @@ public class DonationWishParam {
     @JsonDeserialize(using = TokenDeserializer.class)
     private String token;
 
+    private String chainId;
+
 
 }
