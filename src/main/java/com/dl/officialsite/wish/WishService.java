@@ -325,7 +325,7 @@ public class WishService {
 
                     // 如果有claims，更新状态
                     if (vault.getAsJsonArray("claims").size() > 0) {
-                        wish.setStatus(1);
+                        //wish.setStatus(1); 判断时间是否过期
                     }
                     // 计算所有donations的总金额
                     JsonArray donations = vault.getAsJsonArray("donations");
