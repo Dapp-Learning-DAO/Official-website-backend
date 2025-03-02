@@ -43,6 +43,8 @@ public class AddWishParam {
 
     private String chainId;
 
+    private DonationWishParam donationWishParam;
+
     public Wish toWish() {
         Wish wish = new Wish();
         BeanUtils.copyProperties(this, wish);
