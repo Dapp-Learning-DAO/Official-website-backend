@@ -62,6 +62,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -189,9 +190,11 @@ public class WishService {
     }
 
     public WishDetailResult get(Long id, String address) {
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnorePaths("status");
         WishApply example = new WishApply();
         example.setWishId(id);
-        List<WishApply> wishApplyList = wishApplyRepository.findAll(Example.of(example),
+        List<WishApply> wishApplyList = wishApplyRepository.findAll(Example.of(example, matcher),
             Sort.by(Direction.DESC, "createTime"));
         WishDetailResult wishDetailResult = wishRepository.findById(id)
             .map(this::buildWishDetailResult)
