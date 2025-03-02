@@ -35,6 +35,8 @@ import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -120,10 +122,10 @@ public class WishService {
         return wish;
     }
 
-    private String formatDate(Date date) {
-        // 格式化日期为字符串
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(date);
+    private String formatDate(LocalDateTime date) {
+        // 使用 Java 8+ 的 DateTimeFormatter 进行格式化
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return date.format(formatter);
     }
 
     private void publishShareCreationEvent(Member creatorInfo, Wish wish, String formattedDate) {
@@ -331,7 +333,7 @@ public class WishService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP_SEPOLIA: //sepolia
-                request = new HttpPost("https://indexer.dev.hyperindex.xyz/2cf0e82/v1/graphql");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/a228a53/v1/graphql");
                 break;
             default:
                 break;
