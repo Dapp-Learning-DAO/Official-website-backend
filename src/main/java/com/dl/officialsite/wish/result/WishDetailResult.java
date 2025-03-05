@@ -47,6 +47,10 @@ public class WishDetailResult {
 
     private String shareAddress;
 
+    private String shareGithubId;
+
+    private String shareTweetId;
+
     private String createUser;
 
     private String createAddress;

@@ -19,4 +19,6 @@ public class QueryWishParam {
 
     private String amount;
 
+    private String chainId;
+
 }
