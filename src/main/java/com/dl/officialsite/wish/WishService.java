@@ -198,6 +198,10 @@ public class WishService {
                     predicates.add(
                         criteriaBuilder.like(root.get("amount"), "%" + queryWishParam.getAmount() + "%"));
                 }
+                if (StringUtils.hasText(queryWishParam.getChainId())) {
+                    predicates.add(
+                        criteriaBuilder.equal(root.get("chainId"), queryWishParam.getChainId()));
+                }
                 predicates.add(
                     criteriaBuilder.equal(root.get("createStatus"), 1));
                 query.orderBy(criteriaBuilder.desc(root.get("createTime")));
@@ -230,6 +234,11 @@ public class WishService {
             wishDetailResult.setShareTitle(share.getTheme());
             wishDetailResult.setShareAddress(share.getMemberAddress());
             wishDetailResult.setShareUser(share.getPresenter());
+            Member shareMember =
+                memberRepository.findByAddress(share.getMemberAddress()).orElseThrow(() -> new BizException(
+                    CodeEnums.NOT_FOUND_MEMBER));
+            wishDetailResult.setShareGithubId(shareMember.getGithubId());
+            wishDetailResult.setShareTweetId(shareMember.getTweetId());
         });
         return wishDetailResult;
     }
@@ -243,11 +252,6 @@ public class WishService {
     private WishApplyResult buildWishApply(WishApply wishApply) {
         WishApplyResult wishApplyResult = new WishApplyResult();
         BeanUtils.copyProperties(wishApply, wishApplyResult);
-        Member member =
-            memberRepository.findByAddress(wishApply.getMemberAddress()).orElseThrow(() -> new BizException(
-                CodeEnums.NOT_FOUND_MEMBER));
-        wishApplyResult.setGithubId(member.getGithubId());
-        wishApplyResult.setTweetId(member.getTweetId());
         return wishApplyResult;
     }
 
