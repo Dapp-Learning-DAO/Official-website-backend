@@ -357,7 +357,7 @@ public class WishService {
     private void isWishExpired(Wish wish, JsonObject vault) {
         // 获取 lockTime 并转换为 long
         String lockTimeStr = vault.get("lockTime").getAsString();
-        long lockTime = Long.parseLong(lockTimeStr); // 时间戳应为毫秒级
+        long lockTime = Long.parseLong(lockTimeStr) * 1000; // 时间戳应为毫秒级
 
         // 获取当前时间戳（毫秒）
         long currentTime = Instant.now().toEpochMilli();
