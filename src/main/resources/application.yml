@@ -8,6 +8,8 @@ server:
       cookie:
         max-age: 7200
 spring:
+  jackson:
+    time-zone: Asia/Shanghai
   datasource:
     url: jdbc:mysql://mysql:3306/dl?allowPublicKeyRetrieval=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true
     #type: com.alibaba.druid.pool.DruidDataSource
