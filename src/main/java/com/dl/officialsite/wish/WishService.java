@@ -36,6 +36,7 @@ import com.xxl.job.core.context.XxlJobHelper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -325,10 +326,9 @@ public class WishService {
                 if (vault != null) {
                     wish.setTargetAmount(vault.get("totalAmount").getAsString());
 
-                    // 如果有claims，更新状态
-                    if (vault.getAsJsonArray("claims").size() > 0) {
-                        //wish.setStatus(1); 判断时间是否过期
-                    }
+                    //判断是否过期
+                    isWishExpired(wish, vault);
+
                     // 计算所有donations的总金额
                     JsonArray donations = vault.getAsJsonArray("donations");
                     if (donations.size() > 0) {
@@ -338,8 +338,9 @@ public class WishService {
                             totalAmount = totalAmount.add(new BigDecimal(amount));
                         }
                         wish.setAmount(totalAmount.toPlainString());
-                        wish.setCreateStatus(1);
+
                     }
+                    wish.setCreateStatus(1);
                     //update wish apply status
                     syncWishApplyStatus(wish, donations,chainId);
                 }
@@ -351,6 +352,22 @@ public class WishService {
         } catch (IOException e) {
             log.error("定时更新愿望清单失败{}", e);
         }
+    }
+
+    private void isWishExpired(Wish wish, JsonObject vault) {
+        // 获取 lockTime 并转换为 long
+        String lockTimeStr = vault.get("lockTime").getAsString();
+        long lockTime = Long.parseLong(lockTimeStr); // 时间戳应为毫秒级
+
+        // 获取当前时间戳（毫秒）
+        long currentTime = Instant.now().toEpochMilli();
+
+        // 判断是否过期
+        if (lockTime < currentTime) {
+            wish.setStatus(WishStatusEnum.FINISH.getStatus());
+        }
+        int wishStatus = (lockTime < currentTime) ? 1 : 0;
+        wish.setStatus(wishStatus);
     }
 
     private void syncWishApplyStatus(Wish wish, JsonArray donations, String chainId) {
