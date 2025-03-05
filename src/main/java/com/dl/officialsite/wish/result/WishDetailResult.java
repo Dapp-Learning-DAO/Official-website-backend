@@ -79,4 +79,7 @@ public class WishDetailResult {
 
     private Integer liked = 0;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime settleTime;
+
 }
