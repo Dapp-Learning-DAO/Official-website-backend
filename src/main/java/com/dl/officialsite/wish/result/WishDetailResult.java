@@ -69,7 +69,7 @@ public class WishDetailResult {
 
     private Integer status;
 
-    private List<WishApply> wishApplyList;
+    private List<WishApplyResult> wishApplyList;
 
     private Member creator;
 

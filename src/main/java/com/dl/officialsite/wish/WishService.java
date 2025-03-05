@@ -28,6 +28,7 @@ import com.dl.officialsite.wish.params.SettleWishParam;
 import com.dl.officialsite.wish.repository.WishApplyRepository;
 import com.dl.officialsite.wish.repository.WishLikeRepository;
 import com.dl.officialsite.wish.repository.WishRepository;
+import com.dl.officialsite.wish.result.WishApplyResult;
 import com.dl.officialsite.wish.result.WishDetailResult;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -215,7 +216,8 @@ public class WishService {
         WishDetailResult wishDetailResult = wishRepository.findById(id)
             .map(this::buildWishDetailResult)
             .orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
-        wishDetailResult.setWishApplyList(wishApplyList);
+        List<WishApplyResult> wishApplyResultList = wishApplyList.stream().map(this::buildWishApply).collect(Collectors.toList());
+        wishDetailResult.setWishApplyList(wishApplyResultList);
         Member creator = memberRepository.findByAddress(wishDetailResult.getCreateAddress())
             .orElse(new Member());
 
@@ -236,6 +238,17 @@ public class WishService {
         WishDetailResult wishDetailResult = new WishDetailResult();
         BeanUtils.copyProperties(wish, wishDetailResult);
         return wishDetailResult;
+    }
+
+    private WishApplyResult buildWishApply(WishApply wishApply) {
+        WishApplyResult wishApplyResult = new WishApplyResult();
+        BeanUtils.copyProperties(wishApply, wishApplyResult);
+        Member member =
+            memberRepository.findByAddress(wishApply.getMemberAddress()).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_MEMBER));
+        wishApplyResult.setGithubId(member.getGithubId());
+        wishApplyResult.setTweetId(member.getTweetId());
+        return wishApplyResult;
     }
 
     @Transactional
