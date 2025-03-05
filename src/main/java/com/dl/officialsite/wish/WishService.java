@@ -438,6 +438,7 @@ public class WishService {
 
         wish.setSettleUser(member.getNickName());
         wish.setSettleAddress(member.getAddress());
+        wish.setSettleTime(LocalDateTime.now());
         wish.setStatus(WishStatusEnum.SETTLE.getStatus());
         wishRepository.save(wish);
     }
