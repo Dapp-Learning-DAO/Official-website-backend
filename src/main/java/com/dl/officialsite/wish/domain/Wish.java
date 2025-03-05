@@ -61,6 +61,8 @@ public class Wish {
 
     private String settleAddress;
 
+    private LocalDateTime settleTime;
+
     private LocalDateTime beginTime;
 
     private LocalDateTime endTime;
