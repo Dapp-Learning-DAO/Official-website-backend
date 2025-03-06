@@ -86,4 +86,6 @@ public class UpdateSharingReq {
 
     @ApiModelProperty("课程大纲")
     private String outline;
+
+    private Long wishId;
 }

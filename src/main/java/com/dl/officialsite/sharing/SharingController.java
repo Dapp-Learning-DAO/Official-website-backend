@@ -92,9 +92,9 @@ public class SharingController {
      * 条件搜索
      */
     @PostMapping("/search")
-    public BaseResponse searchSharing(@RequestBody ShareSearchVo searchVo, @RequestParam(value =
-        "pageNo",defaultValue = "1") int pageNumber,
-                                      @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
+    public BaseResponse searchSharing(@RequestBody ShareSearchVo searchVo,
+        @RequestParam(value = "pageNo",defaultValue = "1") int pageNumber,
+        @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<Share> page = sharingService.searchSharing(searchVo, pageable);
         return BaseResponse.successWithData(page);

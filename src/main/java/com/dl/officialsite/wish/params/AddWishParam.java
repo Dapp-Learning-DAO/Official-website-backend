@@ -1,8 +1,11 @@
 package com.dl.officialsite.wish.params;
 
-import com.dl.officialsite.wish.Wish;
-import javax.persistence.Column;
+import com.dl.officialsite.wish.domain.Wish;
+import com.dl.officialsite.wish.config.TokenDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.time.LocalDateTime;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 /**
  * @ClassName AddWishParams
@@ -13,12 +16,20 @@ import lombok.Data;
 @Data
 public class AddWishParam {
 
+    private String vaultId;
+
+    @JsonDeserialize(using = TokenDeserializer.class)
+    private String acceptTokens;
+
     private String title;
 
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String tag;
+
+    private String tokenSymbol;
+
+    private String targetAmount;
 
     private String amount;
 
@@ -26,14 +37,17 @@ public class AddWishParam {
 
     private String createAddress;
 
-    public Wish buildWish() {
+    private LocalDateTime beginTime;
+
+    private LocalDateTime endTime;
+
+    private String chainId;
+
+    private DonationWishParam donationWishParam;
+
+    public Wish toWish() {
         Wish wish = new Wish();
-        wish.setTitle(title);
-        wish.setDescription(description);
-        wish.setTag(tag);
-        wish.setAmount(amount);
-        wish.setCreateUser(createUser);
-        wish.setCreateAddress(createAddress);
+        BeanUtils.copyProperties(this, wish);
         return wish;
     }
 

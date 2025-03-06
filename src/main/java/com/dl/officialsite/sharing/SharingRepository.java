@@ -1,6 +1,7 @@
 package com.dl.officialsite.sharing;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,4 +54,7 @@ public interface SharingRepository extends JpaRepository<Share, Long>, JpaSpecif
     //通过courseId查询share表中的数据
     @Query(value = "select * from share s where s.course_id = :courseId", nativeQuery = true)
     List<Share> findByCourseId(Long courseId);
+
+    @Query(value = "select * from share s where s.wish_id = :wishId", nativeQuery = true)
+    Optional<Share> findByWishId(Long wishId);
 }

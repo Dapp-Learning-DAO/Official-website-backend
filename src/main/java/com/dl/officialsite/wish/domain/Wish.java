@@ -1,4 +1,4 @@
-package com.dl.officialsite.wish;
+package com.dl.officialsite.wish.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
@@ -28,6 +28,10 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String vaultId;
+
+    private String acceptTokens;
+
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -35,30 +39,49 @@ public class Wish {
 
     private String tag;
 
+    private String tokenSymbol;
+
+    private String targetAmount;
+
     private String amount;
 
-    private String applyUser;
+    private Integer likeNumber;
 
-    private String applyAddress;
+    private Integer status = 0;
 
-    private String shareUrl;
+    private Integer createStatus = 0;
 
-    private String shareUser;
-
-    private String shareAddress;
+    private Integer apply = 0;
 
     private String createUser;
 
     private String createAddress;
 
+    private String settleUser;
+
+    private String settleAddress;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime settleTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime beginTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime endTime;
+
+    private String chainId;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime createTime;
 
     @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private LocalDateTime updateTime;
+
+    private Long shareId;
 
 
 }

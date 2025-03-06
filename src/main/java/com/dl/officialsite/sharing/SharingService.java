@@ -20,6 +20,9 @@ import com.dl.officialsite.sharing.model.bo.RankDto;
 import com.dl.officialsite.sharing.model.req.UpdateSharingReq;
 import com.dl.officialsite.sharing.model.resp.ShareTagResp;
 import com.dl.officialsite.team.TeamService;
+import com.dl.officialsite.wish.WishService;
+import com.dl.officialsite.wish.domain.Wish;
+import com.dl.officialsite.wish.repository.WishRepository;
 import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -31,6 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +46,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -60,6 +65,9 @@ public class SharingService {
     @Autowired
     TeamService teamService;
 
+    @Resource
+    private WishRepository wishRepository;
+
     private final EmailService emailService;
 
     private final ApplicationContext applicationContext;
@@ -72,6 +80,15 @@ public class SharingService {
 
     @Transactional(rollbackFor = Exception.class)
     public Share createSharing(Share share, String address) {
+
+        if (!ObjectUtils.isEmpty(share.getWishId())) {
+            Wish wish = wishRepository.findById(share.getWishId()).orElseThrow(() -> new BizException(
+                CodeEnums.NOT_FOUND_WISH
+            ));
+            wish.setApply(1);
+            wishRepository.save(wish);
+            share.setWishTitle(wish.getTitle());
+        }
 
         // 保存分享记录
         share = sharingRepository.save(share);
@@ -98,6 +115,8 @@ public class SharingService {
         // 发送邮件
         emailService.sendMail(toAddressList, emailTitle, emailContent, null);
 
+
+
         return share;
     }
 
@@ -123,11 +142,20 @@ public class SharingService {
     }
 
     private String createEmailContent(Share share, Member creatorInfo) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String shareTime = formatter.format(share.getDate()) + "-" + share.getTime();
+        String shareLanguage = share.getLanguage() == 0 ? "Chinese" : "English";
         // 构造邮件内容
         return String.format(
-            "Have a new sharing\n👉👉👉Theme: %s👈👈👈\nCreator: %s",
+            "Have a new sharing\n👉👉👉Theme: %s👈👈👈\nOutLine: %s\nCreator: %s\nlanguage: "
+                + "%s\nsharingDoc: %s\nShareTime: %s\nOrg: %s\n",
             share.getTheme(),
-            creatorInfo.getNickName()
+            share.getOutline(),
+            creatorInfo.getNickName(),
+            shareLanguage,
+            share.getSharingDoc(),
+            shareTime,
+            share.getOrg()
         );
     }
 
@@ -162,6 +190,7 @@ public class SharingService {
             sharing.setTag(req.getTag());
             sharing.setCourseId(req.getCourseId());
             sharing.setOutline(req.getOutline());
+            sharing.setWishId(req.getWishId());
 
             this.sharingRepository.save(sharing);
         } else {
@@ -202,6 +231,10 @@ public class SharingService {
         }
 
         return sharingEntity.get();
+    }
+
+    public Optional<Share> querySharingByWishId(Long wishId) {
+        return this.sharingRepository.findByWishId(wishId);
     }
 
 
