@@ -205,9 +205,9 @@ public class WishService {
                 predicates.add(
                     criteriaBuilder.equal(root.get("createStatus"), 1));
                 if (queryWishParam.getSortAmount() == 1) {
-                    query.orderBy(criteriaBuilder.desc(root.get("amount")));
+                    query.orderBy(criteriaBuilder.asc(root.get("amount")));
                 } else {
-                    query.orderBy(criteriaBuilder.asc(root.get("createTime")));
+                    query.orderBy(criteriaBuilder.desc(root.get("createTime")));
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);
