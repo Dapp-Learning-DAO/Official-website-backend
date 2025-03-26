@@ -166,7 +166,6 @@ public class WishService {
     }
 
     public void edit(EditWishParam editWishParam, String address) {
-        Share share = sharingService.querySharing(editWishParam.getShareId());
         Long id = editWishParam.getId();
         Wish wish = wishRepository.findById(id).orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
         BeanUtils.copyProperties(editWishParam, wish);
