@@ -3,7 +3,6 @@ package com.dl.officialsite.wish;
 import com.dl.officialsite.common.base.BaseResponse;
 import com.dl.officialsite.wish.domain.Wish;
 import com.dl.officialsite.wish.params.AddWishParam;
-import com.dl.officialsite.wish.params.ApplyWishParam;
 import com.dl.officialsite.wish.params.DonationWishParam;
 import com.dl.officialsite.wish.params.EditWishParam;
 import com.dl.officialsite.wish.params.QueryWishParam;
@@ -61,8 +60,7 @@ public class WishController {
     @PostMapping("/list")
     public BaseResponse list(@RequestBody QueryWishParam queryWishParam,
         @RequestParam(value = "pageNo",defaultValue = "1") int pageNumber,
-        @RequestParam(value = "pageSize",defaultValue = "20") int pageSize,
-        @RequestParam String address) {
+        @RequestParam(value = "pageSize",defaultValue = "20") int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<Wish> page = wishService.list(queryWishParam, pageable);
         return BaseResponse.successWithData(page);
