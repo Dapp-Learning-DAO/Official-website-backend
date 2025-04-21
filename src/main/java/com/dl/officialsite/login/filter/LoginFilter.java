@@ -75,6 +75,7 @@ public class LoginFilter extends OncePerRequestFilter {
         add("/course/list");
         add("/wish");
         add("/wish/list");
+        add("/share/queryShareTag");
     }} ;
 
     private Set<String> noAddrCheckApis = new HashSet() {{
