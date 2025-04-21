@@ -21,4 +21,8 @@ public class QueryWishParam {
 
     private String chainId;
 
+    private Integer sortAmount = 0;
+
+    private Integer sortTime;
+
 }

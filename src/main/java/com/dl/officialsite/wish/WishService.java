@@ -166,7 +166,6 @@ public class WishService {
     }
 
     public void edit(EditWishParam editWishParam, String address) {
-        Share share = sharingService.querySharing(editWishParam.getShareId());
         Long id = editWishParam.getId();
         Wish wish = wishRepository.findById(id).orElseThrow(() -> new BizException(CodeEnums.NOT_FOUND_WISH));
         BeanUtils.copyProperties(editWishParam, wish);
@@ -204,7 +203,11 @@ public class WishService {
                 }
                 predicates.add(
                     criteriaBuilder.equal(root.get("createStatus"), 1));
-                query.orderBy(criteriaBuilder.desc(root.get("createTime")));
+                if (queryWishParam.getSortAmount() == 1) {
+                    query.orderBy(criteriaBuilder.desc(root.get("amount")));
+                } else {
+                    query.orderBy(criteriaBuilder.desc(root.get("createTime")));
+                }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);
         return page;
