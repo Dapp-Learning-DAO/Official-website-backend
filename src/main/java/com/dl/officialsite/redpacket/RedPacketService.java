@@ -131,7 +131,7 @@ public class RedPacketService {
         HttpPost request = null;
         switch (chainId) {
             case Constants.CHAIN_ID_OP:  // op
-                request = new HttpPost("https://indexer.dev.hyperindex.xyz/31816b0/v1/graphql");
+                request = new HttpPost("https://indexer.dev.hyperindex.xyz/a440dc2/v1/graphql");
                 break;
             case Constants.CHAIN_ID_SEPOLIA: //sepolia
                 request = new HttpPost(
